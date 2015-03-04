@@ -1,13 +1,14 @@
 import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
 import jumpingalien.util.Sprite;
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Raw;
+import be.kuleuven.cs.som.annotate.*;
 
 
 /**
+ * @invar
  * 
- * @authors Pieter and Lennert
+ * @version 1.0
+ * @authors Pieter Van Damme and Lennert Vanmunster
  *
  */
 public class Mazub {
@@ -39,6 +40,7 @@ public class Mazub {
 		this.maximumHorizontalVelocityNotDucking = maximumHorizontalVelocityNotDucking;
 	}
 	
+	@Basic @Raw
 	public int getHorizontalLocation(){
 		return this.horizontalLocation;
 	}
@@ -49,6 +51,7 @@ public class Mazub {
 	
 	private int horizontalLocation;
 	
+	@Basic @Raw
 	public int getVerticalLocation() {
 		return verticalLocation;
 	}
@@ -59,6 +62,7 @@ public class Mazub {
 	
 	private int verticalLocation;
 	
+	@Basic @Raw
 	public double getHorizontalVelocity() {
 		return horizontalVelocity;
 	}
@@ -68,6 +72,7 @@ public class Mazub {
 	
 	private double horizontalVelocity;
 	
+	@Basic @Raw
 	public double getVerticalVelocity() {
 		return verticalVelocity;
 	}
@@ -78,6 +83,7 @@ public class Mazub {
 	
 	private double verticalVelocity;
 	
+	@Basic @Raw
 	public double getHorizontalAcceleration(){
 		return horizontalAcceleration;
 	}
@@ -95,18 +101,21 @@ public class Mazub {
 	
 	private boolean isDucking;
 	
+	@Basic @Raw
 	public double getInitialHorizontalVelocity(){
 		return this.initialHorizontalVelocity;		
 	}
 	
 	private final double initialHorizontalVelocity;
 	
+	@Basic @Raw
 	public double getInitialVerticalVelocity(){
 		return this.initialVerticalVelocity;
 	}
 	
 	private final double initialVerticalVelocity;
 	
+	@Basic @Raw
 	public double getMaximumHorizontalVelocity(){
 		return this.maximumHorizontalVelocity;
 	}
