@@ -7,7 +7,7 @@ import be.kuleuven.cs.som.annotate.Raw;
 
 /**
  * 
- * @author
+ * @authors Pieter and Lennert
  *
  */
 public class Mazub {
