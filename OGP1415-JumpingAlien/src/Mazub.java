@@ -5,7 +5,8 @@ import be.kuleuven.cs.som.annotate.*;
 
 
 /**
- * @invar
+ * @invar	The bottom-left pixel must always be inside the boundaries of the world.
+ * 			|isValidPosition(getVerticalLocation(),getHorizontalLocation())
  * 
  * @version 1.0
  * @authors Pieter Van Damme and Lennert Vanmunster
@@ -50,6 +51,10 @@ public class Mazub {
 	}
 	
 	private int horizontalLocation;
+	
+	public boolean isValidPosition(int verticalPosition,int horizontalPosition){
+		return (verticalPosition >= 0) && ((horizontalPosition >= 0 ) && (horizontalPosition <= 0));
+	}
 	
 	@Basic @Raw
 	public int getVerticalLocation() {
