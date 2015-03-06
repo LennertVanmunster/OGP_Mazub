@@ -1,12 +1,11 @@
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
-
 import jumpingalien.util.Sprite;
 import be.kuleuven.cs.som.annotate.*;
 
 
 /**
  * @invar	The bottom-left pixel must always be inside the boundaries of the world.
- * 			|isValidPosition(getVerticalLocation(),getHorizontalLocation())
+ * 			|isValidPosition(getHorizontalLocation(),getVerticalLocation())
+ * @invar	The velocity of Mazub
  * 
  * @version 1.0
  * @authors Pieter Van Damme and Lennert Vanmunster
@@ -52,7 +51,7 @@ public class Mazub {
 	
 	private int horizontalLocation;
 	
-	public boolean isValidPosition(int verticalPosition,int horizontalPosition){
+	public boolean isValidPosition(int horizontalPosition, int verticalPosition){
 		return (verticalPosition >= 0) && ((horizontalPosition >= 0 ) && (horizontalPosition <= 0));
 	}
 	
