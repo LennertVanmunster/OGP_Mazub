@@ -5,7 +5,11 @@ import be.kuleuven.cs.som.annotate.*;
 /**
  * @invar	The bottom-left pixel must always be inside the boundaries of the world.
  * 			|isValidPosition(getHorizontalLocation(),getVerticalLocation())
- * @invar	The velocity of Mazub
+ * @invar	The absolute value of the velocity of Mazub must always be in the range 
+ * 			from initialHorizontalVelocity to maximumHorizontalvelocity or be 
+ * 			equal to zero m/s.
+ * 			|isValidHorizontalVelocity(getHorizontalVelocity())
+ * @invar	
  * 
  * @version 1.0
  * @authors Pieter Van Damme and Lennert Vanmunster
@@ -13,17 +17,31 @@ import be.kuleuven.cs.som.annotate.*;
  */
 public class Mazub {
 	/**
+	 *Initialize a new Mazub with given horizontal and vertical location,
+	 *horizontal and vertical velocity, initial and maximum horizontal velocity,
+	 *ducking state and a set of sprites. 
+	 //geen idee of the documentatie hierboven voldoende is?
 	 * 
 	 * @param horizontalLocation
+	 * 		  The horizontal location of Mazub.
 	 * @param verticalLocation
+	 * 		  The vertical location of Mazub.
 	 * @param horizontalVelocity
+	 * 		  The horizontal velocity of Mazub.
 	 * @param verticalVelocity
+	 * 		  The vertical velocity of Mazub.
 	 * @param horizontalAcceleration
+	 * 		  The horizontal acceleration of Mazub.
 	 * @param verticalAcceleration
+	 * 		  The vertical acceleration of Mazub.
 	 * @param isDucking
-	 * @param initalHorizontalVelocity
+	 * 		  Parameter to tell if Mazub is ducking or not.
+	 * @param initialHorizontalVelocity
+	 * 		  The initial horizontal velocity of Mazub.
 	 * @param maximumHorizontalVelocity
+	 * 		  The maximum horizontal velocity of Mazub.
 	 * @param images
+	 * 		  Sprites to dislplay Mazub.
 	 */
 	@Raw
 	public  Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
