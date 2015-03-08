@@ -1,4 +1,5 @@
 import jumpingalien.util.Sprite;
+import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
 
@@ -70,10 +71,13 @@ public class Mazub {
 	/**
 	 * Set the horizontal location of Mazub to the given location.
 	 * 
-	 * @param horizontalLocation
-	 * 		  The new horizontal location.
-	 * @post  This horizontal location is set as the new horizontal location.
-	 * 		  |new.getHorizontalLocation() = this.horizontalLocation
+	 * @param 	horizontalLocation
+	 * 		  	The new horizontal location.
+	 * @post  	This horizontal location is set as the new horizontal location.
+	 * 		  	|new.getHorizontalLocation() = this.horizontalLocation
+	 *@throws	IllegalArgumentException
+	 * 			The given horizontal location is not valid.
+	 * 			|!isValidHorizontalLocation(horizontalLocation)	
 	 */
 	public void setHorizonalLocation(int horizontalLocation)
 			throws IllegalArgumentException {
@@ -141,10 +145,13 @@ public class Mazub {
 	/**
 	 * Set the vertical location of Mazub to the given location.
 	 * 
-	 * @param verticalLocation
-	 * 		  The new vertical location.
-	 * @post  This vertical location is set as the new vertical location.
-	 * 		  |new.getVerticalLocation() = this.verticalLocation
+	 * @param 	verticalLocation
+	 * 		  	The new vertical location.
+	 * @post  	This vertical location is set as the new vertical location.
+	 * 		  	|new.getVerticalLocation() = verticalLocation
+	 * @throws	IllegalArgumentException
+	 * 			The given vertical location is not valid.
+	 * 			|!isValidVerticalLocation(verticalLocation)	  
 	 */
 	public void setVerticalLocation(int verticalLocation) 
 			throws IllegalArgumentException {
@@ -153,17 +160,62 @@ public class Mazub {
 		this.verticalLocation = verticalLocation;
 	}
 	
+	
 	private int verticalLocation;
 	
-	@Basic @Raw
+	
+	/**
+	 * Check whether the given horizontal velocity is a valid horizontal velocity.
+	 * 
+	 * @param 	horizontalVelocity
+	 * 			The horizontal velocity.
+	 * @return	True if and only if the absolute value of the velocity is in the range 
+	 * 			from initialHorizontalVelocity to maximumHorizontalvelocity or is 
+	 * 			equal to zero m/s.
+	 * 			|result == (Util.fuzzyGreaterThanOrEqualTo(abs(horizontalVelocity),getInitialHorizontalVelocity()) 
+				  && Util.fuzzyLessThanOrEqualTo(abs(horizontalVelocity), getMaximumHorizontalVelocity()))
+				  || Util.fuzzyEquals(horizontalVelocity, 0);
+	 */
+	public boolean isValidHorizontalVelocity(double horizontalVelocity){
+		horizontalVelocity = Math.abs(horizontalVelocity);
+		return (Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,getInitialHorizontalVelocity()) 
+				&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, getMaximumHorizontalVelocity()))
+				|| Util.fuzzyEquals(horizontalVelocity, 0);
+	}
+	
+	
+	/**
+	 * Returns the horizontal velocity of this Mazub.
+	 */
+	@Basic 
+	@Raw
 	public double getHorizontalVelocity() {
 		return horizontalVelocity;
 	}
-	public void setHorizontalVelocity(double horizontalVelocity) {
+	
+	
+	/**
+	 * Set the horizontal velocity of Mazub to the given horizontal velocity.
+	 * 
+	 * @param 	horizontalVelocity
+	 * 			The horizontal velocity.
+	 * @post	The given horizontal velocity is set as the new horizontal velocity
+	 * 			of Mazub.
+	 * 			|new.getHorizontalVelocity() = horizontalVelocity
+	 * @throws	IllegalArgumentException
+	 * 			The given horizontal velocity is not valid.
+	 * 			|!isValidHorizontalVelocity(horizontalVelocity)
+	 */
+	public void setHorizontalVelocity(double horizontalVelocity) 
+		throws IllegalArgumentException{
+		if(!isValidHorizontalVelocity(horizontalVelocity))
+			throw new IllegalArgumentException();
 		this.horizontalVelocity = horizontalVelocity;
 	}
 	
+	
 	private double horizontalVelocity;
+	
 	
 	@Basic @Raw
 	public double getVerticalVelocity() {
