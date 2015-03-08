@@ -4,7 +4,7 @@ import be.kuleuven.cs.som.annotate.*;
 
 /**
  * @invar	The bottom-left pixel must always be inside the boundaries of the world.
- * 			|isValidPosition(getHorizontalLocation(),getVerticalLocation())
+ * 			|isValidLocation(getHorizontalLocation(),getVerticalLocation())
  * @invar	The absolute value of the velocity of Mazub must always be in the range 
  * 			from initialHorizontalVelocity to maximumHorizontalvelocity or be 
  * 			equal to zero m/s.
@@ -58,27 +58,98 @@ public class Mazub {
 		this.maximumHorizontalVelocityNotDucking = maximumHorizontalVelocityNotDucking;
 	}
 	
-	@Basic @Raw
+	/**
+	 * Return the horizontal location of this Mazub.
+	 */
+	@Basic 
+	@Raw
 	public int getHorizontalLocation(){
 		return this.horizontalLocation;
 	}
 	
-	public void setHorizonalLocation(int horizontalLocation){
+	/**
+	 * Set the horizontal location of Mazub to the given location.
+	 * 
+	 * @param horizontalLocation
+	 * 		  The new horizontal location.
+	 * @post  This horizontal location is set as the new horizontal location.
+	 * 		  |new.getHorizontalLocation() = this.horizontalLocation
+	 */
+	public void setHorizonalLocation(int horizontalLocation)
+			throws IllegalArgumentException {
+		if(!isValidHorizontalLocation(horizontalLocation))
+			throw new IllegalArgumentException();
 		this.horizontalLocation = horizontalLocation;
 	}
 	
 	private int horizontalLocation;
 	
-	public boolean isValidPosition(int horizontalPosition, int verticalPosition){
-		return (verticalPosition >= 0) && ((horizontalPosition >= 0 ) && (horizontalPosition <= 0));
+	/**
+	 * Check whether the given horizontal location is a valid location.
+	 * 
+	 * @param 	horizontalLocation
+	 * 		  	The horizontal location.
+	 * @return	True if and only if the horizontal location is an integer number
+	 * 			in the range of 0 to maximumHorizontalLocation.
+	 * 			|result == ((horizontalLocation >= 0 ) && (horizontalLocation <= maximumHorizontalLocation));
+	 */
+	@Raw
+	public boolean isValidHorizontalLocation(int horizontalLocation){
+		return ((horizontalLocation >= 0 ) && (horizontalLocation <= maximumHorizontalLocation));
 	}
 	
-	@Basic @Raw
+	
+	/**
+	 * Check whether the given vertical location is a valid location.
+	 * 
+	 * @param 	verticalLocation
+	 * 		  	The vertical location.
+	 * @return	True if and only if the vertical location is an integer number
+	 * 			in the range of 0 to maximumVerticalLocation.
+	 * 			|result == ((verticalLocation >= 0 ) && (verticalLocation <= maximumVerticalLocation));
+	 */
+	@Raw
+	public boolean isValidVerticalLocation(int verticalLocation){
+		return ((verticalLocation >= 0 ) && (verticalLocation <= maximumVerticalLocation));
+	}
+	
+	/**
+	 * Check whether the given location is a valid location.
+	 * 
+	 * @param	horizontalLocation
+	 * 			The horizontal location.
+	 * @param 	verticalLocation
+	 * 		  	The vertical location.
+	 * @return	True if and only if the horizontal and vertical location are valid locations.
+	 * 			|result == (isValidHorizontalLocation(horizontalLocation) && isValidVerticalLocation(verticalLocation));
+	 */
+	@Raw
+	public boolean isValidLocation(int horizontalLocation, int verticalLocation){
+		return (isValidHorizontalLocation(horizontalLocation) && isValidVerticalLocation(verticalLocation));
+	}
+	
+	
+	@Basic 
+	@Raw
+	/**
+	 * Return the vertical location of this Mazub.
+	 */
 	public int getVerticalLocation() {
 		return verticalLocation;
 	}
 	
-	public void setVerticalLocation(int verticalLocation) {
+	/**
+	 * Set the vertical location of Mazub to the given location.
+	 * 
+	 * @param verticalLocation
+	 * 		  The new vertical location.
+	 * @post  This vertical location is set as the new vertical location.
+	 * 		  |new.getVerticalLocation() = this.verticalLocation
+	 */
+	public void setVerticalLocation(int verticalLocation) 
+			throws IllegalArgumentException {
+		if(!isValidVerticalLocation(verticalLocation))
+			throw new IllegalArgumentException();
 		this.verticalLocation = verticalLocation;
 	}
 	
@@ -152,7 +223,11 @@ public class Mazub {
 	
 	private static int horizontalNumberOfPixels=1024;
 	
+	private static int maximumHorizontalLocation = horizontalNumberOfPixels - 1;
+	
 	private static int verticalNumberOfPixels=768;
+	
+	private static int maximumVerticalLocation = verticalNumberOfPixels - 1;
 	
 	private static double pixelLength = 0.01;
 	
