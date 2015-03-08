@@ -230,12 +230,45 @@ public class Mazub {
 	private double horizontalVelocity = 0;
 
 	
-	@Basic @Raw
+	/**
+	 * Check whether the given vertical velocity is a valid vertical velocity.
+	 * 
+	 * @param 	verticalVelocity
+	 * 			The vertical velocity.
+	 * @return	True if and only if the velocity is less than or equal to 8 m/s.
+	 * 			|result ==  Util.fuzzyLessThanOrEqualTo(verticalVelocity, 8)
+				  
+	 */
+	public boolean canHaveAsVerticalVelocity(double verticalVelocity){
+		return Util.fuzzyLessThanOrEqualTo(verticalVelocity, 8);
+	}
+	
+	
+	/**
+	 * Returns the vertical velocity of this Mazub.
+	 */
+	@Basic 
+	@Raw
 	public double getVerticalVelocity() {
 		return this.verticalVelocity;
 	}
 	
-	public void setVerticalVelocity(double verticalVelocity) {
+	/**
+	 * Set the horizontal velocity of Mazub to the given horizontal velocity.
+	 * 
+	 * @param 	verticalVelocity
+	 * 			The vertical velocity.
+	 * @post	The given vertical velocity is set as the new vertical velocity
+	 * 			of Mazub.
+	 * 			|new.getVerticalVelocity() = verticalVelocity
+	 * @throws	IllegalArgumentException
+	 * 			The given vertical velocity is not valid.
+	 * 			|!canHaveAsVerticalVelocity(verticalVelocity)
+	 */
+	public void setVerticalVelocity(double verticalVelocity) 
+		throws IllegalArgumentException{
+		if(!canHaveAsVerticalVelocity(verticalVelocity))
+			throw new IllegalArgumentException()
 		this.verticalVelocity = verticalVelocity;
 	}
 	
