@@ -478,6 +478,7 @@ public class Mazub {
 	
 	
 	/**
+	 * Set the horizontal velocity of this Mazub to the initial horizontal velocity in the given direction.
 	 * 
 	 * @param 	direction
 	 * 			The direction in which the Mazub will move.
@@ -494,6 +495,8 @@ public class Mazub {
 	
 	
 	/**
+	 * Set the horizontal velocity of this Mazub to zero.
+	 * 
 	 * @post	The new horizontal velocity of this Mazub is equal to 0.
 	 * 			| new.getHorizontalVelocity() == 0
 	 */
@@ -502,7 +505,21 @@ public class Mazub {
 	}
 	
 	
-	public void advanceTime(double deltaTime){
+	/**
+	 * Update the location and velocity of this Mazub.
+	 * 
+	 * @param 	deltaTime
+	 * 			A small period of time.
+	 * @post	The horizontal and vertical location are updated
+	 * 			and the horizontal and vertical velocity are updated.
+	 * @throws	IllegalArgumentException 
+	 * 			The given deltaTime is not valid
+	 * 			|!isValidTimePeriod(deltaTime)
+	 */
+	public void advanceTime(double deltaTime)
+		throws IllegalArgumentException {
+		if(!isValidTimePeriod(deltaTime))
+			throw new IllegalArgumentException();
 		updateHorizontalLocation(deltaTime);
 		updateVerticalLocation(deltaTime);
 		updateHorizontalVelocity(deltaTime);
@@ -510,10 +527,23 @@ public class Mazub {
 	}
 
 	
+	/**
+	 * Check whether the given deltaTime is a valid time period.
+	 * 
+	 * @param 	deltaTime
+	 * 			A period of time.
+	 * @return	True if and only if the time period is smaller
+	 * 			than 0.2s and not less than zero.
+	 */
+	public boolean isValidTimePeriod(double deltaTime){
+		return (Util.fuzzyGreaterThanOrEqualTo(deltaTime,0) && (0.2 > deltaTime));
+	}
+	
+	
 	private void updateHorizontalLocation(double deltaTime) {
 		this.setHorizontalLocationNotRounded(this.getHorizontalLocationNotRounded() + 
 				100*(this.getHorizontalVelocity()*deltaTime + 
-				Math.signum(this.getHorizontalVelocity())*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)));
+				(Math.signum(this.getHorizontalVelocity())*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2))));
 		this.setHorizonalLocation( (int) Math.floor(this.getHorizontalLocationNotRounded()));
 	}
 	
