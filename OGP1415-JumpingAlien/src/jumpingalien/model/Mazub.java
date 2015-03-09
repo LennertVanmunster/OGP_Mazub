@@ -199,8 +199,8 @@ public class Mazub {
 	 */
 	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
 		horizontalVelocity = Math.abs(horizontalVelocity);
-		return (Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
-				&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity()))
+		return  ((Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity())) 
+				&& Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity()))
 				|| Util.fuzzyEquals(horizontalVelocity, 0);
 	}
 	
@@ -366,7 +366,7 @@ public class Mazub {
 	 * 			| new.getHorizontalVelocity() == 0
 	 */
 	public void endMove(){
-		this.setHorizontalVelocity(0);
+		//this.setHorizontalVelocity(0);
 	}
 	
 	public void advanceTime(double deltaTime){
@@ -379,21 +379,21 @@ public class Mazub {
 	private void updateHorizontalLocation(double deltaTime) {
 		this.setHorizontalLocationNotRounded(this.getHorizontalLocationNotRounded() + 
 				100*(this.getHorizontalVelocity()*deltaTime + 
-				Math.signum(this.getHorizontalVelocity())*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)));
+				(Math.signum(this.getHorizontalVelocity()))*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)));
 		this.setHorizonalLocation( (int) Math.floor(this.getHorizontalLocationNotRounded()));
 	}
 	
 	private void updateVerticalLocation(double deltaTime) {
-		int notOnGround = (Util.fuzzyEquals(getVerticalVelocity(), 0)) ? 0 : 1;
+		int notOnGround = (getVerticalLocation() == 0) ? 0 : 1;
 		this.setVerticalLocationNotRounded(this.getVerticalLocationNotRounded() + 
 				100*(getVerticalVelocity()*deltaTime + notOnGround* 0.5*VERTICAL_ACCELERATION*Math.pow(deltaTime,2)));
 		this.setVerticalLocation( (int) Math.floor(this.getVerticalLocationNotRounded()));
 	}
 	
 	private void updateHorizontalVelocity(double deltaTime) {
-		double newVelocity = getHorizontalVelocity() + 100*Math.signum(getHorizontalVelocity())*getHorizontalAcceleration()*deltaTime;
-		if (Math.abs(newVelocity) > this.getMaximumHorizontalVelocity()){
-			this.setHorizontalVelocity(Math.signum(newVelocity)*this.getMaximumHorizontalVelocity());
+		double newVelocity = (getHorizontalVelocity() + (Math.signum(getHorizontalVelocity()))*getHorizontalAcceleration()*deltaTime);
+		if (Math.abs(newVelocity) > this.getMaximumHorizontalVelocity() ){ 
+			this.setHorizontalVelocity((Math.signum(newVelocity))*this.getMaximumHorizontalVelocity());
 		}
 		else{
 			this.setHorizontalVelocity(newVelocity);
@@ -401,8 +401,8 @@ public class Mazub {
 	}
 	
 	private void updateVerticalVelocity(double deltaTime) {
-		int notOnGround = (Util.fuzzyEquals(getVerticalVelocity(), 0)) ? 0 : 1;
-		this.setVerticalVelocity(getVerticalVelocity() + 100*notOnGround*VERTICAL_ACCELERATION*deltaTime);
+		int notOnGround = (getVerticalLocation() == 0) ? 0 : 1;
+		this.setVerticalVelocity(getVerticalVelocity() + notOnGround*VERTICAL_ACCELERATION*deltaTime);
 	}
 	
 	public void startJump(){

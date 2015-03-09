@@ -549,7 +549,7 @@ public class Mazub {
 	
 	
 	private void updateVerticalLocation(double deltaTime) {
-		int notOnGround = (Util.fuzzyEquals(getVerticalVelocity(), 0)) ? 0 : 1;
+		int notOnGround = (getVerticalLocation() == 0) ? 0 : 1;
 		this.setVerticalLocationNotRounded(this.getVerticalLocationNotRounded() + 
 				100*(getVerticalVelocity()*deltaTime + notOnGround* 0.5*VERTICAL_ACCELERATION*Math.pow(deltaTime,2)));
 		this.setVerticalLocation( (int) Math.floor(this.getVerticalLocationNotRounded()));
@@ -557,7 +557,7 @@ public class Mazub {
 	
 	
 	private void updateHorizontalVelocity(double deltaTime) {
-		double newVelocity = getHorizontalVelocity() + 100*Math.signum(getHorizontalVelocity())*getHorizontalAcceleration()*deltaTime;
+		double newVelocity = getHorizontalVelocity() + 100*(Math.signum(getHorizontalVelocity()))*getHorizontalAcceleration()*deltaTime;
 		if (Math.abs(newVelocity) > this.getMaximumHorizontalVelocity()){
 			this.setHorizontalVelocity(Math.signum(newVelocity)*this.getMaximumHorizontalVelocity());
 		}
@@ -568,7 +568,7 @@ public class Mazub {
 	
 	
 	private void updateVerticalVelocity(double deltaTime) {
-		int notOnGround = (Util.fuzzyEquals(getVerticalVelocity(), 0)) ? 0 : 1;
+		int notOnGround = (getVerticalLocation() == 0) ? 0 : 1;
 		this.setVerticalVelocity(getVerticalVelocity() + 100*notOnGround*VERTICAL_ACCELERATION*deltaTime);
 	}
 	
@@ -576,6 +576,7 @@ public class Mazub {
 	public void startJump(){
 		setVerticalVelocity(INITIAL_VERTICAL_VElOCITY);
 	}
+	
 	
 	
 	public void endJump(){
