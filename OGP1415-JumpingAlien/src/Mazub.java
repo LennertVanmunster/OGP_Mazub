@@ -62,6 +62,8 @@ public class Mazub {
 	
 	/**
 	 * Returns the horizontal location of this Mazub.
+	 * 
+	 * @note	integer
 	 */
 	@Basic 
 	@Raw
@@ -70,16 +72,30 @@ public class Mazub {
 	}
 	
 
-	public double getHorizontalLocationNotRounded(){
+	/**
+	 * Returns the horizontal location of this Mazub.
+	 */
+	private double getHorizontalLocationNotRounded(){
 		return this.horizontalLocationNotRounded;
 	}
 	
 	
-	public void setHorizontalLocationNotRounded(double horizontalLocationNotRounded){
+	/**
+	 * Set the horizontal location of Mazub to the given location.
+	 * 
+	 * @param 	horizontalLocationNotRounded
+	 * 		  	The new horizontal location.
+	 * @post  	This horizontal location is set as the new horizontal location.
+	 * 		  	|new.getHorizontalLocationNotRounded() = this.horizontalLocationNotRounded
+	 */
+	private void setHorizontalLocationNotRounded(double horizontalLocationNotRounded){
 		this.horizontalLocationNotRounded=horizontalLocationNotRounded;
 	}
 	
 	
+	/**
+	 * Variable registering the horizontal location of this Mazub.
+	 */
 	private double horizontalLocationNotRounded=0;
 	
 	
@@ -182,14 +198,26 @@ public class Mazub {
 	}
 	
 	
-	public double getVerticalLocationNotRounded(){
+	/**
+	 *Return the vertical location of this Mazub.
+	 */
+	private double getVerticalLocationNotRounded(){
 		return this.verticalLocationNotRounded;
 	}
 	
 	
-	public void setVerticalLocationNotRounded(double verticalLocationNotRounded){
+	/**
+	 * Set the vertical location of Mazub to the given location.
+	 * 
+	 * @param 	verticalLocationNotRounded
+	 * 		  	The new vertical location.
+	 * @post  	This vertical location is set as the new vertical location.
+	 * 		  	|new.getVerticalLocationNotRounded() = verticalLocationNotRounded
+	 */
+	private void setVerticalLocationNotRounded(double verticalLocationNotRounded){
 		this.verticalLocationNotRounded = verticalLocationNotRounded;
 	}
+	
 	
 	/**
 	 * Variable registering the vertical location of this Mazub.
@@ -197,6 +225,9 @@ public class Mazub {
 	private int verticalLocation = 0;
 	
 	
+	/**
+	 * Variable registering the vertical location of this Mazub.
+	 */
 	private double verticalLocationNotRounded = 0;
 	
 	
@@ -546,6 +577,24 @@ public class Mazub {
 	}
 	
 	
+	/**
+	 * Update the horizontal location of this Mazub.
+	 * 
+	 * @param 	deltaTime
+	 * 			A period of time.
+	 * @post 	If horizontalLocation is a valid horizontal location it 
+	 * 			is set as the new horizontal location of this Mazub.
+	 * 			|if(isValidHorizontalLocation)
+	 * 			|	new.horizontalLocation = horizontalLocation
+	 * @post	If horizontalLocation is smaller than zero then 
+	 * 			HorizontalLocation is set to zero.
+	 * 			|if(horizontalLocation < 0)
+	 * 			|	new.horizontalLocation = 0
+	 * @post	If horizontalLocation is greater than the maximum horizontal location
+	 * 			then the horizontal location is set to the maximum minus 1.
+	 * 			|if(horizontalLocation > getMaximumHorizontalLocation())
+	 * 			| new.horizontalLocation = getMaximumHorizontalLocation() - 1
+	 */
 	private void updateHorizontalLocation(double deltaTime) {
 		this.setHorizontalLocationNotRounded(this.getHorizontalLocationNotRounded() + 
 				100*(this.getHorizontalVelocity()*deltaTime + 
@@ -565,6 +614,24 @@ public class Mazub {
 	}
 	
 	
+	/**
+	 * Update the vertical location of this Mazub.
+	 * 
+	 * @param 	deltaTime
+	 * 			A period of time.
+	 * @post 	If newly calculated vertical location is a valid vertical location it 
+	 * 			is set as the new vertical location of this Mazub.
+	 * 			|if(isValidVerticalLocation)
+	 * 			|	new.verticalLocation = verticalLocation
+	 * @post	If verticalLocation is smaller than zero then 
+	 * 			VerticalLocation is set to zero.
+	 * 			|if(verticalLocation < 0)
+	 * 			|	new.verticalLocation = 0
+	 * @post	If verticalLocation is greater than the maximum vertical location
+	 * 			then the vertical location is set to the maximum minus 1.
+	 * 			|if(verticalLocation > getMaximumVerticalLocation())
+	 * 			| new.verticalLocation = getMaximumVerticalLocation() - 1
+	 */
 	private void updateVerticalLocation(double deltaTime) {
 		if(isJumping())
 			this.setVerticalLocationNotRounded(this.getVerticalLocationNotRounded() + 
@@ -583,6 +650,10 @@ public class Mazub {
 	}
 	
 	
+	/**
+	 * 
+	 * @param deltaTime
+	 */
 	private void updateHorizontalVelocity(double deltaTime) {
 		double newVelocity = getHorizontalVelocity() + (Math.signum(getHorizontalVelocity()))*getHorizontalAcceleration()*deltaTime;
 		try{
@@ -591,6 +662,7 @@ public class Mazub {
 			this.setHorizontalVelocity(Math.signum(newVelocity)*getMaximumHorizontalVelocity());
 		}
 	}
+	
 	
 	/**
 	 * Check whether this Mazub is performing a jump.
@@ -604,6 +676,10 @@ public class Mazub {
 	}
 	
 	
+	/**
+	 * 
+	 * @param deltaTime
+	 */
 	private void updateVerticalVelocity(double deltaTime) {
 		if(isJumping())
 			this.setVerticalVelocity(getVerticalVelocity() + VERTICAL_ACCELERATION*deltaTime);
