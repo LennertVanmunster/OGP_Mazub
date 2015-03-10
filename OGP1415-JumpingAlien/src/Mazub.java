@@ -1,3 +1,4 @@
+
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
@@ -49,10 +50,15 @@ public class Mazub {
 		setHorizontalVelocity(horizontalVelocity);
 		setVerticalVelocity(verticalVelocity);
 		setDucking(ducking);
+		setMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking);
+		this.sprites=images;
 		this.initialHorizontalVelocity = initialHorizontalVelocity;
 		this.maximumHorizontalVelocityNotDucking = maximumHorizontalVelocityNotDucking;
 	}
 	
+	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
+		this(horizontalLocation, verticalLocation, 0, 0, false, 1, 3, images);
+	}
 	
 	/**
 	 * Returns the horizontal location of this Mazub.
@@ -208,8 +214,8 @@ public class Mazub {
 	 */
 	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
 		horizontalVelocity = Math.abs(horizontalVelocity);
-		return (Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
-				&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity()))
+		return Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
+				&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, getMaximumHorizontalVelocity())
 				|| Util.fuzzyEquals(horizontalVelocity, 0);
 	}
 	
@@ -390,6 +396,22 @@ public class Mazub {
 	
 	
 	/**
+	 * Returns the maximum horizontal velocity while not ducking of this Mazub.
+	 */
+	@Basic 
+	@Raw
+	public double getMaximumHorizontalVelocityNotDucking(){
+		return this.maximumHorizontalVelocityNotDucking;
+	}
+	
+	
+	/**
+	 * Variable registering the maximum horizontal velocity while not ducking of this Mazub.
+	 */
+	private final double maximumHorizontalVelocityNotDucking;
+	
+	
+	/**
 	 * Returns the maximum horizontal velocity of this Mazub.
 	 */
 	@Basic 
@@ -420,23 +442,7 @@ public class Mazub {
 	/**
 	 * Variable registering the maximum horizontal velocity of this Mazub.
 	 */
-	private double maximumHorizontalVelocity=getMaximumHorizontalVelocityNotDucking();
-	
-	
-	/**
-	 * Returns the maximum horizontal velocity while not ducking of this Mazub.
-	 */
-	@Basic 
-	@Raw
-	public double getMaximumHorizontalVelocityNotDucking(){
-		return this.maximumHorizontalVelocityNotDucking;
-	}
-	
-	
-	/**
-	 * Variable registering the maximum horizontal velocity while not ducking of this Mazub.
-	 */
-	private final double maximumHorizontalVelocityNotDucking;
+	private double maximumHorizontalVelocity;
 	
 	
 	/**
@@ -490,7 +496,7 @@ public class Mazub {
 	public void startMove(int direction){
 		assert ((direction == -1) || (direction == 1)) :
 			"Precondition: direction must be equal to -1 or 1";
-		this.setHorizontalVelocity(direction*this.getInitialHorizontalVelocity());
+		this.setHorizontalVelocity((direction)*this.getInitialHorizontalVelocity());
 	}
 	
 	
@@ -544,32 +550,64 @@ public class Mazub {
 		this.setHorizontalLocationNotRounded(this.getHorizontalLocationNotRounded() + 
 				100*(this.getHorizontalVelocity()*deltaTime + 
 				(Math.signum(this.getHorizontalVelocity())*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2))));
-		this.setHorizonalLocation( (int) Math.floor(this.getHorizontalLocationNotRounded()));
+		horizontalLocation = (int) Math.floor(this.getHorizontalLocationNotRounded());
+		try{
+			this.setHorizonalLocation( horizontalLocation );
+		} catch (IllegalArgumentException exc){
+			this.setHorizontalVelocity(0);
+			if(horizontalLocation < 0)
+				this.setHorizonalLocation(0);
+			else{
+				this.setHorizonalLocation(getMaximumHorizontalLocation()-1);
+			}
+			
+		}
 	}
 	
 	
 	private void updateVerticalLocation(double deltaTime) {
-		int notOnGround = (getVerticalLocation() == 0) ? 0 : 1;
-		this.setVerticalLocationNotRounded(this.getVerticalLocationNotRounded() + 
-				100*(getVerticalVelocity()*deltaTime + notOnGround* 0.5*VERTICAL_ACCELERATION*Math.pow(deltaTime,2)));
-		this.setVerticalLocation( (int) Math.floor(this.getVerticalLocationNotRounded()));
+		if(isJumping())
+			this.setVerticalLocationNotRounded(this.getVerticalLocationNotRounded() + 
+				100*(getVerticalVelocity()*deltaTime + 0.5*VERTICAL_ACCELERATION*Math.pow(deltaTime,2)));
+			verticalLocation = (int) Math.floor(this.getVerticalLocationNotRounded());
+			try{
+				this.setVerticalLocation(verticalLocation);
+			} catch (IllegalArgumentException exc){
+				this.setVerticalVelocity(0);
+				if(verticalLocation < 0)
+					this.setVerticalLocation(0);
+				else{
+					this.setVerticalLocation(getMaximumVerticalLocation()-1);
+				}
+			}
 	}
 	
 	
 	private void updateHorizontalVelocity(double deltaTime) {
-		double newVelocity = getHorizontalVelocity() + 100*(Math.signum(getHorizontalVelocity()))*getHorizontalAcceleration()*deltaTime;
-		if (Math.abs(newVelocity) > this.getMaximumHorizontalVelocity()){
-			this.setHorizontalVelocity(Math.signum(newVelocity)*this.getMaximumHorizontalVelocity());
-		}
-		else{
+		double newVelocity = getHorizontalVelocity() + (Math.signum(getHorizontalVelocity()))*getHorizontalAcceleration()*deltaTime;
+		try{
 			this.setHorizontalVelocity(newVelocity);
+		} catch (IllegalArgumentException exc){
+			this.setHorizontalVelocity(Math.signum(newVelocity)*getMaximumHorizontalVelocity());
 		}
+	}
+	
+	/**
+	 * Check whether this Mazub is performing a jump.
+	 * 
+	 * @return	True if and only if the vertical velocity of Mazub is greater than zero (begin of the jump)
+	 * 			or if the vertical location of Mazub is greater than zero.
+	 * 			|(0 < getVerticalVelocity()) || (0 < getVerticalLocation())
+	 */
+	public boolean isJumping(){
+		return (0 < getVerticalVelocity()) || (0 < getVerticalLocation());
 	}
 	
 	
 	private void updateVerticalVelocity(double deltaTime) {
-		int notOnGround = (getVerticalLocation() == 0) ? 0 : 1;
-		this.setVerticalVelocity(getVerticalVelocity() + 100*notOnGround*VERTICAL_ACCELERATION*deltaTime);
+		if(isJumping())
+			this.setVerticalVelocity(getVerticalVelocity() + VERTICAL_ACCELERATION*deltaTime);
+		else this.setVerticalVelocity(0);
 	}
 	
 	
@@ -597,11 +635,11 @@ public class Mazub {
 	}
 	
 	
-	public Sprite getCurrentSprite(int i){
-		return this.images[i];
+	private Sprite sprites[];
+	
+	public Sprite getCurrentSprite(){
+		return sprites[1];
 	}
-	
-	
 	
 	
 	
