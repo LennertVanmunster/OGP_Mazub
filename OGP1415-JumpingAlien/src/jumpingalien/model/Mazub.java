@@ -44,14 +44,14 @@ public class Mazub {
 	@Raw
 	public  Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
 				double verticalVelocity, boolean ducking, double initialHorizontalVelocity,
-				double maximumHorizontalVelocityNotDucking, Sprite... images){
-		setHorizonalLocation(horizontalLocation);
+				double maximumHorizontalVelocityNotDucking, Sprite... sprites){
+		setHorizontalLocation(horizontalLocation);
 		setVerticalLocation(verticalLocation);
 		setHorizontalVelocity(horizontalVelocity);
 		setVerticalVelocity(verticalVelocity);
 		setDucking(ducking);
 		setMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking);
-		this.sprites=images;
+		this.sprites=sprites;
 		this.initialHorizontalVelocity = initialHorizontalVelocity;
 		this.maximumHorizontalVelocityNotDucking = maximumHorizontalVelocityNotDucking;
 	}
@@ -110,7 +110,7 @@ public class Mazub {
 	 * 			The given horizontal location is not valid.
 	 * 			|!isValidHorizontalLocation(horizontalLocation)	
 	 */
-	public void setHorizonalLocation(int horizontalLocation)
+	public void setHorizontalLocation(int horizontalLocation)
 			throws IllegalArgumentException {
 		if(!isValidHorizontalLocation(horizontalLocation))
 			throw new IllegalArgumentException();
@@ -508,10 +508,7 @@ public class Mazub {
 	private final static int maximumVerticalLocation = 767;
 	
 	
-	/**
-	 * Array registering images of Mazub.
-	 */
-	private Sprite[] images;
+	
 	
 	
 	/**
@@ -601,13 +598,16 @@ public class Mazub {
 				(Math.signum(this.getHorizontalVelocity())*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2))));
 		horizontalLocation = (int) Math.floor(this.getHorizontalLocationNotRounded());
 		try{
-			this.setHorizonalLocation( horizontalLocation );
+			this.setHorizontalLocation( horizontalLocation );
 		} catch (IllegalArgumentException exc){
 			this.setHorizontalVelocity(0);
-			if(horizontalLocation < 0)
-				this.setHorizonalLocation(0);
+			if(horizontalLocation < 0){
+				this.setHorizontalLocation(0);
+				this.setHorizontalLocationNotRounded(0);
+			}
 			else{
-				this.setHorizonalLocation(getMaximumHorizontalLocation()-1);
+				this.setHorizontalLocation(getMaximumHorizontalLocation()-1);
+				this.setHorizontalLocationNotRounded(getMaximumHorizontalLocation()-1);
 			}
 			
 		}
@@ -641,10 +641,13 @@ public class Mazub {
 				this.setVerticalLocation(verticalLocation);
 			} catch (IllegalArgumentException exc){
 				this.setVerticalVelocity(0);
-				if(verticalLocation < 0)
+				if(verticalLocation < 0){
 					this.setVerticalLocation(0);
+					this.setVerticalLocationNotRounded(0);
+				}
 				else{
 					this.setVerticalLocation(getMaximumVerticalLocation()-1);
+					this.setVerticalLocationNotRounded(getMaximumVerticalLocation()-1);
 				}
 			}
 	}
@@ -663,38 +666,47 @@ public class Mazub {
 		}
 	}
 	
+	private double previousVerticalVelocity = 0;
 	
 	/**
 	 * Check whether this Mazub is performing a jump.
 	 * 
-	 * @return	True if and only if the vertical velocity of Mazub is greater than zero (begin of the jump)
-	 * 			or if the vertical location of Mazub is greater than zero.
+	 * @return	True if and only if the vertical velocity of this is not equal to zero
+	 * 			or if the vertical velocity of this mazub in the previous frame was greater than zero.
 	 * 			|(0 < getVerticalVelocity()) || (0 < getVerticalLocation())
 	 */
 	public boolean isJumping(){
-		return (0 < getVerticalVelocity()) || (0 < getVerticalLocation());
+		return (!Util.fuzzyEquals(getVerticalVelocity(), 0) || previousVerticalVelocity > 0);
 	}
-	
 	
 	/**
 	 * 
 	 * @param deltaTime
 	 */
 	private void updateVerticalVelocity(double deltaTime) {
-		if(isJumping())
+		if(isJumping()){
+			previousVerticalVelocity = this.getVerticalVelocity();
 			this.setVerticalVelocity(getVerticalVelocity() + VERTICAL_ACCELERATION*deltaTime);
-		else this.setVerticalVelocity(0);
+		}
+		else{
+			previousVerticalVelocity = this.getVerticalVelocity();
+			this.setVerticalVelocity(0);
+		}
 	}
 	
 	
 	public void startJump(){
+		if (!isJumping()){
 		setVerticalVelocity(INITIAL_VERTICAL_VElOCITY);
+		}
 	}
 	
 	
 	
 	public void endJump(){
+		if (this.getVerticalVelocity()>0){
 		setVerticalVelocity(0);
+		}
 	}
 	
 	
@@ -710,7 +722,9 @@ public class Mazub {
 		this.setMaximumHorizontalVelocity(getMaximumHorizontalVelocityNotDucking());
 	}
 	
-	
+	/**
+	 * Array registering images of Mazub.
+	 */
 	private Sprite sprites[];
 	
 	public Sprite getCurrentSprite(){
