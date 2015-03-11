@@ -58,7 +58,7 @@ public class Mazub {
 	}
 	
 	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
-		this(horizontalLocation, verticalLocation, 0, 0, false, 0, 1, 3, images);
+		this(horizontalLocation, verticalLocation, 0, 0, false, 1, 1, 3, images);
 	}
 	
 	/**
@@ -343,9 +343,13 @@ public class Mazub {
 	 * Returns the horizontal acceleration of this Mazub.
 	 */
 	@Basic 
-	@Immutable
-	public static double getHorizontalAcceleration(){
-		return horizontalAcceleration;
+	public double getHorizontalAcceleration(){
+		if (this.getHorizontalVelocity() == 0){
+			return 0;
+		}
+		else{
+			return horizontalAcceleration;
+		}
 	}
 	
 	
@@ -368,7 +372,7 @@ public class Mazub {
 		this.direction = direction;
 	}
 	
-	private int direction = 0;
+	private int direction = 1;
 	
 	
 	/**
@@ -547,7 +551,6 @@ public class Mazub {
 	 * 			| new.getHorizontalVelocity() == 0
 	 */
 	public void endMove(){
-		this.setDirection(0);
 		this.setHorizontalVelocity(0);
 	}
 	
@@ -586,6 +589,15 @@ public class Mazub {
 		return (deltaTime > 0) && (deltaTime < 0.2);
 	}
 	
+	public double getTimeSinceLastMove(){
+		return this.timeSinceLastMove;
+	}
+	
+	public void setTimeSinceLastMove(double timeSinceLastMove){
+		this.timeSinceLastMove=timeSinceLastMove;
+	}
+	
+	private double timeSinceLastMove=0;
 	
 	/**
 	 * Update the horizontal location of this Mazub.
@@ -608,7 +620,7 @@ public class Mazub {
 	private void updateHorizontalLocation(double deltaTime) {
 		this.setHorizontalLocationNotRounded(this.getHorizontalLocationNotRounded() + 
 				100*(this.getHorizontalVelocity()*deltaTime + 
-				this.getDirection()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)));
+				Math.signum(this.getHorizontalVelocity())*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)));
 		horizontalLocation = (int) Math.floor(this.getHorizontalLocationNotRounded());
 		try{
 			this.setHorizontalLocation( horizontalLocation );
@@ -671,7 +683,14 @@ public class Mazub {
 	 * @param deltaTime
 	 */
 	private void updateHorizontalVelocity(double deltaTime) {
-		double newVelocity = this.getHorizontalVelocity() + this.getDirection()*getHorizontalAcceleration()*deltaTime;
+		double newVelocity = 0;
+		if(this.getHorizontalVelocity()==0){
+			this.setTimeSinceLastMove(this.getTimeSinceLastMove()+deltaTime);
+		}
+		else{
+			newVelocity = this.getHorizontalVelocity() + this.getDirection()*getHorizontalAcceleration()*deltaTime;
+			this.setTimeSinceLastMove(0);
+		}
 		try{
 			this.setHorizontalVelocity(newVelocity);
 		} catch (IllegalArgumentException exc){
@@ -740,7 +759,26 @@ public class Mazub {
 	 */
 	
 	public Sprite getCurrentSprite(){
-		return this.getImages()[this.getCurrentSpriteIndex()];
+		if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceLastMove()>1)
+			this.setCurrentSpriteIndex(0);
+		else if (this.getHorizontalVelocity()==0 && this.isDucking()==true && this.getTimeSinceLastMove()>1)
+			this.setCurrentSpriteIndex(1);
+		else if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceLastMove()<=1 && this.getDirection()==1)
+			this.setCurrentSpriteIndex(2);
+		else if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceLastMove()<=1 && this.getDirection()==-1)
+			this.setCurrentSpriteIndex(3);
+		else if (this.getHorizontalVelocity()>0 && this.isJumping()==true && this.isDucking()==false)
+			this.setCurrentSpriteIndex(4);
+		else if (this.getHorizontalVelocity()<0 && this.isJumping()==true && this.isDucking()==false)
+			this.setCurrentSpriteIndex(5);
+		else if (this.isDucking()==true && this.getDirection()==1 && this.getTimeSinceLastMove()<=1)
+			this.setCurrentSpriteIndex(6);
+		else if (this.isDucking()==true && this.getDirection()==-1 && this.getTimeSinceLastMove()<=1)
+			this.setCurrentSpriteIndex(7);
+		//else if(this.isJumping()==false && this.isDucking()==false && this.getDirection()=1){
+		
+		//}
+		return this.getImageAt(this.getCurrentSpriteIndex());
 	}
 	
 	public int getCurrentSpriteIndex(){
@@ -749,6 +787,10 @@ public class Mazub {
 	
 	public Sprite[] getImages(){
 		return this.images;
+	}
+	
+	public Sprite getImageAt(int spriteIndex){
+		return this.getImages()[spriteIndex];
 	}
 	
 	public void setCurrentSpriteIndex(int spriteIndex){
