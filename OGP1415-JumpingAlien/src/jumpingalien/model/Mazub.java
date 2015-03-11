@@ -43,21 +43,22 @@ public class Mazub {
 	 */
 	@Raw
 	public  Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
-				double verticalVelocity, boolean ducking, double initialHorizontalVelocity,
-				double maximumHorizontalVelocityNotDucking, Sprite... sprites){
+				double verticalVelocity, boolean ducking, int direction, double initialHorizontalVelocity,
+				double maximumHorizontalVelocityNotDucking, Sprite... images){
 		setHorizontalLocation(horizontalLocation);
 		setVerticalLocation(verticalLocation);
 		setHorizontalVelocity(horizontalVelocity);
 		setVerticalVelocity(verticalVelocity);
 		setDucking(ducking);
+		setDirection(direction);
 		setMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking);
-		this.sprites=sprites;
+		this.setImages(images);
 		this.initialHorizontalVelocity = initialHorizontalVelocity;
 		this.maximumHorizontalVelocityNotDucking = maximumHorizontalVelocityNotDucking;
 	}
 	
 	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
-		this(horizontalLocation, verticalLocation, 0, 0, false, 1, 3, images);
+		this(horizontalLocation, verticalLocation, 0, 0, false, 0, 1, 3, images);
 	}
 	
 	/**
@@ -359,6 +360,16 @@ public class Mazub {
 	 */
 	public static final double VERTICAL_ACCELERATION = -10;
 	
+	public int getDirection(){
+		return this.direction;
+	}
+	
+	public void setDirection(int direction){
+		this.direction = direction;
+	}
+	
+	private int direction = 0;
+	
 	
 	/**
 	 * Check whether the given Mazub is ducking or not.
@@ -524,6 +535,7 @@ public class Mazub {
 	public void startMove(int direction){
 		assert ((direction == -1) || (direction == 1)) :
 			"Precondition: direction must be equal to -1 or 1";
+		this.setDirection(direction);
 		this.setHorizontalVelocity((direction)*this.getInitialHorizontalVelocity());
 	}
 	
@@ -535,6 +547,7 @@ public class Mazub {
 	 * 			| new.getHorizontalVelocity() == 0
 	 */
 	public void endMove(){
+		this.setDirection(0);
 		this.setHorizontalVelocity(0);
 	}
 	
@@ -570,7 +583,7 @@ public class Mazub {
 	 * 			than 0.2s and not less than zero.
 	 */
 	public boolean isValidTimePeriod(double deltaTime){
-		return (Util.fuzzyGreaterThanOrEqualTo(deltaTime,0) && (0.2 > deltaTime));
+		return (deltaTime > 0) && (deltaTime < 0.2);
 	}
 	
 	
@@ -595,7 +608,7 @@ public class Mazub {
 	private void updateHorizontalLocation(double deltaTime) {
 		this.setHorizontalLocationNotRounded(this.getHorizontalLocationNotRounded() + 
 				100*(this.getHorizontalVelocity()*deltaTime + 
-				(Math.signum(this.getHorizontalVelocity())*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2))));
+				this.getDirection()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)));
 		horizontalLocation = (int) Math.floor(this.getHorizontalLocationNotRounded());
 		try{
 			this.setHorizontalLocation( horizontalLocation );
@@ -606,8 +619,8 @@ public class Mazub {
 				this.setHorizontalLocationNotRounded(0);
 			}
 			else{
-				this.setHorizontalLocation(getMaximumHorizontalLocation()-1);
-				this.setHorizontalLocationNotRounded(getMaximumHorizontalLocation()-1);
+				this.setHorizontalLocation(getMaximumHorizontalLocation());
+				this.setHorizontalLocationNotRounded(getMaximumHorizontalLocation());
 			}
 			
 		}
@@ -646,8 +659,8 @@ public class Mazub {
 					this.setVerticalLocationNotRounded(0);
 				}
 				else{
-					this.setVerticalLocation(getMaximumVerticalLocation()-1);
-					this.setVerticalLocationNotRounded(getMaximumVerticalLocation()-1);
+					this.setVerticalLocation(getMaximumVerticalLocation());
+					this.setVerticalLocationNotRounded(getMaximumVerticalLocation());
 				}
 			}
 	}
@@ -658,11 +671,11 @@ public class Mazub {
 	 * @param deltaTime
 	 */
 	private void updateHorizontalVelocity(double deltaTime) {
-		double newVelocity = getHorizontalVelocity() + (Math.signum(getHorizontalVelocity()))*getHorizontalAcceleration()*deltaTime;
+		double newVelocity = this.getHorizontalVelocity() + this.getDirection()*getHorizontalAcceleration()*deltaTime;
 		try{
 			this.setHorizontalVelocity(newVelocity);
 		} catch (IllegalArgumentException exc){
-			this.setHorizontalVelocity(Math.signum(newVelocity)*getMaximumHorizontalVelocity());
+			this.setHorizontalVelocity(this.getDirection()*this.getMaximumHorizontalVelocity());
 		}
 	}
 	
@@ -684,12 +697,12 @@ public class Mazub {
 	 * @param deltaTime
 	 */
 	private void updateVerticalVelocity(double deltaTime) {
-		if(isJumping()){
-			previousVerticalVelocity = this.getVerticalVelocity();
+		boolean isJumping = this.isJumping();
+		previousVerticalVelocity = this.getVerticalVelocity();
+		if(isJumping){
 			this.setVerticalVelocity(getVerticalVelocity() + VERTICAL_ACCELERATION*deltaTime);
 		}
 		else{
-			previousVerticalVelocity = this.getVerticalVelocity();
 			this.setVerticalVelocity(0);
 		}
 	}
@@ -725,11 +738,30 @@ public class Mazub {
 	/**
 	 * Array registering images of Mazub.
 	 */
-	private Sprite sprites[];
 	
 	public Sprite getCurrentSprite(){
-		return sprites[1];
+		return this.getImages()[this.getCurrentSpriteIndex()];
 	}
+	
+	public int getCurrentSpriteIndex(){
+		return this.spriteIndex;
+	}
+	
+	public Sprite[] getImages(){
+		return this.images;
+	}
+	
+	public void setCurrentSpriteIndex(int spriteIndex){
+		this.spriteIndex = spriteIndex;
+	}
+	
+	public void setImages(Sprite... images){
+		this.images=images;
+	}
+	
+	private Sprite images[];
+	
+	private int spriteIndex = 1;
 	
 	
 	
