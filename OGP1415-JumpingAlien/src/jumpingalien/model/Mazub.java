@@ -589,15 +589,25 @@ public class Mazub {
 		return (deltaTime > 0) && (deltaTime < 0.2);
 	}
 	
-	public double getTimeSinceLastMove(){
-		return this.timeSinceLastMove;
+	public double getTimeSinceStopMove(){
+		return this.timeSinceStopMove;
 	}
 	
-	public void setTimeSinceLastMove(double timeSinceLastMove){
-		this.timeSinceLastMove=timeSinceLastMove;
+	public void setTimeSinceStopMove(double timeSinceStopMove){
+		this.timeSinceStopMove=timeSinceStopMove;
 	}
 	
-	private double timeSinceLastMove=0;
+	public double getTimeSinceStartMove(){
+		return this.timeSinceStartMove;
+	}
+	
+	public void setTimeSinceStartMove(double timeSinceStartMove){
+		this.timeSinceStartMove=timeSinceStartMove;
+	}
+	
+	private double timeSinceStartMove=0;
+	
+	private double timeSinceStopMove=0;
 	
 	/**
 	 * Update the horizontal location of this Mazub.
@@ -685,11 +695,13 @@ public class Mazub {
 	private void updateHorizontalVelocity(double deltaTime) {
 		double newVelocity = 0;
 		if(this.getHorizontalVelocity()==0){
-			this.setTimeSinceLastMove(this.getTimeSinceLastMove()+deltaTime);
+			this.setTimeSinceStopMove(this.getTimeSinceStopMove()+deltaTime);
+			this.setTimeSinceStartMove(0);
 		}
 		else{
 			newVelocity = this.getHorizontalVelocity() + this.getDirection()*getHorizontalAcceleration()*deltaTime;
-			this.setTimeSinceLastMove(0);
+			this.setTimeSinceStartMove(getTimeSinceStartMove()+deltaTime);
+			this.setTimeSinceStopMove(0);
 		}
 		try{
 			this.setHorizontalVelocity(newVelocity);
@@ -759,25 +771,32 @@ public class Mazub {
 	 */
 	
 	public Sprite getCurrentSprite(){
-		if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceLastMove()>1)
+		if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceStopMove()>1)
 			this.setCurrentSpriteIndex(0);
-		else if (this.getHorizontalVelocity()==0 && this.isDucking()==true && this.getTimeSinceLastMove()>1)
+		else if (this.getHorizontalVelocity()==0 && this.isDucking()==true && this.getTimeSinceStopMove()>1)
 			this.setCurrentSpriteIndex(1);
-		else if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceLastMove()<=1 && this.getDirection()==1)
+		else if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceStopMove()<=1 && this.getDirection()==1)
 			this.setCurrentSpriteIndex(2);
-		else if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceLastMove()<=1 && this.getDirection()==-1)
+		else if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceStopMove()<=1 && this.getDirection()==-1)
 			this.setCurrentSpriteIndex(3);
 		else if (this.getHorizontalVelocity()>0 && this.isJumping()==true && this.isDucking()==false)
 			this.setCurrentSpriteIndex(4);
 		else if (this.getHorizontalVelocity()<0 && this.isJumping()==true && this.isDucking()==false)
 			this.setCurrentSpriteIndex(5);
-		else if (this.isDucking()==true && this.getDirection()==1 && this.getTimeSinceLastMove()<=1)
+		else if (this.isDucking()==true && this.getDirection()==1 && this.getTimeSinceStopMove()<=1)
 			this.setCurrentSpriteIndex(6);
-		else if (this.isDucking()==true && this.getDirection()==-1 && this.getTimeSinceLastMove()<=1)
+		else if (this.isDucking()==true && this.getDirection()==-1 && this.getTimeSinceStopMove()<=1)
 			this.setCurrentSpriteIndex(7);
-		//else if(this.isJumping()==false && this.isDucking()==false && this.getDirection()=1){
-		
-		//}
+		else if(this.isJumping()==false && this.isDucking()==false){
+			int i = (int) Math.floor(this.getTimeSinceStartMove()/0.075);
+			int m=(this.getLengthOfImages()-8)/2;
+			if (this.getDirection()==1){
+			this.setCurrentSpriteIndex(i%m+8);
+			}
+			else{
+				this.setCurrentSpriteIndex(i%m+8+m);
+			}
+		}
 		return this.getImageAt(this.getCurrentSpriteIndex());
 	}
 	
@@ -787,6 +806,10 @@ public class Mazub {
 	
 	public Sprite[] getImages(){
 		return this.images;
+	}
+	
+	public int getLengthOfImages(){
+		return this.getImages().length;
 	}
 	
 	public Sprite getImageAt(int spriteIndex){
