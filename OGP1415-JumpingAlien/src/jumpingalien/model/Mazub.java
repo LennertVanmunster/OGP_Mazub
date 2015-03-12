@@ -20,9 +20,8 @@ import be.kuleuven.cs.som.annotate.*;
 public class Mazub {
 	/**
 	 *Initialize a new Mazub with given horizontal and vertical location,
-	 *horizontal and vertical velocity, initial and maximum horizontal velocity,
+	 *horizontal and vertical velocity,direction, initial and maximum horizontal velocity,
 	 *ducking state and a set of sprites. 
-	 //geen idee of the documentatie hierboven voldoende is?
 	 * 
 	 * @param horizontalLocation
 	 * 		  The horizontal location of Mazub.
@@ -34,6 +33,8 @@ public class Mazub {
 	 * 		  The vertical velocity of Mazub.
 	 * @param ducking
 	 * 		  Parameter to tell if Mazub is ducking or not.
+	 * @param direction
+	 * 		  The direction of Mazub.
 	 * @param initialHorizontalVelocity
 	 * 		  The initial horizontal velocity of Mazub when he starts running.
 	 * @param maximumHorizontalVelocityNotDucking
@@ -75,6 +76,8 @@ public class Mazub {
 
 	/**
 	 * Returns the horizontal location of this Mazub.
+	 * 
+	 * @note there are no restrictions for this auxiliary variable.
 	 */
 	private double getHorizontalLocationNotRounded(){
 		return this.horizontalLocationNotRounded;
@@ -88,6 +91,7 @@ public class Mazub {
 	 * 		  	The new horizontal location.
 	 * @post  	This horizontal location is set as the new horizontal location.
 	 * 		  	|new.getHorizontalLocationNotRounded() = this.horizontalLocationNotRounded
+	 * 
 	 */
 	private void setHorizontalLocationNotRounded(double horizontalLocationNotRounded){
 		this.horizontalLocationNotRounded=horizontalLocationNotRounded;
@@ -201,6 +205,8 @@ public class Mazub {
 	
 	/**
 	 *Return the vertical location of this Mazub.
+	 *
+	 * @note there are no restrictions for this auxiliary variable.
 	 */
 	private double getVerticalLocationNotRounded(){
 		return this.verticalLocationNotRounded;
@@ -689,8 +695,19 @@ public class Mazub {
 	
 	
 	/**
+	 * Update the horizontal velocity of this Mazub.
 	 * 
-	 * @param deltaTime
+	 * @param 	deltaTime
+	 * 			A period of time.
+	 * @post	If the newly calculated horizontal velocity is a valid horizontal
+	 * 			velocity it is set as the new velocity of this Mazub.
+	 * 			|if(isValidHorizontalVelocity())
+	 * 			|	this.setHorizontalVelocity(newVelocity)
+	 * @post	If the newly calculated horizontal velocity is not a valid horizontal
+	 * 			velocity, the new velocity of this mazub is set at the maximum horizontal 
+	 * 			velocity in the right direction.
+	 * 			|if(!isValidHorizontalVelocity())
+	 * 			|	this.setHorizontalVelocity(this.getDirection()*this.getMaximumHorizontalVelocity())
 	 */
 	private void updateHorizontalVelocity(double deltaTime) {
 		double newVelocity = 0;
@@ -724,8 +741,17 @@ public class Mazub {
 	}
 	
 	/**
+	 * Update the vertical velocity of this Mazub.
 	 * 
-	 * @param deltaTime
+	 * @param 	deltaTime
+	 * 			A period of time.
+	 * @post	If Mazub is jumping the newly calculated vertical
+	 * 			velocity it is set as the new velocity of this Mazub.
+	 * 			|if(isJumping)
+	 * 			|	this.setVerticalVelocity(getVerticalVelocity() + VERTICAL_ACCELERATION*deltaTime)
+	 * @post	If Mazub is not jumping the vertical velocity is set at zero.
+	 * 			|if(!isJumping)
+	 * 			|	this.setVerticalVelocity(0)
 	 */
 	private void updateVerticalVelocity(double deltaTime) {
 		boolean isJumping = this.isJumping();
@@ -738,7 +764,14 @@ public class Mazub {
 		}
 	}
 	
-	
+	/**
+	 * Start the jumping movement of this Mazub.
+	 * 
+	 * @post	If Mazub wasn't already jumping, the vertical velocity is set 
+	 * 			at the initial vertical velocity.
+	 * 			|if (!isJumping())
+	 * 			|	setVerticalVelocity(INITIAL_VERTICAL_VElOCITY)
+	 */
 	public void startJump(){
 		if (!isJumping()){
 		setVerticalVelocity(INITIAL_VERTICAL_VElOCITY);
@@ -746,7 +779,14 @@ public class Mazub {
 	}
 	
 	
-	
+	/**
+	 * End the upwards jumping movement of this Mazub.
+	 * 
+	 * @post	If Mazub was stil moving upwards, the vertical velocity
+	 * 			of this Mazub is set at zero.
+	 * 			|if (this.getVerticalVelocity()>0)
+	 * 			|	setVerticalVelocity(0)
+	 */
 	public void endJump(){
 		if (this.getVerticalVelocity()>0){
 		setVerticalVelocity(0);
@@ -756,8 +796,7 @@ public class Mazub {
 	
 	public void startDuck(){
 		this.setDucking(true);
-		this.setMaximumHorizontalVelocity(1);
-		
+		this.setMaximumHorizontalVelocity(1);	
 	}
 	
 	
