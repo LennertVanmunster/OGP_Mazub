@@ -71,7 +71,7 @@ public class Facade implements IFacade{
 	 *         current width and height of the given alien, in number of pixels.
 	 */
 	public int[] getSize(Mazub alien){
-		return new int[]{10,10};
+		return new int[]{alien.getHeight(),alien.getWidth()};
 	}
 
 	/**
