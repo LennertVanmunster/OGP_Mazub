@@ -714,6 +714,7 @@ public class Mazub {
 		this.setDirection(direction);
 		this.setHorizontalVelocity((direction)*this.getInitialHorizontalVelocity());
 		this.setTimeSinceStartMove(0);
+		this.setTimeSinceEndMove(0);
 	}
 	
 	
@@ -728,6 +729,7 @@ public class Mazub {
 	public void endMove(){
 		this.setHorizontalVelocity(0);
 		this.setTimeSinceEndMove(0);
+		this.setTimeSinceStartMove(0);
 	}
 	
 	/**
