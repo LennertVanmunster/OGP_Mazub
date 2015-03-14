@@ -5,12 +5,18 @@ import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * @invar	The bottom-left pixel of Mazub must always be inside the boundaries of the world.
+ * @invar	The bottom-left pixel of each Mazub must have a valid location in the game world.
  * 			|isValidLocation(getHorizontalLocation(),getVerticalLocation())
- * @invar	The absolute value of the velocity of Mazub must always be in the range 
- * 			from initialHorizontalVelocity to maximumHorizontalvelocity or be 
- * 			equal to zero m/s.
+ * @invar	Each Mazub can have its horizontal velocity as its horizontal velocity.
  * 			|canHaveAsHorizontalVelocity(getHorizontalVelocity())
+ * @invar	The initial horizontal velocity of each Mazub must a valid initial horizontal velocity.
+ * 			|isValidInitialHorizontalVelocity(getInitialHorizontalVelocity())
+ * @invar	Each Mazub can have its maximum horizontal velocity as its maximum horizontal velocity.
+ * 			|canHaveAsMaximumHorizontalVelocity(getMaximumHorizontalVelocity())
+ * @invar	The vertical velocity of each Mazub must be a valid vertical velocity.
+ * 			|isValidVerticalVelocity(getVerticalVelocity())
+ * @invar	The direction of each Mazub must be a valid direction.
+ * 			|isValidDirection(getDirection())
  * 
  * @version 1.0
  * @authors Pieter Van Damme and Lennert Vanmunster
@@ -110,7 +116,7 @@ public class Mazub {
 			throw new IllegalArgumentException("Not a valid initial horizontal velocity!");
 		this.initialHorizontalVelocity = initialHorizontalVelocity;
 		
-		if(!isValidMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking))
+		if(!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking))
 			throw new IllegalArgumentException("Not a valid maximum horizontal velocity!");
 		this.maximumHorizontalVelocityNotDucking = maximumHorizontalVelocityNotDucking;
 		setMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking);
@@ -444,7 +450,7 @@ public class Mazub {
 	 * 			greater than or equal to 1.
 	 * 			|result = Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity,1)
 	 */
-	public boolean isValidInitialHorizontalVelocity(double initialHorizontalVelocity){
+	public static boolean isValidInitialHorizontalVelocity(double initialHorizontalVelocity){
 		return Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity,1);
 	}
 	
@@ -458,8 +464,8 @@ public class Mazub {
 	 * 			greater than or equal to the initial horizontal velocity.
 	 * 			|result = Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,getInitialHorizontalVelocity())
 	 */
-	public boolean isValidMaximumHorizontalVelocity(double maximumHorizontalVelocity){
-		return Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,getInitialHorizontalVelocity());
+	public boolean canHaveAsMaximumHorizontalVelocity(double maximumHorizontalVelocity){
+		return Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity, this.getInitialHorizontalVelocity());
 	}
 	
 	/**
@@ -497,17 +503,6 @@ public class Mazub {
 		return Util.fuzzyLessThanOrEqualTo(verticalVelocity, getInitialVerticalVelocity());
 	}
 	
-	/**
-	 * Checks whether the given maximum horizontal velocity is a valid for this mazub.
-	 * @param 	maximumHorizontalVelocity
-	 * 			The maximum horizontal velocity to be checked.
-	 * @return	True if the given maximum horizontal velocity is greater than or equal to 
-	 * 			the initial horizontal velocity of this mazub.
-	 * 			| result == maximumHorizontalVelocity >= this.getInitialHorizontalVelocity()
-	 */
-	public boolean canHaveAsMaximumHorizontalVelocity(double maximumHorizontalVelocity){
-		return maximumHorizontalVelocity >= this.getInitialHorizontalVelocity();
-	}
 	
 	/**
 	 * Variable registering the horizontal velocity of this Mazub.
@@ -558,8 +553,15 @@ public class Mazub {
 		}
 	}
 	
+	public double getVerticalAcceleration(){
+		if(this.isJumping())
+			return VERTICAL_ACCELERATION;
+		else
+			return 0;
+	}
+	
 	/**
-	 *  Variable registering the horizontal acceleration constant of all Mazubs.
+	 *  Variable registering the horizontal acceleration of all Mazubs.
 	 */
 	private static final double horizontalAcceleration = 0.9;
 	
@@ -678,6 +680,8 @@ public class Mazub {
 	 * 
 	 * @post	The new horizontal velocity of this Mazub is equal to 0.
 	 * 			| new.getHorizontalVelocity() == 0
+	 * @post	The new time since this Mazub has last ended moving is 0.
+	 * 			| new.getTimeSinceEndMove()==0
 	 */
 	public void endMove(){
 		this.setHorizontalVelocity(0);
@@ -698,7 +702,7 @@ public class Mazub {
 	 */
 	public void advanceTime(double deltaTime)
 		throws IllegalArgumentException {
-		if(!isValidTimePeriod(deltaTime))
+		if(!isValidDeltaTime(deltaTime))
 			throw new IllegalArgumentException();
 		updateHorizontalLocation(deltaTime);
 		updateVerticalLocation(deltaTime);
@@ -715,7 +719,7 @@ public class Mazub {
 	 * @return	True if and only if the time period is smaller
 	 * 			than 0.2s and not less than zero.
 	 */
-	public boolean isValidTimePeriod(double deltaTime){
+	public boolean isValidDeltaTime(double deltaTime){
 		return (deltaTime > 0) && (deltaTime < 0.2);
 	}
 	
@@ -769,7 +773,7 @@ public class Mazub {
 	/**
 	 * Variable registering the time since mazub has last ended moving.
 	 */
-	private double timeSinceEndMove=0;
+	private double timeSinceEndMove=2;
 	
 	/**
 	 * Update the horizontal location of this Mazub.
