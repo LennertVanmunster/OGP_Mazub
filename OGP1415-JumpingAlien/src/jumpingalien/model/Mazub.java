@@ -805,9 +805,9 @@ public class Mazub {
 	 * 			|if(horizontalLocation < 0)
 	 * 			|	new.horizontalLocation = 0
 	 * @post	If horizontalLocation is greater than the maximum horizontal location
-	 * 			then the horizontal location is set to the maximum minus 1.
+	 * 			then the horizontal location is set to the maximum minus.
 	 * 			|if(horizontalLocation > getMaximumHorizontalLocation())
-	 * 			| new.horizontalLocation = getMaximumHorizontalLocation() - 1
+	 * 			| new.horizontalLocation = getMaximumHorizontalLocation()
 	 */
 	private void updateHorizontalLocation(double deltaTime) {
 		double newHorizontalLocation = this.getHorizontalLocationNotRounded() + 
@@ -842,9 +842,9 @@ public class Mazub {
 	 * 			|if(verticalLocation < 0)
 	 * 			|	new.verticalLocation = 0
 	 * @post	If verticalLocation is greater than the maximum vertical location
-	 * 			then the vertical location is set to the maximum minus 1.
+	 * 			then the vertical location is set to the maximum.
 	 * 			|if(verticalLocation > getMaximumVerticalLocation())
-	 * 			| new.verticalLocation = getMaximumVerticalLocation() - 1
+	 * 			| new.verticalLocation = getMaximumVerticalLocation() 
 	 */
 	private void updateVerticalLocation(double deltaTime) {
 		if(isJumping()){
