@@ -5,13 +5,12 @@ import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * @invar	The bottom-left pixel must always be inside the boundaries of the world.
+ * @invar	The bottom-left pixel of Mazub must always be inside the boundaries of the world.
  * 			|isValidLocation(getHorizontalLocation(),getVerticalLocation())
  * @invar	The absolute value of the velocity of Mazub must always be in the range 
  * 			from initialHorizontalVelocity to maximumHorizontalvelocity or be 
  * 			equal to zero m/s.
  * 			|canHaveAsHorizontalVelocity(getHorizontalVelocity())
- * @invar	
  * 
  * @version 1.0
  * @authors Pieter Van Damme and Lennert Vanmunster
@@ -22,47 +21,122 @@ public class Mazub {
 	 *Initialize a new Mazub with given horizontal and vertical location,
 	 *horizontal and vertical velocity, initial and maximum horizontal velocity,
 	 *ducking state and a set of sprites. 
-	 //geen idee of the documentatie hierboven voldoende is?
 	 * 
-	 * @param horizontalLocation
-	 * 		  The horizontal location of Mazub.
-	 * @param verticalLocation
-	 * 		  The vertical location of Mazub.
-	 * @param horizontalVelocity
-	 * 		  The horizontal velocity of Mazub.
-	 * @param verticalVelocity
-	 * 		  The vertical velocity of Mazub.
-	 * @param ducking
-	 * 		  Parameter to tell if Mazub is ducking or not.
-	 * @param initialHorizontalVelocity
-	 * 		  The initial horizontal velocity of Mazub when he starts running.
-	 * @param maximumHorizontalVelocityNotDucking
-	 * 		  The maximum horizontal velocity of Mazub while he is not ducking.
-	 * @param images
-	 * 		  Sprites to display Mazub.
+	 * @param 	horizontalLocation
+	 * 		  	The horizontal location of Mazub.
+	 * @param 	verticalLocation
+	 * 		  	The vertical location of Mazub.
+	 * @param 	horizontalVelocity
+	 * 		  	The horizontal velocity of Mazub.
+	 * @param 	verticalVelocity
+	 * 		  	The vertical velocity of Mazub.
+	 * @param 	ducking
+	 * 		  	Parameter to tell if Mazub is ducking or not.
+	 * @param 	initialHorizontalVelocity
+	 * 		  	The initial horizontal velocity of Mazub when he starts running.
+	 * @param 	maximumHorizontalVelocityNotDucking
+	 * 		  	The maximum horizontal velocity of Mazub while he is not ducking.
+	 * @param 	images
+	 * 		  	Sprites to display Mazub.
+	 * @post	The horizontal location of this new Mazub is equal to the 
+	 * 			given horizontal location.
+	 * 			|new.getHorizontalLocation() = horizontalLocation
+	 * @post	The vertical location of this new Mazub is equal to the 
+	 * 			given vertical location.
+	 * 			|new.getVerticalLocation() = verticalLocation
+	 * @post	The initial horizontal velocity of this new Mazub is equal to the 
+	 * 			given initial horizontal velocity.
+	 * 			|new.getInitialHorizontalVelocity = initialHorizontalVelocity
+	 * @post	The maximum horizontal velocity (ducking and not ducking) of this new Mazub is equal to the 
+	 * 			given maximum horizontal velocity.
+	 * 			|new.getMaximumHorizontalVelocityNotDucking() = maximumHorizontalVelocityNotDucking
+	 * 			|new.getMaximumHorizontalVelocity() = maximumHorizontalVelocityNotDucking
+	 * @post	The horizontal velocity of this new Mazub is equal to the 
+	 * 			given horizontal velocity.
+	 * 			|new.getHorizontalVelocity() = horizontalVelocity
+	 * @post	The vertical velocity of this new Mazub is equal to the 
+	 * 			given vertical velocity.
+	 * 			|new.getVerticalVelocity() = verticalVelocity
+	 * @post	The direction of this new Mazub is equal to the 
+	 * 			given direction.
+	 * 			|new.getDirection() = direction
+	 * @post	The ducking state of this new Mazub is equal to the 
+	 * 			given ducking state.
+	 * 			|new.isDucking = ducking
+	 * @post	If the ducking state of the new Mazub is true the Mazub
+	 * 			starts ducking.
+	 * 			|if(isDucking())
+	 *			|	startDuck()
+	 * @post	The images of this new Mazub are equal to the 
+	 * 			given images.
+	 * 			|new.getImages() = images	
+	 * @throws	IllegalArgumentException
+	 * 			Not a valid horizontal location
+	 * 			|!isValidHorizontalLocation(horizontalLocation)	
+	 * @throws	IllegalArgumentException
+	 * 			Not a valid vertical location
+	 * 			|!isValidVerticalLocation(verticalLocation)	
+	 * @throws	IllegalArgumentException
+	 * 			Not a valid initial horizontal velocity
+	 * 			|!isValidInitialHorizontalVelocity(initialHorizontalVelocity)	
+	 * @throws	IllegalArgumentException
+	 * 			Not a valid maximum horizontal velocity!
+	 * 			|!isValidMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking)	
+	 * @throws	IllegalArgumentException
+	 * 			Not a valid horizontal velocity
+	 * 			|!canHaveAsHorizontalVelocity(horizontalVelocity)
+	 * @throws	IllegalArgumentException
+	 * 			Not a valid vertical velocity
+	 * 			|!isValidVerticalVelocity(verticalVelocity)
+	 * @throws	IllegalArgumentException
+	 * 			Not a valid direction
+	 * 			|!isValidDirection(direction)	
 	 */
 	@Raw
 	public  Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
 				double verticalVelocity, boolean ducking, int direction, double initialHorizontalVelocity,
-				double maximumHorizontalVelocityNotDucking, Sprite... images){
+				double maximumHorizontalVelocityNotDucking, Sprite... images)
+		throws IllegalArgumentException {
+		
+		if(!isValidHorizontalLocation(horizontalLocation))
+			throw new IllegalArgumentException("Not a valid horizontal location!");
 		setHorizontalLocation(horizontalLocation);
+		
+		if(!isValidVerticalLocation(verticalLocation))
+			throw new IllegalArgumentException("Not a valid vertical location!");
 		setVerticalLocation(verticalLocation);
-		setHorizontalVelocity(horizontalVelocity);
-		setVerticalVelocity(verticalVelocity);
-		setDucking(ducking);
-		setDirection(direction);
-		setMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking);
-		this.setImages(images);
+		
+		if(!isValidInitialHorizontalVelocity(initialHorizontalVelocity))
+			throw new IllegalArgumentException("Not a valid initial horizontal velocity!");
 		this.initialHorizontalVelocity = initialHorizontalVelocity;
+		
+		if(!isValidMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking))
+			throw new IllegalArgumentException("Not a valid maximum horizontal velocity!");
 		this.maximumHorizontalVelocityNotDucking = maximumHorizontalVelocityNotDucking;
+		setMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking);
+		
+		if(!canHaveAsHorizontalVelocity(horizontalVelocity))
+			throw new IllegalArgumentException("Not a valid horizontal velocity!");
+		setHorizontalVelocity(horizontalVelocity);
+		
+		if(!isValidVerticalVelocity(verticalVelocity))
+			throw new IllegalArgumentException("Not a valid vertical velocity!");
+		setVerticalVelocity(verticalVelocity);
+		
+		if(!isValidDirection(direction))
+			throw new IllegalArgumentException("Not a valid direction!");
+		setDirection(direction);
+		
+		setDucking(ducking);
+		if(isDucking())
+			startDuck();
+		
+		this.setImages(images);
 	}
 	
 	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
 		this(horizontalLocation, verticalLocation, 0, 0, false, 1, 1, 3, images);
 	}
-	
-	
-	
 	
 	
 	/**
@@ -360,6 +434,34 @@ public class Mazub {
 		this.maximumHorizontalVelocity = maximumHorizontalVelocity;
 	}
 	
+
+	/**
+	 * Checks whether the given initial horizontal velocity is a valid horizontal velocity.
+	 * 
+	 * @param 	initialHorizontalVelocity
+	 * 			The given initial horizontal velocity.
+	 * @return	True if and only if the given initial horizontal velocity is 
+	 * 			greater than or equal to 1.
+	 * 			|result = Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity,1)
+	 */
+	public boolean isValidInitialHorizontalVelocity(double initialHorizontalVelocity){
+		return Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity,1);
+	}
+	
+	
+	/**
+	 *  Checks whether the given maximum horizontal velocity is a valid maximum horizontal velocity.
+	 *  
+	 * @param 	maximumHorizontalVelocity
+	 * 			The given maximum horizontal velocity.
+	 * @return	True if and only if the given maximum horizontal velocity is 
+	 * 			greater than or equal to the initial horizontal velocity.
+	 * 			|result = Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,getInitialHorizontalVelocity())
+	 */
+	public boolean isValidMaximumHorizontalVelocity(double maximumHorizontalVelocity){
+		return Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,getInitialHorizontalVelocity());
+	}
+	
 	/**
 	 * Check whether the given horizontal velocity is a valid horizontal velocity.
 	 * 
@@ -560,6 +662,16 @@ public class Mazub {
 		this.setTimeSinceStartMove(0);
 	}
 	
+	/**
+	 * Check whether the given direction is a valid direction.
+	 * @param 	direction
+	 * 			The given direction.
+	 * @return	True if and only if the given direction equals 1 or -1
+	 * 			|result = ((direction == -1) || (direction == 1))
+	 */
+	public boolean isValidDirection(int direction){
+		return ((direction == -1) || (direction == 1));
+	}
 	
 	/**
 	 * Set the horizontal velocity of this Mazub to zero.
