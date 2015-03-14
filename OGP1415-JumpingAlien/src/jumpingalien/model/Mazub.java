@@ -1,6 +1,5 @@
 package jumpingalien.model;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
@@ -379,6 +378,10 @@ public class Mazub {
 		return this.maximumHorizontalVelocityNotDucking;
 	}
 	
+	public boolean isMovingHorizontally(){
+		return this.getHorizontalVelocity()!=0;
+	}
+	
 	/**
 	 * Set the horizontal velocity of Mazub to the given horizontal velocity.
 	 * 
@@ -557,7 +560,7 @@ public class Mazub {
 	 * 			| 	result==horizontalAcceleration
 	 */
 	public double getHorizontalAcceleration(){
-		if (this.getHorizontalVelocity() == 0 || 
+		if (!this.isMovingHorizontally() || 
 				Util.fuzzyEquals(Math.abs(this.getHorizontalVelocity()), this.getMaximumHorizontalVelocity())){
 			return 0;
 		}
@@ -819,20 +822,23 @@ public class Mazub {
 	 * 			| new.horizontalLocation = getMaximumHorizontalLocation()
 	 */
 	private void updateHorizontalLocation(double deltaTime) {
-		double newHorizontalLocation = this.getHorizontalLocationNotRounded() + 
-				100*(this.getHorizontalVelocity()*deltaTime + 
-				Math.signum(this.getHorizontalVelocity())*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2));
-		try{
-			this.setHorizontalLocationNotRounded(newHorizontalLocation);
-		} catch (IllegalArgumentException exc){
-			this.setHorizontalVelocity(0);
-			if(newHorizontalLocation < 0){
-				this.setHorizontalLocationNotRounded(0);
-			}
-			else{
-				this.setHorizontalLocationNotRounded(getMaximumHorizontalLocation());
-			}
+		double newHorizontalLocation= this.getHorizontalLocationNotRounded();
+		if (isMovingHorizontally()){
+			try{
+				newHorizontalLocation = this.getHorizontalLocationNotRounded() + 
+						100*(this.getHorizontalVelocity()*deltaTime + 
+						this.getDirection()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2));
+				this.setHorizontalLocationNotRounded(newHorizontalLocation);
+			} catch (IllegalArgumentException exc){
+				this.setHorizontalVelocity(0);
+				if(newHorizontalLocation < 0){
+					this.setHorizontalLocationNotRounded(0);
+				}
+				else{
+					this.setHorizontalLocationNotRounded(getMaximumHorizontalLocation());
+				}
 			
+			}
 		}
 	}
 	
@@ -898,7 +904,7 @@ public class Mazub {
 	 * 			
 	 */
 	private void updateHorizontalVelocity(double deltaTime) {
-		if(this.getHorizontalVelocity()==0){
+		if(!isMovingHorizontally()){
 			this.setTimeSinceEndMove(this.getTimeSinceEndMove()+deltaTime);
 		}
 		else{
@@ -996,13 +1002,13 @@ public class Mazub {
 	@Basic
 	public Sprite getCurrentSprite(){
 		int newSpriteIndex=0;
-		if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceEndMove()>1)
+		if (!this.isMovingHorizontally() && this.isDucking()==false && this.getTimeSinceEndMove()>1)
 			newSpriteIndex=0;
-		else if (this.getHorizontalVelocity()==0 && this.isDucking()==true && this.getTimeSinceEndMove()>1)
+		else if (!this.isMovingHorizontally() && this.isDucking()==true && this.getTimeSinceEndMove()>1)
 			newSpriteIndex=1;
-		else if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceEndMove()<=1 && this.getDirection()==1)
+		else if (!this.isMovingHorizontally() && this.isDucking()==false && this.getTimeSinceEndMove()<=1 && this.getDirection()==1)
 			newSpriteIndex=2;
-		else if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceEndMove()<=1 && this.getDirection()==-1)
+		else if (!this.isMovingHorizontally() && this.isDucking()==false && this.getTimeSinceEndMove()<=1 && this.getDirection()==-1)
 			newSpriteIndex=3;
 		else if (this.getHorizontalVelocity()>0 && this.isJumping()==true && this.isDucking()==false)
 			newSpriteIndex=4;
