@@ -1061,7 +1061,7 @@ public class Mazub {
 	 * Return the current Sprite of this Mazub.
 	 */
 	public Sprite getCurrentSprite(){
-		int newSpriteIndex=Integer.MAX_VALUE;
+		int newSpriteIndex=0;
 		if (!this.isMovingHorizontally() && this.isDucking()==false && this.getTimeSinceEndMove()>1)
 			newSpriteIndex=0;
 		else if (!this.isMovingHorizontally() && this.isDucking()==true && this.getTimeSinceEndMove()>1)

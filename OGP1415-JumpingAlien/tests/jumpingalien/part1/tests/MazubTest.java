@@ -19,11 +19,11 @@ public class MazubTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		staticTestMazub = new Mazub(0, 0, 0, 0, false, 1, 1, 3,spriteArrayForSize(2, 2));
-		duckingMazub = new Mazub(0, 0, 0, 0, true, 1, 1, 3,spriteArrayForSize(2, 2));
-		notDuckingMazub = new Mazub(0, 0, 0, 0, false, 1, 1, 3,spriteArrayForSize(2, 2));
-		jumpingMazub1 = new Mazub(0, 0, 0, 8, false, 1, 1, 3,spriteArrayForSize(2, 2));
-		jumpingMazub2 = new Mazub(0, 40, 0, 3, false, 1, 1, 3,spriteArrayForSize(2, 2));
+		staticTestMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		duckingMazub = new Mazub(0, 0, 0, 0, 1, 3, true, 1,spriteArrayForSize(2, 2));
+		notDuckingMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		jumpingMazub1 = new Mazub(0, 0, 0, 8, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		jumpingMazub2 = new Mazub(0, 40, 0, 3, 1, 3, false, 1,spriteArrayForSize(2, 2));
 	}
 
 	private Mazub testMazub;
