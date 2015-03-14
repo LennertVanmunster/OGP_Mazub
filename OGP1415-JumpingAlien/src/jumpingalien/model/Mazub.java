@@ -18,7 +18,15 @@ import be.kuleuven.cs.som.annotate.*;
  * 			|isValidVerticalVelocity(getVerticalVelocity())
  * @invar	The direction of each Mazub must be a valid direction.
  * 			|isValidDirection(getDirection())
- * 
+ * @invar	The length of the image array of each Mazub must be a valid length.
+ * 			|isValidNbImages(getNbImages())
+ * @invar	Each image in the image array of each Mazub must be a valid image.
+ * 			| for each i in 1..getNbImages():
+ * 			| 	isValidImage(getImageAt(I))
+ * @invar	The time since Mazub last started moving must be a valid time for each Mazub.
+ * 			| isValidTimeSinceMove(getTimeSinceStartMove())
+ * @invar	The time since Mazub last ended moving must be a valid time for each Mazub.
+ * 			| isValidTimeSinceMove(getTimeSinceEndMove())
  * @version 1.0
  * @authors Pieter Van Damme and Lennert Vanmunster
  *
@@ -100,7 +108,7 @@ public class Mazub {
 	 * 			|!isValidDirection(direction)	
 	 */
 	@Raw
-	public  Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
+	public Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
 				double verticalVelocity, boolean ducking, int direction, double initialHorizontalVelocity,
 				double maximumHorizontalVelocityNotDucking, Sprite... images)
 		throws IllegalArgumentException {
@@ -378,6 +386,11 @@ public class Mazub {
 		return this.maximumHorizontalVelocityNotDucking;
 	}
 	
+	/**
+	 * Check whether this Mazub is currently moving horizontally.
+	 * @return	True if the current horizontal velocity of this Mazub is not equal to zero.
+	 * 			| result == this.getHorizontalVelocity()!=0
+	 */
 	public boolean isMovingHorizontally(){
 		return this.getHorizontalVelocity()!=0;
 	}
@@ -457,7 +470,7 @@ public class Mazub {
 	 */
 	public boolean canHaveAsInitialHorizontalVelocity(double initialHorizontalVelocity){
 		return isPossibleInitialHorizontalVelocity(initialHorizontalVelocity) && 
-				matchesMaximumInitialHorizontalVelocity(this.getMaximumHorizontalVelocity(), initialHorizontalVelocity);
+				matchesMaximumHorizontalVelocityInitialHorizontalVelocity(this.getMaximumHorizontalVelocity(), initialHorizontalVelocity);
 	}
 	
 	
@@ -471,13 +484,30 @@ public class Mazub {
 	 * 			|result = Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,getInitialHorizontalVelocity())
 	 */
 	public boolean canHaveAsMaximumHorizontalVelocity(double maximumHorizontalVelocity){
-		return matchesMaximumInitialHorizontalVelocity(maximumHorizontalVelocity, this.getInitialHorizontalVelocity());
+		return matchesMaximumHorizontalVelocityInitialHorizontalVelocity(maximumHorizontalVelocity, this.getInitialHorizontalVelocity());
 	}
 	
-	public static boolean matchesMaximumInitialHorizontalVelocity(double maximumHorizontalVelocity, double initialHorizontalVelocity){
+	/**
+	 * Check whether the given maximum horizontal velocity matches with the given initial horizontal velocity of a Mazub.
+	 * @param 	maximumHorizontalVelocity
+	 * 			The maximum horizontal velocity to check.
+	 * @param 	initialHorizontalVelocity
+	 * 			The initial horizontal velocity to check.
+	 * @return	True if the given maximum horizontal velocity is greater than or equal to the given initial horizontal velocity.
+	 * 			| result == Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,initialHorizontalVelocity)
+	 */
+	public static boolean matchesMaximumHorizontalVelocityInitialHorizontalVelocity(
+			double maximumHorizontalVelocity, double initialHorizontalVelocity){
 		return Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,initialHorizontalVelocity);
 	}
 	
+	/**
+	 * Check whether the given initial horizontal velocity is a possible initial horizontal velocity for any Mazub.
+	 * @param 	initialHorizontalVelocity
+	 * 			The initial horizontal velocity to check.
+	 * @return	True if the given initial horizontal velocity is greater than or equal to 1.
+	 * 			result == Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity, 1)
+	 */
 	public static boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity){
 		return Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity, 1);
 	}
@@ -768,7 +798,7 @@ public class Mazub {
 	 * 			|	new.getTimeSinceEndMove()==timeSinceEndMove
 	 */
 	private void setTimeSinceEndMove(double timeSinceEndMove){
-		if(timeSinceEndMove>=0)
+		if(isValidTimeSinceMove(timeSinceEndMove))
 			this.timeSinceEndMove=timeSinceEndMove;
 	}
 	
@@ -789,8 +819,12 @@ public class Mazub {
 	 * 			| 	new.getTimeSinceStartMove()==timeSinceStartMove
 	 */
 	private void setTimeSinceStartMove(double timeSinceStartMove){
-		if(timeSinceStartMove>=0)
+		if(isValidTimeSinceMove(timeSinceStartMove))
 			this.timeSinceStartMove=timeSinceStartMove;
+	}
+	
+	private boolean isValidTimeSinceMove(double time){
+		return Util.fuzzyGreaterThanOrEqualTo(time, 0);
 	}
 	
 	/**
@@ -997,7 +1031,6 @@ public class Mazub {
 	
 	/**
 	 * Return the current Sprite of this Mazub.
-	 *	
 	 */
 	@Basic
 	public Sprite getCurrentSprite(){
@@ -1080,6 +1113,16 @@ public class Mazub {
 	 */
 	public boolean isValidSpriteIndex(int spriteIndex){
 		return spriteIndex>=0 && spriteIndex<=this.getNbImages();
+	}
+	
+	/**
+	 * Check whether the given image is a valid image.
+	 * @param 	image
+	 *			The image to be checked.
+	 *@return	image!=null
+	 */
+	public static boolean isValidImage(Sprite image){
+		return image!=null;
 	}
 	
 	/**
