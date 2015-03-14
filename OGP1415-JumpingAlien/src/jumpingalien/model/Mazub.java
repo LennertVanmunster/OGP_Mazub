@@ -116,12 +116,12 @@ public class Mazub {
 			throw new IllegalArgumentException("Not a valid initial horizontal velocity!");
 		this.initialHorizontalVelocity = initialHorizontalVelocity;
 		
-		if(!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking))
+		if(!isValidMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking))
 			throw new IllegalArgumentException("Not a valid maximum horizontal velocity!");
 		this.maximumHorizontalVelocityNotDucking = maximumHorizontalVelocityNotDucking;
 		setMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking);
 		
-		if(!canHaveAsHorizontalVelocity(horizontalVelocity))
+		if(!isValidHorizontalVelocity(horizontalVelocity))
 			throw new IllegalArgumentException("Not a valid horizontal velocity!");
 		setHorizontalVelocity(horizontalVelocity);
 		
@@ -233,6 +233,7 @@ public class Mazub {
 	}
 	
 	/**
+	 * Set the horizontal location of this Mazub to the given location.
 	 * 
 	 * @param 	horizontalLocation
 	 * 			The new horizontal location for this mazub.
@@ -244,7 +245,7 @@ public class Mazub {
 	}
 	
 	/**
-	 * Set the vertical location of Mazub to the given location.
+	 * Set the vertical location of this Mazub to the given location.
 	 * 
 	 * @param 	verticalLocationNotRounded
 	 * 		  	The new vertical location.
@@ -325,7 +326,8 @@ public class Mazub {
 	/**
 	 * Returns the horizontal velocity of this Mazub.
 	 */
-	@Raw @Basic
+	@Basic
+	@Raw 
 	public double getHorizontalVelocity() {
 		return this.horizontalVelocity;
 	}
@@ -394,7 +396,7 @@ public class Mazub {
 	@Raw
 	public void setHorizontalVelocity(double horizontalVelocity) 
 		throws IllegalArgumentException{
-		if(!canHaveAsHorizontalVelocity(horizontalVelocity))
+		if(!isValidHorizontalVelocity(horizontalVelocity))
 			throw new IllegalArgumentException();
 		this.horizontalVelocity = horizontalVelocity;
 	}
@@ -411,7 +413,8 @@ public class Mazub {
 	 * 			The given vertical velocity is not valid.
 	 * 			|!canHaveAsVerticalVelocity(verticalVelocity)
 	 */
-	@Basic @Raw
+	@Basic 
+	@Raw
 	public void setVerticalVelocity(double verticalVelocity) 
 		throws IllegalArgumentException{
 		if(!isValidVerticalVelocity(verticalVelocity))
@@ -435,7 +438,7 @@ public class Mazub {
 	@Raw
 	public void setMaximumHorizontalVelocity(double maximumHorizontalVelocity)
 		throws IllegalArgumentException{
-		if(!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocity))
+		if(!isValidMaximumHorizontalVelocity(maximumHorizontalVelocity))
 			throw new IllegalArgumentException();
 		this.maximumHorizontalVelocity = maximumHorizontalVelocity;
 	}
@@ -464,7 +467,7 @@ public class Mazub {
 	 * 			greater than or equal to the initial horizontal velocity.
 	 * 			|result = Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,getInitialHorizontalVelocity())
 	 */
-	public boolean canHaveAsMaximumHorizontalVelocity(double maximumHorizontalVelocity){
+	public boolean isValidMaximumHorizontalVelocity(double maximumHorizontalVelocity){
 		return Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity, this.getInitialHorizontalVelocity());
 	}
 	
@@ -482,7 +485,7 @@ public class Mazub {
 	 */
 	@Basic
 	@Raw
-	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
+	public boolean isValidHorizontalVelocity(double horizontalVelocity){
 		horizontalVelocity = Math.abs(horizontalVelocity);
 		return Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
 				&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
@@ -545,7 +548,8 @@ public class Mazub {
 	 * 			| 	result==horizontalAcceleration
 	 */
 	public double getHorizontalAcceleration(){
-		if (this.getHorizontalVelocity() == 0){
+		if (this.getHorizontalVelocity() == 0 || 
+				Util.fuzzyEquals(Math.abs(this.getHorizontalVelocity()), this.getMaximumHorizontalVelocity())){
 			return 0;
 		}
 		else{
@@ -553,6 +557,16 @@ public class Mazub {
 		}
 	}
 	
+	/**
+	 * Returns the vertical acceleration of this Mazub.
+	 * @return	If this Mazub is jumping than the vertical acceleration is equal
+	 * 			to the gravitational acceleration.
+	 * 			Otherwise the vertical acceleration is equal to zero.
+	 * 			|if(isJumping())
+	 *			|	result == VERTICAL_ACCELERATION
+	 *			|else
+	 *			| 	result == 0
+	 */
 	public double getVerticalAcceleration(){
 		if(this.isJumping())
 			return VERTICAL_ACCELERATION;
@@ -581,7 +595,7 @@ public class Mazub {
 	}
 	
 	/**
-	 * Set the direction of mazub to the given value.
+	 * Set the direction of Mazub to the given value.
 	 * @param 	direction
 	 * 			The desired direction of this Mazub.
 	 * @pre		The given direction must be equal to 1 or -1, denoting respectively right and left.
@@ -595,9 +609,9 @@ public class Mazub {
 	}
 	
 	/**
-	 * Variable registering the direction mazub is facing. 1 means right, -1 means left.
+	 * Variable registering the direction Mazub is facing. 1 means right, -1 means left.
 	 */
-	private int direction = 1;
+	private int direction;
 	
 	
 	/**
@@ -700,6 +714,7 @@ public class Mazub {
 	 * 			The given deltaTime is not valid
 	 * 			|!isValidTimePeriod(deltaTime)
 	 */
+	@Raw
 	public void advanceTime(double deltaTime)
 		throws IllegalArgumentException {
 		if(!isValidDeltaTime(deltaTime))
@@ -732,6 +747,7 @@ public class Mazub {
 	
 	/**
 	 * Set the time since mazub has last moved.
+	 * 
 	 * @param 	timeSinceEndMove
 	 * 			The time since mazub's last move.
 	 * @post	If the given time since mazub last ended moving is greater than or equal to zero than 
@@ -833,7 +849,7 @@ public class Mazub {
 	private void updateVerticalLocation(double deltaTime) {
 		if(isJumping()){
 			double newVerticalLocation = this.getVerticalLocationNotRounded() + 
-					100*(getVerticalVelocity()*deltaTime + 0.5*VERTICAL_ACCELERATION*Math.pow(deltaTime,2));
+					100*(getVerticalVelocity()*deltaTime + 0.5*getVerticalAcceleration()*Math.pow(deltaTime,2));
 			try{
 				this.setVerticalLocationNotRounded(newVerticalLocation);
 			} catch (IllegalArgumentException exc){
@@ -850,16 +866,27 @@ public class Mazub {
 	
 	
 	/**
+	 * Update the horizontal velocity of this Mazub.
 	 * 
 	 * @param 	deltaTime
 	 * 			A period of time for which the update needs to place.
 	 * @post	If this mazub is not moving horizontally then the time since mazub's 
-	 * 			last move is incremented by deltaTime and the time since mazub last started moving is set to zero.
+	 * 			last move is incremented by deltaTime.
 	 * 			| if (this.getHorizontalVelocity()==0)
 	 * 			|	(new this).getTimeSinceEndMove()==this.getTimeSinceEndMove()+deltaTime
-	 * 			|	(new this).getTimeSinceStartMove()==0
-	 * @post	
-	 * 
+	 * @post	If this mazub is moving horizontally then the new horizontal velocity is calculated
+	 * 			and the time since mazub last started to move is incremented by deltaTime.
+	 * 			|newVelocity = this.getHorizontalVelocity() + this.getDirection()*getHorizontalAcceleration()*deltaTime
+	 * 			|this.setTimeSinceStartMove(this.getTimeSinceStartMove()+deltaTime)
+	 * 			If newVelocity is a valid horizontal velocity then the horizontal velocity
+	 * 			of this Mazub is set to new velocity.
+	 * 			|if(isValidHorizontalVelocity(newVelocity))
+	 * 			|	new.getHorizontalVelocity = newVelocity
+	 * 			If newVelocity is not a valid valid horizontal velocity then the horizontal velocity
+	 * 			of this Mazub is set to the maximum horizontal velocity in the given direction.
+	 * 			|if(!isValidHorizontalVelocity(newVelocity))
+	 * 			|	new.getHorizontalVelocity = this.getDirection()*this.getMaximumHorizontalVelocity()
+	 * 			
 	 */
 	private void updateHorizontalVelocity(double deltaTime) {
 		if(this.getHorizontalVelocity()==0){
@@ -868,9 +895,9 @@ public class Mazub {
 		else{
 			double newVelocity = this.getHorizontalVelocity() + this.getDirection()*getHorizontalAcceleration()*deltaTime;
 			this.setTimeSinceStartMove(this.getTimeSinceStartMove()+deltaTime);
-			try{
+			if(isValidHorizontalVelocity(newVelocity))
 				this.setHorizontalVelocity(newVelocity);
-			} catch (IllegalArgumentException exc){
+			else{
 				this.setHorizontalVelocity(this.getDirection()*this.getMaximumHorizontalVelocity());
 			}
 		}
@@ -878,12 +905,20 @@ public class Mazub {
 	
 	
 	/**
+	 * Update the vertical velocity of this Mazub.
 	 * 
-	 * @param deltaTime
+	 * @param 	deltaTime
+	 * 			A period of time.
+	 * @post	If this Mazub is jumping then the new vertical velocity of this Mazub
+	 * 			is calcutated and set at the calculated value.
+	 * 			|new.getVerticalVelocity = getVerticalVelocity() + getVerticalAcceleration()*deltaTime
+	 * @post	If this Mazub is not jumping then the vertical velocity
+	 * 			is set to zero.
+	 * 			|new.getVerticalVelocity = 0
 	 */
 	private void updateVerticalVelocity(double deltaTime) {
 		if(this.isJumping()){
-			this.setVerticalVelocity(getVerticalVelocity() + VERTICAL_ACCELERATION*deltaTime);
+			this.setVerticalVelocity(getVerticalVelocity() + getVerticalAcceleration()*deltaTime);
 		}
 		else{
 			this.setVerticalVelocity(0);
@@ -949,7 +984,7 @@ public class Mazub {
 	 * Return the current Sprite of this Mazub.
 	 *	
 	 */
-	
+	@Basic
 	public Sprite getCurrentSprite(){
 		if (this.getHorizontalVelocity()==0 && this.isDucking()==false && this.getTimeSinceEndMove()>1)
 			this.setCurrentSpriteIndex(0);
@@ -980,6 +1015,7 @@ public class Mazub {
 		return this.getImageAt(this.getCurrentSpriteIndex());
 	}
 	
+
 	public int getCurrentSpriteIndex(){
 		return this.spriteIndex;
 	}

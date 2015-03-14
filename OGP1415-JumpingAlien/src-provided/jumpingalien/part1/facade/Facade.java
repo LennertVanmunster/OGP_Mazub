@@ -58,7 +58,7 @@ public class Facade implements IFacade{
 	 *         acceleration, in units of m/s^2.
 	 */
 	public double[] getAcceleration(Mazub alien){
-		return new double[]{alien.getHorizontalAcceleration(), Mazub.VERTICAL_ACCELERATION};
+		return new double[]{alien.getHorizontalAcceleration(), alien.getVerticalAcceleration()};
 	}
 
 	/**
