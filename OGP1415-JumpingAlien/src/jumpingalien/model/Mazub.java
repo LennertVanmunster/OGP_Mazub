@@ -157,7 +157,7 @@ public class Mazub {
 	 */
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
-		this(horizontalLocation, verticalLocation, 0, 0, 2, 3, false, images);
+		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, images);
 	}
 	
 	/**
