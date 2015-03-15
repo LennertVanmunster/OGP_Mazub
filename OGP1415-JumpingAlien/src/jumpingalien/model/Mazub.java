@@ -64,7 +64,7 @@ public class Mazub {
 	 * @post	The vertical location of this new Mazub is equal to the 
 	 * 			given vertical location.
 	 * 			|new.getVerticalLocation() == verticalLocation
-	 * @Post	The initial horizontal velocity while Mazub is not ducking
+	 * @post	The initial horizontal velocity while Mazub is not ducking
 	 * 			of this new Mazub is equal to the given initial horizontal velocity.
 	 * 			|new.getInitialHorizontalVelocityNotDucking() == initialHorizontalVelocityNotDucking
 	 * @post	The maximum horizontal velocity while Mazub is not ducking of this new Mazub is equal to the 
@@ -85,13 +85,13 @@ public class Mazub {
 	 * @post	The ducking state of this new Mazub is equal to the 
 	 * 			given ducking state.
 	 * 			|new.isDucking == ducking
+	 * @post	The images of this new Mazub are equal to the 
+	 * 			given images.
+	 * 			|new.getImages() == images
 	 * @effect	If the given ducking state of the new Mazub is true the Mazub
 	 * 			starts ducking.
 	 * 			|if(isDucking())
 	 *			|	startDuck()
-	 * @post	The images of this new Mazub are equal to the 
-	 * 			given images.
-	 * 			|new.getImages() == images	
 	 * @throws	IllegalArgumentException
 	 * 			Not a valid horizontal location
 	 * 			|!isValidHorizontalLocation(horizontalLocation)	
@@ -1260,8 +1260,4 @@ public class Mazub {
 	 * Variable registering the array of images of this Mazub.
 	 */
 	private Sprite images[];
-	
-	
-	
-	
 }
