@@ -116,12 +116,12 @@ public class Mazub {
 		setVerticalLocation(verticalLocation);
 		setHorizontalVelocity(horizontalVelocity);
 		setVerticalVelocity(verticalVelocity);
+		setDucking(ducking);
 		if(!isPossibleInitialHorizontalVelocity(initialHorizontalVelocity))
 			throw new IllegalArgumentException("Not a valid initial horizontal velocity!");
 		this.initialHorizontalVelocity = initialHorizontalVelocity;
 		setMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking);
 		this.maximumHorizontalVelocityNotDucking = maximumHorizontalVelocityNotDucking;
-		setDucking(ducking);
 		if(isDucking())
 			startDuck();
 		if(!isValidDirection(direction))
@@ -339,10 +339,13 @@ public class Mazub {
 	 * Returns the initial horizontal velocity of this Mazub.
 	 */
 	@Basic 
-	@Immutable
 	@Raw
 	public double getInitialHorizontalVelocity(){
-		return this.initialHorizontalVelocity;		
+		if (this.isDucking())
+			return 1;
+		else 
+			return this.initialHorizontalVelocity;	
+		
 	}
 	
 	/**
@@ -707,7 +710,12 @@ public class Mazub {
 	 * 			| new.getHorizontalVelocity() == direction*this.getInitialHorizontalVelocity()
 	 * @post 	The new direction for this mazub is equal to the given direction.
 	 * 			| new.getDirection()==direction
+	 * @post	The new time since this Mazub has last ended moving is 0.
+	 * 			| new.getTimeSinceEndMove()==0
+	 * @post	The new time since this Mazub has started moving is 0.
+	 * 			| new.getTimeSinceStartMove()==0
 	 */
+	@Raw
 	public void startMove(int direction){
 		assert ((direction == -1) || (direction == 1)) :
 			"Precondition: direction must be equal to -1 or 1";
@@ -725,7 +733,10 @@ public class Mazub {
 	 * 			| new.getHorizontalVelocity() == 0
 	 * @post	The new time since this Mazub has last ended moving is 0.
 	 * 			| new.getTimeSinceEndMove()==0
+	 * @post	The new time since this Mazub has started moving is 0.
+	 * 			| new.getTimeSinceStartMove()==0
 	 */
+	@Raw
 	public void endMove(){
 		this.setHorizontalVelocity(0);
 		this.setTimeSinceEndMove(0);
@@ -738,6 +749,9 @@ public class Mazub {
 	 * @effect	If this mazub isn't jumping, the vertical velocity of this mazub is set to the initial vertical velocity.
 	 * 			| if (!isJumping())
 	 * 			| this.setVerticalVelocity(INITIAL_VERTICAL_VELOCITY)
+	 * @note	The method setVerticalVelocity will never throw an exception in 
+	 * 			its current implementation because INITIAL_VERTICAL_VELOCITY is a valid vertical velocity.
+	 * 			There is no need to add a try catch statement.
 	 */
 	@Raw
 	public void startJump(){
@@ -753,6 +767,9 @@ public class Mazub {
 	 * @effect	If this mazub is travelling upwards, then this mazub's vertical velocity is set to zero.
 	 * 			| if(this.getVerticalVelocity()>0)
 	 * 			|	this.setVerticalVelocity(0)
+	 * @note	The method setVerticalVelocity will never throw an exception in 
+	 * 			its current implementation because 0 is a valid vertical velocity.
+	 * 			There is no need to add a try catch statement.
 	 */
 	@Raw
 	public void endJump(){
@@ -768,8 +785,10 @@ public class Mazub {
 	 * 			| new.getDucking()
 	 * @post	The new maximum horizontal velocity of this mazub is equal to 1m/s.
 	 * 			| new.getMaximumHorizontalVelocity()==1
+	 * @note	The invocation of this.setMaximumHorizontalVelocity(1) will not result in the throwing of an
+	 * 			IllegalArgumentException because a Mazub can always have a maximum horizontal velocity of 1m/s
+	 * 			when its ducking state is true. 
 	 */
-	@Raw
 	public void startDuck(){
 		this.setDucking(true);
 		this.setMaximumHorizontalVelocity(1);
@@ -784,8 +803,9 @@ public class Mazub {
 	 * @post	The new maximum horizontal velocity of this mazub is equal to
 	 * 			the maximum horizontal velocity when this mazub isn't ducking.
 	 * 			| new.getMaximumHorizontalVelocity==this.getMaximumHorizontalVelocityNotDucking()
+	 * @note	The invocation of this.setMaximumHorizontalVelocity(this.getMaximumHorizontalVelocityNotDucking())
+	 * 			will not result in the throwing of an exception because 
 	 */
-	@Raw
 	public void endDuck(){
 		this.setDucking(false);
 		this.setMaximumHorizontalVelocity(this.getMaximumHorizontalVelocityNotDucking());
@@ -829,6 +849,7 @@ public class Mazub {
 	
 	/**
 	 * Return the time since mazub has last moved.
+	 * @note	We consider this method a part of advanceTime() and implement it defensively.
 	 */
 	@Basic
 	@Raw
@@ -841,19 +862,23 @@ public class Mazub {
 	 * 
 	 * @param 	timeSinceEndMove
 	 * 			The time since mazub's last move.
-	 * @post	If the given time since mazub last ended moving is greater than or equal to zero than 
-	 * 			the new time since this mazub's last move is equal to the given time since mazub's last move.
-	 * 			| if(timeSinceEndMove>=0)
-	 * 			|	new.getTimeSinceEndMove()==timeSinceEndMove
+	 * @post	The new time since this mazub's last move is equal to the given time since this mazub's last move.
+	 * 			|new.getTimeSinceEndMove()==timeSinceEndMove
+	 * @throws	IllegalArgumentException
+	 * 			The given time since Mazub's last move is not valid.
+	 * 			|!isValidTimeSinceMove(timeSinceEndMove)
+	 * @note	We consider this method a part of advanceTime() and implement it defensively.
 	 */
 	@Raw
-	private void setTimeSinceEndMove(double timeSinceEndMove){
-		if(isValidTimeSinceMove(timeSinceEndMove))
-			this.timeSinceEndMove=timeSinceEndMove;
+	private void setTimeSinceEndMove(double timeSinceEndMove) throws IllegalArgumentException{
+		if(!isValidTimeSinceMove(timeSinceEndMove))
+			throw new IllegalArgumentException();
+		this.timeSinceEndMove=timeSinceEndMove;
 	}
 	
 	/**
 	 * Return the time since mazub has last started moving.
+	 * @note	We consider this method a part of advanceTime() and implement it defensively.
 	 */
 	@Basic
 	@Raw
@@ -865,15 +890,18 @@ public class Mazub {
 	 * Set the time since mazub has last started moving.
 	 * @param 	timeSinceStartMove
 	 * 			The time since mazub last started moving.
-	 * @post	If the given time since mazub last started moving is greater than or equal to zero than t
-	 * 			the new time since this mazub last started moving is equal to the given time since mazub last started moving.
-	 * 			| if(timeSinceStartMove>=0)
-	 * 			| 	new.getTimeSinceStartMove()==timeSinceStartMove
+	 * @post	The new time since this Mazub last started moving is equal to the given time since mazub last started moving.
+	 * 			|new.getTimeSinceStartMove()==timeSinceStartMove
+	 * @throws	IllegalArgumentException
+	 * 			The given time since Mazub last started moving is not valid.
+	 * 			|!isValidTimeSinceMove(timeSinceStartMove)
+	 * @note	We consider this method a part of advanceTime() and implement it defensively.
 	 */
 	@Raw
-	private void setTimeSinceStartMove(double timeSinceStartMove){
-		if(isValidTimeSinceMove(timeSinceStartMove))
-			this.timeSinceStartMove=timeSinceStartMove;
+	private void setTimeSinceStartMove(double timeSinceStartMove) throws IllegalArgumentException{
+		if(!isValidTimeSinceMove(timeSinceStartMove))
+			throw new IllegalArgumentException();
+		this.timeSinceStartMove=timeSinceStartMove;
 	}
 	
 	/**
@@ -1124,15 +1152,14 @@ public class Mazub {
 	
 	/**
 	 * Returns the image in the image array of this Mazub at the given sprite index.
-	 * @throws	IllegalArgumenException
-	 * 			The given sprite index is not valid.
-	 * 			| !isValidSpriteIndex(spriteIndex)
+	 * @pre		The given sprite index must be a valid sprite index.
+	 * 			| isValidSpriteIndex(spriteIndex)
 	 */
 	@Basic
 	@Raw
 	public Sprite getImageAt(int spriteIndex) throws IllegalArgumentException{
-		if (!isValidSpriteIndex(spriteIndex))
-			throw new IllegalArgumentException();
+		assert isValidSpriteIndex(spriteIndex):
+			"The given sprite index is not a valid sprite index!";
 		return this.getImages()[spriteIndex];
 	}
 	
@@ -1164,16 +1191,22 @@ public class Mazub {
 	 * Sets the image array of this Mazub to the given images array.
 	 * @param 	images
 	 * 			An image array.
+	 * @pre 	The length of the given image array must be a valid length.
+	 * 			|isValidNbImages(images.length)
+	 * @pre		The images in the given image array must all be valid images.
+	 * 			| for i in 1..images.length:
+	 * 			|	isValidImage(images[i])
 	 * @post	The new image array of this Mazub is equal to copy of he given image array.
 	 * 			| this.images==images.clone()
-	 * @throws 	IllegalArgumentException
-	 * 			The length of the given image array is not valid.
-	 * 			| !isValidNbImages(images.length)
 	 */
 	@Raw
-	public void setImages(Sprite... images) throws IllegalArgumentException{
-		if (!isValidNbImages(images.length))
-			throw new IllegalArgumentException();
+	public void setImages(Sprite... images){
+		assert (isValidNbImages(images.length)):
+			"Not a valid number of images in the given image array!";
+		for (Sprite image:images){
+			assert isValidImage(image):
+				"The given image array contains at least one image that isn't valid!";		
+		}
 		this.images=images.clone();
 	}
 	
