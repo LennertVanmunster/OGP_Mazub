@@ -341,11 +341,15 @@ public class Mazub {
 	@Basic 
 	@Raw
 	public double getInitialHorizontalVelocity(){
+<<<<<<< HEAD
 		if (this.isDucking())
 			return 1;
 		else 
 			return this.initialHorizontalVelocity;	
 		
+=======
+			return this.initialHorizontalVelocity;	
+>>>>>>> origin/master
 	}
 	
 	/**
