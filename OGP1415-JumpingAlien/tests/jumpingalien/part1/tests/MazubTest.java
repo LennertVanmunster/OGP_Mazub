@@ -25,7 +25,7 @@ public class MazubTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		staticTestMazub = new Mazub(0, 0, 0, 0, 2, 3, false, 1,spriteArrayForSize(2, 2));
-		//movingMazub = new Mazub(0, 0, 2, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		movingMazub = new Mazub(0, 0, 2, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
 		duckingMazub = new Mazub(0, 0, 0, 0, 1, 3, true, 1,spriteArrayForSize(2, 2));
 		notDuckingMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
 		jumpingMazub1 = new Mazub(0, 0, 0, 8, 1, 3, false, 1,spriteArrayForSize(2, 2));
@@ -40,7 +40,7 @@ public class MazubTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		testMazub = new Mazub(0, 0,spriteArrayForSize(2, 2));
+		testMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
 		notJumpingTestMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
 		JumpingTestMazub = new Mazub(0, 40, 0, 3, 1, 3, false, 1,spriteArrayForSize(2, 2));
 		notDuckingTestMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
@@ -163,11 +163,11 @@ public class MazubTest {
 		assertFalse(Mazub.isValidLocation(Double.NaN,Double.NaN));
 	}
 	
-//	@Test
-//	public void testIsMovingHorizontally_TrueCase(){
-//		assertTrue(movingMazub.isMovingHorizontally());
-//		
-//	}
+	@Test
+	public void testIsMovingHorizontally_TrueCase(){
+		assertTrue(movingMazub.isMovingHorizontally());
+		
+	}
 	
 	@Test
 	public void testIsMovingHorizontally_FalseCase(){
@@ -401,15 +401,15 @@ public class MazubTest {
 		
 	}
 
-//	@Test
-//	public void testAdvanceTime_Moving() {
-//		testMazub = new Mazub(0, 0, 1, 1, 1, 3, false, 1,spriteArrayForSize(2, 2));
-//		testMazub.advanceTime(0.15);
-//		assertEquals(testMazub.getHorizontalLocation(),16);
-//		assertEquals(testMazub.getVerticalLocation(),4);
-//		assertTrue(Util.fuzzyEquals(testMazub.getHorizontalVelocity(),1.135));
-//		assertTrue(Util.fuzzyEquals(testMazub.getVerticalVelocity(),-0.5));		
-//	}
+	@Test
+	public void testAdvanceTime_Moving() {
+		testMazub = new Mazub(0, 0, 1, 1, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		testMazub.advanceTime(0.15);
+		assertEquals(testMazub.getHorizontalLocation(),16);
+		assertEquals(testMazub.getVerticalLocation(),3);
+		assertTrue(Util.fuzzyEquals(testMazub.getHorizontalVelocity(),1.135));
+		assertTrue(Util.fuzzyEquals(testMazub.getVerticalVelocity(),-0.5));		
+	}
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void testAdvanceTime_Exception() throws Exception{
