@@ -5,8 +5,6 @@ import jumpingalien.model.Mazub;
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,12 +22,12 @@ public class MazubTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		staticTestMazub = new Mazub(0, 0, 0, 0, 2, 3, false, 1,spriteArrayForSize(2, 2));
-		movingMazub = new Mazub(0, 0, 2, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
-		duckingMazub = new Mazub(0, 0, 0, 0, 1, 3, true, 1,spriteArrayForSize(2, 2));
-		notDuckingMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
-		jumpingMazub1 = new Mazub(0, 0, 0, 8, 1, 3, false, 1,spriteArrayForSize(2, 2));
-		jumpingMazub2 = new Mazub(0, 40, 0, 3, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		staticTestMazub = new Mazub(0, 0, 0, 0, 2, 3, false,spriteArrayForSize(2, 2));
+		movingMazub = new Mazub(0, 0, 2, 0, 1, 3, false, spriteArrayForSize(2, 2));
+		duckingMazub = new Mazub(0, 0, 0, 0, 1, 3, true, spriteArrayForSize(2, 2));
+		notDuckingMazub = new Mazub(0, 0, 0, 0, 1, 3, false, spriteArrayForSize(2, 2));
+		jumpingMazub1 = new Mazub(0, 0, 0, 8, 1, 3, false, spriteArrayForSize(2, 2));
+		jumpingMazub2 = new Mazub(0, 40, 0, 3, 1, 3, false, spriteArrayForSize(2, 2));
 	}
 
 	private Mazub testMazub;
@@ -40,20 +38,12 @@ public class MazubTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		testMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
-		notJumpingTestMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
-		JumpingTestMazub = new Mazub(0, 40, 0, 3, 1, 3, false, 1,spriteArrayForSize(2, 2));
-		notDuckingTestMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
-		duckingTestMazub = new Mazub(0, 0, 0, 0, 1, 3, true, 1,spriteArrayForSize(2, 2));
+		testMazub = new Mazub(0, 0, 0, 0, 1, 3, false, spriteArrayForSize(2, 2));
+		notJumpingTestMazub = new Mazub(0, 0, 0, 0, 1, 3, false, spriteArrayForSize(2, 2));
+		JumpingTestMazub = new Mazub(0, 40, 0, 3, 1, 3, false, spriteArrayForSize(2, 2));
+		notDuckingTestMazub = new Mazub(0, 0, 0, 0, 1, 3, false, spriteArrayForSize(2, 2));
+		duckingTestMazub = new Mazub(0, 0, 0, 0, 1, 3, true, spriteArrayForSize(2, 2));
 	}
-
-//	@After
-//	public void tearDown() throws Exception {
-//	}
-//
-//	@AfterClass
-//	public static void tearDownAfterClass() throws Exception {
-//	}
 
 	@Test
 	public void testSetHorizontalLocation_LegalCase() {
@@ -224,16 +214,81 @@ public class MazubTest {
 		testMazub.setMaximumHorizontalVelocity(testMazub.getInitialHorizontalVelocity()-0.1);
 	}
 	
-//	@Test
-//	public boolean testCanHaveAsInitialHorizontalVelocity_TrueCase() {
-//		assertTrue();
-//	}
+	@Test
+	public void testCanHaveAsInitialHorizontalVelocity_TrueCases() {
+		assertTrue(staticTestMazub.canHaveAsInitialHorizontalVelocity(1));
+		assertTrue(staticTestMazub.canHaveAsInitialHorizontalVelocity(1.5));
+		assertTrue(staticTestMazub.canHaveAsInitialHorizontalVelocity(2.99));
+	}
 
-//	@Test
-//	public void testIsValidMaximumHorizontalVelocity() {
-//		fail("Not yet implemented");
-//	}
+	@Test
+	public void testCanHaveAsInitialHorizontalVelocity_FalseCases() {
+		assertFalse(staticTestMazub.canHaveAsInitialHorizontalVelocity(0.99));
+		assertFalse(staticTestMazub.canHaveAsInitialHorizontalVelocity(-1.5));
+		assertFalse(staticTestMazub.canHaveAsInitialHorizontalVelocity(3.01));
+	}
+	
+	@Test
+	public void testCanHaveAsMaximumHorizontalVelocity_TrueCases() {
+		assertTrue(staticTestMazub.canHaveAsMaximumHorizontalVelocity(2));
+		assertTrue(staticTestMazub.canHaveAsMaximumHorizontalVelocity(2.1));
+		assertTrue(staticTestMazub.canHaveAsMaximumHorizontalVelocity(5));
+		assertTrue(staticTestMazub.canHaveAsMaximumHorizontalVelocity(Double.POSITIVE_INFINITY));
+	}
+	
+	@Test
+	public void testCanHaveAsMaximumHorizontalVelocity_FalseCases() {
+		assertFalse(staticTestMazub.canHaveAsMaximumHorizontalVelocity(1.99));
+		assertFalse(staticTestMazub.canHaveAsMaximumHorizontalVelocity(0));
+		assertFalse(staticTestMazub.canHaveAsMaximumHorizontalVelocity(-1.6));
+		assertFalse(staticTestMazub.canHaveAsMaximumHorizontalVelocity(Double.NEGATIVE_INFINITY));
+	}
 
+	@Test
+	public void testMatchesMaximumHorizontalVelocityInitialHorizontalVelocity_TrueCase(){
+		assertTrue(Mazub.matchesMaximumHorizontalVelocityInitialHorizontalVelocity(1, 1));
+		assertTrue(Mazub.matchesMaximumHorizontalVelocityInitialHorizontalVelocity(1.1, 1));
+		assertTrue(Mazub.matchesMaximumHorizontalVelocityInitialHorizontalVelocity(19.3, 2));
+		assertTrue(Mazub.matchesMaximumHorizontalVelocityInitialHorizontalVelocity(Double.POSITIVE_INFINITY
+				, 2));
+		assertTrue(Mazub.matchesMaximumHorizontalVelocityInitialHorizontalVelocity(Double.POSITIVE_INFINITY
+				, Double.POSITIVE_INFINITY));
+	}
+	
+	@Test
+	public void testMatchesMaximumHorizontalVelocityInitialHorizontalVelocity_FalseCase(){
+		assertFalse(Mazub.matchesMaximumHorizontalVelocityInitialHorizontalVelocity(0.99, 1));
+		assertFalse(Mazub.matchesMaximumHorizontalVelocityInitialHorizontalVelocity(-1.4, 2));
+		assertFalse(Mazub.matchesMaximumHorizontalVelocityInitialHorizontalVelocity(Double.NEGATIVE_INFINITY
+				, 2));
+	}
+	
+	@Test
+	public void testIsPossibleInitialHorizontalVelocity_TrueCase(){
+		assertTrue(Mazub.isPossibleInitialHorizontalVelocity(1));
+		assertTrue(Mazub.isPossibleInitialHorizontalVelocity(1.1));
+		assertTrue(Mazub.isPossibleInitialHorizontalVelocity(14));
+	}
+	
+
+	@Test
+	public void testIsPossibleInitialHorizontalVelocity_TrueCase_PositiveInfinity(){
+		assertTrue(Mazub.isPossibleInitialHorizontalVelocity(Double.POSITIVE_INFINITY));
+	}
+	
+
+	@Test
+	public void testIsPossibleInitialHorizontalVelocity_FalseCase(){
+		assertFalse(Mazub.isPossibleInitialHorizontalVelocity(0));
+		assertFalse(Mazub.isPossibleInitialHorizontalVelocity(0.99));
+		assertFalse(Mazub.isPossibleInitialHorizontalVelocity(-1));
+	}
+	
+	@Test
+	public void testIsPossibleInitialHorizontalVelocity_FalseCase_NegativeInfinity(){
+		assertFalse(Mazub.isPossibleInitialHorizontalVelocity(Double.NEGATIVE_INFINITY));
+	}
+	
 	@Test
 	public void testCanHaveAsHorizontalVelocity_TrueCase() {
 		assertTrue(staticTestMazub.canHaveAsHorizontalVelocity(2));
@@ -392,7 +447,7 @@ public class MazubTest {
 	
 	@Test
 	public void testAdvanceTime_NotMoving() {
-		testMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		testMazub = new Mazub(0, 0, 0, 0, 1, 3, false, spriteArrayForSize(2, 2));
 		testMazub.advanceTime(0.15);
 		assertEquals(testMazub.getHorizontalLocation(),0);
 		assertEquals(testMazub.getVerticalLocation(),0);
@@ -403,7 +458,7 @@ public class MazubTest {
 
 	@Test
 	public void testAdvanceTime_Moving() {
-		testMazub = new Mazub(0, 0, 1, 1, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		testMazub = new Mazub(0, 0, 1, 1, 1, 3, false, spriteArrayForSize(2, 2));
 		testMazub.advanceTime(0.15);
 		assertEquals(testMazub.getHorizontalLocation(),16);
 		assertEquals(testMazub.getVerticalLocation(),3);
@@ -413,7 +468,7 @@ public class MazubTest {
 	
 	@Test (expected = IllegalArgumentException.class)
 	public void testAdvanceTime_Exception() throws Exception{
-		testMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		testMazub = new Mazub(0, 0, 0, 0, 1, 3, false, spriteArrayForSize(2, 2));
 		testMazub.advanceTime(0.21);
 	}
 	
