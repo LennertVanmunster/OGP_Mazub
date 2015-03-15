@@ -824,7 +824,7 @@ public class Mazub {
 	 * 			than 0.2s and not less than zero.
 	 */
 	public static boolean isValidDeltaTime(double deltaTime){
-		return (deltaTime > 0) && (deltaTime < 0.2);
+		return Util.fuzzyGreaterThanOrEqualTo(deltaTime,0) && (deltaTime < 0.2);
 	}
 	
 	/**
@@ -832,7 +832,7 @@ public class Mazub {
 	 */
 	@Basic
 	@Raw
-	private double getTimeSinceEndMove(){
+	public double getTimeSinceEndMove(){
 		return this.timeSinceEndMove;
 	}
 	
@@ -857,7 +857,7 @@ public class Mazub {
 	 */
 	@Basic
 	@Raw
-	private double getTimeSinceStartMove(){
+	public double getTimeSinceStartMove(){
 		return this.timeSinceStartMove;
 	}
 	

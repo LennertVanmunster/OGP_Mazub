@@ -27,10 +27,18 @@ public class MazubTest {
 	}
 
 	private Mazub testMazub;
+	private Mazub notJumpingTestMazub;
+	private Mazub JumpingTestMazub;
+	private Mazub notDuckingTestMazub;
+	private Mazub duckingTestMazub;
 	
 	@Before
 	public void setUp() throws Exception {
 		testMazub = new Mazub(0, 0,spriteArrayForSize(2, 2));
+		notJumpingTestMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		JumpingTestMazub = new Mazub(0, 40, 0, 3, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		notDuckingTestMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		duckingTestMazub = new Mazub(0, 0, 0, 0, 1, 3, true, 1,spriteArrayForSize(2, 2));
 	}
 
 	@After
@@ -239,6 +247,18 @@ public class MazubTest {
 	}
 	
 	@Test
+	public void testIsValidDirection_TrueCases() {
+		assertTrue(Mazub.isValidDirection(1));
+		assertTrue(Mazub.isValidDirection(-1));
+	}
+
+	@Test
+	public void testIsValidDirection_FalseCases() {
+		assertFalse(Mazub.isValidDirection(2));
+		assertFalse(Mazub.isValidDirection(-3));
+	}
+	
+	@Test
 	public void testIsDucking_TrueCase() {
 		assertTrue(duckingMazub.isDucking());
 	}
@@ -269,60 +289,151 @@ public class MazubTest {
 		assertFalse(staticTestMazub.isJumping());
 	}
 	
-//	@Test
-//	public void testStartMove() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testIsValidDirection() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testEndMove() {
-//		fail("Not yet implemented");
-//	}
-//
+	@Test
+	public void testStartMove() {
+		testMazub.startMove(1);
+		assertTrue(Util.fuzzyEquals(testMazub.getHorizontalVelocity(), 
+				testMazub.getInitialHorizontalVelocity()));
+		assertTrue(Util.fuzzyEquals(testMazub.getTimeSinceStartMove(),0));
+		assertTrue(Util.fuzzyEquals(testMazub.getTimeSinceEndMove(),0));
+		
+	}
+	
+	@Test
+	public void testEndMove() {
+		testMazub.startMove(1);
+		testMazub.advanceTime(0.19);
+		testMazub.endMove();
+		assertTrue(Util.fuzzyEquals(testMazub.getHorizontalVelocity(),0));
+		assertTrue(Util.fuzzyEquals(testMazub.getTimeSinceStartMove(),0));
+		assertTrue(Util.fuzzyEquals(testMazub.getTimeSinceEndMove(),0));
+	}
+	
+	@Test
+	public void testStartJump() {
+		notJumpingTestMazub.startJump();
+		assertTrue(notJumpingTestMazub.isJumping());
+		assertTrue(Util.fuzzyEquals(notJumpingTestMazub.getVerticalVelocity(),
+				Mazub.getInitialVerticalVelocity()));
+	}
+
+	@Test
+	public void testEndJump() {
+		JumpingTestMazub.endJump();
+		assertTrue(JumpingTestMazub.isJumping());
+		assertTrue(Util.fuzzyEquals(notJumpingTestMazub.getVerticalVelocity(),0));
+	}	
+
+	@Test
+	public void testStartDuck() {
+		notDuckingTestMazub.startDuck();
+		assertTrue(notDuckingTestMazub.isDucking());
+		assertTrue(Util.fuzzyEquals(notDuckingTestMazub.getMaximumHorizontalVelocity(),1));
+	}
+
+	@Test
+	public void testEndDuck() {
+		duckingTestMazub.endDuck();
+		assertFalse(duckingTestMazub.isDucking());
+		assertTrue(Util.fuzzyEquals(duckingTestMazub.getMaximumHorizontalVelocity(),
+				duckingTestMazub.getMaximumHorizontalVelocityNotDucking()));
+	}
+	
 //	@Test
 //	public void testAdvanceTime() {
 //		fail("Not yet implemented");
 //	}
-//
-//	@Test
-//	public void testIsValidDeltaTime() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testStartJump() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testEndJump() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testStartDuck() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testEndDuck() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testSetCurrentSpriteIndex() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	public void testSetImages() {
-//		fail("Not yet implemented");
-//	}
-//
+
+	@Test
+	public void testIsValidDeltaTime_TrueCase() {
+		assertTrue(Mazub.isValidDeltaTime(0.1));
+	}
+
+	@Test
+	public void testIsValidDeltaTime_TrueCase_0() {
+		assertTrue(Mazub.isValidDeltaTime(0));
+	}
+	
+	@Test
+	public void testIsValidDeltaTime_FalseCase_Negative() {
+		assertFalse(Mazub.isValidDeltaTime(-0.15));
+	}
+	
+	@Test
+	public void testIsValidDeltaTime_FalseCase_GreaterThanMax() {
+		assertFalse(Mazub.isValidDeltaTime(0.21));
+	}
+	
+	@Test
+	public void testIsValidDeltaTime_FalseCase_NaN() {
+		assertFalse(Mazub.isValidDeltaTime(Float.NaN));
+	}
+	
+
+	@Test
+	public void testIsValidNbImages_TrueCases(){
+		assertTrue(Mazub.isValidNbImages(10)); //min
+		assertTrue(Mazub.isValidNbImages(16));
+	}
+	
+	@Test
+	public void testIsValidNbImages_FalseCase_TooFew(){
+		assertFalse(Mazub.isValidNbImages(6));
+		assertFalse(Mazub.isValidNbImages(0));
+	}
+	
+	@Test
+	public void testIsValidNbImages_FalseCase_Negative(){
+		assertFalse(Mazub.isValidNbImages(-8));
+		assertFalse(Mazub.isValidNbImages(-10));
+		assertFalse(Mazub.isValidNbImages(-11));
+	}
+	
+	@Test
+	public void testIsValidNbImages_FalseCase_Odd(){
+		assertFalse(Mazub.isValidNbImages(7));
+		assertFalse(Mazub.isValidNbImages(11));
+		assertFalse(Mazub.isValidNbImages(25));
+	}
+	
+	@Test
+	public void testIsValidSpriteIndex_TrueCases(){
+		assertTrue(staticTestMazub.isValidSpriteIndex(0)); //min
+		assertTrue(staticTestMazub.isValidSpriteIndex(30)); //max
+		assertTrue(staticTestMazub.isValidSpriteIndex(15));
+	}
+	
+	@Test
+	public void testIsValidSpriteIndex_FalseCases_NegativeIndex(){
+		assertFalse(staticTestMazub.isValidSpriteIndex(-1));
+		assertFalse(staticTestMazub.isValidSpriteIndex(-30));
+		assertFalse(staticTestMazub.isValidSpriteIndex(-15));
+	}
+	
+	@Test
+	public void testIsValidSpriteIndex_FalseCases_GreaterThanMax(){
+		assertFalse(staticTestMazub.isValidSpriteIndex(31));
+		assertFalse(staticTestMazub.isValidSpriteIndex(32));
+	}
+	
+	@Test
+	public void testIsValidImage_TrueCase(){
+		assertTrue(Mazub.isValidImage(staticTestMazub.getCurrentSprite()));
+	}
+	
+	@Test
+	public void testIsValidImage_FalseCase(){
+		assertFalse(Mazub.isValidImage(null));
+	}
+	
+	@Test
+	public void testSetImages() {
+		Sprite images [] = spriteArrayForSize(5, 10,16);
+		testMazub.setImages(images);
+		assertArrayEquals(testMazub.getImages(),images);
+		assertEquals(testMazub.getNbImages(),16);
+		assertEquals(testMazub.getWidth(),5);
+		assertEquals(testMazub.getHeight(),10);
+	}
 
 }
