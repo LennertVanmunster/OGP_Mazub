@@ -6,6 +6,11 @@ import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
+ * A class of Mazubs, rectangular player-controlled objects in the game jumping alien,
+ * involving a horizontal location, vertical location, maximum horizontal location, maximum vertical location,
+ * horizontal velocity, vertical velocity, initial horizontal velocity, maximum horizontal velocity, 
+ * initial vertical velocity, horizontal acceleration, vertical acceleration and an array of sprites.
+ * 
  * @invar	The bottom-left pixel of each Mazub must have a valid location in the game world.
  * 			|isValidLocation(getHorizontalLocation(),getVerticalLocation())
  * @invar	Each Mazub can have its horizontal velocity as its horizontal velocity.
@@ -33,26 +38,26 @@ import be.kuleuven.cs.som.annotate.*;
  */
 public class Mazub {
 	/**
-	 *Initialize a new Mazub with given horizontal and vertical location,
-	 *horizontal and vertical velocity, initial and maximum horizontal velocity,
-	 *ducking state and a set of sprites. 
+	 * Initialize a new Mazub with given horizontal and vertical location,
+	 * horizontal and vertical velocity, initial and maximum horizontal velocity,
+	 * ducking state and an array of sprites. 
 	 * 
 	 * @param 	horizontalLocation
-	 * 		  	The horizontal location of Mazub.
+	 * 		  	The horizontal location for this new Mazub.
 	 * @param 	verticalLocation
-	 * 		  	The vertical location of Mazub.
+	 * 		  	The vertical location for this new Mazub.
 	 * @param 	horizontalVelocity
-	 * 		  	The horizontal velocity of Mazub.
+	 * 		  	The horizontal velocity for this new Mazub.
 	 * @param 	verticalVelocity
-	 * 		  	The vertical velocity of Mazub.
+	 * 		  	The vertical velocity for this new Mazub.
 	 * @param 	initialHorizontalVelocityNotDucking
-	 * 		  	The initial horizontal velocity of Mazub when he starts running and is not ducking.
+	 * 		  	The initial horizontal velocity for this new Mazub when not ducking.
 	 * @param 	maximumHorizontalVelocityNotDucking
-	 * 		  	The maximum horizontal velocity of Mazub while he is not ducking.
+	 * 		  	The maximum horizontal velocity for this new Mazub when not ducking.
 	 * @param 	ducking
-	 * 		  	Parameter to tell if Mazub is ducking or not.
+	 * 		  	The ducking state for this new Mazub.
 	 * @param 	images
-	 * 		  	Array of sprites to display Mazub.
+	 * 		  	Array of sprites to display Mazub for this new Mazub.
 	 * @post	The horizontal location of this new Mazub is equal to the 
 	 * 			given horizontal location.
 	 * 			|new.getHorizontalLocation() == horizontalLocation
@@ -133,13 +138,30 @@ public class Mazub {
 		this.setImages(images);
 	}
 	
+	/**
+	 * Initialize this new Mazub to a Mazub with a horizontal and vertical velocity of 0m/s, 
+	 * an initial horizontal velocity of 1m/s, a maximum horizontal velocity of 3m/s and a false ducking state
+	 * with the given horizontal location, vertical location and array of sprites.
+	 * 
+	 * @param 	horizontalLocation
+	 * 			The horizontal location for this new Mazub.
+	 * @param 	verticalLocation
+	 * 			The vertical location for this new Mazub.
+	 * @param	images
+	 * 			An array of sprites for this new Mazub.
+	 * @effect	This new Mazub is initialized with the given horizontal location as its horizontal location,
+	 * 			the given vertical location as its vertical location, the given array of sprites as its sprites.
+	 * 			This new Mazub's initial horizontal velocity is set to 0, its maximum horizontal velocity is set to 3
+	 * 			and its ducking state is set to false.
+	 * 			|this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, images)
+	 */
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
-		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, images);
+		this(horizontalLocation, verticalLocation, 0, 0, 2, 3, false, images);
 	}
 	
 	/**
-	 * Returns the maximum horizontal location of all Mazubs.
+	 * Return the maximum horizontal location of all Mazubs.
 	 */
 	@Basic 
 	@Immutable
@@ -148,7 +170,7 @@ public class Mazub {
 	}
 	
 	/**
-	 * Returns the maximum vertical location of all Mazubs.
+	 * Return the maximum vertical location of all Mazubs.
 	 */
 	@Basic
 	@Immutable
@@ -157,7 +179,7 @@ public class Mazub {
 	}
 	
 	/**
-	 * Returns the horizontal location of this Mazub as an integer number.
+	 * Return the effective horizontal location of this Mazub as an integer number.
 	 */
 	@Raw
 	public int getHorizontalLocation(){
@@ -165,7 +187,7 @@ public class Mazub {
 	}
 	
 	/**
-	 * Returns the vertical location of this Mazub as an integer number.
+	 * Return the effective vertical location of this Mazub as an integer number.
 	 */
 	@Raw
 	public int getVerticalLocation(){
@@ -173,11 +195,11 @@ public class Mazub {
 	}
 	
 	/**
-	 * Set the horizontal location of this Mazub to the given location.
+	 * Set the effective horizontal location of this Mazub to the given horizontal location.
 	 * 
 	 * @param 	horizontalLocation
-	 * 			The new horizontal location for this mazub.
-	 * @effect	The new horizontal location of this mazub is set to the given horizontal location.
+	 * 			The new effective horizontal location for this Mazub.
+	 * @effect	The new effective horizontal location of this Mazub is set to the given horizontal location.
 	 * 			| this.setHorizontalLocationNotRounded(horizontalLocation)
 	 */
 	@Raw
@@ -186,11 +208,11 @@ public class Mazub {
 	}
 	
 	/**
-	 * Set the vertical location of this Mazub to the given location.
+	 * Set the effective vertical location of this Mazub to the given vertical location.
 	 * 
-	 * @param 	verticalLocationNotRounded
-	 * 		  	The new vertical location.
-	 * @effect  The new vertical location of this mazub is set to the given vertical location.
+	 * @param 	verticalLocation
+	 * 		  	The new effective vertical location for this Mazub.
+	 * @effect  The new effective vertical location of this Mazub is set to the given vertical location.
 	 * 		  	| this.setVerticalLocationNotRounded(verticalLocation)
 	 */
 	@Raw
@@ -199,13 +221,13 @@ public class Mazub {
 	}
 	
 	/**
-	 * Check whether the given horizontal location is a valid location.
+	 * Check whether the given horizontal location is a valid horizontal location.
 	 * 
 	 * @param 	horizontalLocation
 	 * 		  	The horizontal location to be checked.
-	 * @return	True if and only if the horizontal location is greater than or equal to 0
-	 * 			and smaller than or equal to the maximum horizontal location.
-	 * 			| result == ((horizontalLocation >= 0 ) && (horizontalLocation <= maximumHorizontalLocation));
+	 * @return	True if and only if the given horizontal location is greater than or equal to 0
+	 * 			and smaller than the maximum horizontal location plus one.
+	 * 			| result == ((horizontalLocation >= 0 ) && (horizontalLocation < maximumHorizontalLocation+1))
 	 */
 	@Raw
 	public static boolean isValidHorizontalLocation(double horizontalLocation){
@@ -214,13 +236,13 @@ public class Mazub {
 	
 	
 	/**
-	 * Check whether the given vertical location is a valid location.
+	 * Check whether the given vertical location is a valid vertical location.
 	 * 
 	 * @param 	verticalLocation
-	 * 		  	The vertical location.
-	 * @return	True if and only if the vertical location is
-	 * 			in the range of 0 to maximumVerticalLocation.
-	 * 			|result == ((verticalLocation >= 0 ) && (verticalLocation <= maximumVerticalLocation));
+	 * 		  	The vertical location to be checked.
+	 * @return	True if and only if the given vertical location is greater than or equal to 0
+	 * 			and smaller than the maximums vertical location plus one.
+	 * 			|result == ((verticalLocation >= 0 ) && (verticalLocation < maximumVerticalLocation+1))
 	 */
 	@Raw
 	public static boolean isValidVerticalLocation(double verticalLocation){
@@ -234,15 +256,15 @@ public class Mazub {
 	 * 			The horizontal location to be checked.
 	 * @param 	verticalLocation
 	 * 		  	The vertical location to be checked.
-	 * @return	True if and only if the horizontal and vertical location are valid locations.
-	 * 			|result == (isValidHorizontalLocation(horizontalLocation) && isValidVerticalLocation(verticalLocation));
+	 * @return	True if and only if both the horizontal and vertical location are valid locations.
+	 * 			|result == (isValidHorizontalLocation(horizontalLocation) && isValidVerticalLocation(verticalLocation))
 	 */
 	public static boolean isValidLocation(double horizontalLocation, double verticalLocation){
 		return (isValidHorizontalLocation(horizontalLocation) && isValidVerticalLocation(verticalLocation));
 	}
 	
 	/**
-	 * Returns the calculated horizontal location of this Mazub.
+	 * Return the calculated horizontal location of this Mazub.
 	 */
 	@Basic
 	@Raw
@@ -251,7 +273,7 @@ public class Mazub {
 	}
 	
 	/**
-	 *Returns the vertical location of this Mazub.
+	 * Return the calculated vertical location of this Mazub.
 	 */
 	@Basic
 	@Raw
@@ -260,11 +282,11 @@ public class Mazub {
 	}
 	
 	/**
-	 * Set the horizontal location of this Mazub to the given location.
+	 * Set the calculated horizontal location of this Mazub to the given location.
 	 * 
 	 * @param 	horizontalLocationNotRounded
 	 * 		  	The new calculated horizontal location for this mazub.
-	 * @post  	The new horizontal location of this mazub is set to the given horizontal location.
+	 * @post  	The new calculated horizontal location of this mazub is set to the given calculated horizontal location.
 	 * 		  	| new.getHorizontalLocationNotRounded() = this.horizontalLocationNotRounded
 	 * @throws	IllegalArgumentException
 	 * 			The given horizontal location is not valid.
@@ -282,7 +304,7 @@ public class Mazub {
 	 * 
 	 * @param 	verticalLocationNotRounded
 	 * 		  	The new calculated vertical location.
-	 * @post  	The new calculated vertical location of this mazub is set to the given vertical location.
+	 * @post  	The new calculated vertical location of this Mazub is set to the given vertical location.
 	 * 		  	| new.getVerticalLocationNotRounded() = verticalLocationNotRounded
 	 * @throws	IllegalArgumentException
 	 * 			The given vertical location is not valid.
@@ -297,12 +319,12 @@ public class Mazub {
 	}
 	
 	/**
-	 * Variable registering the horizontal location of this Mazub.
+	 * Variable registering the calculated horizontal location of this Mazub.
 	 */
 	private double horizontalLocationNotRounded = 0;
 	
 	/**
-	 * Variable registering the vertical location of this Mazub.
+	 * Variable registering the calculated  vertical location of this Mazub.
 	 */
 	private double verticalLocationNotRounded = 0;
 	
@@ -318,10 +340,8 @@ public class Mazub {
 	
 	
 	
-	
-	
 	/**
-	 * Returns the horizontal velocity of this Mazub.
+	 * Return the horizontal velocity of this Mazub.
 	 */
 	@Basic
 	@Raw 
@@ -330,7 +350,7 @@ public class Mazub {
 	}
 	
 	/**
-	 * Returns the vertical velocity of this Mazub.
+	 * Return the vertical velocity of this Mazub.
 	 */
 	@Basic 
 	@Raw
@@ -339,7 +359,14 @@ public class Mazub {
 	}
 	
 	/**
-	 * Returns the initial horizontal velocity of this Mazub.
+	 * Return the initial horizontal velocity of this Mazub.
+	 * 
+	 * @return	If the ducking state of this Mazub is true, the initial horizontal velocity of this Mazub is equal to 1.
+	 * 			Otherwise the initial horizontal velocity of this Mazub is equal to its initial horizontal velocity when not ducking.
+	 * 			|if (this.isDucking())
+	 * 			|	result==1
+	 * 			|else
+	 * 			| 	result==this.getInitialHorizontalVelocityNotDucking()
 	 */
 	@Raw
 	public double getInitialHorizontalVelocity(){
@@ -349,6 +376,9 @@ public class Mazub {
 			return this.getInitialHorizontalVelocityNotDucking();
 	}
 	
+	/**
+	 * Return the initial horizontal velocity when not ducking of this Mazub.
+	 */
 	@Basic
 	@Raw
 	@Immutable
@@ -357,16 +387,23 @@ public class Mazub {
 	}
 	
 	/**
-	 * Returns the initial vertical velocity of all Mazubs.
+	 * Return the initial vertical velocity of all Mazubs.
 	 */
 	@Basic
 	@Immutable
 	public static double getInitialVerticalVelocity(){
-		return INITIAL_VERTICAL_VElOCITY;
+		return INITIAL_VERTICAL_VELOCITY;
 	}
 	
 	/**
-	 * Returns the maximum horizontal velocity while not ducking of this Mazub.
+	 * Return the maximum horizontal velocity when not ducking of this Mazub.
+	 * 
+	 * @return	If the ducking state of this Mazub is true, the maximum horizontal velocity of this Mazub is equal to 1.
+	 * 			Otherwise the maximum horizontal velocity of this Mazub is equal to its maximum horizontal velocity when not ducking.
+	 * 			|if (this.isDucking())
+	 * 			|	result==1
+	 * 			|else
+	 * 			| 	result==this.getMaximumHorizontalVelocityNotDucking()
 	 */
 	@Raw
 	public double getMaximumHorizontalVelocity(){
@@ -376,6 +413,9 @@ public class Mazub {
 			return this.getMaximumHorizontalVelocityNotDucking();
 	}
 	
+	/**
+	 * Return the maximum horizontal velocity when not ducking of this Mazub.
+	 */
 	@Basic
 	@Raw
 	@Immutable
@@ -385,6 +425,7 @@ public class Mazub {
 	
 	/**
 	 * Check whether this Mazub is currently moving horizontally.
+	 * 
 	 * @return	True if the current horizontal velocity of this Mazub is not equal to zero.
 	 * 			| result == this.getHorizontalVelocity()!=0
 	 */
@@ -402,13 +443,13 @@ public class Mazub {
 	 * 			of Mazub.
 	 * 			|new.getHorizontalVelocity() = horizontalVelocity
 	 * @throws	IllegalArgumentException
-	 * 			The given horizontal velocity is not valid.
-	 * 			|!canHaveAsHorizontalVelocity(horizontalVelocity)
+	 * 			The given horizontal velocity is not a valid horizontal velocity.
+	 * 			|!this.canHaveAsHorizontalVelocity(horizontalVelocity)
 	 */
 	@Raw
 	public void setHorizontalVelocity(double horizontalVelocity) 
 		throws IllegalArgumentException{
-		if(!canHaveAsHorizontalVelocity(horizontalVelocity))
+		if(!this.canHaveAsHorizontalVelocity(horizontalVelocity))
 			throw new IllegalArgumentException("Not a valid horizontal velocity!");
 		this.horizontalVelocity = horizontalVelocity;
 	}
@@ -418,12 +459,11 @@ public class Mazub {
 	 * 
 	 * @param 	verticalVelocity
 	 * 			The vertical velocity to be set.
-	 * @post	The given vertical velocity is set as the new vertical velocity
-	 * 			of this Mazub.
+	 * @post	The given vertical velocity is set as the new vertical velocity of this Mazub.
 	 * 			|new.getVerticalVelocity() = verticalVelocity
 	 * @throws	IllegalArgumentException
-	 * 			The given vertical velocity is not valid.
-	 * 			|!canHaveAsVerticalVelocity(verticalVelocity)
+	 * 			The given vertical velocity is not a valid vertical velocity.
+	 * 			|!isValidVerticalVelocity(verticalVelocity)
 	 */ 
 	@Raw
 	public void setVerticalVelocity(double verticalVelocity) 
@@ -436,13 +476,14 @@ public class Mazub {
 	
 
 	/**
-	 * Checks whether the given initial horizontal velocity is a valid horizontal velocity.
+	 * Check whether the given initial horizontal velocity is a valid horizontal velocity.
 	 * 
 	 * @param 	initialHorizontalVelocity
-	 * 			The given initial horizontal velocity.
-	 * @return	True if and only if the given initial horizontal velocity is 
-	 * 			greater than or equal to 1.
-	 * 			|result = Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity,1)
+	 * 			The initial horizontal velocity to be checked.
+	 * @return	True if and only if the given initial horizontal velocity is a possible initial horizontal 
+	 * 			velocity for any Mazub and it matches with the maximum horizontal velocity of this Mazub.
+	 * 			|result ==  isPossibleInitialHorizontalVelocity(initialHorizontalVelocity) && 
+				matchesMaximumHorizontalVelocityInitialHorizontalVelocity(this.getMaximumHorizontalVelocity(), initialHorizontalVelocity)
 	 */
 	@Raw
 	public boolean canHaveAsInitialHorizontalVelocity(double initialHorizontalVelocity){
@@ -452,13 +493,13 @@ public class Mazub {
 	
 	
 	/**
-	 *  Checks whether the given maximum horizontal velocity is a valid maximum horizontal velocity.
+	 *  Check whether the given maximum horizontal velocity is a valid maximum horizontal velocity.
 	 *  
 	 * @param 	maximumHorizontalVelocity
-	 * 			The given maximum horizontal velocity.
-	 * @return	True if and only if the given maximum horizontal velocity is 
-	 * 			greater than or equal to the initial horizontal velocity.
-	 * 			|result = Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,getInitialHorizontalVelocity())
+	 * 			The maximum horizontal velocity to be checked.
+	 * @return	True if and only if the given maximum horizontal velocity matches with the initial horizontal
+	 * 			velocity of this Mazub.
+	 * 			|result =  matchesMaximumHorizontalVelocityInitialHorizontalVelocity(maximumHorizontalVelocity, this.getInitialHorizontalVelocity());
 	 */
 	@Raw
 	public boolean canHaveAsMaximumHorizontalVelocity(double maximumHorizontalVelocity){
@@ -467,6 +508,7 @@ public class Mazub {
 	
 	/**
 	 * Check whether the given maximum horizontal velocity matches with the given initial horizontal velocity of a Mazub.
+	 * 
 	 * @param 	maximumHorizontalVelocity
 	 * 			The maximum horizontal velocity to check.
 	 * @param 	initialHorizontalVelocity
@@ -481,6 +523,7 @@ public class Mazub {
 	
 	/**
 	 * Check whether the given initial horizontal velocity is a possible initial horizontal velocity for any Mazub.
+	 * 
 	 * @param 	initialHorizontalVelocity
 	 * 			The initial horizontal velocity to check.
 	 * @return	True if the given initial horizontal velocity is greater than or equal to 1.
@@ -496,12 +539,12 @@ public class Mazub {
 	 * 
 	 * @param 	horizontalVelocity
 	 * 			The horizontal velocity to be checked.
-	 * @return	True if and only if the absolute value of the given horizontal velocity is in the range 
-	 * 			from initialHorizontalVelocity to maximumHorizontalVelocity or is 
-	 * 			equal to 0 m/s.
+	 * @return	True if and only if either the absolute value of the given horizontal velocity is greater than or equal
+	 * 			to the initial horizontal velocity of this Mazub and is less than or equal to the maximum horizontal
+	 * 			velocity of this Mazub or the given horizontal velocity is equal to zero.
 	 * 			|result == (Util.fuzzyGreaterThanOrEqualTo(abs(horizontalVelocity),this.getInitialHorizontalVelocity()) 
-				  && Util.fuzzyLessThanOrEqualTo(abs(horizontalVelocity), this.getMaximumHorizontalVelocity()))
-				  || Util.fuzzyEquals(horizontalVelocity, 0);
+				|  && Util.fuzzyLessThanOrEqualTo(abs(horizontalVelocity), this.getMaximumHorizontalVelocity()))
+				|  || Util.fuzzyEquals(horizontalVelocity, 0);
 	 */
 	@Raw
 	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
@@ -516,7 +559,7 @@ public class Mazub {
 	 * 
 	 * @param 	verticalVelocity
 	 * 			The vertical velocity to be checked.
-	 * @return	True if and only if the given vertical velocity is less than or equal to 8 m/s (the initial vertical velocity).
+	 * @return	True if and only if the given vertical velocity is less than or equal to 8 m/s (the initial vertical velocity constant).
 	 * 			| result ==  Util.fuzzyLessThanOrEqualTo(verticalVelocity, getInitialVerticalVelocity())
 	 */
 	public static boolean isValidVerticalVelocity(double verticalVelocity){
@@ -535,30 +578,28 @@ public class Mazub {
 	private double verticalVelocity = 0;
 	
 	/**
-	 *  Variable registering the initial vertical velocity of all Mazubs.
+	 *  Constant registering the initial vertical velocity of all Mazubs.
 	 */
-	private static final double INITIAL_VERTICAL_VElOCITY = 8;
+	private static final double INITIAL_VERTICAL_VELOCITY = 8;
 	
 	/**
-	 * Variable registering the initial horizontal velocity of Mazub.
+	 * Variable registering the initial horizontal velocity when not ducking of this Mazub.
 	 */
 	private final double initialHorizontalVelocityNotDucking;
 	
 	/**
-	 * Variable registering the maximum horizontal velocity while not ducking of this Mazub.
-	 */
-	
-	/**
-	 * Variable registering the maximum horizontal velocity of this Mazub.
+	 * Variable registering the maximum horizontal velocity when not ducking of this Mazub.
 	 */
 	private final double maximumHorizontalVelocityNotDucking;
 	
 	
 	/**
 	 * Returns the horizontal acceleration of this Mazub.
-	 * @return	If the horizontal velocity of this Mazub is equal to 0 than the horizontal acceleration is equal to zero.
+	 * 
+	 * @return	If this Mazub is not moving horizontally or the absolute value of this Mazub's horizontal 
+	 * 			velocity is greater than its maximum horizontal velocity, the horizontal acceleration of this Mazub is equal to zero.
 	 * 			Otherwise the horizontal acceleration of this Mazub is equal to horizontalAcceleration.
-	 * 			| if (this.getHorizontalVelocity()==0)
+	 * 			| if (!this.isMovingHorizontally() || Util.fuzzyEquals(Math.abs(this.getHorizontalVelocity()), this.getMaximumHorizontalVelocity()))
 	 * 			| 	result==0
 	 * 			| else
 	 * 			| 	result==horizontalAcceleration
@@ -576,10 +617,11 @@ public class Mazub {
 	
 	/**
 	 * Returns the vertical acceleration of this Mazub.
+	 * 
 	 * @return	If this Mazub is jumping than the vertical acceleration is equal
-	 * 			to the gravitational acceleration.
+	 * 			to the gravitational acceleration constant.
 	 * 			Otherwise the vertical acceleration is equal to zero.
-	 * 			|if(isJumping())
+	 * 			|if(this.isJumping())
 	 *			|	result == VERTICAL_ACCELERATION
 	 *			|else
 	 *			| 	result == 0
@@ -598,7 +640,7 @@ public class Mazub {
 	private static final double horizontalAcceleration = 0.9;
 	
 	/**
-	 *  Variable registering the vertical acceleration constant of all Mazubs.
+	 *  Constant registering the vertical acceleration of all Mazubs.
 	 */
 	public static final double VERTICAL_ACCELERATION = -10;
 	
@@ -614,8 +656,9 @@ public class Mazub {
 	
 	/**
 	 * Set the direction of Mazub to the given value.
+	 * 
 	 * @param 	direction
-	 * 			The desired direction of this Mazub.
+	 * 			The new direction for this Mazub.
 	 * @pre		The given direction must be equal to 1 or -1, denoting respectively right and left.
 	 * 			| (direction == 1) || (direction == -1)
 	 */
@@ -627,10 +670,11 @@ public class Mazub {
 	
 	/**
 	 * Check whether the given direction is a valid direction.
+	 * 
 	 * @param 	direction
-	 * 			The given direction.
-	 * @return	True if and only if the given direction equals 1 or -1
-	 * 			|result = ((direction == -1) || (direction == 1))
+	 * 			The direction to be checked.
+	 * @return	True if and only if the given direction is equal to 1 or -1.
+	 * 			|result == ((direction == -1) || (direction == 1))
 	 */
 	public static boolean isValidDirection(int direction){
 		return ((direction == -1) || (direction == 1));
@@ -655,11 +699,11 @@ public class Mazub {
 	}
 	
 	/**
-	 * Set the ducking state of this Mazub.
+	 * Set the ducking state of this Mazub to the given ducking state.
 	 * 
 	 * @param 	ducking
-	 * 			The desired ducking state of this Mazub.
-	 * @post	The ducking state of this Mazub is changed to 
+	 * 			The new ducking state for this Mazub.
+	 * @post	The new ducking state of this Mazub is equal to 
 	 * 			the state expressed by the variable ducking.
 	 * 			| new.isDucking() = ducking
 	 */
@@ -687,25 +731,22 @@ public class Mazub {
 	
 	
 	/**
-	 * Set the horizontal velocity of this Mazub to the initial horizontal velocity in the given direction.
+	 * Start the horizontal movement of this Mazub in the given direction.
 	 * 
 	 * @param 	direction
-	 * 			The desired direction in which the Mazub will move.
-	 * @pre		The given direction must be equal to -1 or 1. -1 denoting left and 1 denoting right.
-	 * 			| (direction == -1) || (direction == 1)
-	 * @post 	The new horizontal velocity of this Mazub is equal to the given direction times this.getInitialHorizontalVelocity().
+	 * 			The desired direction in which this Mazub will move.
+	 * @post 	The new horizontal velocity of this Mazub is equal to the given direction times its initial horizontal velocity.
 	 * 			| new.getHorizontalVelocity() == direction*this.getInitialHorizontalVelocity()
-	 * @post 	The new direction for this mazub is equal to the given direction.
-	 * 			| new.getDirection()==direction
+	 * @effect 	The direction of this mazub is set the given direction.
+	 * 			| this.setDirection(direction)
 	 * @post	The new time since this Mazub has last ended moving is 0.
 	 * 			| new.getTimeSinceEndMove()==0
 	 * @post	The new time since this Mazub has started moving is 0.
 	 * 			| new.getTimeSinceStartMove()==0
+	 * @note	setDirection has a precondition for direction.
 	 */
 	@Raw
 	public void startMove(int direction){
-		assert ((direction == -1) || (direction == 1)) :
-			"Precondition: direction must be equal to -1 or 1";
 		this.setDirection(direction);
 		this.setHorizontalVelocity((direction)*this.getInitialHorizontalVelocity());
 		this.setTimeSinceStartMove(0);
@@ -714,10 +755,10 @@ public class Mazub {
 	
 	
 	/**
-	 * Set the horizontal velocity of this Mazub to zero.
+	 * End the horizontal movement of this Mazub.
 	 * 
 	 * @post	The new horizontal velocity of this Mazub is equal to 0.
-	 * 			| new.getHorizontalVelocity() == 0
+	 * 			| new.getHorizontalVelocity()= 0
 	 * @post	The new time since this Mazub has last ended moving is 0.
 	 * 			| new.getTimeSinceEndMove()==0
 	 * @post	The new time since this Mazub has started moving is 0.
@@ -731,7 +772,7 @@ public class Mazub {
 	}
 	
 	/**
-	 * Make the mazub jump if it isn't jumping already.
+	 * Make this mazub jump if this Mazub isn't jumping already.
 	 * 
 	 * @effect	If this mazub isn't jumping, the vertical velocity of this mazub is set to the initial vertical velocity.
 	 * 			| if (!isJumping())
@@ -743,13 +784,13 @@ public class Mazub {
 	@Raw
 	public void startJump(){
 		if (!isJumping()){
-			this.setVerticalVelocity(INITIAL_VERTICAL_VElOCITY);
+			this.setVerticalVelocity(getInitialVerticalVelocity());
 		}
 	}
 	
 	
 	/**
-	 * End the jump of this mazub if it is going upwards.
+	 * End the jump of this mazub if this Mazub is travelling upwards.
 	 * 
 	 * @effect	If this mazub is travelling upwards, then this mazub's vertical velocity is set to zero.
 	 * 			| if(this.getVerticalVelocity()>0)
@@ -766,32 +807,20 @@ public class Mazub {
 	}
 	
 	/**
-	 * Make mazub duck.
+	 * Make this Mazub duck.
 	 * 
-	 * @post	The new ducking state of this mazub is true.
-	 * 			| new.getDucking()
-	 * @post	The new maximum horizontal velocity of this mazub is equal to 1m/s.
-	 * 			| new.getMaximumHorizontalVelocity()==1
-	 * @note	The invocation of this.setMaximumHorizontalVelocity(1) will not result in the throwing of an
-	 * 			IllegalArgumentException because a Mazub can always have a maximum horizontal velocity of 1m/s
-	 * 			when its ducking state is true. 
+	 * @effect	The ducking state of this Mazub is set to true.
+	 * 			| this.setDucking(true)
 	 */
 	public void startDuck(){
 		this.setDucking(true);
-		
 	}
 	
 	/**
-	 * End mazub's duck.
+	 * End this Mazub's duck.
 	 * 
-	 * @post	The new ducking state of this mazub is false.
-	 * 			| !new.getDucking()
-	 * @post	The new maximum horizontal velocity of this mazub is equal to
-	 * 			the maximum horizontal velocity when this mazub isn't ducking.
-	 * 			| new.getMaximumHorizontalVelocity==this.getMaximumHorizontalVelocityNotDucking()
-	 * @note	The invocation of this.setMaximumHorizontalVelocity(this.getMaximumHorizontalVelocityNotDucking())
-	 * 			will not result in the throwing of an IllegalArgumentException because maximumHorizontalVelocityNotDucking is already checked in 
-	 * 			the constructor of a Mazub and is Immutable.
+	 * @effect	The ducking state of this Mazub is set to false.
+	 * 			| this.setDucking(false)
 	 */
 	public void endDuck(){
 		this.setDucking(false);
@@ -802,11 +831,15 @@ public class Mazub {
 	 * Update the location and velocity of this Mazub.
 	 * 
 	 * @param 	deltaTime
-	 * 			A small period of time.
-	 * @post	The horizontal and vertical location are updated
+	 * 			The period of time that is used to update this Mazub.
+	 * @effect	The horizontal and vertical location are updated
 	 * 			and the horizontal and vertical velocity are updated.
+	 * 			|updateHorizontalLocation(deltaTime)
+	 *			|updateVerticalLocation(deltaTime);
+	 *			|updateHorizontalVelocity(deltaTime);
+	 *			|updateVerticalVelocity(deltaTime);
 	 * @throws	IllegalArgumentException 
-	 * 			The given deltaTime is not valid
+	 * 			The given time period is not valid a valid time period.
 	 * 			|!isValidTimePeriod(deltaTime)
 	 */
 	@Raw
@@ -825,16 +858,18 @@ public class Mazub {
 	 * Check whether the given deltaTime is a valid time period.
 	 * 
 	 * @param 	deltaTime
-	 * 			A period of time.
+	 * 			The period of time to be checked.
 	 * @return	True if and only if the time period is smaller
-	 * 			than 0.2s and not less than zero.
+	 * 			than 0.2s and greater than or equal to zero.
+	 * 			| result == Util.fuzzyGreaterThanOrEqualTo(deltaTime,0) && deltaTime < 0.2
 	 */
 	public static boolean isValidDeltaTime(double deltaTime){
-		return Util.fuzzyGreaterThanOrEqualTo(deltaTime,0) && (deltaTime < 0.2);
+		return Util.fuzzyGreaterThanOrEqualTo(deltaTime,0) && deltaTime < 0.2;
 	}
 	
 	/**
-	 * Return the time since mazub has last moved.
+	 * Return the time since this Mazub has last ended moving.
+	 * 
 	 * @note	We consider this method a part of advanceTime() and implement it defensively.
 	 */
 	@Basic
@@ -844,14 +879,14 @@ public class Mazub {
 	}
 	
 	/**
-	 * Set the time since mazub has last moved.
+	 * Set the time since Mazub has last ended moving.
 	 * 
 	 * @param 	timeSinceEndMove
-	 * 			The time since mazub's last move.
-	 * @post	The new time since this mazub's last move is equal to the given time since this mazub's last move.
+	 * 			The time since this Mazub has last ended moving to be set.
+	 * @post	The new time since this Mazub last ended moving is equal to the given time since Mazub last ended moving.
 	 * 			|new.getTimeSinceEndMove()==timeSinceEndMove
 	 * @throws	IllegalArgumentException
-	 * 			The given time since Mazub's last move is not valid.
+	 * 			The given time since Mazub last ended moving is not valid.
 	 * 			|!isValidTimeSinceMove(timeSinceEndMove)
 	 * @note	We consider this method a part of advanceTime() and implement it defensively.
 	 */
@@ -875,7 +910,7 @@ public class Mazub {
 	/**
 	 * Set the time since mazub has last started moving.
 	 * @param 	timeSinceStartMove
-	 * 			The time since mazub last started moving.
+	 * 			The time since this Mazub has last started moving to be set.
 	 * @post	The new time since this Mazub last started moving is equal to the given time since mazub last started moving.
 	 * 			|new.getTimeSinceStartMove()==timeSinceStartMove
 	 * @throws	IllegalArgumentException
@@ -891,10 +926,10 @@ public class Mazub {
 	}
 	
 	/**
-	 * Chack whether the given time is a valid time period since Mazub's last action (either start move or end move).
+	 * Check whether the given time is a valid time period since Mazub's last action (either start move or end move).
 	 * @param 	time
 	 * 			The time period to be checked.
-	 * @return	True if time is greater than or equal to zero.
+	 * @return	True if the given time period is greater than or equal to zero.
 	 * 			| result == Util.fuzzyGreaterThanOrEqualTo(time, 0)
 	 */
 	private static boolean isValidTimeSinceMove(double time){
@@ -1033,9 +1068,10 @@ public class Mazub {
 			this.setTimeSinceStartMove(this.getTimeSinceStartMove()+deltaTime);
 			if(canHaveAsHorizontalVelocity(newVelocity))
 				this.setHorizontalVelocity(newVelocity);
-			else{
+			else if (Math.abs(newVelocity)<Math.abs(this.getInitialHorizontalVelocityNotDucking()))
+				this.setHorizontalVelocity(this.getDirection()*this.getInitialHorizontalVelocityNotDucking());
+			else
 				this.setHorizontalVelocity(this.getDirection()*this.getMaximumHorizontalVelocity());
-			}
 		}
 	}
 	
@@ -1062,12 +1098,12 @@ public class Mazub {
 	}
 	
 	/**
-	 * Variable registering the time since mazub last started moving.
+	 * Variable registering the time since this Mazub last started moving.
 	 */
 	private double timeSinceStartMove=0;
 	
 	/**
-	 * Variable registering the time since mazub has last ended moving.
+	 * Variable registering the time since this Mazub has last ended moving.
 	 */
 	private double timeSinceEndMove=2;
 	
@@ -1110,7 +1146,7 @@ public class Mazub {
 	}
 	
 	/**
-	 * Returns a copy of the current image array of this Mazub.
+	 * Return a copy of the current image array of this Mazub.
 	 */
 	@Basic 
 	@Raw
@@ -1119,7 +1155,7 @@ public class Mazub {
 	}
 	
 	/**
-	 * Returns the number of images in the current image array of this Mazub.
+	 * Return the number of images in the current image array of this Mazub.
 	 */
 	@Raw
 	public int getNbImages(){
@@ -1127,11 +1163,12 @@ public class Mazub {
 	}
 	
 	/**
-	 * Check whether the given number of images is valid for all Mazubs.
+	 * Check whether the given number of images in the given image array is valid for all Mazubs.
+	 * 
 	 * @param 	nbImages
 	 * 			The number of images to be checked.
 	 * @return	The given number of images must be an even number and must be greater than or equal to 10;
-	 * 			| result == nbImages >= 10 && nbImages%2==0
+	 * 			| result == (nbImages >= 10 && nbImages%2==0)
 	 * 
 	 */
 	public static boolean isValidNbImages(int nbImages){
@@ -1139,7 +1176,8 @@ public class Mazub {
 	}
 	
 	/**
-	 * Returns the image in the image array of this Mazub at the given sprite index.
+	 * Return the image in the image array of this Mazub at the given sprite index.
+	 * 
 	 * @pre		The given sprite index must be a valid sprite index.
 	 * 			| isValidSpriteIndex(spriteIndex)
 	 */
@@ -1153,12 +1191,13 @@ public class Mazub {
 	
 	
 	/**
-	 * Checks whether to given sprite index is a valid sprite index.
+	 * Check whether to given sprite index is a valid sprite index.
+	 * 
 	 * @param 	spriteIndex
 	 * 			The sprite index to be checked.
 	 * @return	True if the given sprite index is greater than or equal to zero and 
 	 * 			smaller than or equal to the number of images in the current image array of this Mazub.
-	 * 			| result == spriteIndex>=0 && spriteIndex<=this.getNbImages()
+	 * 			| result == (spriteIndex>=0 && spriteIndex<=this.getNbImages())
 	 */
 	@Raw
 	public boolean isValidSpriteIndex(int spriteIndex){
@@ -1167,6 +1206,7 @@ public class Mazub {
 	
 	/**
 	 * Check whether the given image is a valid image.
+	 * 
 	 * @param 	image
 	 *			The image to be checked.
 	 *@return	image!=null
@@ -1176,9 +1216,10 @@ public class Mazub {
 	}
 	
 	/**
-	 * Sets the image array of this Mazub to the given images array.
+	 * Set the image array of this Mazub to the given image array.
+	 * 
 	 * @param 	images
-	 * 			An image array.
+	 * 			The new image array for this Mazub.
 	 * @pre 	The length of the given image array must be a valid length.
 	 * 			|isValidNbImages(images.length)
 	 * @pre		The images in the given image array must all be valid images.
@@ -1200,7 +1241,7 @@ public class Mazub {
 	
 	
 	/**
-	 * Returns the height of the currrent sprite of this Mazub.
+	 * Return the height of the currrent sprite of this Mazub.
 	 */
 	@Raw
 	public int getHeight(){
@@ -1208,7 +1249,7 @@ public class Mazub {
 	}
 	
 	/**
-	 * Returns the width of the current sprite of this Mazub.
+	 * Return the width of the current sprite of this Mazub.
 	 */
 	@Raw
 	public int getWidth(){
