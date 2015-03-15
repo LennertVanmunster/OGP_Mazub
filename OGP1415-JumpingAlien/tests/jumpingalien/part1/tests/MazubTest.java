@@ -203,16 +203,16 @@ public class MazubTest {
 		testMazub.setVerticalVelocity(Mazub.getInitialVerticalVelocity()+1);
 	}
 	
-	@Test
-	public void testSetMaximumHorizontalVelocity_TrueCase() {
-		testMazub.setMaximumHorizontalVelocity(10);
-		assertTrue(Util.fuzzyEquals(testMazub.getMaximumHorizontalVelocity(),10));
-	}
-
-	@Test (expected = IllegalArgumentException.class)
-	public void testSetMaximumHorizontalVelocity_FalseCase() throws IllegalArgumentException {
-		testMazub.setMaximumHorizontalVelocity(testMazub.getInitialHorizontalVelocity()-0.1);
-	}
+//	@Test
+//	public void testSetMaximumHorizontalVelocity_TrueCase() {
+//		testMazub.setMaximumHorizontalVelocity(10);
+//		assertTrue(Util.fuzzyEquals(testMazub.getMaximumHorizontalVelocity(),10));
+//	}
+//
+//	@Test (expected = IllegalArgumentException.class)
+//	public void testSetMaximumHorizontalVelocity_FalseCase() throws IllegalArgumentException {
+//		testMazub.setMaximumHorizontalVelocity(testMazub.getInitialHorizontalVelocity()-0.1);
+//	}
 	
 	@Test
 	public void testCanHaveAsInitialHorizontalVelocity_TrueCases() {
