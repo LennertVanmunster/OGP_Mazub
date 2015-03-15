@@ -110,29 +110,30 @@ public class Mazub {
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
 				double verticalVelocity, double initialHorizontalVelocity,
-				double maximumHorizontalVelocityNotDucking, boolean ducking, int direction, Sprite... images)
+				double maximumHorizontalVelocityNotDucking, boolean ducking, Sprite... images)
 		throws IllegalArgumentException {
 		setHorizontalLocation(horizontalLocation);
 		setVerticalLocation(verticalLocation);
-		setHorizontalVelocity(horizontalVelocity);
-		setVerticalVelocity(verticalVelocity);
 		setDucking(ducking);
 		if(!isPossibleInitialHorizontalVelocity(initialHorizontalVelocity))
 			throw new IllegalArgumentException("Not a valid initial horizontal velocity!");
 		this.initialHorizontalVelocity = initialHorizontalVelocity;
 		setMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking);
 		this.maximumHorizontalVelocityNotDucking = maximumHorizontalVelocityNotDucking;
+		setHorizontalVelocity(horizontalVelocity);
+		setVerticalVelocity(verticalVelocity);
 		if(isDucking())
 			startDuck();
-		if(!isValidDirection(direction))
-			throw new IllegalArgumentException("Not a valid direction!");
-		setDirection(direction);
+		if (Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity, 0))
+			setDirection(1);
+		else
+			setDirection(-1);
 		this.setImages(images);
 	}
 	
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
-		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, 1, images);
+		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, images);
 	}
 	
 	/**
@@ -341,15 +342,10 @@ public class Mazub {
 	@Basic 
 	@Raw
 	public double getInitialHorizontalVelocity(){
-<<<<<<< HEAD
 		if (this.isDucking())
 			return 1;
 		else 
-			return this.initialHorizontalVelocity;	
-		
-=======
-			return this.initialHorizontalVelocity;	
->>>>>>> origin/master
+			return this.initialHorizontalVelocity;
 	}
 	
 	/**
@@ -808,7 +804,8 @@ public class Mazub {
 	 * 			the maximum horizontal velocity when this mazub isn't ducking.
 	 * 			| new.getMaximumHorizontalVelocity==this.getMaximumHorizontalVelocityNotDucking()
 	 * @note	The invocation of this.setMaximumHorizontalVelocity(this.getMaximumHorizontalVelocityNotDucking())
-	 * 			will not result in the throwing of an exception because 
+	 * 			will not result in the throwing of an IllegalArgumentException because maximumHorizontalVelocityNotDucking is already checked in 
+	 * 			the constructor of a Mazub and is Immutable.
 	 */
 	public void endDuck(){
 		this.setDucking(false);
@@ -1096,23 +1093,25 @@ public class Mazub {
 	 */
 	public Sprite getCurrentSprite(){
 		int newSpriteIndex=Integer.MAX_VALUE;
-		if (!this.isMovingHorizontally() && this.isDucking()==false && this.getTimeSinceEndMove()>1)
+		if (!this.isMovingHorizontally() && !this.isDucking() && this.getTimeSinceEndMove()>1)
 			newSpriteIndex=0;
-		else if (!this.isMovingHorizontally() && this.isDucking()==true && this.getTimeSinceEndMove()>1)
+		else if (!this.isMovingHorizontally() && this.isDucking() && this.getTimeSinceEndMove()>1)
 			newSpriteIndex=1;
-		else if (!this.isMovingHorizontally() && this.isDucking()==false && this.getTimeSinceEndMove()<=1 && this.getDirection()==1)
+		else if (!this.isMovingHorizontally() && !this.isDucking() && this.getTimeSinceEndMove()<=1 && this.getDirection()==1)
 			newSpriteIndex=2;
-		else if (!this.isMovingHorizontally() && this.isDucking()==false && this.getTimeSinceEndMove()<=1 && this.getDirection()==-1)
+		else if (!this.isMovingHorizontally() && !this.isDucking() && this.getTimeSinceEndMove()<=1 && this.getDirection()==-1)
 			newSpriteIndex=3;
-		else if (this.getHorizontalVelocity()>0 && this.isJumping()==true && this.isDucking()==false)
+		else if (this.getHorizontalVelocity()>0 && this.isJumping() && !this.isDucking())
 			newSpriteIndex=4;
-		else if (this.getHorizontalVelocity()<0 && this.isJumping()==true && this.isDucking()==false)
+		else if (this.getHorizontalVelocity()<0 && this.isJumping() && !this.isDucking())
 			newSpriteIndex=5;
-		else if (this.isDucking()==true && this.getDirection()==1 && this.getTimeSinceEndMove()<=1)
+		else if ((this.isDucking() && this.getDirection()==1 && this.getTimeSinceEndMove()<=1) || 
+				(this.isDucking() && this.getDirection()==1 && this.getTimeSinceEndMove()>1 && this.isMovingHorizontally()))
 			newSpriteIndex=6;
-		else if (this.isDucking()==true && this.getDirection()==-1 && this.getTimeSinceEndMove()<=1)
+		else if ((this.isDucking() && this.getDirection()==-1 && this.getTimeSinceEndMove()<=1) ||
+				(this.isDucking() && this.getDirection()==-1 && this.getTimeSinceEndMove()>1 && this.isMovingHorizontally()))
 			newSpriteIndex=7;
-		else if(this.isJumping()==false && this.isDucking()==false){
+		else if(!this.isJumping() && !this.isDucking()){
 			int i = (int) Math.floor(this.getTimeSinceStartMove()/0.075);
 			int m=(this.getNbImages()-8)/2;
 			if (this.getDirection()==1){
