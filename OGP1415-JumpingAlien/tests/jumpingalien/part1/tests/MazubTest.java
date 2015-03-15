@@ -15,11 +15,17 @@ import static jumpingalien.tests.util.TestUtils.*;
 
 public class MazubTest {
 
-	private static Mazub staticTestMazub, duckingMazub, notDuckingMazub, jumpingMazub1, jumpingMazub2;
+	private static Mazub staticTestMazub;
+	private static Mazub movingMazub;
+	private static Mazub duckingMazub;
+	private static Mazub notDuckingMazub;
+	private static Mazub jumpingMazub1;
+	private static Mazub jumpingMazub2;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		staticTestMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		staticTestMazub = new Mazub(0, 0, 0, 0, 2, 3, false, 1,spriteArrayForSize(2, 2));
+		//movingMazub = new Mazub(0, 0, 2, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
 		duckingMazub = new Mazub(0, 0, 0, 0, 1, 3, true, 1,spriteArrayForSize(2, 2));
 		notDuckingMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
 		jumpingMazub1 = new Mazub(0, 0, 0, 8, 1, 3, false, 1,spriteArrayForSize(2, 2));
@@ -41,13 +47,13 @@ public class MazubTest {
 		duckingTestMazub = new Mazub(0, 0, 0, 0, 1, 3, true, 1,spriteArrayForSize(2, 2));
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
+//	@After
+//	public void tearDown() throws Exception {
+//	}
+//
+//	@AfterClass
+//	public static void tearDownAfterClass() throws Exception {
+//	}
 
 	@Test
 	public void testSetHorizontalLocation_LegalCase() {
@@ -63,8 +69,8 @@ public class MazubTest {
 	
 	@Test
 	public void testSetVerticalLocation_LegalCase() {
-		testMazub.setVerticalLocation(10);
-		assertEquals(testMazub.getVerticalLocation(),10);
+		testMazub.setVerticalLocation(11);
+		assertEquals(testMazub.getVerticalLocation(),11);
 	}
 
 	@Test (expected = IllegalArgumentException.class)
@@ -89,7 +95,17 @@ public class MazubTest {
 	
 	@Test
 	public void testIsValidHorizontalLocation_FalseCase_NaN() {
-		assertFalse(Mazub.isValidHorizontalLocation(Float.NaN));
+		assertFalse(Mazub.isValidHorizontalLocation(Double.NaN));
+	}
+	
+	@Test
+	public void testIsValidHorizontalLocation_FalseCase_MAX_VALUE() {
+		assertFalse(Mazub.isValidHorizontalLocation(Integer.MAX_VALUE));
+	}
+	
+	@Test
+	public void testIsValidHorizontalLocation_FalseCase_MIN_VALUE() {
+		assertFalse(Mazub.isValidHorizontalLocation(Integer.MIN_VALUE));
 	}
 	
 	@Test
@@ -109,7 +125,17 @@ public class MazubTest {
 	
 	@Test
 	public void testIsValidVerticalLocation_FalseCase_NaN() {
-		assertFalse(Mazub.isValidVerticalLocation(Float.NaN));
+		assertFalse(Mazub.isValidVerticalLocation(Double.NaN));
+	}
+	
+	@Test
+	public void testIsValidVerticalLocation_FalseCase_MAX_VALUE() {
+		assertFalse(Mazub.isValidVerticalLocation(Integer.MAX_VALUE));
+	}
+	
+	@Test
+	public void testIsValidVerticalLocation_FalseCase_MIN_VALUE() {
+		assertFalse(Mazub.isValidVerticalLocation(Integer.MIN_VALUE));
 	}
 	
 	@Test
@@ -134,9 +160,19 @@ public class MazubTest {
 	
 	@Test
 	public void testIsValidLocation_FalseCase_NaN() {
-		assertFalse(Mazub.isValidLocation(Float.NaN,Float.NaN));
+		assertFalse(Mazub.isValidLocation(Double.NaN,Double.NaN));
 	}
 	
+//	@Test
+//	public void testIsMovingHorizontally_TrueCase(){
+//		assertTrue(movingMazub.isMovingHorizontally());
+//		
+//	}
+	
+	@Test
+	public void testIsMovingHorizontally_FalseCase(){
+		assertFalse(staticTestMazub.isMovingHorizontally());
+	}
 	
 	@Test
 	public void testSetHorizontalVelocity_TrueCase_PositiveValue() {
@@ -209,13 +245,18 @@ public class MazubTest {
 	}
 	@Test
 	public void testCanHaveAsHorizontalVelocity_FalseCase() {
-		assertFalse(staticTestMazub.canHaveAsHorizontalVelocity(0.5));
+		assertFalse(staticTestMazub.canHaveAsHorizontalVelocity(0.1));
 	}
 	
 	@Test
 	public void testCanHaveAsHorizontalVelocity_FalseCase2() {
 		assertFalse(staticTestMazub.canHaveAsHorizontalVelocity(
-				staticTestMazub.getMaximumHorizontalVelocity() + 1));
+				staticTestMazub.getMaximumHorizontalVelocity() + 0.1));
+	}
+	
+	@Test
+	public void testCanHaveAsHorizontalVelocity_FalseCase_NaN() {
+		assertFalse(staticTestMazub.canHaveAsHorizontalVelocity(Double.NaN));
 	}
 	
 	@Test
@@ -224,8 +265,18 @@ public class MazubTest {
 	}
 
 	@Test
+	public void testIsValidVerticalVelocity_TrueCase_NegativeInfinity() {
+		assertTrue(Mazub.isValidVerticalVelocity(Double.NEGATIVE_INFINITY));
+	}
+	
+	@Test
 	public void testIsValidVerticalVelocity_FalseCase() {
 		assertFalse(Mazub.isValidVerticalVelocity(Mazub.getInitialVerticalVelocity() + 0.1));
+	}
+	
+	@Test
+	public void testIsValidVerticalVelocity_FalseCase_NaN() {
+		assertFalse(Mazub.isValidVerticalVelocity(Double.NaN));
 	}
 	
 	/**
@@ -339,11 +390,33 @@ public class MazubTest {
 				duckingTestMazub.getMaximumHorizontalVelocityNotDucking()));
 	}
 	
-//	@Test
-//	public void testAdvanceTime() {
-//		fail("Not yet implemented");
-//	}
+	@Test
+	public void testAdvanceTime_NotMoving() {
+		testMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		testMazub.advanceTime(0.15);
+		assertEquals(testMazub.getHorizontalLocation(),0);
+		assertEquals(testMazub.getVerticalLocation(),0);
+		assertTrue(Util.fuzzyEquals(testMazub.getHorizontalVelocity(),0));
+		assertTrue(Util.fuzzyEquals(testMazub.getVerticalVelocity(),0));
+		
+	}
 
+//	@Test
+//	public void testAdvanceTime_Moving() {
+//		testMazub = new Mazub(0, 0, 1, 1, 1, 3, false, 1,spriteArrayForSize(2, 2));
+//		testMazub.advanceTime(0.15);
+//		assertEquals(testMazub.getHorizontalLocation(),16);
+//		assertEquals(testMazub.getVerticalLocation(),4);
+//		assertTrue(Util.fuzzyEquals(testMazub.getHorizontalVelocity(),1.135));
+//		assertTrue(Util.fuzzyEquals(testMazub.getVerticalVelocity(),-0.5));		
+//	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testAdvanceTime_Exception() throws Exception{
+		testMazub = new Mazub(0, 0, 0, 0, 1, 3, false, 1,spriteArrayForSize(2, 2));
+		testMazub.advanceTime(0.21);
+	}
+	
 	@Test
 	public void testIsValidDeltaTime_TrueCase() {
 		assertTrue(Mazub.isValidDeltaTime(0.1));
@@ -366,10 +439,15 @@ public class MazubTest {
 	
 	@Test
 	public void testIsValidDeltaTime_FalseCase_NaN() {
-		assertFalse(Mazub.isValidDeltaTime(Float.NaN));
+		assertFalse(Mazub.isValidDeltaTime(Double.NaN));
 	}
 	
-
+	@Test
+	public void testIsValidDeltaTime_FalseCase_Infinity() {
+		assertFalse(Mazub.isValidDeltaTime(Double.NEGATIVE_INFINITY));
+		assertFalse(Mazub.isValidDeltaTime(Double.POSITIVE_INFINITY));
+	}
+	
 	@Test
 	public void testIsValidNbImages_TrueCases(){
 		assertTrue(Mazub.isValidNbImages(10)); //min

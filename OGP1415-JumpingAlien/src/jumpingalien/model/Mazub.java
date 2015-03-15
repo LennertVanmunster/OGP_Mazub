@@ -342,7 +342,7 @@ public class Mazub {
 	@Immutable
 	@Raw
 	public double getInitialHorizontalVelocity(){
-		return this.initialHorizontalVelocity;		
+			return this.initialHorizontalVelocity;	
 	}
 	
 	/**
