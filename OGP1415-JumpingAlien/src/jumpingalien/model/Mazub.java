@@ -965,8 +965,9 @@ public class Mazub {
 	 * 			|		if(this.getHorizontalLocationNotRounded() + 100*(this.getHorizontalVelocity()*deltaTime + 
 	 * 			|		this.getDirection()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)) >= 0)
 	 * 			|		new.getHorizontalLocation() = getMaximumHorizontalLocation()
+	 * @note	This method is worked out defensively because it calculates a new position for this Mazub.
 	 */
-	private void updateHorizontalLocation(double deltaTime) {
+	private void updateHorizontalLocation(double deltaTime) throws IllegalArgumentException {
 		double newHorizontalLocation= this.getHorizontalLocationNotRounded();
 		if (this.isMovingHorizontally()){
 			try{
@@ -1016,8 +1017,9 @@ public class Mazub {
 	 * 			|	! this.getVerticalLocationNotRounded()+ 100*(getVerticalVelocity()*deltaTime + 
 	 * 			|	0.5*getVerticalAcceleration()*Math.pow(deltaTime,2))) < 0)
 	 * 			|		new.getVerticalLocation() = getMaximumVerticalLocation()
+	 * @note	This method is worked out defensively because it calculates a new position for this Mazub.
 	 */
-	private void updateVerticalLocation(double deltaTime) {
+	private void updateVerticalLocation(double deltaTime) throws IllegalArgumentException {
 		if(this.isJumping()){
 			double newVerticalLocation = this.getVerticalLocationNotRounded() + 
 					100*(getVerticalVelocity()*deltaTime + 0.5*getVerticalAcceleration()*Math.pow(deltaTime,2));
@@ -1053,11 +1055,16 @@ public class Mazub {
 	 * 			of this Mazub is set to new velocity.
 	 * 			|if(canHaveAsHorizontalVelocity(newVelocity))
 	 * 			|	new.getHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection()*getHorizontalAcceleration()*deltaTime
-	 * 			If newVelocity is not a valid valid horizontal velocity then the horizontal velocity
-	 * 			of this Mazub is set to the maximum horizontal velocity in the given direction.
-	 * 			|if(!canHaveAsHorizontalVelocity(newVelocity))
-	 * 			|	new.getHorizontalVelocity = this.getDirection()*this.getMaximumHorizontalVelocity()
-	 * 			
+	 * 			If newVelocity is not a valid valid horizontal velocity and the absolute value of newVelocity is less
+	 * 			than the absolute value of the initial horizontal velocity when not ducking of this Mazub, the new horizontal velocity
+	 * 			is equal to the direction of this Mazub times its initial horizontal velocity when not ducking.
+	 * 			|if(!canHaveAsHorizontalVelocity(newVelocity) && (Math.abs(newVelocity)<Math.abs(this.getInitialHorizontalVelocityNotDucking()))
+	 * 			|	new.getHorizontalVelocity = this.getDirection()*this.getInitialHorizontalVelocityNotDucking())
+	 * 			If newVelocity is not a valid horizontal velocity for this Mazub and the absolute value of newVelocity is greater
+	 * 			than or equal to the absolute value of the initial horizontal velocity when not ducking of this Mazub, the new horizontal velocity
+	 * 			is equal to the direction of this Mazub times its maximum horizontal velocity.
+	 * 			|if(!canHaveAsHorizontalVelocity(newVelocity) && (Math.abs(newVelocity)>=Math.abs(this.getInitialHorizontalVelocityNotDucking()))
+	 * @note	This method is worked out using total programming because it uses acceleration to achieve its effect.
 	 */
 	private void updateHorizontalVelocity(double deltaTime) {
 		if(!this.isMovingHorizontally()){
@@ -1083,10 +1090,11 @@ public class Mazub {
 	 * 			A period of time.
 	 * @post	If this Mazub is jumping then the new vertical velocity of this Mazub
 	 * 			is calcutated and set at the calculated value.
-	 * 			|new.getVerticalVelocity = getVerticalVelocity() + getVerticalAcceleration()*deltaTime
+	 * 			|new.getVerticalVelocity() = getVerticalVelocity() + getVerticalAcceleration()*deltaTime
 	 * @post	If this Mazub is not jumping then the vertical velocity
 	 * 			is set to zero.
-	 * 			|new.getVerticalVelocity = 0
+	 * 			|new.getVerticalVelocity() = 0
+	 * @note	This method is worked out using total programming because it uses acceleration to achieve its effect.
 	 */
 	private void updateVerticalVelocity(double deltaTime) {
 		if(this.isJumping()){
