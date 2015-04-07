@@ -57,7 +57,9 @@ public class World {
 		if(!isValidNbTiles(nbTilesY))
 			throw new IllegalArgumentException("Not a valid number of tiles!");
 		this.nbTilesY = nbTilesY;
-		createTiles();
+		createTiles(getNbTilesX(),getNbTilesY());
+		this.worldSizeInPixels = new int [2];
+		setWorldSizeInPixels();
 		if(!canHaveAsWindowWidth(visibleWindowWidth))
 			throw new IllegalArgumentException("Not a window width!");
 		this.visibleWindowWidth = visibleWindowWidth;
@@ -135,7 +137,104 @@ public class World {
 	 */
 	private final int nbTilesY;
 
+	/**
+	 * Returns the number of tiles of this World.
+	 */
+	public int getNbTiles(){
+		return this.getNbTilesX() * this.getNbTilesY();
+	}
 	
+	/**
+	 * Returns the tiles of this World.
+	 */
+	public int [][] getTiles(){
+		return this.tiles.clone();
+	}
+	
+	/**
+	 * Return the tile at the given position.
+	 * @param 	horizontalPosition
+	 * 			The horizontal position of the tile.
+	 * @param 	verticalPosition
+	 * 			The vertical position of the tile.
+	 * @return	|this.getTiles()[horizontalPosition][verticalPosition]
+	 */
+	public int getTileAt(int horizontalPosition,int verticalPosition) throws IllegalArgumentException{
+		if(!canHaveAsTilePosition(horizontalPosition, verticalPosition))
+			throw new IllegalArgumentException("Not a valid tile position");
+		return this.getTiles()[horizontalPosition][verticalPosition];
+	}
+	
+	/**
+	 * Set the tile at the given position of tile to the new given value.
+	 * @param 	tile
+	 * 			The given value of the tile.
+	 * @param 	horizontalPosition
+	 * 			The horizontal position of the tile.
+	 * @param 	verticalPosition
+	 * 			The vertical position of the tile.
+	 * @post	|new.getTileAt(horizontalPosition, verticalPosition) == tile
+	 * @throws 	IllegalArgumentException
+	 * 			|!isValidTile(tile)
+	 * @throws	IllegalArgumentException
+	 * 			|!canHaveAsTilePosition(horizontalPosition, verticalPosition)
+	 */
+	public void setTileAt(int tile, int horizontalPosition,int verticalPosition) 
+			throws IllegalArgumentException{
+		if(!isValidTile(tile))
+			throw new IllegalArgumentException("Not a valid tile!");
+		if(!canHaveAsTilePosition(horizontalPosition, verticalPosition))
+			throw new IllegalArgumentException("Not a valid tile position!");
+		this.tiles [horizontalPosition][verticalPosition] = tile;
+	}
+	
+	/**
+	 * Create a matrix full of zero's with given dimensions 
+	 * representing the tiles of the World.
+	 * @param 	nbTilesX
+	 * 			The number of tiles in the horizontal direction.
+	 * @param 	nbTilesY
+	 * 			The number of tiles in the vertical direction.
+	 * @post	|new.getTiles == new int [nbTilesX] [nbTilesY]
+	 * @throws	IllegalArgumentException
+	 * 			|!isValidNbTiles(nbTilesX) || !isValidNbTiles(nbTilesY)
+	 */
+	private void createTiles(int nbTilesX, int nbTilesY) throws IllegalArgumentException{
+		if(!isValidNbTiles(nbTilesX) || !isValidNbTiles(nbTilesY))
+			throw new IllegalArgumentException("Not a valid number of tiles");
+		this.tiles = new int [nbTilesX] [nbTilesY]; 
+	}
+	
+	/**
+	 * Check whether the tile matrix can have the given tile position as 
+	 * its position.
+	 * @param 	horizontalPosition
+	 * 			The horizontal position of the tile.
+	 * @param 	verticalPosition
+	 * 			The vertical position of the tile.
+	 * @return	|(0 <= horizontalPosition &&  horizontalPosition < this.getNbTilesX())
+				|	&& (0 <=  verticalPosition &&  verticalPosition < this.getNbTilesY())
+	 */
+	public boolean canHaveAsTilePosition(int horizontalPosition,int verticalPosition){
+		return (0 <= horizontalPosition &&  horizontalPosition < this.getNbTilesX())
+				&& (0 <=  verticalPosition &&  verticalPosition < this.getNbTilesY());
+	}
+	
+	/**
+	 * Check whether the given tile is a valid tile.
+	 * 
+	 * @param 	tile
+	 * 			The value of the tile.
+	 * @return	| result == (0 <= tile && tile <= 4)
+	 */
+	public boolean isValidTile(int tile){
+		return (0 <= tile && tile <= 4);
+	}
+	
+	/**
+	 * A matrix registering the values of all tiles of this World.
+	 */
+	private int [][] tiles;
 	
 	/**
 	 * Return the visible window width
@@ -186,4 +285,37 @@ public class World {
 	 * Variable registering the visible window height.
 	 */
 	private final int visibleWindowHeight;
+	
+	/**
+	 * Returns the size of the given game world, in number of pixels.
+	 * 
+	 * @return |result == this.worldSizeInPixels.clone()
+	 */
+	public int [] getWorldSizeInPixels(){
+		return this.worldSizeInPixels.clone();
+	}
+	
+	/**
+	 * Returns the width of the given World.
+	 */
+	public int getWorldWidth(){
+		return getWorldSizeInPixels() [0];
+	}
+	
+	/**
+	 *Returns the height of the given World.
+	 */
+	public int getWorldHeight(){
+		return getWorldSizeInPixels() [1];
+	}
+	
+	private void setWorldSizeInPixels(){
+		this.worldSizeInPixels [0] = this.getTileSize() * this.getNbTilesX();
+		this.worldSizeInPixels [0] = this.getTileSize() * this.getNbTilesY();
+	}
+	/**
+	 * Variable registering the world size of the game world, in pixels, as an array of two
+	 * elements: width (X) and height (Y), in that order.
+	 */
+	private final int [] worldSizeInPixels;
 }
