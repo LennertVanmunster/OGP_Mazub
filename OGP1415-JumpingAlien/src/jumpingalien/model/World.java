@@ -181,7 +181,8 @@ public class World {
 	 * 			The vertical position of the tile.
 	 * @return	|this.getTiles()[horizontalPosition][verticalPosition]
 	 */
-	public int getTileAt(int horizontalPosition,int verticalPosition) throws IllegalArgumentException{
+	public int getTileValueAtTilePosition(int horizontalPosition,int verticalPosition) 
+			throws IllegalArgumentException{
 		if(!canHaveAsTilePosition(horizontalPosition, verticalPosition))
 			throw new IllegalArgumentException("Not a valid tile position");
 		return this.getTiles()[horizontalPosition][verticalPosition];
@@ -203,7 +204,7 @@ public class World {
 	 */
 	public void setTileAt(int tile, int horizontalPosition,int verticalPosition) 
 			throws IllegalArgumentException{
-		if(!isValidTile(tile))
+		if(!isValidTileValue(tile))
 			throw new IllegalArgumentException("Not a valid tile!");
 		if(!canHaveAsTilePosition(horizontalPosition, verticalPosition))
 			throw new IllegalArgumentException("Not a valid tile position!");
@@ -252,7 +253,7 @@ public class World {
 	 * @return	| result == (0 <= tile && tile <= 4)
 	 */
 	@Raw
-	public boolean isValidTile(int tile){
+	public boolean isValidTileValue(int tile){
 		return (0 <= tile && tile <= 4);
 	}
 	
@@ -509,8 +510,6 @@ public class World {
 	 * Returns the tile positions of all tiles within the given rectangular
 	 * region.
 	 * 
-	 * @param 	world
-	 *           The world from which the tile positions should be returned.
 	 * @param 	pixelLeft
 	 *           The x-coordinate of the left side of the rectangular region.
 	 * @param 	pixelBottom
@@ -542,11 +541,52 @@ public class World {
 		int [] stopTile = getTileAtPixelPosition(pixelRight, pixelTop);
 		int nbRows = stopTile[1] - startTile[1] + 1;
 		int nbColumns = stopTile[0] - startTile[0] + 1;
-		int [][] tilePositions = new int [1][nbRows * nbColumns];
-		for (int row = 0; row < nbRows; row++ )
-			for(int column = 0; row < nbColumns; column++)
-				tilePositions [0][row*nbColumns + column] = getTileAt(row, column);
+		int [][] tilePositions = new int [nbRows * nbColumns][2];
+		for (int row = 0; row < nbRows; row++ ){
+			for(int column = 0; row < nbColumns; column++){
+				tilePositions [row*nbColumns + column][0] = column;
+				tilePositions [row*nbColumns + column][1] = row;
+				
+			}
+		}
 		return tilePositions;
+	}
+	
+	/**
+	 * Returns the geological feature of the tile at the given pixel position.
+	 * 
+	 * @param 	pixelX
+	 * 			The horizontal location of the pixel.
+	 * @param 	pixelY
+	 * 			The vertical location of the pixel.
+	 * @return	|result == getTileValueAtTilePosition(tile[0], tile[1])
+	 * @throws 	IllegalArgumentException
+	 * 			|!canHaveAsPixelLocation(pixelX, pixelY)
+	 */
+	public int getGeologicalFeatureAtPixel(int pixelX, int pixelY) throws IllegalArgumentException {
+		if(!canHaveAsPixelLocation(pixelX, pixelY))
+			throw new IllegalArgumentException("Not a valid pixel position!");
+		int tile [] = getTileAtPixelPosition(pixelX, pixelY);
+		return getTileValueAtTilePosition(tile[0], tile[1]);
+	}
+	
+	/**
+	 * Set the geological feature of the given tile to the given value.
+	 * 
+	 * @param 	tileX
+	 * 			The horizontal location of the tile.
+	 * @param 	tileY
+	 * 			The vertical location of the tile.
+	 * @param 	tileType
+	 * 			The value of the given tile.
+	 * @post	|this.tiles[tileX][tileY] = tileType;
+	 */
+	public void setGeologicalFeatureAtTile(int tileX, int tileY, int tileType){
+		if(!canHaveAsTilePosition(tileX, tileY))
+			throw new IllegalArgumentException("Not a valid tile position!");
+		if(!isValidTileValue(tileType))
+			throw new IllegalArgumentException("Not a valid tile value!");
+		this.tiles[tileX][tileY] = tileType;
 	}
 	
 	/**
