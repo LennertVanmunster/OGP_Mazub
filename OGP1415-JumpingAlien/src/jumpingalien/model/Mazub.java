@@ -76,12 +76,12 @@ public class Mazub {
 	 * @post	The vertical velocity of this new Mazub is equal to the 
 	 * 			given vertical velocity.
 	 * 			|new.getVerticalVelocity() = verticalVelocity
-	 * @post	If the given horizontal velocity is greater than or equal to 0 the direction of this new Mazub is equal to 1.
-	 * 			Otherwise the direction of this new Mazub is equal to -1.
+	 * @post	If the given horizontal velocity is greater than or equal to 0 the direction of this new Mazub is RIGHT.
+	 * 			Otherwise the direction of this new Mazub is LEFT.
 	 * 			|if (Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity, 0))
-	 * 			|	new.getDirection() == 1
+	 * 			|	new.getDirection() == Direction.RIGHT
 	 * 			|else
-	 * 			|	new.getDirection() == -1
+	 * 			|	new.getDirection() == Direction.LEFT
 	 * @post	The ducking state of this new Mazub is equal to the 
 	 * 			given ducking state.
 	 * 			|new.isDucking == ducking
@@ -132,9 +132,9 @@ public class Mazub {
 		if(isDucking())
 			startDuck();
 		if (Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity, 0))
-			setDirection(1);
+			setDirection(Direction.RIGHT);
 		else
-			setDirection(-1);
+			setDirection(Direction.LEFT);
 		this.setImages(images);
 	}
 	
@@ -650,7 +650,7 @@ public class Mazub {
 	 */
 	@Basic
 	@Raw
-	public int getDirection(){
+	public Direction getDirection(){
 		return this.direction;
 	}
 	
@@ -659,12 +659,12 @@ public class Mazub {
 	 * 
 	 * @param 	direction
 	 * 			The new direction for this Mazub.
-	 * @pre		The given direction must be equal to 1 or -1, denoting respectively right and left.
-	 * 			| (direction == 1) || (direction == -1)
+	 * @pre		The given direction must be either LEFT or RIGHT.
+	 * 			| (direction == Direction.LEFT) || (direction == Direction.RIGHT)
 	 */
 	@Raw
-	public void setDirection(int direction){
-		assert (direction==1 || direction==-1);
+	public void setDirection(Direction direction){
+		assert (direction==Direction.LEFT || direction==Direction.RIGHT);
 		this.direction = direction;
 	}
 	
@@ -673,17 +673,17 @@ public class Mazub {
 	 * 
 	 * @param 	direction
 	 * 			The direction to be checked.
-	 * @return	True if and only if the given direction is equal to 1 or -1.
-	 * 			|result == ((direction == -1) || (direction == 1))
+	 * @return	True if and only if the given direction is either LEFT or RIGHT.
+	 * 			|result == ((direction == Direction.LEFT) || (direction == Direction.RIGHT))
 	 */
-	public static boolean isValidDirection(int direction){
-		return ((direction == -1) || (direction == 1));
+	public static boolean isValidDirection(Direction direction){
+		return ((direction == Direction.LEFT) || (direction == Direction.RIGHT));
 	}
 	
 	/**
-	 * Variable registering the direction Mazub is facing. 1 means right, -1 means left.
+	 * Variable registering the direction Mazub is facing.
 	 */
-	private int direction;
+	private Direction direction;
 	
 	
 	/**
@@ -746,9 +746,9 @@ public class Mazub {
 	 * @note	setDirection has a precondition for direction.
 	 */
 	@Raw
-	public void startMove(int direction){
+	public void startMove(Direction direction){
 		this.setDirection(direction);
-		this.setHorizontalVelocity((direction)*this.getInitialHorizontalVelocity());
+		this.setHorizontalVelocity((direction.getNumberForCalculations())*this.getInitialHorizontalVelocity());
 		this.setTimeSinceStartMove(0);
 		this.setTimeSinceEndMove(0);
 	}
@@ -946,7 +946,7 @@ public class Mazub {
 	 * 			as the new horizontal location of this Mazub.
 	 * 			|if(isMovingHorizontally())
 	 * 			|	if(isValidHorizontalLocation(this.getHorizontalLocationNotRounded() + 
-				|	100*(this.getHorizontalVelocity()*deltaTime + this.getDirection()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2))
+				|	100*(this.getHorizontalVelocity()*deltaTime + this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2))
 	 * 			|		new.getHorizontalLocation() = this.getHorizontalLocationNotRounded() + 
 				|		100*(this.getHorizontalVelocity()*deltaTime + this.getDirection()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2))
 	 * @post	If Mazub is moving horizontally, the new horizontal location is calculated and if 
@@ -954,16 +954,16 @@ public class Mazub {
 	 * 			the new horizontal location is equal to zero.
 	 * 			|if(isMovingHorizontally())
 	 * 			|	if(this.getHorizontalLocationNotRounded() + 100*(this.getHorizontalVelocity()*deltaTime + 
-	 * 			|	this.getDirection()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)) < 0)
+	 * 			|	this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)) < 0)
 	 * 			|		new.getHorizontalLocation() = 0
 	 * @post	If Mazub is moving horizontally, the new horizontal location is calculated and if 
 	 * 			this newly calculated horizontal location is a not valid horizontal location and is not smaller than zero, 
 	 * 			the new horizontal location is equal to the maximum horizontal location..
 	 * 			|if(isMovingHorizontally())
 	 * 			|	if(! isValidHorizontalLocation(this.getHorizontalLocationNotRounded() + 
-				|	100*(this.getHorizontalVelocity()*deltaTime + this.getDirection()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2))
+				|	100*(this.getHorizontalVelocity()*deltaTime + this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2))
 	 * 			|		if(this.getHorizontalLocationNotRounded() + 100*(this.getHorizontalVelocity()*deltaTime + 
-	 * 			|		this.getDirection()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)) >= 0)
+	 * 			|		this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)) >= 0)
 	 * 			|		new.getHorizontalLocation() = getMaximumHorizontalLocation()
 	 * @note	This method is worked out defensively because it calculates a new position for this Mazub.
 	 */
@@ -973,7 +973,7 @@ public class Mazub {
 			try{
 				newHorizontalLocation = this.getHorizontalLocationNotRounded() + 
 						100*(this.getHorizontalVelocity()*deltaTime + 
-						this.getDirection()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2));
+						this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2));
 				this.setHorizontalLocationNotRounded(newHorizontalLocation);
 			} catch (IllegalArgumentException exc){
 				this.setHorizontalVelocity(0);
@@ -1049,17 +1049,17 @@ public class Mazub {
 	 * 			|	(new this).getTimeSinceEndMove()==this.getTimeSinceEndMove()+deltaTime
 	 * @post	If this mazub is moving horizontally then the new horizontal velocity is calculated
 	 * 			and the time since mazub last started moving is incremented by deltaTime.
-	 * 			|newVelocity = this.getHorizontalVelocity() + this.getDirection()*getHorizontalAcceleration()*deltaTime
+	 * 			|newVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAcceleration()*deltaTime
 	 * 			|this.setTimeSinceStartMove(this.getTimeSinceStartMove()+deltaTime)
 	 * 			If newVelocity is a valid horizontal velocity then the horizontal velocity
 	 * 			of this Mazub is set to new velocity.
 	 * 			|if(canHaveAsHorizontalVelocity(newVelocity))
-	 * 			|	new.getHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection()*getHorizontalAcceleration()*deltaTime
+	 * 			|	new.getHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAcceleration()*deltaTime
 	 * 			If newVelocity is not a valid valid horizontal velocity and the absolute value of newVelocity is less
 	 * 			than the absolute value of the initial horizontal velocity when not ducking of this Mazub, the new horizontal velocity
 	 * 			is equal to the direction of this Mazub times its initial horizontal velocity when not ducking.
 	 * 			|if(!canHaveAsHorizontalVelocity(newVelocity) && (Math.abs(newVelocity)<Math.abs(this.getInitialHorizontalVelocityNotDucking()))
-	 * 			|	new.getHorizontalVelocity = this.getDirection()*this.getInitialHorizontalVelocityNotDucking())
+	 * 			|	new.getHorizontalVelocity = this.getDirection().getNumberForCalculations()*this.getInitialHorizontalVelocityNotDucking())
 	 * 			If newVelocity is not a valid horizontal velocity for this Mazub and the absolute value of newVelocity is greater
 	 * 			than or equal to the absolute value of the initial horizontal velocity when not ducking of this Mazub, the new horizontal velocity
 	 * 			is equal to the direction of this Mazub times its maximum horizontal velocity.
@@ -1071,14 +1071,14 @@ public class Mazub {
 			this.setTimeSinceEndMove(this.getTimeSinceEndMove()+deltaTime);
 		}
 		else{
-			double newVelocity = this.getHorizontalVelocity() + this.getDirection()*getHorizontalAcceleration()*deltaTime;
+			double newVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAcceleration()*deltaTime;
 			this.setTimeSinceStartMove(this.getTimeSinceStartMove()+deltaTime);
 			if(canHaveAsHorizontalVelocity(newVelocity))
 				this.setHorizontalVelocity(newVelocity);
 			else if (Math.abs(newVelocity)<Math.abs(this.getInitialHorizontalVelocityNotDucking()))
-				this.setHorizontalVelocity(this.getDirection()*this.getInitialHorizontalVelocityNotDucking());
+				this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getInitialHorizontalVelocityNotDucking());
 			else
-				this.setHorizontalVelocity(this.getDirection()*this.getMaximumHorizontalVelocity());
+				this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getMaximumHorizontalVelocity());
 		}
 	}
 	
@@ -1126,24 +1126,24 @@ public class Mazub {
 			newSpriteIndex=0;
 		else if (!this.isMovingHorizontally() && this.isDucking() && this.getTimeSinceEndMove()>1)
 			newSpriteIndex=1;
-		else if (!this.isMovingHorizontally() && !this.isDucking() && this.getTimeSinceEndMove()<=1 && this.getDirection()==1)
+		else if (!this.isMovingHorizontally() && !this.isDucking() && this.getTimeSinceEndMove()<=1 && this.getDirection()==Direction.RIGHT)
 			newSpriteIndex=2;
-		else if (!this.isMovingHorizontally() && !this.isDucking() && this.getTimeSinceEndMove()<=1 && this.getDirection()==-1)
+		else if (!this.isMovingHorizontally() && !this.isDucking() && this.getTimeSinceEndMove()<=1 && this.getDirection()==Direction.LEFT)
 			newSpriteIndex=3;
 		else if (this.getHorizontalVelocity()>0 && this.isJumping() && !this.isDucking())
 			newSpriteIndex=4;
 		else if (this.getHorizontalVelocity()<0 && this.isJumping() && !this.isDucking())
 			newSpriteIndex=5;
-		else if ((this.isDucking() && this.getDirection()==1 && this.getTimeSinceEndMove()<=1) || 
-				(this.isDucking() && this.getDirection()==1 && this.getTimeSinceEndMove()>1 && this.isMovingHorizontally()))
+		else if ((this.isDucking() && this.getDirection()==Direction.RIGHT && this.getTimeSinceEndMove()<=1) || 
+				(this.isDucking() && this.getDirection()==Direction.RIGHT && this.getTimeSinceEndMove()>1 && this.isMovingHorizontally()))
 			newSpriteIndex=6;
-		else if ((this.isDucking() && this.getDirection()==-1 && this.getTimeSinceEndMove()<=1) ||
-				(this.isDucking() && this.getDirection()==-1 && this.getTimeSinceEndMove()>1 && this.isMovingHorizontally()))
+		else if ((this.isDucking() && this.getDirection()==Direction.LEFT && this.getTimeSinceEndMove()<=1) ||
+				(this.isDucking() && this.getDirection()==Direction.LEFT && this.getTimeSinceEndMove()>1 && this.isMovingHorizontally()))
 			newSpriteIndex=7;
 		else if(!this.isJumping() && !this.isDucking()){
 			int i = (int) Math.floor(this.getTimeSinceStartMove()/0.075);
 			int m=(this.getNbImages()-8)/2;
-			if (this.getDirection()==1){
+			if (this.getDirection()==Direction.RIGHT){
 			newSpriteIndex=i%m+8;
 			}
 			else{

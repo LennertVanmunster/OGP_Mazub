@@ -2,6 +2,7 @@ package jumpingalien.part1.facade;
 
 import jumpingalien.model.Mazub;
 import jumpingalien.util.Sprite;
+import jumpingalien.model.Direction;
 
 public class Facade implements IFacade{
 	/**
@@ -114,7 +115,7 @@ public class Facade implements IFacade{
 	 *            The alien that has to start moving left.
 	 */
 	public void startMoveLeft(Mazub alien){
-		alien.startMove(-1);
+		alien.startMove(Direction.LEFT);
 	}
 
 	/**
@@ -134,7 +135,7 @@ public class Facade implements IFacade{
 	 *            The alien that has to start moving right.
 	 */
 	public void startMoveRight(Mazub alien){
-		alien.startMove(1);
+		alien.startMove(Direction.RIGHT);
 	}
 
 	/**
