@@ -1,5 +1,7 @@
 package jumpingalien.part1.facade;
 
+
+
 import jumpingalien.model.Mazub;
 import jumpingalien.util.Sprite;
 import jumpingalien.model.Direction;
@@ -18,7 +20,7 @@ public class Facade implements IFacade{
 	 * @return
 	 */
 	public Mazub createMazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites){
-		return new Mazub(pixelLeftX, pixelBottomY, sprites);
+			return new Mazub(pixelLeftX, pixelBottomY, sprites);
 	}
 
 	/**

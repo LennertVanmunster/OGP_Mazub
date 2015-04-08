@@ -92,10 +92,10 @@ public class Mazub {
 	 * 			starts ducking.
 	 * 			|if(isDucking())
 	 *			|	startDuck()
-	 * @throws	IllegalArgumentException
+	 * @throws	IllegalLocationException
 	 * 			Not a valid horizontal location
 	 * 			|!isValidHorizontalLocation(horizontalLocation)	
-	 * @throws	IllegalArgumentException
+	 * @throws	IllegalLocationException
 	 * 			Not a valid vertical location
 	 * 			|!isValidVerticalLocation(verticalLocation)	
 	 * @throws	IllegalArgumentException
@@ -116,8 +116,8 @@ public class Mazub {
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
 				double verticalVelocity, double initialHorizontalVelocityNotDucking,
-				double maximumHorizontalVelocityNotDucking, boolean ducking, Sprite... images)
-		throws IllegalArgumentException {
+				double maximumHorizontalVelocityNotDucking, boolean ducking, int hitPoints, Sprite... images)
+		throws IllegalArgumentException, IllegalLocationException {
 		setHorizontalLocation(horizontalLocation);
 		setVerticalLocation(verticalLocation);
 		setDucking(ducking);
@@ -135,6 +135,7 @@ public class Mazub {
 			setDirection(Direction.RIGHT);
 		else
 			setDirection(Direction.LEFT);
+		this.setHitPoints(hitPoints);
 		this.setImages(images);
 	}
 	
@@ -149,6 +150,8 @@ public class Mazub {
 	 * 			The vertical location for this new Mazub.
 	 * @param	images
 	 * 			An array of sprites for this new Mazub.
+	 * @throws IllegalLocationException 
+	 * @throws IllegalArgumentException 
 	 * @effect	This new Mazub is initialized with the given horizontal location as its horizontal location,
 	 * 			the given vertical location as its vertical location, the given array of sprites as its sprites.
 	 * 			This new Mazub's initial horizontal velocity is set to 0, its maximum horizontal velocity is set to 3
@@ -157,7 +160,7 @@ public class Mazub {
 	 */
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
-		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, images);
+		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, 100, images);
 	}
 	
 	/**
@@ -199,11 +202,12 @@ public class Mazub {
 	 * 
 	 * @param 	horizontalLocation
 	 * 			The new effective horizontal location for this Mazub.
+	 * @throws IllegalLocationException 
 	 * @effect	The new effective horizontal location of this Mazub is set to the given horizontal location.
 	 * 			| this.setHorizontalLocationNotRounded(horizontalLocation)
 	 */
 	@Raw
-	public void setHorizontalLocation(int horizontalLocation){
+	public void setHorizontalLocation(int horizontalLocation) throws IllegalLocationException{
 		this.setHorizontalLocationNotRounded(horizontalLocation);
 	}
 	
@@ -288,14 +292,14 @@ public class Mazub {
 	 * 		  	The new calculated horizontal location for this mazub.
 	 * @post  	The new calculated horizontal location of this mazub is set to the given calculated horizontal location.
 	 * 		  	| new.getHorizontalLocationNotRounded() = this.horizontalLocationNotRounded
-	 * @throws	IllegalArgumentException
+	 * @throws	IllegalPositionException
 	 * 			The given horizontal location is not valid.
 	 * 			| !isValidHorizontalLocation(horizontalLocationNotRounded)
 	 */
 	@Raw
-	private void setHorizontalLocationNotRounded(double horizontalLocationNotRounded) throws IllegalArgumentException{
+	private void setHorizontalLocationNotRounded(double horizontalLocationNotRounded) throws IllegalLocationException{
 		if(!isValidHorizontalLocation(horizontalLocationNotRounded))
-			throw new IllegalArgumentException("Not a valid horizontal location!");
+			throw new IllegalLocationException(horizontalLocationNotRounded, this.getVerticalLocationNotRounded());
 		this.horizontalLocationNotRounded=horizontalLocationNotRounded;
 	}
 	
@@ -306,15 +310,15 @@ public class Mazub {
 	 * 		  	The new calculated vertical location.
 	 * @post  	The new calculated vertical location of this Mazub is set to the given vertical location.
 	 * 		  	| new.getVerticalLocationNotRounded() = verticalLocationNotRounded
-	 * @throws	IllegalArgumentException
+	 * @throws	IllegalLocationException
 	 * 			The given vertical location is not valid.
 	 * 			|!isValidVerticalLocation(verticalLocationNotRounded)	  
 	 */
 	@Raw
 	private void setVerticalLocationNotRounded(double verticalLocationNotRounded) 
-			throws IllegalArgumentException {
+			throws IllegalLocationException {
 		if(!isValidVerticalLocation(verticalLocationNotRounded))
-			throw new IllegalArgumentException("Not a valid vertical location!");
+			throw new IllegalLocationException(this.getHorizontalLocationNotRounded(), this.verticalLocationNotRounded);
 		this.verticalLocationNotRounded = verticalLocationNotRounded;
 	}
 	
@@ -747,10 +751,12 @@ public class Mazub {
 	 */
 	@Raw
 	public void startMove(Direction direction){
+		if (this.isMovingHorizontally()==false){
 		this.setDirection(direction);
 		this.setHorizontalVelocity((direction.getNumberForCalculations())*this.getInitialHorizontalVelocity());
 		this.setTimeSinceStartMove(0);
 		this.setTimeSinceEndMove(0);
+		}
 	}
 	
 	
@@ -967,7 +973,7 @@ public class Mazub {
 	 * 			|		new.getHorizontalLocation() = getMaximumHorizontalLocation()
 	 * @note	This method is worked out defensively because it calculates a new position for this Mazub.
 	 */
-	private void updateHorizontalLocation(double deltaTime) throws IllegalArgumentException {
+	private void updateHorizontalLocation(double deltaTime) throws IllegalLocationException {
 		double newHorizontalLocation= this.getHorizontalLocationNotRounded();
 		if (this.isMovingHorizontally()){
 			try{
@@ -975,7 +981,7 @@ public class Mazub {
 						100*(this.getHorizontalVelocity()*deltaTime + 
 						this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2));
 				this.setHorizontalLocationNotRounded(newHorizontalLocation);
-			} catch (IllegalArgumentException exc){
+			} catch (IllegalLocationException exc){
 				this.setHorizontalVelocity(0);
 				if(newHorizontalLocation < 0){
 					this.setHorizontalLocationNotRounded(0);
@@ -1019,13 +1025,13 @@ public class Mazub {
 	 * 			|		new.getVerticalLocation() = getMaximumVerticalLocation()
 	 * @note	This method is worked out defensively because it calculates a new position for this Mazub.
 	 */
-	private void updateVerticalLocation(double deltaTime) throws IllegalArgumentException {
+	private void updateVerticalLocation(double deltaTime) throws IllegalLocationException {
 		if(this.isJumping()){
 			double newVerticalLocation = this.getVerticalLocationNotRounded() + 
 					100*(getVerticalVelocity()*deltaTime + 0.5*getVerticalAcceleration()*Math.pow(deltaTime,2));
 			try{
 				this.setVerticalLocationNotRounded(newVerticalLocation);
-			} catch (IllegalArgumentException exc){
+			} catch (IllegalLocationException exc){
 				this.setVerticalVelocity(0);
 				if(newVerticalLocation < 0)
 					this.setVerticalLocationNotRounded(0);
@@ -1263,9 +1269,59 @@ public class Mazub {
 	public int getWidth(){
 		return this.getCurrentSprite().getWidth();
 	}
-	
+
 	/**
 	 * Variable registering the array of images of this Mazub.
 	 */
 	private Sprite images[];
+	
+	
+	/**
+	 * Return the current number of hit-points of this Mazub.
+	 */
+	@Basic
+	@Raw
+	public int getHitPoints() {
+		return this.hitPoints;
+	}
+
+	
+	/**
+	 * Set the hit-points of this Mazub to the given hit-points.
+	 * 
+	 * @param 	hitPoints
+	 * 		  	The new number of hit-points for this Mazub.
+	 * @post	If the given number of hit-points is greater than or equal to the maximum number of hit-points, 
+	 * 			the new number of hit-points of this Mazub is set to the maximum number of hit-points.
+	 * 		  	| if (hitPoints>=MAX_HIT_POINTS)
+	 *			|		new.hitPoints == MAX_HIT_POINTS
+	 * @post	If the given number of hit-points is negative or equal to zero, 
+	 * 			the new number of hit-points of this Mazub is set to 0.
+	 * 		  	| if (hitPoints<=0)
+	 *			|		new.hitPoints == 0
+	 * @post	If the given number of hit-points is in the pre-established range of hit-points for a Mazub,
+	 * 			the new number of hit-points of this Mazub is set to the given number of hit-points.
+	 * 			| if (hitPoints>0 && hitPoints<500){
+	 * 			|		new.hitPoints==hitPoints		
+	 */
+	@Basic
+	@Raw
+	public void setHitPoints(int hitPoints) {
+		if (hitPoints>=MAX_HIT_POINTS){
+			this.hitPoints = MAX_HIT_POINTS;
+		}
+		else if (hitPoints<=0){
+			this.hitPoints = 0;
+		}
+		else{
+			this.hitPoints= hitPoints;
+		}
+	}
+	
+	/**
+	 * Variable registering the number of hit-points of this Mazub. 
+	 */
+	private int hitPoints=100;
+	
+	private final static int MAX_HIT_POINTS=500;
 }
