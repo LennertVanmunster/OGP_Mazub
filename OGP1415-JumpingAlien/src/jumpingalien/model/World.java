@@ -79,7 +79,7 @@ public class World {
 			throw new IllegalArgumentException("Not a window height!");
 		this.visibleWindowHeight = visibleWindowHeight;
 		//To be worked out:
-//		this.setVisibleWindow(left, bottom, right, top);
+		this.setVisibleWindow(0, 0, visibleWindowWidth, visibleWindowHeight);
 		this.targetTile = new int [2];
 		setTargetTile(targetTileX,targetTileY);
 		
@@ -543,7 +543,7 @@ public class World {
 		int nbColumns = stopTile[0] - startTile[0] + 1;
 		int [][] tilePositions = new int [nbRows * nbColumns][2];
 		for (int row = 0; row < nbRows; row++ ){
-			for(int column = 0; row < nbColumns; column++){
+			for(int column = 0; column < nbColumns; column++){
 				tilePositions [row*nbColumns + column][0] = column;
 				tilePositions [row*nbColumns + column][1] = row;
 				
