@@ -586,8 +586,32 @@ public class World {
 			throw new IllegalArgumentException("Not a valid tile position!");
 		if(!isValidTileValue(tileType))
 			throw new IllegalArgumentException("Not a valid tile value!");
-		this.tiles[tileX][tileY] = tileType;
+		if(!getGameHasStarted())
+			this.tiles[tileX][tileY] = tileType;
 	}
+	
+	/**
+	 *Returns whether the game in this world has already started or not.
+	 */
+	@Basic
+	public boolean getGameHasStarted(){
+		return this.gameHasStarted;
+	}
+	
+	/**
+	 * Set the start status of this world.
+	 * 
+	 * @param 	start
+	 * 			The given start status of this world.
+	 */
+	public void setGameHasStarted(boolean start){
+		this.gameHasStarted = start;
+	}
+	
+	/**
+	 * Variable registering whether the game in this world has already started or not.
+	 */
+	private boolean gameHasStarted = false;
 	
 	/**
 	 * Returns whether the current game is over or not.

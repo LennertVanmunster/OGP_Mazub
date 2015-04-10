@@ -243,7 +243,7 @@ public class Facade implements IFacadePart2 {
 	 *            world for which to start the game.
 	 */
 	public void startGame(World world){
-		
+		world.setGameHasStarted(true);
 	}
 
 	/**
