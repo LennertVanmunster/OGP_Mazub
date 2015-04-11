@@ -267,7 +267,7 @@ public class Facade implements IFacadePart2 {
 	 * @return true if the game is over and the player has won; false otherwise.
 	 */
 	public boolean didPlayerWin(World world){
-		return false;
+		return world.getDidPlayerWin();
 	}
 	
 	/**

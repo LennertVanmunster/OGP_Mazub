@@ -635,5 +635,31 @@ public class World {
 	 */
 	private boolean gameOver = false;
 	
+	/**
+	 * Returns whether the game in this world was won or not.
+	 * The game has been won if the a player has reached the finish.
+	 * The function returns false if the game has not ended yet
+	 * or if the player did not win after the game ended.
+	 */
+	@Basic
+	public boolean getDidPlayerWin(){
+			return this.didPlayerWin;
+	}
 	
+	/**
+	 * Set the result of an ended game.
+	 * @param 	didPlayerWin
+	 * 			The result of the game.
+	 */
+	public void setDidPlayerWin(boolean didPlayerWin){
+		if(this.getGameOver())
+			this.didPlayerWin = didPlayerWin;	
+		else
+			this.didPlayerWin = false;
+	}
+	
+	/**
+	 * Variable registering whether the game of the given world was won by a player.
+	 */
+	private boolean didPlayerWin = false;
 }
