@@ -34,7 +34,7 @@ public class Facade implements IFacadePart2 {
 	 *         coordinates of the given alien's bottom left pixel in the world.
 	 */
 	public int[] getLocation(Mazub alien){
-		return new int[]{alien.getHorizontalLocation(), alien.getVerticalLocation()};
+		return new int[]{alien.getEffectiveHorizontalLocation(), alien.getEffectiveVerticalLocation()};
 	}
 
 	/**
@@ -282,7 +282,7 @@ public class Facade implements IFacadePart2 {
 	 *            world's time.
 	 */
 	public void advanceTime(World world, double dt){
-		
+		world.advanceTime(dt);
 	}
 
 	/**
@@ -410,7 +410,8 @@ public class Facade implements IFacadePart2 {
 	 *            The alien to be set as the player's character.
 	 */
 	public void setMazub(World world, Mazub alien){
-		
+		world.setMazub(alien);
+		alien.setWorld(world);
 	}
 
 	/**

@@ -94,10 +94,10 @@ public class Mazub {
 	 *			|	startDuck()
 	 * @throws	IllegalLocationException
 	 * 			Not a valid horizontal location
-	 * 			|!isValidHorizontalLocation(horizontalLocation)	
+	 * 			|!canHaveAsHorizontalLocation(horizontalLocation)	
 	 * @throws	IllegalLocationException
 	 * 			Not a valid vertical location
-	 * 			|!isValidVerticalLocation(verticalLocation)	
+	 * 			|!canHaveAsVericalLocation(verticalLocation)	
 	 * @throws	IllegalArgumentException
 	 * 			The given initial horizontal velocity is not valid for any Mazub or it does 
 	 * 			not match with the given maximum horizontal velocity.
@@ -116,7 +116,7 @@ public class Mazub {
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
 				double verticalVelocity, double initialHorizontalVelocityNotDucking,
-				double maximumHorizontalVelocityNotDucking, boolean ducking, int hitPoints, Sprite... images)
+				double maximumHorizontalVelocityNotDucking, boolean ducking, int hitPoints, World world, Sprite... images)
 		throws IllegalArgumentException, IllegalLocationException {
 		setHorizontalLocation(horizontalLocation);
 		setVerticalLocation(verticalLocation);
@@ -137,6 +137,7 @@ public class Mazub {
 			setDirection(Direction.LEFT);
 		this.setHitPoints(hitPoints);
 		this.setImages(images);
+		this.setWorld(world);
 	}
 	
 	/**
@@ -160,7 +161,7 @@ public class Mazub {
 	 */
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
-		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, 100, images);
+		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, 100, null, images);
 	}
 	
 	/**
@@ -185,44 +186,18 @@ public class Mazub {
 	 * Return the effective horizontal location of this Mazub as an integer number.
 	 */
 	@Raw
-	public int getHorizontalLocation(){
-		return (int) Math.floor(this.getHorizontalLocationNotRounded());
+	public int getEffectiveHorizontalLocation(){
+		return (int) Math.floor(this.getHorizontalLocation());
 	}
 	
 	/**
 	 * Return the effective vertical location of this Mazub as an integer number.
 	 */
 	@Raw
-	public int getVerticalLocation(){
-		return (int) Math.floor(this.getVerticalLocationNotRounded());
+	public int getEffectiveVerticalLocation(){
+		return (int) Math.floor(this.getVerticalLocation());
 	}
 	
-	/**
-	 * Set the effective horizontal location of this Mazub to the given horizontal location.
-	 * 
-	 * @param 	horizontalLocation
-	 * 			The new effective horizontal location for this Mazub.
-	 * @throws IllegalLocationException 
-	 * @effect	The new effective horizontal location of this Mazub is set to the given horizontal location.
-	 * 			| this.setHorizontalLocationNotRounded(horizontalLocation)
-	 */
-	@Raw
-	public void setHorizontalLocation(int horizontalLocation) throws IllegalLocationException{
-		this.setHorizontalLocationNotRounded(horizontalLocation);
-	}
-	
-	/**
-	 * Set the effective vertical location of this Mazub to the given vertical location.
-	 * 
-	 * @param 	verticalLocation
-	 * 		  	The new effective vertical location for this Mazub.
-	 * @effect  The new effective vertical location of this Mazub is set to the given vertical location.
-	 * 		  	| this.setVerticalLocationNotRounded(verticalLocation)
-	 */
-	@Raw
-	public void setVerticalLocation(int verticalLocation){
-		this.setVerticalLocationNotRounded(verticalLocation);
-	}
 	
 	/**
 	 * Check whether the given horizontal location is a valid horizontal location.
@@ -234,7 +209,7 @@ public class Mazub {
 	 * 			| result == ((horizontalLocation >= 0 ) && (horizontalLocation < maximumHorizontalLocation+1))
 	 */
 	@Raw
-	public static boolean isValidHorizontalLocation(double horizontalLocation){
+	public boolean canHaveAsHorizontalLocation(double horizontalLocation){
 		return ((horizontalLocation >= 0 ) && (horizontalLocation < getMaximumHorizontalLocation()+1));
 	}
 	
@@ -249,7 +224,7 @@ public class Mazub {
 	 * 			|result == ((verticalLocation >= 0 ) && (verticalLocation < maximumVerticalLocation+1))
 	 */
 	@Raw
-	public static boolean isValidVerticalLocation(double verticalLocation){
+	public boolean canHaveAsVerticalLocation(double verticalLocation){
 		return ((verticalLocation >= 0 ) && (verticalLocation < getMaximumVerticalLocation()+1));
 	}
 	
@@ -261,10 +236,10 @@ public class Mazub {
 	 * @param 	verticalLocation
 	 * 		  	The vertical location to be checked.
 	 * @return	True if and only if both the horizontal and vertical location are valid locations.
-	 * 			|result == (isValidHorizontalLocation(horizontalLocation) && isValidVerticalLocation(verticalLocation))
+	 * 			|result == (canHaveAsHorizontalLocation(horizontalLocation) && canHaveAsVericalLocation(verticalLocation))
 	 */
-	public static boolean isValidLocation(double horizontalLocation, double verticalLocation){
-		return (isValidHorizontalLocation(horizontalLocation) && isValidVerticalLocation(verticalLocation));
+	public boolean canHaveAsLocation(double horizontalLocation, double verticalLocation){
+		return (canHaveAsHorizontalLocation(horizontalLocation) && canHaveAsVerticalLocation(verticalLocation));
 	}
 	
 	/**
@@ -272,8 +247,8 @@ public class Mazub {
 	 */
 	@Basic
 	@Raw
-	private double getHorizontalLocationNotRounded(){
-		return this.horizontalLocationNotRounded;
+	public double getHorizontalLocation(){
+		return this.horizontalLocation;
 	}
 	
 	/**
@@ -281,56 +256,56 @@ public class Mazub {
 	 */
 	@Basic
 	@Raw
-	private double getVerticalLocationNotRounded(){
-		return this.verticalLocationNotRounded;
+	public double getVerticalLocation(){
+		return this.verticalLocation;
 	}
 	
 	/**
 	 * Set the calculated horizontal location of this Mazub to the given location.
 	 * 
-	 * @param 	horizontalLocationNotRounded
+	 * @param 	horizontalLocation
 	 * 		  	The new calculated horizontal location for this mazub.
 	 * @post  	The new calculated horizontal location of this mazub is set to the given calculated horizontal location.
-	 * 		  	| new.getHorizontalLocationNotRounded() = this.horizontalLocationNotRounded
+	 * 		  	| new.getHorizontalLocation() = this.horizontalLocation
 	 * @throws	IllegalPositionException
 	 * 			The given horizontal location is not valid.
-	 * 			| !isValidHorizontalLocation(horizontalLocationNotRounded)
+	 * 			| !canHaveAsHorizontalLocation(horizontalLocation)
 	 */
 	@Raw
-	private void setHorizontalLocationNotRounded(double horizontalLocationNotRounded) throws IllegalLocationException{
-		if(!isValidHorizontalLocation(horizontalLocationNotRounded))
-			throw new IllegalLocationException(horizontalLocationNotRounded, this.getVerticalLocationNotRounded());
-		this.horizontalLocationNotRounded=horizontalLocationNotRounded;
+	private void setHorizontalLocation(double horizontalLocation) throws IllegalLocationException{
+		if(!canHaveAsHorizontalLocation(horizontalLocation))
+			throw new IllegalLocationException(horizontalLocation, this.getVerticalLocation());
+		this.horizontalLocation=horizontalLocation;
 	}
 	
 	/**
 	 * Set the calculated vertical location of Mazub to the given location.
 	 * 
-	 * @param 	verticalLocationNotRounded
+	 * @param 	verticalLocation
 	 * 		  	The new calculated vertical location.
 	 * @post  	The new calculated vertical location of this Mazub is set to the given vertical location.
-	 * 		  	| new.getVerticalLocationNotRounded() = verticalLocationNotRounded
+	 * 		  	| new.getVerticalLocation() = verticalLocation
 	 * @throws	IllegalLocationException
 	 * 			The given vertical location is not valid.
-	 * 			|!isValidVerticalLocation(verticalLocationNotRounded)	  
+	 * 			|!canHaveAsVericalLocation(verticalLocation)	  
 	 */
 	@Raw
-	private void setVerticalLocationNotRounded(double verticalLocationNotRounded) 
+	private void setVerticalLocation(double verticalLocation) 
 			throws IllegalLocationException {
-		if(!isValidVerticalLocation(verticalLocationNotRounded))
-			throw new IllegalLocationException(this.getHorizontalLocationNotRounded(), this.verticalLocationNotRounded);
-		this.verticalLocationNotRounded = verticalLocationNotRounded;
+		if(!canHaveAsVerticalLocation(verticalLocation))
+			throw new IllegalLocationException(this.getHorizontalLocation(), this.verticalLocation);
+		this.verticalLocation = verticalLocation;
 	}
 	
 	/**
 	 * Variable registering the calculated horizontal location of this Mazub.
 	 */
-	private double horizontalLocationNotRounded = 0;
+	private double horizontalLocation = 0;
 	
 	/**
 	 * Variable registering the calculated  vertical location of this Mazub.
 	 */
-	private double verticalLocationNotRounded = 0;
+	private double verticalLocation = 0;
 	
 	/**
 	 * Variable registering the maximum horizontal location of all Mazubs.
@@ -951,43 +926,43 @@ public class Mazub {
 	 * 			this newly calculated horizontal location is a valid horizontal location it is set 
 	 * 			as the new horizontal location of this Mazub.
 	 * 			|if(isMovingHorizontally())
-	 * 			|	if(isValidHorizontalLocation(this.getHorizontalLocationNotRounded() + 
+	 * 			|	if(canHaveAsHorizontalLocation(this.getHorizontalLocation() + 
 				|	100*(this.getHorizontalVelocity()*deltaTime + this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2))
-	 * 			|		new.getHorizontalLocation() = this.getHorizontalLocationNotRounded() + 
+	 * 			|		new.getHorizontalLocation() = this.getHorizontalLocation() + 
 				|		100*(this.getHorizontalVelocity()*deltaTime + this.getDirection()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2))
 	 * @post	If Mazub is moving horizontally, the new horizontal location is calculated and if 
 	 * 			this newly calculated horizontal location is a not valid horizontal location and is smaller than zero, 
 	 * 			the new horizontal location is equal to zero.
 	 * 			|if(isMovingHorizontally())
-	 * 			|	if(this.getHorizontalLocationNotRounded() + 100*(this.getHorizontalVelocity()*deltaTime + 
+	 * 			|	if(this.getHorizontalLocation() + 100*(this.getHorizontalVelocity()*deltaTime + 
 	 * 			|	this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)) < 0)
 	 * 			|		new.getHorizontalLocation() = 0
 	 * @post	If Mazub is moving horizontally, the new horizontal location is calculated and if 
 	 * 			this newly calculated horizontal location is a not valid horizontal location and is not smaller than zero, 
 	 * 			the new horizontal location is equal to the maximum horizontal location..
 	 * 			|if(isMovingHorizontally())
-	 * 			|	if(! isValidHorizontalLocation(this.getHorizontalLocationNotRounded() + 
+	 * 			|	if(! canHaveAsHorizontalLocation(this.getHorizontalLocation() + 
 				|	100*(this.getHorizontalVelocity()*deltaTime + this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2))
-	 * 			|		if(this.getHorizontalLocationNotRounded() + 100*(this.getHorizontalVelocity()*deltaTime + 
+	 * 			|		if(this.getHorizontalLocation() + 100*(this.getHorizontalVelocity()*deltaTime + 
 	 * 			|		this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2)) >= 0)
 	 * 			|		new.getHorizontalLocation() = getMaximumHorizontalLocation()
 	 * @note	This method is worked out defensively because it calculates a new position for this Mazub.
 	 */
 	private void updateHorizontalLocation(double deltaTime) throws IllegalLocationException {
-		double newHorizontalLocation= this.getHorizontalLocationNotRounded();
+		double newHorizontalLocation= this.getHorizontalLocation();
 		if (this.isMovingHorizontally()){
 			try{
-				newHorizontalLocation = this.getHorizontalLocationNotRounded() + 
+				newHorizontalLocation = this.getHorizontalLocation() + 
 						100*(this.getHorizontalVelocity()*deltaTime + 
 						this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2));
-				this.setHorizontalLocationNotRounded(newHorizontalLocation);
+				this.setHorizontalLocation(newHorizontalLocation);
 			} catch (IllegalLocationException exc){
 				this.setHorizontalVelocity(0);
 				if(newHorizontalLocation < 0){
-					this.setHorizontalLocationNotRounded(0);
+					this.setHorizontalLocation(0);
 				}
 				else{
-					this.setHorizontalLocationNotRounded(getMaximumHorizontalLocation());
+					this.setHorizontalLocation(getMaximumHorizontalLocation());
 				}
 			
 			}
@@ -1003,41 +978,41 @@ public class Mazub {
 	 * @post 	If Mazub is jumping and the newly calculated vertical location is a valid vertical location it 
 	 * 			is set as the new vertical location of this Mazub.
 	 * 			|if(this.isJumping())
-	 * 			|	if(isValidVerticalLocation(this.getVerticalLocationNotRounded()+
+	 * 			|	if(canHaveAsVericalLocation(this.getVerticalLocation()+
 	 * 			|	100*(getVerticalVelocity()*deltaTime + 0.5*getVerticalAcceleration()*Math.pow(deltaTime,2)))
-	 * 			|		new.getVerticalLocation() = this.getVerticalLocationNotRounded()+
+	 * 			|		new.getVerticalLocation() = this.getVerticalLocation()+
 	 * 			|		100*(getVerticalVelocity()*deltaTime + 0.5*getVerticalAcceleration()*Math.pow(deltaTime,2))
 	 * @post	If Mazub is jumping and the newly calculated vertical location is a not valid vertical location and
 	 * 			is smaller than 0, the new horizontal location of this Mazub is equal to zero.
 	 * 			|if(this.isJumping())
-	 * 			|	if(!isValidVerticalLocation(this.getVerticalLocationNotRounded()+
+	 * 			|	if(!canHaveAsVericalLocation(this.getVerticalLocation()+
 	 * 			|	100*(getVerticalVelocity()*deltaTime + 0.5*getVerticalAcceleration()*Math.pow(deltaTime,2))) && 
-	 * 			|	this.getVerticalLocationNotRounded()+ 100*(getVerticalVelocity()*deltaTime + 
+	 * 			|	this.getVerticalLocation()+ 100*(getVerticalVelocity()*deltaTime + 
 	 * 			|	0.5*getVerticalAcceleration()*Math.pow(deltaTime,2))) < 0)
 	 * 			|		new.getVerticalLocation() = 0
 	 * @post	If Mazub is jumping and the newly calculated vertical location is a not valid vertical location and
 	 * 			is not smaller than 0, the new horizontal location of this Mazub is equal to the maximum vertical location.
 	 * 			|if(this.isJumping())
-	 * 			|	if(!isValidVerticalLocation(this.getVerticalLocationNotRounded()+
+	 * 			|	if(!canHaveAsVericalLocation(this.getVerticalLocation()+
 	 * 			|	100*(getVerticalVelocity()*deltaTime + 0.5*getVerticalAcceleration()*Math.pow(deltaTime,2))) && 
-	 * 			|	! this.getVerticalLocationNotRounded()+ 100*(getVerticalVelocity()*deltaTime + 
+	 * 			|	! this.getVerticalLocation()+ 100*(getVerticalVelocity()*deltaTime + 
 	 * 			|	0.5*getVerticalAcceleration()*Math.pow(deltaTime,2))) < 0)
 	 * 			|		new.getVerticalLocation() = getMaximumVerticalLocation()
 	 * @note	This method is worked out defensively because it calculates a new position for this Mazub.
 	 */
 	private void updateVerticalLocation(double deltaTime) throws IllegalLocationException {
 		if(this.isJumping()){
-			double newVerticalLocation = this.getVerticalLocationNotRounded() + 
+			double newVerticalLocation = this.getVerticalLocation() + 
 					100*(getVerticalVelocity()*deltaTime + 0.5*getVerticalAcceleration()*Math.pow(deltaTime,2));
 			try{
-				this.setVerticalLocationNotRounded(newVerticalLocation);
+				this.setVerticalLocation(newVerticalLocation);
 			} catch (IllegalLocationException exc){
 				this.setVerticalVelocity(0);
 				if(newVerticalLocation < 0)
-					this.setVerticalLocationNotRounded(0);
+					this.setVerticalLocation(0);
 				
 				else
-					this.setVerticalLocationNotRounded(getMaximumVerticalLocation());
+					this.setVerticalLocation(getMaximumVerticalLocation());
 				
 			}
 		}
@@ -1324,4 +1299,30 @@ public class Mazub {
 	private int hitPoints=100;
 	
 	private final static int MAX_HIT_POINTS=500;
+	
+	public void setWorld(World world) throws IllegalArgumentException{
+		if (world==null || world.canHaveAsMazub(this)){
+			this.world=world;
+		}
+		else{
+			throw new IllegalArgumentException("Not a valid world!");
+		}
+	}
+	
+	public World getWorld(){
+		return this.world;
+	}
+	
+	private World world;
+	
+	public boolean isTerminated() {
+		return this.isTerminated;
+	}
+
+	public void terminate() {
+		this.getWorld().terminate();
+		this.isTerminated=true;
+	}
+	
+	private boolean isTerminated=false;
 }

@@ -59,7 +59,7 @@ public class World {
 	 */
 	@Raw
 	public World(int tileSize, int nbTilesX, int nbTilesY, int visibleWindowWidth, int visibleWindowHeight,
-			int targetTileX, int targetTileY) throws IllegalArgumentException{
+			int targetTileX, int targetTileY, Mazub alien) throws IllegalArgumentException{
 		if(!isValidTileSize(tileSize))
 			throw new IllegalArgumentException("Not a valid tile size!");
 		this.tileSize = tileSize;
@@ -82,7 +82,13 @@ public class World {
 		this.setVisibleWindow(0, 0, visibleWindowWidth, visibleWindowHeight);
 		this.targetTile = new int [2];
 		setTargetTile(targetTileX,targetTileY);
+		this.setMazub(alien);
 		
+	}
+	
+	public World(int tileSize, int nbTilesX, int nbTilesY, int visibleWindowWidth, int visibleWindowHeight,
+			int targetTileX, int targetTileY){
+		this(tileSize, nbTilesX, nbTilesY, visibleWindowWidth, visibleWindowHeight, targetTileX, targetTileY, null);
 	}
 	
 	/**
@@ -662,4 +668,56 @@ public class World {
 	 * Variable registering whether the game of the given world was won by a player.
 	 */
 	private boolean didPlayerWin = false;
+	
+	public void advanceTime(double deltaTime){
+		this.getMazub().advanceTime(deltaTime);
+	}
+
+
+	public Mazub getMazub() {
+		return mazub;
+	}
+
+	public void setMazub(Mazub mazub) throws IllegalArgumentException {
+		if(!canHaveAsMazub(mazub)){
+			throw new IllegalArgumentException("Not a valid Mazub!");
+		}
+		this.mazub = mazub;
+	}
+	
+	public boolean canHaveAsMazub(Mazub mazub){
+		if (mazub==null){
+			return true;
+		}
+		else{
+			return mazub.canHaveAsLocation(mazub.getHorizontalLocation(),mazub.getVerticalLocation());
+		}
+	}
+	
+	public boolean hasProperMazub(){
+		return (this.canHaveAsMazub(this.getMazub()) && this.getMazub()==null) || this.getMazub().getWorld()==this;
+	}
+	
+	private Mazub mazub;
+	
+
+	public boolean isTerminated() {
+		return isTerminated;
+	}
+	
+	public boolean hasMazub(){
+		return this.getMazub()!=null;
+	}
+
+	public void terminate() {
+		if(!this.isTerminated()){
+			if(this.hasMazub()){
+				this.getMazub().setWorld(null);
+				this.setMazub(null);
+			}
+			this.isTerminated=true;
+		}
+	}
+	
+	private boolean isTerminated=false;
 }
