@@ -550,8 +550,8 @@ public class World {
 		int [][] tilePositions = new int [nbRows * nbColumns][2];
 		for (int row = 0; row < nbRows; row++ ){
 			for(int column = 0; column < nbColumns; column++){
-				tilePositions [row*nbColumns + column][0] = column;
-				tilePositions [row*nbColumns + column][1] = row;
+				tilePositions [row*nbColumns + column][0] = startTile[0]+column;
+				tilePositions [row*nbColumns + column][1] = startTile[1]+row;
 				
 			}
 		}
