@@ -161,8 +161,7 @@ public class Mazub {
 	 */
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
-		this(100, 300, 0, 0, 1, 3, false, 100, null, images);
-		//this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, 100, null, images);
+		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, 100, null, images);
 	}
 	
 	/**
@@ -225,11 +224,8 @@ public class Mazub {
 	 * 			|result == ((verticalLocation >= 0 ) && (verticalLocation < maximumVerticalLocation+1))
 	 */
 	@Raw
-	public boolean canHaveAsVerticalLocation(double verticalLocation){
-		int pixelY = (int) Math.floor(verticalLocation);
-		int pixelX = (int) Math.floor(this.getHorizontalLocation());	
-		return ((pixelY >= 0 ) && (pixelY < getMaximumVerticalLocation()+1));
-				//&& (!this.bottomOverlapsWithTile(pixelX, pixelY));
+	public boolean canHaveAsVerticalLocation(double verticalLocation){	
+		return ((verticalLocation >= 0 ) && (verticalLocation < getMaximumVerticalLocation()+1));
 	}
 	
 	/**
@@ -320,38 +316,6 @@ public class Mazub {
 	 * Variable registering the maximum vertical location of all Mazubs.
 	 */
 	private final static int maximumVerticalLocation = 767;
-	
-	public boolean getOverlapWithTile(int pixelX, int pixelY){
-		return bottomOverlapsWithTile(pixelX, pixelY) 
-				&& leftOverlapsWithTile(pixelX, pixelY);
-			
-	}
-	
-	private boolean bottomOverlapsWithTile(int pixelX, int pixelY){
-		World world = getWorld();
-		int width = 50;
-		if(world.getGeologicalFeatureAtPixel(pixelX, pixelY-1) == 1 &&
-				world.getGeologicalFeatureAtPixel(pixelX, pixelY) == 1)
-			return true;
-		else if(world.getGeologicalFeatureAtPixel(pixelX + width - 1, pixelY-1) == 1 &&
-				world.getGeologicalFeatureAtPixel(pixelX + width - 1, pixelY) == 1)
-			return true;
-		else
-			return false;	
-	}
-	
-	private boolean leftOverlapsWithTile(int pixelX, int pixelY){
-		World world = getWorld();
-		int height = 50;
-		if(world.getGeologicalFeatureAtPixel(pixelX, pixelY) == 1 &&
-				world.getGeologicalFeatureAtPixel(pixelX, pixelY) == 1)
-			return true;
-		else if(world.getGeologicalFeatureAtPixel(pixelX, pixelY + height -1) == 1 &&
-				world.getGeologicalFeatureAtPixel(pixelX, pixelY + height - 1) == 1)
-			return true;
-		else
-			return false;	
-	}
 	
 	/**
 	 * Return the horizontal velocity of this Mazub.
@@ -1044,7 +1008,7 @@ public class Mazub {
 				this.setVerticalVelocity(0);
 				if(newVerticalLocation < 0)
 					this.setVerticalLocation(0);
-				if(newVerticalLocation >= getMaximumVerticalLocation()+1)
+				else
 					this.setVerticalLocation(getMaximumVerticalLocation());
 			}
 		}
