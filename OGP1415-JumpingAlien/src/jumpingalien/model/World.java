@@ -701,7 +701,7 @@ public class World {
 		else if (this.getMazub().getEffectiveHorizontalLocation()<=this.getVisibleWindow()[0]+200){
 			horizontalWindowPosition=this.getMazub().getEffectiveHorizontalLocation()-200;
 		}
-		else if(this.getMazub().getEffectiveHorizontalLocation()+this.getMazub().getWidth()>=this.getVisibleWindowWidth()-200){
+		else if(this.getMazub().getEffectiveHorizontalLocation()+this.getMazub().getWidth()>=this.getVisibleWindow()[2]-200){
 			horizontalWindowPosition=this.getMazub().getEffectiveHorizontalLocation()+this.getMazub().getWidth()+200-this.getVisibleWindowWidth();
 		}
 		if (this.getMazub().getEffectiveVerticalLocation()<=200){
@@ -713,7 +713,7 @@ public class World {
 		else if (this.getMazub().getEffectiveVerticalLocation()<=this.getVisibleWindow()[1]+200){
 			verticalWindowPosition=this.getMazub().getEffectiveVerticalLocation()-200;
 		}
-		else if(this.getMazub().getEffectiveVerticalLocation()+this.getMazub().getHeight()>=this.getVisibleWindowHeight()-200){
+		else if(this.getMazub().getEffectiveVerticalLocation()+this.getMazub().getHeight()>=this.getVisibleWindow()[3]-200){
 			verticalWindowPosition=this.getMazub().getEffectiveVerticalLocation()+this.getMazub().getHeight()+200-this.getVisibleWindowHeight();
 		}
 		this.setVisibleWindow(horizontalWindowPosition, verticalWindowPosition, horizontalWindowPosition+this.getVisibleWindowWidth(), verticalWindowPosition+this.getVisibleWindowHeight());
