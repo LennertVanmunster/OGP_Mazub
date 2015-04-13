@@ -686,6 +686,7 @@ public class World {
 	public void advanceTime(double deltaTime){
 		this.getMazub().advanceTime(deltaTime);
 		this.updateVisibleWindow();
+		this.checkGameOver();
 	}
 	
 	private void updateVisibleWindow(){
@@ -716,6 +717,23 @@ public class World {
 			verticalWindowPosition=this.getMazub().getEffectiveVerticalLocation()+this.getMazub().getHeight()+200-this.getVisibleWindowHeight();
 		}
 		this.setVisibleWindow(horizontalWindowPosition, verticalWindowPosition, horizontalWindowPosition+this.getVisibleWindowWidth(), verticalWindowPosition+this.getVisibleWindowHeight());
+	}
+	
+	private void checkGameOver(){
+		if(this.getMazub().getHitPoints()<=0){
+			this.setGameOver(true);
+		}
+		else{
+			int coincidingTiles[][]= this.getTilePositionsIn(this.getMazub().getEffectiveHorizontalLocation(), this.getMazub().getEffectiveVerticalLocation(), 
+					this.getMazub().getEffectiveHorizontalLocation()+this.getMazub().getWidth(), this.getMazub().getEffectiveVerticalLocation()+this.getMazub().getHeight());
+			for(int tiles=0; tiles<coincidingTiles.length; tiles++){
+				if(coincidingTiles[tiles][0] == this.getTargetTileX() && coincidingTiles[tiles][1]==this.getTargetTileY()){
+					this.setGameOver(true);
+					this.setDidPlayerWin(true);
+					break;
+				}
+			}
+		}
 	}
 
 
