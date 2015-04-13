@@ -330,8 +330,8 @@ public class World {
 	 */
 	@Raw
 	public boolean canHaveAsPixelLocation(int pixelX, int pixelY){
-		return (0 <= pixelX && pixelX <= getWorldWidth())
-				&& (0 <= pixelY && pixelY <= getWorldHeight());
+		return (0 <= pixelX && pixelX < this.getWorldWidth())
+				&& (0 <= pixelY && pixelY < this.getWorldHeight());
 	}
 	
 	/**
@@ -596,6 +596,20 @@ public class World {
 			this.tiles[tileX][tileY] = tileType;
 	}
 	
+	public boolean areaCoincidesWithTerrain(int horizontalLocation, int verticalLocation, int areaWidth, int areaHeight) throws IllegalArgumentException{
+		if(!this.canHaveAsPixelLocation(horizontalLocation, verticalLocation) || !this.canHaveAsPixelLocation(areaWidth, areaHeight))
+			throw new IllegalArgumentException();
+		boolean coincidesWithTerrain=false;
+		int coincidingTiles[][]= this.getTilePositionsIn(horizontalLocation, verticalLocation, 
+				horizontalLocation+areaWidth, verticalLocation+areaHeight);
+		for(int tiles=0; tiles<coincidingTiles.length; tiles++){
+			if(this.getTileValueAtTilePosition(coincidingTiles[tiles][0],coincidingTiles[tiles][1])==1){
+				coincidesWithTerrain=true;
+			}
+		}
+		return coincidesWithTerrain;
+	}
+	
 	/**
 	 *Returns whether the game in this world has already started or not.
 	 */
@@ -671,6 +685,37 @@ public class World {
 	
 	public void advanceTime(double deltaTime){
 		this.getMazub().advanceTime(deltaTime);
+		this.updateVisibleWindow();
+	}
+	
+	private void updateVisibleWindow(){
+		int horizontalWindowPosition=this.getVisibleWindow()[0];
+		int verticalWindowPosition=this.getVisibleWindow()[1];
+		if (this.getMazub().getEffectiveHorizontalLocation()<=200){
+			horizontalWindowPosition=0;
+		}
+		else if (this.getMazub().getEffectiveHorizontalLocation()+this.getMazub().getWidth()>=this.getWorldWidth()-200){
+			horizontalWindowPosition=this.getWorldWidth()-this.getVisibleWindowWidth()-1;
+		}
+		else if (this.getMazub().getEffectiveHorizontalLocation()<=this.getVisibleWindow()[0]+200){
+			horizontalWindowPosition=this.getMazub().getEffectiveHorizontalLocation()-200;
+		}
+		else if(this.getMazub().getEffectiveHorizontalLocation()+this.getMazub().getWidth()>=this.getVisibleWindowWidth()-200){
+			horizontalWindowPosition=this.getMazub().getEffectiveHorizontalLocation()+this.getMazub().getWidth()+200-this.getVisibleWindowWidth();
+		}
+		if (this.getMazub().getEffectiveVerticalLocation()<=200){
+			verticalWindowPosition=0;
+		}
+		else if (this.getMazub().getEffectiveVerticalLocation()+this.getMazub().getHeight()>=this.getWorldHeight()-200){
+			verticalWindowPosition=this.getWorldHeight()-this.getVisibleWindowHeight()-1;
+		}
+		else if (this.getMazub().getEffectiveVerticalLocation()<=this.getVisibleWindow()[1]+200){
+			verticalWindowPosition=this.getMazub().getEffectiveVerticalLocation()-200;
+		}
+		else if(this.getMazub().getEffectiveVerticalLocation()+this.getMazub().getHeight()>=this.getVisibleWindowHeight()-200){
+			verticalWindowPosition=this.getMazub().getEffectiveVerticalLocation()+this.getMazub().getHeight()+200-this.getVisibleWindowHeight();
+		}
+		this.setVisibleWindow(horizontalWindowPosition, verticalWindowPosition, horizontalWindowPosition+this.getVisibleWindowWidth(), verticalWindowPosition+this.getVisibleWindowHeight());
 	}
 
 
