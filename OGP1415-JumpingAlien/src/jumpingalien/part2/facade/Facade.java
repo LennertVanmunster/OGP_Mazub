@@ -442,7 +442,7 @@ public class Facade implements IFacadePart2 {
 	 *         should not belong to a world.
 	 */
 	public Plant createPlant(int x, int y, Sprite[] sprites){
-		return null;
+		return new Plant(x,y,sprites);
 	}
 
 	/**
@@ -454,7 +454,7 @@ public class Facade implements IFacadePart2 {
 	 *            The plant that needs to be added to the world.
 	 */
 	public void addPlant(World world, Plant plant){
-		
+		world.setGameObject(plant);
 	}
 
 	/**
@@ -467,7 +467,8 @@ public class Facade implements IFacadePart2 {
 	 *         collection, but each plant may only be returned once.
 	 */
 	public Collection<Plant> getPlants(World world){
-		return null;
+		Collection<Plant> plants = world.getPlant();
+		return plants;
 	}
 
 	/**
@@ -479,7 +480,7 @@ public class Facade implements IFacadePart2 {
 	 *         coordinates of the given plant's bottom left pixel in the world.
 	 */
 	public int[] getLocation(Plant plant){
-		return null;
+		return new int [] {plant.getEffectiveHorizontalLocation(),plant.getEffectiveVerticalLocation()};
 	}
 
 	/**
@@ -492,7 +493,7 @@ public class Facade implements IFacadePart2 {
 	 *         orientation as defined in the assignment.
 	 */
 	public Sprite getCurrentSprite(Plant plant){
-		return null;
+		return plant.getCurrentSprite();
 	}
 
 	/**

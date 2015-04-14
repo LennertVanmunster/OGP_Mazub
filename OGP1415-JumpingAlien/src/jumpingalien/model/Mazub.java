@@ -33,11 +33,11 @@ import java.lang.Math;
  * 			| isValidTimeSinceMove(getTimeSinceStartMove())
  * @invar	The time since Mazub last ended moving must be a valid time for each Mazub.
  * 			| isValidTimeSinceMove(getTimeSinceEndMove())
- * @version 1.0
+ * @version 2.0
  * @authors Pieter Van Damme and Lennert Vanmunster
  *
  */
-public class Mazub {
+public class Mazub extends GameObject {
 	/**
 	 * Initialize a new Mazub with given horizontal and vertical location,
 	 * horizontal and vertical velocity, initial and maximum horizontal velocity,
@@ -289,7 +289,7 @@ public class Mazub {
 	 * 			| !canHaveAsHorizontalLocation(horizontalLocation)
 	 */
 	@Raw
-	private void setHorizontalLocation(double horizontalLocation) throws IllegalLocationException{
+	protected void setHorizontalLocation(double horizontalLocation) throws IllegalLocationException{
 		if(!canHaveAsHorizontalLocation(horizontalLocation))
 			throw new IllegalLocationException(horizontalLocation, this.getVerticalLocation());
 		this.horizontalLocation=horizontalLocation;
@@ -307,7 +307,7 @@ public class Mazub {
 	 * 			|!canHaveAsVericalLocation(verticalLocation)	  
 	 */
 	@Raw
-	private void setVerticalLocation(double verticalLocation) 
+	protected void setVerticalLocation(double verticalLocation) 
 			throws IllegalLocationException {
 		if(!canHaveAsVerticalLocation(verticalLocation))
 			throw new IllegalLocationException(this.getHorizontalLocation(), this.verticalLocation);
@@ -1099,7 +1099,8 @@ public class Mazub {
 	 * 			| result == (nbImages >= 10 && nbImages%2==0)
 	 * 
 	 */
-	public static boolean isValidNbImages(int nbImages){
+	@Override
+	public boolean isValidNbImages(int nbImages){
 		return nbImages>=10 && nbImages%2==0;
 	}
 	
@@ -1128,6 +1129,7 @@ public class Mazub {
 	 * 			| result == (spriteIndex>=0 && spriteIndex<=this.getNbImages())
 	 */
 	@Raw
+	@Override
 	public boolean isValidSpriteIndex(int spriteIndex){
 		return spriteIndex>=0 && spriteIndex<=this.getNbImages();
 	}
@@ -1240,7 +1242,7 @@ public class Mazub {
 	private final static int MAX_HIT_POINTS=500;
 	
 	public void setWorld(World world) throws IllegalArgumentException{
-		if (world==null || world.canHaveAsMazub(this)){
+		if (world==null || world.canHaveAsGameObject(this)){
 			this.world=world;
 		}
 		else{

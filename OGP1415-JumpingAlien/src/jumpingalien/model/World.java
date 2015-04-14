@@ -2,6 +2,10 @@ package jumpingalien.model;
 
 import be.kuleuven.cs.som.annotate.*;
 
+import java.util.*;
+
+
+
 /**
  * A class which represent a game world.
  * 
@@ -736,33 +740,53 @@ public class World {
 		}
 	}
 
-
-	public Mazub getMazub() {
-		return mazub;
-	}
-
-	public void setMazub(Mazub mazub) throws IllegalArgumentException {
-		if(!canHaveAsMazub(mazub)){
-			throw new IllegalArgumentException("Not a valid Mazub!");
-		}
-		this.mazub = mazub;
+	public void setMazub(Mazub alien){
+		gameObjects.add(0,alien);
 	}
 	
-	public boolean canHaveAsMazub(Mazub mazub){
-		if (mazub==null){
-			return true;
+	public Mazub getMazub(){
+		return (Mazub) gameObjects.get(0);
+	}
+
+	public GameObject getGameObject(GameObject gameObject) {
+		int index =  this.getIndexOfGameObject(gameObject);
+		return gameObjects.get(index - 1);
+	}
+	
+	public int getNbOfGameObjects(){
+		return gameObjects.size();
+	}
+
+	public void setGameObject(GameObject gameObject) throws IllegalArgumentException {
+		if(!canHaveAsGameObject(gameObject)){
+			throw new IllegalArgumentException("Not a valid GameObject!");
+		}
+		gameObjects.add(gameObject);
+	}
+	
+	public boolean canHaveAsGameObject(GameObject gameObject){
+		if(gameObject==null){
+			return false;
 		}
 		else{
-			return mazub.canHaveAsLocation(mazub.getHorizontalLocation(),mazub.getVerticalLocation());
+			return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation());
 		}
 	}
 	
-	public boolean hasProperMazub(){
-		return (this.canHaveAsMazub(this.getMazub()) && this.getMazub()==null) || this.getMazub().getWorld()==this;
+//	public boolean hasProperGameObjects(){
+//		return (this.canHaveAsGameObject(this.getGameObject()) && this.getGameObject()==null) || this.getGameObject().getWorld()==this;
+//	}
+	
+	@Raw
+	public int getIndexOfGameObject(GameObject gameObject) {
+		return gameObjects.indexOf(gameObject);
 	}
 	
-	private Mazub mazub;
+	public GameObject getGameObjectAtIndex(int index){
+		return gameObjects.get(index);
+	}
 	
+	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 
 	public boolean isTerminated() {
 		return isTerminated;
@@ -776,11 +800,22 @@ public class World {
 		if(!this.isTerminated()){
 			if(this.hasMazub()){
 				this.getMazub().setWorld(null);
-				this.setMazub(null);
+				this.setGameObject(null);
 			}
 			this.isTerminated=true;
 		}
 	}
 	
 	private boolean isTerminated=false;
+	
+	public List<Plant> getPlant(){
+		List<Plant> plants = new ArrayList<Plant>();
+		for(int index = 0; index < getNbOfGameObjects(); index++){
+			GameObject gameObject = getGameObjectAtIndex(index);
+			if(gameObject instanceof Plant){
+				plants.add((Plant) gameObject);
+			}
+		}
+		return plants;		
+	}
 }
