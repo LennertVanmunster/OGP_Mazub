@@ -739,24 +739,45 @@ public class World {
 			}
 		}
 	}
-
+	
+	/**
+	 * Set the Mazub of this world.
+	 * @param 	alien
+	 * 			The given alien of the class Mazub.
+	 * @post	|new.getMazub == Mazub
+	 * 
+	 */
 	public void setMazub(Mazub alien){
 		gameObjects.add(0,alien);
 	}
 	
+	/**
+	 * Return the Mazub of this world.
+	 */
+	@Basic
 	public Mazub getMazub(){
 		return (Mazub) gameObjects.get(0);
 	}
-
-	public GameObject getGameObject(GameObject gameObject) {
-		int index =  this.getIndexOfGameObject(gameObject);
-		return gameObjects.get(index - 1);
-	}
 	
+	/**
+	 * Return the number of game objects in this world.
+	 * 
+	 * @return	|gameObjects.size()
+	 */
+	@Raw
 	public int getNbOfGameObjects(){
 		return gameObjects.size();
 	}
 
+	/**
+	 * Add a game object to this world.
+	 * 
+	 * @param  	gameObject
+	 * 			The given game object.
+	 * @post	|new.getGameObjectAtIndex(getNbGameObjects - 1) == gameObject
+	 * @throws 	IllegalArgumentException
+	 * 			|!canHaveAsGameObject(gameObject)
+	 */
 	public void setGameObject(GameObject gameObject) throws IllegalArgumentException {
 		if(!canHaveAsGameObject(gameObject)){
 			throw new IllegalArgumentException("Not a valid GameObject!");
@@ -764,8 +785,24 @@ public class World {
 		gameObjects.add(gameObject);
 	}
 	
+	/**
+	 * Check whether this world can have the given game object as its game object.
+	 * 
+	 * @param 	gameObject
+	 * 			The given game object.
+	 * @return	|if(getNbOfGameObjects() > 100)
+	 *			|	result == false;
+	 *			|else if(gameObject==null){
+	 *			|	result == false;
+	 *			|else{
+	 *			|	result == gameObject.canHaveAsLocation(gameObject.getHorizontalLocation()
+	 *			|	,gameObject.getVerticalLocation());
+	 *	
+	 */
 	public boolean canHaveAsGameObject(GameObject gameObject){
-		if(gameObject==null){
+		if(getNbOfGameObjects() > 100)
+			return false;
+		else if(gameObject==null){
 			return false;
 		}
 		else{
@@ -777,25 +814,55 @@ public class World {
 //		return (this.canHaveAsGameObject(this.getGameObject()) && this.getGameObject()==null) || this.getGameObject().getWorld()==this;
 //	}
 	
+	/**
+	 * Return the index of the given game object in the list of game objects.
+	 * 
+	 * @param 	gameObject
+	 * 			The given game object.
+	 * @return	| result == gameObjects.indexOf(gameObject)
+	 */
 	@Raw
 	public int getIndexOfGameObject(GameObject gameObject) {
 		return gameObjects.indexOf(gameObject);
 	}
 	
+	/**
+	 * Get the game object of this world at the given index.
+	 * @param 	index
+	 * 			The index of the game object in the list of game objects.
+	 * @return	|result == gameObjects.get(index)
+	 */
 	public GameObject getGameObjectAtIndex(int index){
 		return gameObjects.get(index);
 	}
 	
+	/**
+	 * List registering the game objects of this world.
+	 */
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 
+	/**
+	 * Check whether the Mazub of this world is terminated.
+	 * 
+	 * @return	|result == isTerminated
+	 */
 	public boolean isTerminated() {
 		return isTerminated;
 	}
 	
+	/**
+	 * Check whether this world has a Mazub.
+	 * 
+	 * @return | result == this.getMazub()!=null;
+	 */
 	public boolean hasMazub(){
 		return this.getMazub()!=null;
 	}
 
+	/**
+	 * Terminate the Mazub of this world.
+	 * 
+	 */
 	public void terminate() {
 		if(!this.isTerminated()){
 			if(this.hasMazub()){
@@ -806,8 +873,22 @@ public class World {
 		}
 	}
 	
+	/**
+	 * Variable registering if the Mazub of this world is terminated.
+	 */
 	private boolean isTerminated=false;
 	
+	/**
+	 * Returns a list containing the plants of this world.
+	 * 
+	 * @return	|List<Plant> plants = new ArrayList<Plant>();
+	 *			|for(int index = 0; index < getNbOfGameObjects(); index++)
+	 *			|	GameObject gameObject = getGameObjectAtIndex(index);
+	 *			|	if(gameObject instanceof Plant)
+	 *			|		plants.add((Plant) gameObject);
+	 *			|result == plants
+	 *		
+	 */
 	public List<Plant> getPlant(){
 		List<Plant> plants = new ArrayList<Plant>();
 		for(int index = 0; index < getNbOfGameObjects(); index++){
