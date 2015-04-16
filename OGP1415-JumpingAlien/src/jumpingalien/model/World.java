@@ -688,9 +688,13 @@ public class World {
 	private boolean didPlayerWin = false;
 	
 	public void advanceTime(double deltaTime){
-		this.getMazub().advanceTime(deltaTime);
-		this.updateVisibleWindow();
-		this.checkGameOver();
+		for(int index = 0; index < getNbOfGameObjects(); index++){
+			GameObject gameObject = getGameObjectAtIndex(index);
+			if(canHaveAsGameObject(gameObject))
+				gameObject.advanceTime(deltaTime);
+			this.updateVisibleWindow();
+			this.checkGameOver();
+		}
 	}
 	
 	private void updateVisibleWindow(){

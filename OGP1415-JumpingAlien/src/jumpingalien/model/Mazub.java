@@ -341,23 +341,7 @@ public class Mazub extends GameObject {
 	
 	
 	
-	/**
-	 * Return the horizontal velocity of this Mazub.
-	 */
-	@Basic
-	@Raw 
-	public double getHorizontalVelocity() {
-		return this.horizontalVelocity;
-	}
-	
-	/**
-	 * Return the vertical velocity of this Mazub.
-	 */
-	@Basic 
-	@Raw
-	public double getVerticalVelocity() {
-		return this.verticalVelocity;
-	}
+
 	
 	/**
 	 * Return the initial horizontal velocity of this Mazub.
@@ -565,20 +549,10 @@ public class Mazub extends GameObject {
 	 * @return	True if and only if the given vertical velocity is less than or equal to 8 m/s (the initial vertical velocity constant).
 	 * 			| result ==  Util.fuzzyLessThanOrEqualTo(verticalVelocity, getInitialVerticalVelocity())
 	 */
-	public static boolean isValidVerticalVelocity(double verticalVelocity){
+	@Override
+	public boolean isValidVerticalVelocity(double verticalVelocity){
 		return Util.fuzzyLessThanOrEqualTo(verticalVelocity, getInitialVerticalVelocity());
 	}
-	
-	
-	/**
-	 * Variable registering the horizontal velocity of this Mazub.
-	 */
-	private double horizontalVelocity = 0;
-
-	/**
-	 *  Variable registering the vertical velocity of this Mazub.
-	 */
-	private double verticalVelocity = 0;
 	
 	/**
 	 *  Constant registering the initial vertical velocity of all Mazubs.
@@ -608,6 +582,7 @@ public class Mazub extends GameObject {
 	 * 			| 	result==horizontalAcceleration
 	 */
 	@Raw
+	@Override
 	public double getHorizontalAcceleration(){
 		if (!this.isMovingHorizontally() || 
 				Util.fuzzyEquals(Math.abs(this.getHorizontalVelocity()), this.getMaximumHorizontalVelocity())){
@@ -630,6 +605,7 @@ public class Mazub extends GameObject {
 	 *			| 	result == 0
 	 */
 	@Raw
+	@Override
 	public double getVerticalAcceleration(){
 		if(this.isJumping())
 			return VERTICAL_ACCELERATION;
@@ -646,47 +622,6 @@ public class Mazub extends GameObject {
 	 *  Constant registering the vertical acceleration of all Mazubs.
 	 */
 	public static final double VERTICAL_ACCELERATION = -10;
-	
-	
-	/**
-	 *  Return the direction of this Mazub.
-	 */
-	@Basic
-	@Raw
-	public Direction getDirection(){
-		return this.direction;
-	}
-	
-	/**
-	 * Set the direction of Mazub to the given value.
-	 * 
-	 * @param 	direction
-	 * 			The new direction for this Mazub.
-	 * @pre		The given direction must be either LEFT or RIGHT.
-	 * 			| (direction == Direction.LEFT) || (direction == Direction.RIGHT)
-	 */
-	@Raw
-	public void setDirection(Direction direction){
-		assert (direction==Direction.LEFT || direction==Direction.RIGHT);
-		this.direction = direction;
-	}
-	
-	/**
-	 * Check whether the given direction is a valid direction.
-	 * 
-	 * @param 	direction
-	 * 			The direction to be checked.
-	 * @return	True if and only if the given direction is either LEFT or RIGHT.
-	 * 			|result == ((direction == Direction.LEFT) || (direction == Direction.RIGHT))
-	 */
-	public static boolean isValidDirection(Direction direction){
-		return ((direction == Direction.LEFT) || (direction == Direction.RIGHT));
-	}
-	
-	/**
-	 * Variable registering the direction Mazub is facing.
-	 */
-	private Direction direction;
 	
 	
 	/**
@@ -870,6 +805,7 @@ public class Mazub extends GameObject {
 	 * 			|!isValidTimePeriod(deltaTime)
 	 */
 	@Raw
+	@Override
 	public void advanceTime(double deltaTime)
 		throws IllegalArgumentException {
 		if(!isValidDeltaTime(deltaTime))
@@ -889,8 +825,7 @@ public class Mazub extends GameObject {
 			this.setTimeSinceStartMove(this.getTimeSinceStartMove()+deltaTime);
 		}
 		while (sumDeltaTimeForPixel<deltaTime){
-			deltaTimeForPixel=0.01/(Math.sqrt((Math.pow(this.getHorizontalVelocity(),2)+Math.pow(this.getVerticalVelocity(), 2)))+
-					Math.sqrt((Math.pow(this.getHorizontalAcceleration(),2)+Math.pow(this.getVerticalAcceleration(), 2)))*deltaTime);
+			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
 			newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTimeForPixel;
 			newHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAcceleration()*deltaTimeForPixel;
 			newHorizontalLocation = this.getHorizontalLocation() + 
@@ -957,89 +892,12 @@ public class Mazub extends GameObject {
 		return Util.fuzzyGreaterThanOrEqualTo(deltaTime,0) && deltaTime < 0.2;
 	}
 	
-	/**
-	 * Return the time since this Mazub has last ended moving.
-	 * 
-	 * @note	We consider this method a part of advanceTime() and implement it defensively.
-	 */
-	@Basic
-	@Raw
-	public double getTimeSinceEndMove(){
-		return this.timeSinceEndMove;
-	}
-	
-	/**
-	 * Set the time since Mazub has last ended moving.
-	 * 
-	 * @param 	timeSinceEndMove
-	 * 			The time since this Mazub has last ended moving to be set.
-	 * @post	The new time since this Mazub last ended moving is equal to the given time since Mazub last ended moving.
-	 * 			|new.getTimeSinceEndMove()==timeSinceEndMove
-	 * @throws	IllegalArgumentException
-	 * 			The given time since Mazub last ended moving is not valid.
-	 * 			|!isValidTimeSinceMove(timeSinceEndMove)
-	 * @note	We consider this method a part of advanceTime() and implement it defensively.
-	 */
-	@Raw
-	private void setTimeSinceEndMove(double timeSinceEndMove) throws IllegalArgumentException{
-		if(!isValidTimeSinceMove(timeSinceEndMove))
-			throw new IllegalArgumentException();
-		this.timeSinceEndMove=timeSinceEndMove;
-	}
-	
-	/**
-	 * Return the time since mazub has last started moving.
-	 * @note	We consider this method a part of advanceTime() and implement it defensively.
-	 */
-	@Basic
-	@Raw
-	public double getTimeSinceStartMove(){
-		return this.timeSinceStartMove;
-	}
-	
-	/**
-	 * Set the time since mazub has last started moving.
-	 * @param 	timeSinceStartMove
-	 * 			The time since this Mazub has last started moving to be set.
-	 * @post	The new time since this Mazub last started moving is equal to the given time since mazub last started moving.
-	 * 			|new.getTimeSinceStartMove()==timeSinceStartMove
-	 * @throws	IllegalArgumentException
-	 * 			The given time since Mazub last started moving is not valid.
-	 * 			|!isValidTimeSinceMove(timeSinceStartMove)
-	 * @note	We consider this method a part of advanceTime() and implement it defensively.
-	 */
-	@Raw
-	private void setTimeSinceStartMove(double timeSinceStartMove) throws IllegalArgumentException{
-		if(!isValidTimeSinceMove(timeSinceStartMove))
-			throw new IllegalArgumentException();
-		this.timeSinceStartMove=timeSinceStartMove;
-	}
-	
-	/**
-	 * Check whether the given time is a valid time period since Mazub's last action (either start move or end move).
-	 * @param 	time
-	 * 			The time period to be checked.
-	 * @return	True if the given time period is greater than or equal to zero.
-	 * 			| result == Util.fuzzyGreaterThanOrEqualTo(time, 0)
-	 */
-	private static boolean isValidTimeSinceMove(double time){
-		return Util.fuzzyGreaterThanOrEqualTo(time, 0);
-	}
-	
-	/**
-	 * Variable registering the time since this Mazub last started moving.
-	 */
-	private double timeSinceStartMove=0;
-	
-	/**
-	 * Variable registering the time since this Mazub has last ended moving.
-	 */
-	private double timeSinceEndMove=2;
 	
 	
 	/**
 	 * Return the current Sprite of this Mazub.
 	 */
+	@Override
 	public Sprite getCurrentSprite(){
 		int newSpriteIndex=Integer.MAX_VALUE;
 		if (!this.isMovingHorizontally() && !this.isDucking() && this.getTimeSinceEndMove()>1)

@@ -1,6 +1,7 @@
 package jumpingalien.model;
 
 import jumpingalien.util.Sprite;
+import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
 import java.lang.Math;
@@ -162,16 +163,277 @@ public abstract class GameObject {
 	 */
 	private double verticalLocation = 0;
 	
-
 	/**
-	 * Return the current Sprite of this Mazub.
+	 * Return the horizontal velocity of this game object.
 	 */
-	public Sprite getCurrentSprite(){
-		return this.getImages()[0];
+	@Basic
+	@Raw 
+	public double getHorizontalVelocity() {
+		return this.horizontalVelocity;
 	}
 	
 	/**
-	 * Return a copy of the current image array of this Mazub.
+	 * Return the vertical velocity of this game object.
+	 */
+	@Basic 
+	@Raw
+	public double getVerticalVelocity() {
+		return this.verticalVelocity;
+	}
+	
+	/**
+	 * Set the horizontal velocity of game object to the given horizontal velocity.
+	 * 
+	 * @param 	horizontalVelocity
+	 * 			The horizontal velocity.
+	 * @post	The given horizontal velocity is set as the new horizontal velocity
+	 * 			of game object.
+	 * 			|new.getHorizontalVelocity() = horizontalVelocity
+	 * @throws	IllegalArgumentException
+	 * 			The given horizontal velocity is not a valid horizontal velocity.
+	 * 			|!this.canHaveAsHorizontalVelocity(horizontalVelocity)
+	 */
+	@Raw
+	public void setHorizontalVelocity(double horizontalVelocity) 
+		throws IllegalArgumentException{
+		if(!this.canHaveAsHorizontalVelocity(horizontalVelocity))
+			throw new IllegalArgumentException("Not a valid horizontal velocity!");
+		this.horizontalVelocity = horizontalVelocity;
+	}
+	
+	/**
+	 * Set the vertical velocity of game object to the given vertical velocity.
+	 * 
+	 * @param 	verticalVelocity
+	 * 			The vertical velocity to be set.
+	 * @post	The given vertical velocity is set as the new vertical velocity of this game object.
+	 * 			|new.getVerticalVelocity() = verticalVelocity
+	 * @throws	IllegalArgumentException
+	 * 			The given vertical velocity is not a valid vertical velocity.
+	 * 			|!isValidVerticalVelocity(verticalVelocity)
+	 */ 
+	@Raw
+	public void setVerticalVelocity(double verticalVelocity) 
+		throws IllegalArgumentException{
+		if(!isValidVerticalVelocity(verticalVelocity))
+			throw new IllegalArgumentException("Not a valid vertical velocity!");
+		this.verticalVelocity = verticalVelocity;
+	}
+	
+	/**
+	 * Check whether the given horizontal velocity is a valid horizontal velocity.
+	 * @param horizontalVelocity
+	 * @return
+	 */
+	public abstract boolean canHaveAsHorizontalVelocity(double horizontalVelocity);
+	
+	/**
+	 * Check whether the given vertical velocity is a valid vertical velocity.
+	 * 
+	 * @param 	verticalVelocity
+	 * 			The vertical velocity to be checked.
+	 * @return	True if and only if the given vertical velocity is less than or equal to 8 m/s (the initial vertical velocity constant).
+	 * 			| result ==  Util.fuzzyLessThanOrEqualTo(verticalVelocity, getInitialVerticalVelocity())
+	 */
+	public abstract boolean isValidVerticalVelocity(double verticalVelocity);
+	
+	/**
+	 * Variable registering the horizontal velocity of this Mazub.
+	 */
+	protected double horizontalVelocity = 0;
+
+	/**
+	 *  Variable registering the vertical velocity of this Mazub.
+	 */
+	protected double verticalVelocity = 0;
+	
+
+	/**
+	 * Returns the horizontal acceleration of this Mazub.
+	 * 
+	 */
+	@Raw
+	public double getHorizontalAcceleration(){
+			return horizontalAcceleration;
+	}
+	
+	/**
+	 * Returns the vertical acceleration of this Mazub.
+	 * 
+	 */
+	@Raw
+	public double getVerticalAcceleration(){
+			return this.verticalAcceleration;
+	}
+	
+	/**
+	 *  Variable registering the horizontal acceleration of a game object.
+	 */
+	protected double horizontalAcceleration;
+	
+	/**
+	 *  Constant registering the vertical acceleration of a game object.
+	 */
+	protected double verticalAcceleration = -10;
+	
+	/**
+	 *  Return the direction of this game object.
+	 */
+	@Basic
+	@Raw
+	public Direction getDirection(){
+		return this.direction;
+	}
+	
+	/**
+	 * Set the direction of this game object to the given value.
+	 * 
+	 * @param 	direction
+	 * 			The new direction for this game object.
+	 * @pre		The given direction must be either LEFT or RIGHT.
+	 * 			| (direction == Direction.LEFT) || (direction == Direction.RIGHT)
+	 */
+	@Raw
+	public void setDirection(Direction direction){
+		assert (direction==Direction.LEFT || direction==Direction.RIGHT);
+		this.direction = direction;
+	}
+	
+	/**
+	 * Check whether the given direction is a valid direction.
+	 * 
+	 * @param 	direction
+	 * 			The direction to be checked.
+	 * @return	True if and only if the given direction is either LEFT or RIGHT.
+	 * 			|result == ((direction == Direction.LEFT) || (direction == Direction.RIGHT))
+	 */
+	public static boolean isValidDirection(Direction direction){
+		return ((direction == Direction.LEFT) || (direction == Direction.RIGHT));
+	}
+	
+	/**
+	 * Variable registering the direction game object is facing.
+	 */
+	private Direction direction = Direction.LEFT;
+	
+	public double getDeltaTimeForPixel(double deltaTime){
+		return 0.01/(Math.sqrt((Math.pow(this.getHorizontalVelocity(),2)+Math.pow(this.getVerticalVelocity(), 2)))+
+			Math.sqrt((Math.pow(this.getHorizontalAcceleration(),2)+Math.pow(this.getVerticalAcceleration(), 2)))*deltaTime);
+	}
+	
+	/**
+	 * Update the location and velocity of this game object.
+	 * 
+	 * @param 	deltaTime
+	 * 			The period of time that is used to update this GameObject.
+	 */
+	public abstract void advanceTime(double deltaTime);
+	
+	/**
+	 * Check whether the given deltaTime is a valid time period.
+	 * 
+	 * @param 	deltaTime
+	 * 			The period of time to be checked.
+	 * @return	True if and only if the time period is smaller
+	 * 			than 0.2s and greater than or equal to zero.
+	 * 			| result == Util.fuzzyGreaterThanOrEqualTo(deltaTime,0) && deltaTime < 0.2
+	 */
+	public static boolean isValidDeltaTime(double deltaTime){
+		return Util.fuzzyGreaterThanOrEqualTo(deltaTime,0) && deltaTime < 0.2;
+	}
+	
+	/**
+	 * Return the time since this game object has last ended moving.
+	 * 
+	 * @note	We consider this method a part of advanceTime() and implement it defensively.
+	 */
+	@Basic
+	@Raw
+	public double getTimeSinceEndMove(){
+		return this.timeSinceEndMove;
+	}
+	
+	/**
+	 * Set the time since game object has last ended moving.
+	 * 
+	 * @param 	timeSinceEndMove
+	 * 			The time since this game object has last ended moving to be set.
+	 * @post	The new time since this game object last ended moving is equal to the given time since game object last ended moving.
+	 * 			|new.getTimeSinceEndMove()==timeSinceEndMove
+	 * @throws	IllegalArgumentException
+	 * 			The given time since game object last ended moving is not valid.
+	 * 			|!isValidTimeSinceMove(timeSinceEndMove)
+	 * @note	We consider this method a part of advanceTime() and implement it defensively.
+	 */
+	@Raw
+	protected void setTimeSinceEndMove(double timeSinceEndMove) throws IllegalArgumentException{
+		if(!isValidTimeSinceMove(timeSinceEndMove))
+			throw new IllegalArgumentException();
+		this.timeSinceEndMove=timeSinceEndMove;
+	}
+	
+	/**
+	 * Return the time since game object has last started moving.
+	 * @note	We consider this method a part of advanceTime() and implement it defensively.
+	 */
+	@Basic
+	@Raw
+	public double getTimeSinceStartMove(){
+		return this.timeSinceStartMove;
+	}
+	
+	/**
+	 * Set the time since game object has last started moving.
+	 * @param 	timeSinceStartMove
+	 * 			The time since this game object has last started moving to be set.
+	 * @post	The new time since this game object last started moving is equal to the given time since game object last started moving.
+	 * 			|new.getTimeSinceStartMove()==timeSinceStartMove
+	 * @throws	IllegalArgumentException
+	 * 			The given time since game object last started moving is not valid.
+	 * 			|!isValidTimeSinceMove(timeSinceStartMove)
+	 * @note	We consider this method a part of advanceTime() and implement it defensively.
+	 */
+	@Raw
+	protected void setTimeSinceStartMove(double timeSinceStartMove) throws IllegalArgumentException{
+		if(!isValidTimeSinceMove(timeSinceStartMove))
+			throw new IllegalArgumentException();
+		this.timeSinceStartMove=timeSinceStartMove;
+	}
+	
+	/**
+	 * Check whether the given time is a valid time period since game object's last action (either start move or end move).
+	 * @param 	time
+	 * 			The time period to be checked.
+	 * @return	True if the given time period is greater than or equal to zero.
+	 * 			| result == Util.fuzzyGreaterThanOrEqualTo(time, 0)
+	 */
+	protected static boolean isValidTimeSinceMove(double time){
+		return Util.fuzzyGreaterThanOrEqualTo(time, 0);
+	}
+	
+	/**
+	 * Variable registering the time since this game object last started moving.
+	 */
+	private double timeSinceStartMove=0;
+	
+	/**
+	 * Variable registering the time since this game object has last ended moving.
+	 */
+	private double timeSinceEndMove=2;
+	
+	
+	/**
+	 * Return the current Sprite of this game object.
+	 */
+	public Sprite getCurrentSprite(){
+		if(this.getDirection() == Direction.LEFT)
+			return getImageAt(0);
+		else 
+			return getImageAt(1);
+	}
+	
+	/**
+	 * Return a copy of the current image array of this game object.
 	 */
 	@Basic 
 	@Raw
@@ -180,7 +442,7 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Return the number of images in the current image array of this Mazub.
+	 * Return the number of images in the current image array of this game object.
 	 */
 	@Raw
 	public int getNbImages(){
@@ -188,7 +450,7 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Check whether the given number of images in the given image array is valid for all Mazubs.
+	 * Check whether the given number of images in the given image array is valid for all game objects.
 	 * 
 	 * @param 	nbImages
 	 * 			The number of images to be checked.
@@ -199,7 +461,7 @@ public abstract class GameObject {
 	public abstract boolean isValidNbImages(int nbImages);
 	
 	/**
-	 * Return the image in the image array of this Mazub at the given sprite index.
+	 * Return the image in the image array of this game object at the given sprite index.
 	 * 
 	 * @pre		The given sprite index must be a valid sprite index.
 	 * 			| isValidSpriteIndex(spriteIndex)
@@ -219,7 +481,7 @@ public abstract class GameObject {
 	 * @param 	spriteIndex
 	 * 			The sprite index to be checked.
 	 * @return	True if the given sprite index is greater than or equal to zero and 
-	 * 			smaller than or equal to the number of images in the current image array of this Mazub.
+	 * 			smaller than or equal to the number of images in the current image array of this game object.
 	 * 			| result == (spriteIndex>=0 && spriteIndex<=this.getNbImages())
 	 */
 	@Raw
@@ -239,16 +501,16 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Set the image array of this Mazub to the given image array.
+	 * Set the image array of this game object to the given image array.
 	 * 
 	 * @param 	images
-	 * 			The new image array for this Mazub.
+	 * 			The new image array for this game object.
 	 * @pre 	The length of the given image array must be a valid length.
 	 * 			|isValidNbImages(images.length)
 	 * @pre		The images in the given image array must all be valid images.
 	 * 			| for i in 1..images.length:
 	 * 			|	isValidImage(images[i])
-	 * @post	The new image array of this Mazub is equal to copy of he given image array.
+	 * @post	The new image array of this game object is equal to copy of he given image array.
 	 * 			| this.images==images.clone()
 	 */
 	@Raw
@@ -264,7 +526,7 @@ public abstract class GameObject {
 	
 	
 	/**
-	 * Return the height of the currrent sprite of this Mazub.
+	 * Return the height of the currrent sprite of this game object.
 	 */
 	@Raw
 	public int getHeight(){
@@ -272,7 +534,7 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Return the width of the current sprite of this Mazub.
+	 * Return the width of the current sprite of this game object.
 	 */
 	@Raw
 	public int getWidth(){
@@ -280,7 +542,7 @@ public abstract class GameObject {
 	}
 
 	/**
-	 * Variable registering the array of images of this Mazub.
+	 * Variable registering the array of images of this game object.
 	 */
 	private Sprite images[];
 	
