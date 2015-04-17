@@ -3,7 +3,7 @@ package jumpingalien.model;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * A class for signaling illegal Locations for mazubs.
+ * A class for signaling illegal Locations for game objects.
  * 
  * @version  1.0
  * @author   Lennert Vanmunster, Pieter Van Damme

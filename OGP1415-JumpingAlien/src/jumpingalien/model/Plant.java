@@ -24,17 +24,48 @@ public class Plant extends GameObject {
 		this.setVerticalVelocity(0);
 	}
 	
+	/**
+	 * Check whether the given vertical velocity is a valid vertical velocity
+	 * for the class of plants.
+	 * 
+	 * @param	verticalVelocity
+	 * 			The given vertical velocity
+	 * @return	|Util.fuzzyEquals(verticalVelocity, 0)
+	 */
+	@Override
 	public boolean isValidVerticalVelocity(double verticalVelocity){
 		return Util.fuzzyEquals(verticalVelocity, 0);
 	}
 	
+	/**
+	 * Check whether the given horizontal velocity is a valid horizontal velocity
+	 * for the class of plants.
+	 * 
+	 * @param	horizontalVelocity
+	 * 			The given horizontal velocity
+	 * @return	|result == Util.fuzzyEquals(Math.abs(horizontalVelocity), VELOCITYCONSTANT)
+				|	||Util.fuzzyEquals(Math.abs(horizontalVelocity), 0);
+	 * 
+	 */
+	@Override
 	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity) {
 		return Util.fuzzyEquals(Math.abs(horizontalVelocity), VELOCITYCONSTANT)
 				||Util.fuzzyEquals(Math.abs(horizontalVelocity), 0);
 	}
 	
+	/**
+	 * Variable registering the velocity constant for the horizontal velocity of all plants.
+	 */
 	private static final double VELOCITYCONSTANT = 0.5;
 	
+	/**
+	 * Check whether the given number of images is a valid number of images
+	 * for the class Plant.
+	 * 
+	 * @param	nbImages
+	 * 			The given number of images.
+	 * @return	|result == nbImages == 2; 
+	 */
 	@Override
 	public boolean isValidNbImages(int nbImages){
 		return nbImages == 2;
@@ -48,7 +79,7 @@ public class Plant extends GameObject {
 	 * @effect	The horizontal location is updated
 	 * 			and the horizontal velocity is updated.
 	 * 			|updateHorizontalLocation(deltaTime)
-	 *			|updateHorizontalVelocity(deltaTime);
+	 *			|updateHorizontalVelocity();
 	 * @throws	IllegalArgumentException 
 	 * 			The given time period is not valid a valid time period.
 	 * 			|!isValidTimePeriod(deltaTime)
@@ -62,9 +93,7 @@ public class Plant extends GameObject {
 		if(Util.fuzzyLessThanOrEqualTo(getTimeSinceStartMove(), 0.5))
 			this.setTimeSinceStartMove(this.getTimeSinceStartMove() + deltaTime);
 		else{
-			this.setTimeSinceStartMove(0);
-			this.setNewDirection();
-			this.setHorizontalVelocity(this.getDirection().getNumberForCalculations() * VELOCITYCONSTANT);
+			this.updateHorizontalVelocity();
 		}
 		double deltaTimeForPixel=0;
 		double sumDeltaTimeForPixel=0;
@@ -75,6 +104,13 @@ public class Plant extends GameObject {
 		}	
 	}
 	
+	/**
+	 * Update the horizontal location of this plant.
+	 * 
+	 * @param 	deltaTimeForPixel
+	 * 			The period of time that is used to update this Plant.
+	 * 
+	 */
 	private void updateHorizontalLocation(double deltaTimeForPixel){
 		double oldHorizontalLocation = this.getHorizontalLocation();
 		double newHorizontalLocation = this.getHorizontalLocation() + 
@@ -82,13 +118,33 @@ public class Plant extends GameObject {
 				this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTimeForPixel, 2));
 		try{
 			this.setHorizontalLocation(newHorizontalLocation);
-			oldHorizontalLocation=newHorizontalLocation;
 		} catch(IllegalLocationException exc){
+			this.updateHorizontalVelocity();
 			this.setHorizontalLocation((int) oldHorizontalLocation);
-			this.setHorizontalVelocity(0);
 		}
 	}
 	
+	/**
+	 * Update the horizontal velocity of this plant.
+	 * 
+	 * @effect	|setTimeSinceStartMove(0);
+	 * @effect	|setNewDirection();
+	 * @effect	|setHorizontalVelocity(this.getDirection().getNumberForCalculations() * VELOCITYCONSTANT);
+	 */
+	private void updateHorizontalVelocity(){
+		this.setTimeSinceStartMove(0);
+		this.setNewDirection();
+		this.setHorizontalVelocity(this.getDirection().getNumberForCalculations() * VELOCITYCONSTANT);
+	}
+	
+	/**
+	 * Set the new direction for this plant.
+	 * 
+	 * @post	|if(this.getDirection() == Direction.LEFT)
+	 *			|	new.getDirection == Direction.RIGHT	
+	 *			|else if(this.getDirection() == Direction.RIGHT)
+	 *			|	new.getDirection == Direction.LEFT;
+	 */
 	private void setNewDirection(){
 		if(this.getDirection() == Direction.LEFT)
 			this.setDirection(Direction.RIGHT);

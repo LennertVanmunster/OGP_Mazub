@@ -1017,8 +1017,9 @@ public class Mazub extends GameObject {
 	 * 			| this.images==images.clone()
 	 */
 	@Raw
-	public void setImages(Sprite... images){
-		assert (isValidNbImages(images.length)):
+	@Override
+	public void setImages(Sprite[] images){
+		assert isValidNbImages(images.length):
 			"Not a valid number of images in the given image array!";
 		for (Sprite image:images){
 			assert isValidImage(image):

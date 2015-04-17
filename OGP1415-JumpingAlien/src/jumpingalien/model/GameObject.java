@@ -451,12 +451,6 @@ public abstract class GameObject {
 	
 	/**
 	 * Check whether the given number of images in the given image array is valid for all game objects.
-	 * 
-	 * @param 	nbImages
-	 * 			The number of images to be checked.
-	 * @return	The given number of images must be an even number and must be greater than or equal to 10;
-	 * 			| result == (nbImages >= 10 && nbImages%2==0)
-	 * 
 	 */
 	public abstract boolean isValidNbImages(int nbImages);
 	
@@ -514,8 +508,8 @@ public abstract class GameObject {
 	 * 			| this.images==images.clone()
 	 */
 	@Raw
-	public void setImages(Sprite... images){
-		assert (isValidNbImages(images.length)):
+	public void setImages(Sprite[] images){
+		assert isValidNbImages(images.length):
 			"Not a valid number of images in the given image array!";
 		for (Sprite image:images){
 			assert isValidImage(image):
@@ -550,8 +544,15 @@ public abstract class GameObject {
 		return this.world;
 	}
 	
+	/**
+	 * Set a world for this game object.
+	 * @param 	world
+	 * 			The world for this game object.
+	 * @throws 	IllegalArgumentException
+	 * 			|
+	 */
 	public void setWorld(World world) throws IllegalArgumentException{
-		if (world==null || world.canHaveAsGameObject(this)){
+		if (world != null && world.canHaveAsGameObject(this)){
 			this.world=world;
 		}
 		else{

@@ -455,6 +455,7 @@ public class Facade implements IFacadePart2 {
 	 */
 	public void addPlant(World world, Plant plant){
 		world.setGameObject(plant);
+		plant.setWorld(world);
 	}
 
 	/**
