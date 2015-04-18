@@ -4,6 +4,7 @@ package jumpingalien.model;
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
+
 import java.lang.Math;
 
 /**
@@ -200,7 +201,8 @@ public class Mazub extends GameObject {
 			return false;
 		}
 		else{
-			return !this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2);
+			return !this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, 
+					this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)[1];
 		}
 	}
 	
@@ -223,7 +225,8 @@ public class Mazub extends GameObject {
 			return false;
 		}
 		else{
-			return !this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), (int) verticalLocation+1, this.getWidth()-1, this.getHeight()-2);
+			return !this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
+					(int) verticalLocation+1, this.getWidth()-1, this.getHeight()-2)[1];
 		}
 	}
 	
@@ -753,7 +756,9 @@ public class Mazub extends GameObject {
 			return true;
 		}
 		else{
-			return !this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), this.getEffectiveVerticalLocation()+1, this.getImageAt(0).getWidth()-1, this.getImageAt(0).getHeight());
+			return !this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
+					this.getEffectiveVerticalLocation()+1, this.getImageAt(0).getWidth()-1, 
+					this.getImageAt(0).getHeight())[1];
 		}
 	}
 	
@@ -768,6 +773,9 @@ public class Mazub extends GameObject {
 	 *			|updateVerticalLocation(deltaTime);
 	 *			|updateHorizontalVelocity(deltaTime);
 	 *			|updateVerticalVelocity(deltaTime);
+	 * @effect	|Contact with magma and water is checked.
+	 *			|checkWaterContact(deltaTime);
+	 *			|checkMagmaContact(deltaTime);		
 	 * @throws	IllegalArgumentException 
 	 * 			The given time period is not valid a valid time period.
 	 * 			|!isValidTimePeriod(deltaTime)
@@ -792,6 +800,7 @@ public class Mazub extends GameObject {
 		else{
 			this.setTimeSinceStartMove(this.getTimeSinceStartMove()+deltaTime);
 		}
+		double startTime = System.nanoTime();
 		while (sumDeltaTimeForPixel<deltaTime){
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
 			newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTimeForPixel;
@@ -832,6 +841,8 @@ public class Mazub extends GameObject {
 				this.endDuck();
 			}
 		}
+		checkWaterContact(deltaTime);
+		checkMagmaContact(deltaTime);	
 		this.calculateNewJumpingState();
 	}
 	
@@ -846,6 +857,56 @@ public class Mazub extends GameObject {
 		}
 	}
 
+	/**
+	 * Check whether the game object makes contact with water and take the corresponding actions.
+	 * 
+	 * @param 	deltaTime
+	 * 			The given time period.
+	 * @post	Every 0.2 seconds while being contacted with water, two hitpoints are removed
+	 * 			from Mazub. The first 0.2 seconds no hitpoints are removed.
+	 * 			|
+	 */
+	@Override
+	public void checkWaterContact(double deltaTime){
+		boolean [] contactTiles = (this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
+				this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)).clone();
+		if(contactTiles[2] == true){
+			double time = getTimeSinceStartWaterContact();
+			this.setTimeSinceStartWaterContact(time + deltaTime);
+			if(Util.fuzzyGreaterThanOrEqualTo(this.getTimeSinceStartWaterContact(), 0.2)){
+				this.removeHitPoints(2);
+				this.setTimeSinceStartWaterContact(0);
+			}
+		}
+		else
+			this.setTimeSinceStartWaterContact(0);
+	}
+	
+	/**
+	 *Check whether the game object makes contact with magma and take the corresponding actions. 
+	 * @param 	deltaTime
+	 * 			The given time period.
+	 * @post	Every 0.2 seconds while being contacted with magma, fifty hitpoints are removed
+	 * 			from Mazub. The first hitpoints are immediately removed at first contact.
+	 * 			|
+	 */
+	@Override
+	public void checkMagmaContact(double deltaTime){
+		boolean [] contactTiles = (this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
+				this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)).clone();
+		if(contactTiles[3] == true){
+			double time = getTimeSinceStartMagmaContact();
+			this.setTimeSinceStartMagmaContact(time + deltaTime);
+			if(time == 0)
+				this.removeHitPoints(50);
+			else if(Util.fuzzyGreaterThanOrEqualTo(this.getTimeSinceStartMagmaContact(), 0.2)){
+				this.setTimeSinceStartMagmaContact(0);
+			}
+		}
+		else{
+			this.setTimeSinceStartMagmaContact(0);
+		}
+	}
 	
 	/**
 	 * Return the current Sprite of this Mazub.
@@ -884,7 +945,6 @@ public class Mazub extends GameObject {
 		return this.getImageAt(newSpriteIndex);
 	}
 	
-	/**
 	/**
 	 * Check whether the given number of images in the given image array is valid for all Mazubs.
 	 * 

@@ -600,15 +600,42 @@ public class World {
 			this.tiles[tileX][tileY] = tileType;
 	}
 	
-	public boolean areaCoincidesWithTerrain(int horizontalLocation, int verticalLocation, int areaWidth, int areaHeight) throws IllegalArgumentException{
-		if(!this.canHaveAsPixelLocation(horizontalLocation, verticalLocation) || !this.canHaveAsPixelLocation(areaWidth, areaHeight))
+	/**
+	 * Variable registering the number of geological features in this world.
+	 */
+	private final static int NB_OF_GEOLOGICAL_FEATURES = 4;
+	
+	/**
+	 * Check with which types of geological features this area overlaps.
+	 * It returns an array with true or false at the position of the corresponding 
+	 * geological feature. So if the area overlaps with geological feature one,
+	 * the boolean at position one will be true.
+	 * @param 	horizontalLocation
+	 * 			The horizontal location of the area.
+	 * @param 	verticalLocation
+	 * 			The vertical location of the area.
+	 * @param 	areaWidth
+	 * 			The width of the area.
+	 * @param 	areaHeight
+	 * 			The height of the area.
+	 * @return
+	 * @throws 	IllegalArgumentException
+	 * 			|!this.canHaveAsPixelLocation(horizontalLocation, verticalLocation) 
+				|	|| !this.canHaveAsPixelLocation(horizontalLocation + areaWidth, 
+				|		verticalLocation + areaHeight)
+	 */
+	public boolean [] areaCoincidesWithTerrain(int horizontalLocation, int verticalLocation, int areaWidth, int areaHeight) throws IllegalArgumentException{
+		if(!this.canHaveAsPixelLocation(horizontalLocation, verticalLocation) 
+				|| !this.canHaveAsPixelLocation(horizontalLocation + areaWidth, 
+						verticalLocation + areaHeight))
 			throw new IllegalArgumentException();
-		boolean coincidesWithTerrain=false;
+		boolean [] coincidesWithTerrain= {false,false,false,false};
 		int coincidingTiles[][]= this.getTilePositionsIn(horizontalLocation, verticalLocation, 
 				horizontalLocation+areaWidth, verticalLocation+areaHeight);
 		for(int tiles=0; tiles<coincidingTiles.length; tiles++){
-			if(this.getTileValueAtTilePosition(coincidingTiles[tiles][0],coincidingTiles[tiles][1])==1){
-				coincidesWithTerrain=true;
+			for(int index = 0; index < NB_OF_GEOLOGICAL_FEATURES; index++)
+				if(this.getTileValueAtTilePosition(coincidingTiles[tiles][0],coincidingTiles[tiles][1])==index){
+					coincidesWithTerrain [index] = true;
 			}
 		}
 		return coincidesWithTerrain;
@@ -814,6 +841,17 @@ public class World {
 		}
 	}
 	
+	/**
+	 * Check whether this world contains the given game object.
+	 * @param 	gameObject
+	 * 			The given game object.
+	 * @return	|gameObjects.contains(gameObject);
+	 */
+	@Raw
+	public boolean containsGameObject(GameObject gameObject) {
+		return gameObjects.contains(gameObject);
+	}
+	
 //	public boolean hasProperGameObjects(){
 //		return (this.canHaveAsGameObject(this.getGameObject()) && this.getGameObject()==null) || this.getGameObject().getWorld()==this;
 //	}
@@ -881,6 +919,18 @@ public class World {
 	 * Variable registering if the Mazub of this world is terminated.
 	 */
 	private boolean isTerminated=false;
+	
+	/**
+	 * Remove the given game object from this world.
+	 * 
+	 * @param 	gameObject
+	 * 			The given game object.
+	 * @post	|new.contains(gameObject) == false
+	 */
+	public void removeGameObject(GameObject gameObject){
+		if(gameObject != null && containsGameObject(gameObject) && gameObject.getWorld() == null)
+			gameObjects.remove(gameObject);
+	}
 	
 	/**
 	 * Returns a list containing the plants of this world.

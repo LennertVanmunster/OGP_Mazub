@@ -52,7 +52,8 @@ public abstract class GameObject {
 			return false;
 		}
 		else{
-			return !this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2);
+			return !this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, 
+					this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)[1];
 		}
 	}
 	
@@ -75,7 +76,8 @@ public abstract class GameObject {
 			return false;
 		}
 		else{
-			return !this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), (int) verticalLocation+1, this.getWidth()-1, this.getHeight()-2);
+			return !this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
+					(int) verticalLocation+1, this.getWidth()-1, this.getHeight()-2)[1];
 		}
 	}
 	
@@ -317,8 +319,12 @@ public abstract class GameObject {
 	private Direction direction = Direction.LEFT;
 	
 	public double getDeltaTimeForPixel(double deltaTime){
-		return 0.01/(Math.sqrt((Math.pow(this.getHorizontalVelocity(),2)+Math.pow(this.getVerticalVelocity(), 2)))+
-			Math.sqrt((Math.pow(this.getHorizontalAcceleration(),2)+Math.pow(this.getVerticalAcceleration(), 2)))*deltaTime);
+		double time =  0.01/(Math.sqrt((Math.pow(this.getHorizontalVelocity(),2)+Math.pow(this.getVerticalVelocity(), 2)))+
+				Math.sqrt((Math.pow(this.getHorizontalAcceleration(),2)+Math.pow(this.getVerticalAcceleration(), 2)))*deltaTime);
+		if(isValidDeltaTime(time))
+			return time;
+		else
+			return 0.03;
 	}
 	
 	/**
@@ -343,6 +349,55 @@ public abstract class GameObject {
 	}
 	
 	/**
+	 * Return the time since the start of the water contact of this game object.
+	 * The time is reset when the game object loses hit  points or no longer makes contact.
+	 */
+	public double getTimeSinceStartWaterContact(){
+		return this.timeSinceWaterContact;
+	}
+	
+	/**
+	 * Return the time since the start of the magma contact of this game object.
+	 * The time is reset when the game object loses hit points or no longer makes contact.
+	 */
+	public double getTimeSinceStartMagmaContact(){
+		return this.timeSinceMagmaContact;
+	}
+	
+	/**
+	 * Set the time since the start of the water contact of this game object.
+	 * 
+	 * @param	time
+	 * 			The given time.
+	 * @throws	IllegalArgumentException
+	 * 			|!isValidTimeSinceMove(time)
+	 * 			
+	 */
+	public void setTimeSinceStartWaterContact(double time)
+	throws IllegalArgumentException{
+		if(!isValidTimeSinceMove(time))
+			throw new IllegalArgumentException();
+		this.timeSinceWaterContact = time;
+			
+	}
+	
+	/**
+	 * Set the time since the start of the magma contact of this game object.
+	 * 
+	 * @param	time
+	 * 			The given time.
+	 * @throws	IllegalArgumentException
+	 * 			|!isValidTimeSinceMove(time)
+	 * 			
+	 */
+	public void setTimeSinceStartMagmaContact(double time)
+			throws IllegalArgumentException{
+				if(!isValidTimeSinceMove(time))
+					throw new IllegalArgumentException();
+				this.timeSinceMagmaContact = time;		
+	}
+	
+	/**
 	 * Return the time since this game object has last ended moving.
 	 * 
 	 * @note	We consider this method a part of advanceTime() and implement it defensively.
@@ -352,6 +407,8 @@ public abstract class GameObject {
 	public double getTimeSinceEndMove(){
 		return this.timeSinceEndMove;
 	}
+	
+	
 	
 	/**
 	 * Set the time since game object has last ended moving.
@@ -412,6 +469,16 @@ public abstract class GameObject {
 	}
 	
 	/**
+	 * Variable registering the time since this game object is making contact with water.
+	 */
+	private double timeSinceWaterContact = 0;
+	
+	/**
+	 * Variable registering the time since this game object is making contact with magma.
+	 */
+	private double timeSinceMagmaContact = 0;
+	
+	/**
 	 * Variable registering the time since this game object last started moving.
 	 */
 	private double timeSinceStartMove=0;
@@ -421,6 +488,15 @@ public abstract class GameObject {
 	 */
 	private double timeSinceEndMove=2;
 	
+	/**
+	 * Check whether the game object makes contact with water and take the corresponding actions.
+	 */
+	public abstract void checkWaterContact(double deltaTime);
+	
+	/**
+	 *Check whether the game object makes contact with magma and take the corresponding actions. 
+	 */
+	public abstract void checkMagmaContact(double deltaTime);
 	
 	/**
 	 * Return the current Sprite of this game object.
@@ -567,6 +643,11 @@ public abstract class GameObject {
 		this.maxHitPoints = hitPoints;
 	}
 	
+	public void removeHitPoints(int hitPoints){
+		int oldHitPoints = getHitPoints();
+		this.setHitPoints(oldHitPoints - hitPoints);
+	}
+	
 	/**
 	 * Set the hit-points of this game object to the given hit-points.
 	 * 
@@ -621,7 +702,7 @@ public abstract class GameObject {
 	 * 			|
 	 */
 	public void setWorld(World world) throws IllegalArgumentException{
-		if ( world != null && world.canHaveAsGameObject(this)){
+		if ( world == null || world.canHaveAsGameObject(this)){
 			this.world=world;
 		}
 		else{
@@ -630,4 +711,11 @@ public abstract class GameObject {
 	}
 	
 	protected World world;
+	
+	protected void unsetWorld(){
+		World world = getWorld();
+		if(world != null)
+			setWorld(null);
+			world.removeGameObject(this);
+	}
 }

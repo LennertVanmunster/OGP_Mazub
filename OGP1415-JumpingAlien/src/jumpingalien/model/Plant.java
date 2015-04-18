@@ -154,6 +154,9 @@ public class Plant extends GameObject {
 			this.setDirection(Direction.LEFT);
 	}
 	
+	/**
+	 * Variable registering the maximum number of hitpoints for plants.
+	 */
 	private final static int MAX_HIT_POINTS=1;
 
 	
