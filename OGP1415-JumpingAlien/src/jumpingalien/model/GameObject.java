@@ -238,18 +238,18 @@ public abstract class GameObject {
 	public abstract boolean isValidVerticalVelocity(double verticalVelocity);
 	
 	/**
-	 * Variable registering the horizontal velocity of this Mazub.
+	 * Variable registering the horizontal velocity of this game object.
 	 */
 	protected double horizontalVelocity = 0;
 
 	/**
-	 *  Variable registering the vertical velocity of this Mazub.
+	 *  Variable registering the vertical velocity of this game object.
 	 */
 	protected double verticalVelocity = 0;
 	
 
 	/**
-	 * Returns the horizontal acceleration of this Mazub.
+	 * Returns the horizontal acceleration of this game object.
 	 * 
 	 */
 	@Raw
@@ -258,7 +258,7 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Returns the vertical acceleration of this Mazub.
+	 * Returns the vertical acceleration of this game object.
 	 * 
 	 */
 	@Raw
@@ -463,7 +463,7 @@ public abstract class GameObject {
 	@Basic
 	@Raw
 	public Sprite getImageAt(int spriteIndex) throws IllegalArgumentException{
-		assert isValidSpriteIndex(spriteIndex):
+		assert canHaveAsSpriteIndex(spriteIndex):
 			"The given sprite index is not a valid sprite index!";
 		return this.getImages()[spriteIndex];
 	}
@@ -479,7 +479,7 @@ public abstract class GameObject {
 	 * 			| result == (spriteIndex>=0 && spriteIndex<=this.getNbImages())
 	 */
 	@Raw
-	public boolean isValidSpriteIndex(int spriteIndex){
+	public boolean canHaveAsSpriteIndex(int spriteIndex){
 		return spriteIndex>=0 && spriteIndex<=this.getNbImages();
 	}
 	
@@ -538,7 +538,76 @@ public abstract class GameObject {
 	/**
 	 * Variable registering the array of images of this game object.
 	 */
-	private Sprite images[];
+	protected Sprite images[];
+	
+	/**
+	 * Return the current number of hit-points of this game object.
+	 */
+	@Basic
+	@Raw
+	public int getHitPoints() {
+		return this.hitPoints;
+	}
+
+	/**
+	 * Return the current maximum number of hit-points of this game object.
+	 */
+	@Basic
+	@Raw
+	public int getMaxHitPoints() {
+		return this.maxHitPoints;
+	}
+	
+	/**
+	 * Set the maximum number of hit-points of this game object.
+	 */
+	@Basic
+	@Raw
+	public void setMaxHitPoints(int hitPoints) {
+		this.maxHitPoints = hitPoints;
+	}
+	
+	/**
+	 * Set the hit-points of this game object to the given hit-points.
+	 * 
+	 * @param 	hitPoints
+	 * 		  	The new number of hit-points for this game object.
+	 * @post	If the given number of hit-points is greater than or equal to the maximum number of hit-points, 
+	 * 			the new number of hit-points of this game object is set to the maximum number of hit-points.
+	 * 		  	| if (hitPoints>=MAX_HIT_POINTS)
+	 *			|		new.hitPoints == MAX_HIT_POINTS
+	 * @post	If the given number of hit-points is negative or equal to zero, 
+	 * 			the new number of hit-points of this game object is set to 0.
+	 * 		  	| if (hitPoints<=0)
+	 *			|		new.hitPoints == 0
+	 * @post	If the given number of hit-points is in the pre-established range of hit-points for a game object,
+	 * 			the new number of hit-points of this game object is set to the given number of hit-points.
+	 * 			| if (hitPoints>0 && hitPoints<500){
+	 * 			|		new.hitPoints==hitPoints		
+	 */
+	@Basic
+	@Raw
+	public void setHitPoints(int hitPoints) {
+		if (hitPoints>=getMaxHitPoints()){
+			this.hitPoints = getMaxHitPoints();
+		}
+		else if (hitPoints<=0){
+			this.hitPoints = 0;
+		}
+		else{
+			this.hitPoints= hitPoints;
+		}
+	}
+	
+	/**
+	 * Variable registering the number of hit-points of this game object. 
+	 */
+	protected int hitPoints;
+	
+	/**
+	 * Variable registering the maximum number of hit-points of this game object. 
+	 */
+	protected int maxHitPoints;
 	
 	public World getWorld(){
 		return this.world;
@@ -552,7 +621,7 @@ public abstract class GameObject {
 	 * 			|
 	 */
 	public void setWorld(World world) throws IllegalArgumentException{
-		if (world != null && world.canHaveAsGameObject(this)){
+		if ( world != null && world.canHaveAsGameObject(this)){
 			this.world=world;
 		}
 		else{
@@ -560,5 +629,5 @@ public abstract class GameObject {
 		}
 	}
 	
-	private World world;
+	protected World world;
 }

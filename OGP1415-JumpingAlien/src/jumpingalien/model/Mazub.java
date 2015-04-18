@@ -117,9 +117,8 @@ public class Mazub extends GameObject {
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
 				double verticalVelocity, double initialHorizontalVelocityNotDucking,
-				double maximumHorizontalVelocityNotDucking, boolean ducking, int hitPoints, World world, Sprite... images)
+				double maximumHorizontalVelocityNotDucking, boolean ducking, int hitPoints, Sprite... images)
 		throws IllegalArgumentException, IllegalLocationException {
-		this.setWorld(world);
 		setHorizontalLocation(horizontalLocation);
 		setVerticalLocation(verticalLocation);
 		setDucking(ducking);
@@ -137,6 +136,7 @@ public class Mazub extends GameObject {
 			setDirection(Direction.RIGHT);
 		else
 			setDirection(Direction.LEFT);
+		this.setMaxHitPoints(MAX_HIT_POINTS);
 		this.setHitPoints(hitPoints);
 		this.setImages(images);
 	}
@@ -162,26 +162,8 @@ public class Mazub extends GameObject {
 	 */
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
-		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, 100, null, images);
+		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, 100, images);
 	}
-	
-//	/**
-//	 * Return the maximum horizontal location of all Mazubs.
-//	 */
-//	@Basic 
-//	@Immutable
-//	public static int getMaximumHorizontalLocation(){
-//		return maximumHorizontalLocation;
-//	}
-//	
-//	/**
-//	 * Return the maximum vertical location of all Mazubs.
-//	 */
-//	@Basic
-//	@Immutable
-//	public static int getMaximumVerticalLocation(){
-//		return maximumVerticalLocation;
-//	}
 	
 	/**
 	 * Return the effective horizontal location of this Mazub as an integer number.
@@ -328,20 +310,6 @@ public class Mazub extends GameObject {
 	 * Variable registering the calculated  vertical location of this Mazub.
 	 */
 	private double verticalLocation = 0;
-	
-//	/**
-//	 * Variable registering the maximum horizontal location of all Mazubs.
-//	 */
-//	private final static int maximumHorizontalLocation = 1023;
-//	
-//	/**
-//	 * Variable registering the maximum vertical location of all Mazubs.
-//	 */
-//	private final static int maximumVerticalLocation = 767;
-	
-	
-	
-
 	
 	/**
 	 * Return the initial horizontal velocity of this Mazub.
@@ -880,21 +848,6 @@ public class Mazub extends GameObject {
 
 	
 	/**
-	 * Check whether the given deltaTime is a valid time period.
-	 * 
-	 * @param 	deltaTime
-	 * 			The period of time to be checked.
-	 * @return	True if and only if the time period is smaller
-	 * 			than 0.2s and greater than or equal to zero.
-	 * 			| result == Util.fuzzyGreaterThanOrEqualTo(deltaTime,0) && deltaTime < 0.2
-	 */
-	public static boolean isValidDeltaTime(double deltaTime){
-		return Util.fuzzyGreaterThanOrEqualTo(deltaTime,0) && deltaTime < 0.2;
-	}
-	
-	
-	
-	/**
 	 * Return the current Sprite of this Mazub.
 	 */
 	@Override
@@ -932,22 +885,6 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Return a copy of the current image array of this Mazub.
-	 */
-	@Basic 
-	@Raw
-	public Sprite[] getImages(){
-		return this.images.clone();
-	}
-	
-	/**
-	 * Return the number of images in the current image array of this Mazub.
-	 */
-	@Raw
-	public int getNbImages(){
-		return this.getImages().length;
-	}
-	
 	/**
 	 * Check whether the given number of images in the given image array is valid for all Mazubs.
 	 * 
@@ -962,158 +899,9 @@ public class Mazub extends GameObject {
 		return nbImages>=10 && nbImages%2==0;
 	}
 	
-	/**
-	 * Return the image in the image array of this Mazub at the given sprite index.
-	 * 
-	 * @pre		The given sprite index must be a valid sprite index.
-	 * 			| isValidSpriteIndex(spriteIndex)
-	 */
-	@Basic
-	@Raw
-	public Sprite getImageAt(int spriteIndex) throws IllegalArgumentException{
-		assert isValidSpriteIndex(spriteIndex):
-			"The given sprite index is not a valid sprite index!";
-		return this.getImages()[spriteIndex];
-	}
-	
-	
-	/**
-	 * Check whether to given sprite index is a valid sprite index.
-	 * 
-	 * @param 	spriteIndex
-	 * 			The sprite index to be checked.
-	 * @return	True if the given sprite index is greater than or equal to zero and 
-	 * 			smaller than or equal to the number of images in the current image array of this Mazub.
-	 * 			| result == (spriteIndex>=0 && spriteIndex<=this.getNbImages())
-	 */
-	@Raw
-	@Override
-	public boolean isValidSpriteIndex(int spriteIndex){
-		return spriteIndex>=0 && spriteIndex<=this.getNbImages();
-	}
-	
-	/**
-	 * Check whether the given image is a valid image.
-	 * 
-	 * @param 	image
-	 *			The image to be checked.
-	 *@return	image!=null
-	 */
-	public static boolean isValidImage(Sprite image){
-		return image!=null;
-	}
-	
-	/**
-	 * Set the image array of this Mazub to the given image array.
-	 * 
-	 * @param 	images
-	 * 			The new image array for this Mazub.
-	 * @pre 	The length of the given image array must be a valid length.
-	 * 			|isValidNbImages(images.length)
-	 * @pre		The images in the given image array must all be valid images.
-	 * 			| for i in 1..images.length:
-	 * 			|	isValidImage(images[i])
-	 * @post	The new image array of this Mazub is equal to copy of he given image array.
-	 * 			| this.images==images.clone()
-	 */
-	@Raw
-	@Override
-	public void setImages(Sprite[] images){
-		assert isValidNbImages(images.length):
-			"Not a valid number of images in the given image array!";
-		for (Sprite image:images){
-			assert isValidImage(image):
-				"The given image array contains at least one image that isn't valid!";		
-		}
-		this.images=images.clone();
-	}
-	
-	
-	/**
-	 * Return the height of the currrent sprite of this Mazub.
-	 */
-	@Raw
-	public int getHeight(){
-		return this.getCurrentSprite().getHeight();
-	}
-	
-	/**
-	 * Return the width of the current sprite of this Mazub.
-	 */
-	@Raw
-	public int getWidth(){
-		return this.getCurrentSprite().getWidth();
-	}
 
-	/**
-	 * Variable registering the array of images of this Mazub.
-	 */
-	private Sprite images[];
-	
-	
-	/**
-	 * Return the current number of hit-points of this Mazub.
-	 */
-	@Basic
-	@Raw
-	public int getHitPoints() {
-		return this.hitPoints;
-	}
-
-	
-	/**
-	 * Set the hit-points of this Mazub to the given hit-points.
-	 * 
-	 * @param 	hitPoints
-	 * 		  	The new number of hit-points for this Mazub.
-	 * @post	If the given number of hit-points is greater than or equal to the maximum number of hit-points, 
-	 * 			the new number of hit-points of this Mazub is set to the maximum number of hit-points.
-	 * 		  	| if (hitPoints>=MAX_HIT_POINTS)
-	 *			|		new.hitPoints == MAX_HIT_POINTS
-	 * @post	If the given number of hit-points is negative or equal to zero, 
-	 * 			the new number of hit-points of this Mazub is set to 0.
-	 * 		  	| if (hitPoints<=0)
-	 *			|		new.hitPoints == 0
-	 * @post	If the given number of hit-points is in the pre-established range of hit-points for a Mazub,
-	 * 			the new number of hit-points of this Mazub is set to the given number of hit-points.
-	 * 			| if (hitPoints>0 && hitPoints<500){
-	 * 			|		new.hitPoints==hitPoints		
-	 */
-	@Basic
-	@Raw
-	public void setHitPoints(int hitPoints) {
-		if (hitPoints>=MAX_HIT_POINTS){
-			this.hitPoints = MAX_HIT_POINTS;
-		}
-		else if (hitPoints<=0){
-			this.hitPoints = 0;
-		}
-		else{
-			this.hitPoints= hitPoints;
-		}
-	}
-	
-	/**
-	 * Variable registering the number of hit-points of this Mazub. 
-	 */
-	private int hitPoints=100;
-	
 	private final static int MAX_HIT_POINTS=500;
 	
-	public void setWorld(World world) throws IllegalArgumentException{
-		if (world==null || world.canHaveAsGameObject(this)){
-			this.world=world;
-		}
-		else{
-			throw new IllegalArgumentException("Not a valid world!");
-		}
-	}
-	
-	public World getWorld(){
-		return this.world;
-	}
-	
-	private World world;
 	
 	public boolean isTerminated() {
 		return this.isTerminated;

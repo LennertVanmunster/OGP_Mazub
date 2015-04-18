@@ -22,6 +22,8 @@ public class Plant extends GameObject {
 		this.setImages(images);
 		this.setHorizontalVelocity(0);
 		this.setVerticalVelocity(0);
+		this.setMaxHitPoints(MAX_HIT_POINTS);
+		this.setHitPoints(1);
 	}
 	
 	/**
@@ -152,6 +154,7 @@ public class Plant extends GameObject {
 			this.setDirection(Direction.LEFT);
 	}
 	
-	
+	private final static int MAX_HIT_POINTS=1;
+
 	
 }
