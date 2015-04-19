@@ -5,6 +5,9 @@ import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
 import java.lang.Math;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A class of GameObjects.
@@ -312,6 +315,90 @@ public abstract class GameObject {
 	public static boolean isValidDirection(Direction direction){
 		return ((direction == Direction.LEFT) || (direction == Direction.RIGHT));
 	}
+	
+	public List<GameObject> getGameObjectsAtTiles(int [][] tiles){
+		List<GameObject> gameObjects = new ArrayList<GameObject>();
+		World world = this.getWorld();
+		for(int index = 0; index < world.getNbOfGameObjects(); index++){
+			GameObject gameObject = world.getGameObjectAtIndex(index);
+			if(world.canHaveAsGameObject(gameObject)){
+				int [][] coveredTiles = world.areaOverlapsWithTiles(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());				
+				for(int [] tile : tiles)
+					for(int [] coveredTile: coveredTiles)
+						if(Arrays.equals(tile, coveredTile))
+							gameObjects.add(gameObject);
+			}
+		}
+		return gameObjects;		
+	}
+
+	public int [][] getLeftPerimeterOfGameObject(int pixelX, int pixelY, int height)
+	throws IllegalArgumentException{
+		if(!world.canHaveAsPixelLocation(pixelX, pixelY))
+			throw new IllegalArgumentException();
+		int [][] leftPerimeter = new int [height-2][2];
+		for (int Y = 0; Y < height-2; Y++ ){
+			leftPerimeter [Y][0] = pixelX;
+			leftPerimeter [Y][1] = pixelY + 1;
+		}
+		return leftPerimeter.clone();
+	}
+	
+	public int [][] getRightPerimeterOfGameObject(int pixelX, int pixelY, int width, int height)
+			throws IllegalArgumentException{
+				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
+					throw new IllegalArgumentException();
+				int [][] rightPerimeter = new int [height-2][2];
+				int X = pixelX + width - 1;
+				for (int Y = 0; Y < height-2; Y++ ){
+					rightPerimeter [Y][0] = X;
+					rightPerimeter [Y][1] = pixelY + 1;
+				}
+				return rightPerimeter.clone();
+			}
+	
+	public int [] checkLeftOrRightSideOverlap(){
+		int [] overlap = {0,0};
+		World world = this.getWorld();
+		List<GameObject> gameObjects = getGameObjectsAtTiles(world.areaOverlapsWithTiles(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()));
+		for(int index = 0; index < gameObjects.size(); index++){
+			GameObject gameObject = gameObjects.get(index);
+			if(gameObject != this && world.canHaveAsGameObject(gameObject)){
+				int [][] leftPerimeter1 = this.getLeftPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getHeight());
+				int [][] leftPerimeter2 = gameObject.getLeftPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getHeight());
+				int [][] rightPerimeter1 = this.getRightPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight());
+				int [][] rightPerimeter2 = gameObject.getRightPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
+				if(this.getHeight() < gameObject.getHeight()){
+					for (int Y = 0; Y < this.getHeight()-2; Y++ ){
+						for (int Y2 = 0; Y2 < gameObject.getHeight()-2; Y2++ ){
+							if(Arrays.equals(leftPerimeter1[Y],rightPerimeter2[Y2]) ||
+									Arrays.equals(leftPerimeter2[Y2],rightPerimeter1[Y])){
+								overlap [0] = 1 ;
+								overlap [1] = index;
+//								assert 1==2;
+								break;
+							}
+						}
+					}
+				}
+				else{
+					for (int Y2 = 0; Y2 < gameObject.getHeight()-2; Y2++ ){
+						for (int Y = 0; Y < this.getHeight()-2; Y++ ){
+							if(Arrays.equals(leftPerimeter1[Y],rightPerimeter2[Y2]) ||
+									Arrays.equals(leftPerimeter2[Y2],rightPerimeter1[Y])){
+								overlap [0] = 1 ;
+								overlap [1] = index;
+//								assert 1==2;
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		return overlap;
+		}
+		
 	
 	/**
 	 * Variable registering the direction game object is facing.
@@ -646,6 +733,11 @@ public abstract class GameObject {
 	public void removeHitPoints(int hitPoints){
 		int oldHitPoints = getHitPoints();
 		this.setHitPoints(oldHitPoints - hitPoints);
+	}
+	
+	public void addHitPoints(int hitPoints){
+		int oldHitPoints = getHitPoints();
+		setHitPoints(oldHitPoints + hitPoints);
 	}
 	
 	/**

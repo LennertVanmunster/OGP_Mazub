@@ -641,6 +641,16 @@ public class World {
 		return coincidesWithTerrain;
 	}
 	
+	public int[][] areaOverlapsWithTiles(int horizontalLocation, int verticalLocation, int areaWidth, int areaHeight) throws IllegalArgumentException{
+		if(!this.canHaveAsPixelLocation(horizontalLocation, verticalLocation) 
+				|| !this.canHaveAsPixelLocation(horizontalLocation + areaWidth, 
+						verticalLocation + areaHeight))
+			throw new IllegalArgumentException();
+		int coincidingTiles[][]= this.getTilePositionsIn(horizontalLocation, verticalLocation, 
+				horizontalLocation+areaWidth, verticalLocation+areaHeight);
+		return coincidingTiles;
+	}
+	
 	/**
 	 *Returns whether the game in this world has already started or not.
 	 */

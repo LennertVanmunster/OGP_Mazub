@@ -800,7 +800,6 @@ public class Mazub extends GameObject {
 		else{
 			this.setTimeSinceStartMove(this.getTimeSinceStartMove()+deltaTime);
 		}
-		double startTime = System.nanoTime();
 		while (sumDeltaTimeForPixel<deltaTime){
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
 			newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTimeForPixel;
@@ -837,6 +836,17 @@ public class Mazub extends GameObject {
 				this.setVerticalLocation(oldVerticalLocation);
 				this.setVerticalVelocity(0);
 			}
+			int [] overlap = this.checkLeftOrRightSideOverlap();
+			if(overlap[0]==1){
+				GameObject gameObject = this.getWorld().getGameObjectAtIndex(overlap[1]);
+				if(gameObject instanceof Plant){
+					if(this.getHitPoints() == this.getMaxHitPoints()){
+						gameObject.unsetWorld();
+						this.addHitPoints(50);
+					}
+				}
+					
+			}		
 			if(this.canEndDuck){
 				this.endDuck();
 			}
