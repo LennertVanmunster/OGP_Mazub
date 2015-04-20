@@ -159,5 +159,15 @@ public class Plant extends GameObject {
 	 */
 	private final static int MAX_HIT_POINTS=1;
 
+	@Override
+	public void checkWaterContact(double deltaTime) {
+		
+	}
+
+	@Override
+	public void checkMagmaContact(double deltaTime) {
+		
+	}
+
 	
 }

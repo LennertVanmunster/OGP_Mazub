@@ -648,7 +648,7 @@ public class World {
 			throw new IllegalArgumentException();
 		int coincidingTiles[][]= this.getTilePositionsIn(horizontalLocation, verticalLocation, 
 				horizontalLocation+areaWidth, verticalLocation+areaHeight);
-		return coincidingTiles;
+		return coincidingTiles.clone();
 	}
 	
 	/**

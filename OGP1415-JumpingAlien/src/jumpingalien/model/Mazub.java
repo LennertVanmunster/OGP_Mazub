@@ -840,7 +840,8 @@ public class Mazub extends GameObject {
 			if(overlap[0]==1){
 				GameObject gameObject = this.getWorld().getGameObjectAtIndex(overlap[1]);
 				if(gameObject instanceof Plant){
-					if(this.getHitPoints() == this.getMaxHitPoints()){
+					if(this.getHitPoints() != this.getMaxHitPoints()){
+						gameObject.setHitPoints(0);
 						gameObject.unsetWorld();
 						this.addHitPoints(50);
 					}
