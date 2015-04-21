@@ -846,7 +846,7 @@ public class Mazub extends GameObject {
 				this.setVerticalLocation(oldVerticalLocation);
 				this.setVerticalVelocity(0);
 			}
-			int [] overlap = this.checkLeftRightTopSideOverlap();
+			int [] overlap = this.checkLeftRightTopBottomSideOverlap();
 			if(overlap[0]==1){
 				collisionReaction(overlap[1]);
 					
@@ -871,6 +871,7 @@ public class Mazub extends GameObject {
 		}
 	}
 
+	
 	protected void collisionReaction(int index) {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index);
 		if(gameObject instanceof Plant){

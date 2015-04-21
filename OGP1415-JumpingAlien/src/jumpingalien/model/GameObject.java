@@ -316,23 +316,94 @@ public abstract class GameObject {
 		return ((direction == Direction.LEFT) || (direction == Direction.RIGHT));
 	}
 	
+	/**
+	 * Check whether the given game object overlaps with the given tiles.
+	 * 
+	 * @param 	gameObject
+	 * 			The given game object.
+	 * @param 	tiles
+	 * 			The given tiles.
+	 * @return	Return true if and only if the game object overlaps with at least one of
+	 * 			the given tiles.
+	 * 			|overlap = false
+	 * 			|coveredTiles = the tile overlap by the game object
+	 * 			|for each tile in tiles
+	 * 			|	for each coveredTile in coveredTiles
+	 * 			|		if(Arrays.equals(tile, coveredTile))
+	 * 			|		then overlap = true
+	 * 
+	 * @throws	IllegalArgument
+	 * 			If the world of this game object can not have the given game object as its game object.
+	 * 			|!world.canHaveAsGameObject(gameObject)
+	 */
+	protected boolean gameObjectOverlapsWithTiles(GameObject gameObject, int [][] tiles)
+	throws IllegalArgumentException{
+		World world = this.getWorld();
+		if(!world.canHaveAsGameObject(gameObject))
+			throw new IllegalArgumentException();
+		boolean overlap = false;
+		int [][] coveredTiles = world.areaOverlapsWithTiles(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());				
+		outerloop:
+		for(int [] tile : tiles)
+			for(int [] coveredTile: coveredTiles)
+				if(Arrays.equals(tile, coveredTile)){
+					overlap = true;
+					break outerloop;	
+				}
+		return overlap;
+	}
 	
-	public List<GameObject> getGameObjectsAtTiles(int [][] tiles){
+	/**
+	 * Return a list with the game objects that overlap with the given tiles.
+	 *
+	 * @param 	tiles
+	 * 			The given tiles.
+	 * @return 	The method iterates over all the game objects in the world except this game object. 
+	 * 			If a game object overlaps with one of the given tiles, than it is added to the list which contains 
+	 * 			all the overlapping game objects. At the end this list is returned.
+	 * 			|for each game object of the world
+	 * 			|	if(world.canHaveAsGameObject(gameObject) && gameObject != this)
+	 * 			|    and if(gameObjectOverlapsWithTiles(gameObject, tiles))
+	 * 			|	then the game object is added to the list of overlapping game objects
+	 * 			|result == gameObjects
+	 * 
+	 */
+	protected List<GameObject> getGameObjectsAtTiles(int [][] tiles){
 		List<GameObject> gameObjects = new ArrayList<GameObject>();
 		World world = this.getWorld();
 		for(int index = 0; index < world.getNbOfGameObjects(); index++){
 			GameObject gameObject = world.getGameObjectAtIndex(index);
 			if(world.canHaveAsGameObject(gameObject) && gameObject != this){
-				int [][] coveredTiles = world.areaOverlapsWithTiles(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());				
-				for(int [] tile : tiles)
-					for(int [] coveredTile: coveredTiles)
-						if(Arrays.equals(tile, coveredTile))
-							gameObjects.add(gameObject);						
+				if(gameObjectOverlapsWithTiles(gameObject, tiles))	
+					gameObjects.add(gameObject);
 			}
 		}
 		return gameObjects;		
 	}
 	
+	/**
+	 * Return a matrix with at each row a coordinate of the top perimeter of this game object.
+	 * 
+	 * @param 	pixelX
+	 * 			The given horizontal location.
+	 * @param 	pixelY
+	 * 			The given vertical location.
+	 * @param 	width
+	 * 			The given width of the game object.
+	 * @param 	height
+	 * 			The given height of the game object.
+	 * @return	The method iterates of all (x...x + Width -1) and for each horizontal location 
+	 * 			a list [X, Y] is added at the matrix with X equal to the current x of 
+	 * 			the iteration plus pixelX and Y always equal to pixelY + height -1.
+	 * 			The resulting matrix is returned.
+	 * 			|for each X in 0...width -1
+	 * 			|	topPerimeter [X][0] = pixelX + X;
+	 *			|	topPerimeter [X][1] = Y;
+	 *			|result == topPerimeter
+	 * @throws 	IllegalArgumentException
+	 * 			If the world can not have the given location as its location.
+	 * 			|!world.canHaveAsPixelLocation(pixelX, pixelY)
+	 */
 	public int [][] getTopPerimeterOfGameObject(int pixelX, int pixelY,int width, int height)
 			throws IllegalArgumentException{
 				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
@@ -346,6 +417,27 @@ public abstract class GameObject {
 				return topPerimeter.clone();
 			}
 	
+	/**
+	 * Return a matrix with at each row a coordinate of the bottom perimeter of this game object.
+	 * 
+	 * @param 	pixelX
+	 * 			The given horizontal location.
+	 * @param 	pixelY
+	 * 			The given vertical location.
+	 * @param 	width
+	 * 			The given width of the game object.
+	 * @return	The method iterates of all (x...x + Width -1) and for each horizontal location 
+	 * 			a list [X, Y] is added at the matrix with X equal to the current x of 
+	 * 			the iteration plus pixelX and Y always equal to pixelY.
+	 * 			The resulting matrix is returned.
+	 * 			|for each Y in 0...width -1
+	 * 			|	bottomPerimeter [X][0] = pixelX + X;
+	 *			|	bottomPerimeter [X][1] = pixelY;
+	 *			|result == bottomPerimeter
+	 * @throws 	IllegalArgumentException
+	 * 			If the world can not have the given location as its location.
+	 * 			|!world.canHaveAsPixelLocation(pixelX, pixelY)
+	 */
 	public int [][] getBottomPerimeterOfGameObject(int pixelX, int pixelY,int width)
 			throws IllegalArgumentException{
 				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
@@ -358,6 +450,27 @@ public abstract class GameObject {
 				return bottomPerimeter.clone();
 			}
 
+	/**
+	 * Return a matrix with at each row a coordinate of the left perimeter of this game object.
+	 * 
+	 * @param 	pixelX
+	 * 			The given horizontal location.
+	 * @param 	pixelY
+	 * 			The given vertical location.
+	 * @param 	height
+	 * 			The given height of the game object.
+	 * @return	The method iterates of all (y + 1...y + height - 2) and for each vertical location 
+	 * 			a list [X, Y] is added at the matrix with X equal to pixelX
+	 * 			 and Y equal to the given y of the iteration + pixelY + 1.
+	 * 			The resulting matrix is returned.
+	 * 			|for each Y in 0...height-2
+	 * 			|	leftPerimeter [Y][0] = pixelX;
+	 *			|	leftPerimeter [Y][1] = pixelY + Y + 1;
+	 *			|result == leftPerimeter
+	 * @throws 	IllegalArgumentException
+	 * 			If the world can not have the given location as its location.
+	 * 			|!world.canHaveAsPixelLocation(pixelX, pixelY)
+	 */
 	public int [][] getLeftPerimeterOfGameObject(int pixelX, int pixelY, int height)
 	throws IllegalArgumentException{
 		if(!world.canHaveAsPixelLocation(pixelX, pixelY))
@@ -370,6 +483,29 @@ public abstract class GameObject {
 		return leftPerimeter.clone();
 	}
 	
+	/**
+	 * Return a matrix with at each row a coordinate of the right perimeter of this game object.
+	 * 
+	 * @param 	pixelX
+	 * 			The given horizontal location.
+	 * @param 	pixelY
+	 * 			The given vertical location.
+	 * @param 	width
+	 * 			The given width of the game object.
+	 * @param 	height
+	 * 			The given height of the game object.
+	 * @return	The method iterates of all (y + 1...y + height - 2) and for each vertical location 
+	 * 			a list [X, Y] is added at the matrix with X equal to pixelX + width - 1
+	 * 			 and Y equal to the given y of the iteration + pixelY + 1.
+	 * 			The resulting matrix is returned.
+	 * 			|for each Y in 0...height-2
+	 * 			|	leftPerimeter [Y][0] = pixelX;
+	 *			|	leftPerimeter [Y][1] = pixelY + Y + 1;
+	 *			|result == rightPerimeter
+	 * @throws 	IllegalArgumentException
+	 * 			If the world can not have the given location as its location.
+	 * 			|!world.canHaveAsPixelLocation(pixelX, pixelY)
+	 */
 	public int [][] getRightPerimeterOfGameObject(int pixelX, int pixelY, int width, int height)
 			throws IllegalArgumentException{
 				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
@@ -383,6 +519,26 @@ public abstract class GameObject {
 				return rightPerimeter.clone();
 			}
 	
+	/**
+	 * Check whether the left, right or top of this game object overlaps with another game object.
+	 * 
+	 * @return	The method iterates over all the game objects that can overlap with the given
+	 * 			game object. That are the game objects that overlap with one of the tile with
+	 * 			which this game object overlaps. If another game object is found that overlaps 
+	 * 			with one of the given sides then an array is returned with at the first position
+	 * 			number one defining that there is overlap and at the second position the index 
+	 * 			of the game object in the world.
+	 * 			|overlap = {0,0}
+	 * 			|for each game object in gameGameObjectAtTile of this game object
+	 * 			|	if(gameObject != this && world.canHaveAsGameObject(gameObject))
+	 * 			|		overlap = checkLeftOrRightSideOverlap(gameObject);
+	 *			|		if(overlap [0] == 1)
+	 *			|		then the array "overlap" is returned
+	 *			|		or 
+	 *			|		overlap = checkTopSideOverlap(gameObject);
+	 *			|		if(overlap [0] == 1)
+	 *			|		then the array "overlap" is returned
+	 */
 	public int [] checkLeftRightTopSideOverlap(){
 		int [] overlap = {0,0};
 		World world = this.getWorld();
@@ -390,7 +546,6 @@ public abstract class GameObject {
 		for(int index = 0; index < gameObjects.size(); index++){
 			GameObject gameObject = gameObjects.get(index);
 			if(gameObject != this && world.canHaveAsGameObject(gameObject)){
-				assert gameObject != null: "Game object is null!";
 				overlap = checkLeftOrRightSideOverlap(gameObject);
 				if(overlap [0] == 1)
 					break;
@@ -401,7 +556,62 @@ public abstract class GameObject {
 		}
 		return overlap;
 		}
+	
+	/**
+	 * Check whether the left, right, top or bottom of this game object overlaps with another game object.
+	 * 
+	 * @return	The method iterates over all the game objects that can overlap with the given
+	 * 			game object. That are the game objects that overlap with one of the tile with
+	 * 			which this game object overlaps. If another game object is found that overlaps 
+	 * 			with one of the given sides then an array is returned with at the first position
+	 * 			number one defining that there is overlap and at the second position the index 
+	 * 			of the game object in the world.
+	 * 			|overlap = {0,0}
+	 * 			|for each game object in gameGameObjectAtTile of this game object
+	 * 			|	if(gameObject != this && world.canHaveAsGameObject(gameObject))
+	 * 			|		overlap = checkLeftOrRightSideOverlap(gameObject);
+	 *			|		if(overlap [0] == 1)
+	 *			|		then the array "overlap" is returned
+	 *			|		or 
+	 *			|		overlap = checkTopOrBottomSideOverlap(gameObject);
+	 *			|		if(overlap [0] == 1)
+	 *			|		then the array "overlap" is returned
+	 */
+	public int [] checkLeftRightTopBottomSideOverlap(){
+		int [] overlap = {0,0};
+		World world = this.getWorld();
+		List<GameObject> gameObjects = getGameObjectsAtTiles(world.areaOverlapsWithTiles(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()));
+		for(int index = 0; index < gameObjects.size(); index++){
+			GameObject gameObject = gameObjects.get(index);
+			if(gameObject != this && world.canHaveAsGameObject(gameObject)){
+				overlap = checkLeftOrRightSideOverlap(gameObject);
+				if(overlap [0] == 1)
+					break;
+				overlap = checkTopOrBottomSideOverlap(gameObject);
+				if(overlap [0] == 1)
+					break;
+			}
+		}
+		return overlap;
+		}
 		
+	/**
+	 * Check whether the top side of this game object overlaps with the given game object.
+	 * 
+	 * @return	The method iterates over the positions of the top perimeter of this game object and the 
+	 * 			bottom perimeter of the given game object. 
+	 * 			If one of the positions is equal to each other then an array is returned with at the first position
+	 * 			the number one defining that there is overlap and at the second position the index 
+	 * 			of the game object in the world.
+	 * 			|overlap = {0,0}
+	 * 			|for position1 in top perimeter
+	 * 			|	for position 2 in bottom perimeter
+	 * 			|		if(position1 == position2)
+	 * 			|		then
+	 *			|		overlap [0] = 1 ;
+	 *			|		overlap [1] = world.getIndexOfGameObject(gameObject);
+	 *			|result == overlap 
+	 */
 	public int [] checkTopSideOverlap(GameObject gameObject){
 		int [] overlap = {0,0};
 		World world = this.getWorld();
@@ -420,6 +630,63 @@ public abstract class GameObject {
 		return overlap.clone();
 	}
 	
+	/**
+	 * Check whether the top or bottom side of this game object overlaps with the
+	 * top or bottom side of the given game object.
+	 * 
+	 * @return	The method iterates over the positions of the top and bottom perimeter of this game object
+	 * 			and the top and bottom perimeter of the given game object. 
+	 * 			If one of the top positions is equal another other bottom position or the other way around
+	 * 			then an array is returned with at the first position the number one defining that 
+	 * 			there is overlap and at the second position the index of the game object in the world.
+	 * 			|overlap = {0,0}
+	 * 			|for position1 in top perimeter and bottom perimeter
+	 * 			|	for position 2 in top perimeter and bottom perimeter
+	 * 			|		if(position1top == position2bottom || position1bottom == position2top)
+	 * 			|		then
+	 *			|		overlap [0] = 1 ;
+	 *			|		overlap [1] = world.getIndexOfGameObject(gameObject);
+	 *			|result == overlap 
+	 */
+	public int [] checkTopOrBottomSideOverlap(GameObject gameObject){
+		int [] overlap = {0,0};
+		World world = this.getWorld();
+		int [][] topPerimeter1 = this.getTopPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight());
+		int [][] bottomPerimeter2 = gameObject.getBottomPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth());
+		int [][] bottomPerimeter1 = this.getBottomPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth());
+		int [][] topPerimeter2 = gameObject.getTopPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
+		outerloop:
+		for (int Y = 0; Y < this.getWidth()-1; Y++ ){
+			for (int Y2 = 0; Y2 < gameObject.getWidth()-1; Y2++ ){
+				if(Arrays.equals(topPerimeter1[Y],bottomPerimeter2[Y2]) ||
+						Arrays.equals(topPerimeter2[Y2],bottomPerimeter1[Y])){
+					overlap [0] = 1 ;
+					overlap [1] = world.getIndexOfGameObject(gameObject);
+					break outerloop;
+				}
+			}
+		}
+		return overlap.clone();
+	}
+	
+	/**
+	 * Check whether the left or right side of this game object overlaps with the
+	 * left or right side of the given game object.
+	 * 
+	 * @return	The method iterates over the positions of the left and right perimeter of this game object
+	 * 			and the left and right perimeter of the given game object. 
+	 * 			If one of the left positions is equal another right position or the other way around
+	 * 			then an array is returned with at the first position the number one defining that 
+	 * 			there is overlap and at the second position the index of the game object in the world.
+	 * 			|overlap = {0,0}
+	 * 			|for position1 in left perimeter and right perimeter
+	 * 			|	for position 2 in left perimeter and right perimeter
+	 * 			|		if(position1left == position2right || position1right == position2left)
+	 * 			|		then
+	 *			|		overlap [0] = 1 ;
+	 *			|		overlap [1] = world.getIndexOfGameObject(gameObject);
+	 *			|result == overlap 
+	 */
 	public int [] checkLeftOrRightSideOverlap(GameObject gameObject){
 		int [] overlap = {0,0};
 		World world = this.getWorld();
