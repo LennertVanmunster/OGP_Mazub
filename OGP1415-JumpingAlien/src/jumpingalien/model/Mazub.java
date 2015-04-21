@@ -836,16 +836,9 @@ public class Mazub extends GameObject {
 				this.setVerticalLocation(oldVerticalLocation);
 				this.setVerticalVelocity(0);
 			}
-			int [] overlap = this.checkLeftOrRightSideOverlap();
+			int [] overlap = this.checkLeftRightTopSideOverlap();
 			if(overlap[0]==1){
-				GameObject gameObject = this.getWorld().getGameObjectAtIndex(overlap[1]);
-				if(gameObject instanceof Plant){
-					if(this.getHitPoints() != this.getMaxHitPoints()){
-						gameObject.setHitPoints(0);
-						gameObject.unsetWorld();
-						this.addHitPoints(50);
-					}
-				}
+				collisionReaction(overlap[1]);
 					
 			}		
 			if(this.canEndDuck){
@@ -868,6 +861,17 @@ public class Mazub extends GameObject {
 		}
 	}
 
+	protected void collisionReaction(int index) {
+		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index);
+		if(gameObject instanceof Plant){
+			if(this.getHitPoints() != this.getMaxHitPoints()){
+				gameObject.setHitPoints(0);
+				gameObject.unsetWorld();
+				this.addHitPoints(50);
+			}
+		}
+	}
+	
 	/**
 	 * Check whether the game object makes contact with water and take the corresponding actions.
 	 * 

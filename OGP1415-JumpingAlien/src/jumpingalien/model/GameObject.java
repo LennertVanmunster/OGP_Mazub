@@ -316,7 +316,7 @@ public abstract class GameObject {
 		return ((direction == Direction.LEFT) || (direction == Direction.RIGHT));
 	}
 	
-	//werkt!
+	
 	public List<GameObject> getGameObjectsAtTiles(int [][] tiles){
 		List<GameObject> gameObjects = new ArrayList<GameObject>();
 		World world = this.getWorld();
@@ -332,6 +332,31 @@ public abstract class GameObject {
 		}
 		return gameObjects;		
 	}
+	
+	public int [][] getTopPerimeterOfGameObject(int pixelX, int pixelY,int width, int height)
+			throws IllegalArgumentException{
+				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
+					throw new IllegalArgumentException();
+				int Y = pixelY + height - 1;
+				int [][] topPerimeter = new int [width - 1][2];
+				for (int X = 0; X < width - 1; X++ ){
+					topPerimeter [X][0] = pixelX + X;
+					topPerimeter [X][1] = Y;
+				}
+				return topPerimeter.clone();
+			}
+	
+	public int [][] getBottomPerimeterOfGameObject(int pixelX, int pixelY,int width)
+			throws IllegalArgumentException{
+				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
+					throw new IllegalArgumentException();
+				int [][] bottomPerimeter = new int [width - 1][2];
+				for (int X = 0; X < width - 1; X++ ){
+					bottomPerimeter [X][0] = pixelX + X;
+					bottomPerimeter [X][1] = pixelY;
+				}
+				return bottomPerimeter.clone();
+			}
 
 	public int [][] getLeftPerimeterOfGameObject(int pixelX, int pixelY, int height)
 	throws IllegalArgumentException{
@@ -358,7 +383,7 @@ public abstract class GameObject {
 				return rightPerimeter.clone();
 			}
 	
-	public int [] checkLeftOrRightSideOverlap(){
+	public int [] checkLeftRightTopSideOverlap(){
 		int [] overlap = {0,0};
 		World world = this.getWorld();
 		List<GameObject> gameObjects = getGameObjectsAtTiles(world.areaOverlapsWithTiles(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()));
@@ -366,39 +391,63 @@ public abstract class GameObject {
 			GameObject gameObject = gameObjects.get(index);
 			if(gameObject != this && world.canHaveAsGameObject(gameObject)){
 				assert gameObject != null: "Game object is null!";
-				int [][] leftPerimeter1 = this.getLeftPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getHeight());
-				int [][] leftPerimeter2 = gameObject.getLeftPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getHeight());
-				int [][] rightPerimeter1 = this.getRightPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight());
-				int [][] rightPerimeter2 = gameObject.getRightPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
-				if(this.getHeight() < gameObject.getHeight()){
-					for (int Y = 0; Y < this.getHeight()-2; Y++ ){
-						for (int Y2 = 0; Y2 < gameObject.getHeight()-2; Y2++ ){
-							if(Arrays.equals(leftPerimeter1[Y],rightPerimeter2[Y2]) ||
-									Arrays.equals(leftPerimeter2[Y2],rightPerimeter1[Y])){
-								overlap [0] = 1 ;
-								overlap [1] = world.getIndexOfGameObject(gameObject);
-								break;
-							}
-						}
-					}
-				}
-				else{
-					for (int Y2 = 0; Y2 < gameObject.getHeight()-2; Y2++ ){
-						for (int Y = 0; Y < this.getHeight()-2; Y++ ){
-							if(Arrays.equals(leftPerimeter1[Y],rightPerimeter2[Y2]) ||
-									Arrays.equals(leftPerimeter2[Y2],rightPerimeter1[Y])){
-								overlap [0] = 1 ;
-								overlap [1] = world.getIndexOfGameObject(gameObject);
-								break;
-							}
-						}
-					}
-				}
+				overlap = checkLeftOrRightSideOverlap(gameObject);
+				if(overlap [0] == 1)
+					break;
+				overlap = checkTopSideOverlap(gameObject);
+				if(overlap [0] == 1)
+					break;
 			}
 		}
 		return overlap;
 		}
 		
+	public int [] checkTopSideOverlap(GameObject gameObject){
+		int [] overlap = {0,0};
+		World world = this.getWorld();
+		int [][] topPerimeter1 = this.getTopPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight());
+		int [][] bottomPerimeter2 = gameObject.getBottomPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth());
+		outerloop:
+		for (int Y = 0; Y < this.getWidth()-1; Y++ ){
+			for (int Y2 = 0; Y2 < gameObject.getWidth()-1; Y2++ ){
+				if(Arrays.equals(topPerimeter1[Y],bottomPerimeter2[Y2])){
+					overlap [0] = 1 ;
+					overlap [1] = world.getIndexOfGameObject(gameObject);
+					break outerloop;
+				}
+			}
+		}
+		return overlap.clone();
+	}
+	
+	public int [] checkLeftOrRightSideOverlap(GameObject gameObject){
+		int [] overlap = {0,0};
+		World world = this.getWorld();
+		int [][] leftPerimeter1 = this.getLeftPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getHeight());
+		int [][] leftPerimeter2 = gameObject.getLeftPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getHeight());
+		int [][] rightPerimeter1 = this.getRightPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight());
+		int [][] rightPerimeter2 = gameObject.getRightPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
+		outerloop:
+		for (int Y = 0; Y < this.getHeight()-2; Y++ ){
+			for (int Y2 = 0; Y2 < gameObject.getHeight()-2; Y2++ ){
+				if(Arrays.equals(leftPerimeter1[Y],rightPerimeter2[Y2]) ||
+						Arrays.equals(leftPerimeter2[Y2],rightPerimeter1[Y])){
+					overlap [0] = 1 ;
+					overlap [1] = world.getIndexOfGameObject(gameObject);
+					break outerloop;
+				}
+			}
+		}
+		return overlap.clone();
+	}
+	
+	/**
+	 * Method the selects the appropriate response for this game object 
+	 * after a collision with another game object.
+	 * @param 	index
+	 * 			The index of the other game object.
+	 */
+	protected abstract void collisionReaction(int index);
 	
 	/**
 	 * Variable registering the direction game object is facing.

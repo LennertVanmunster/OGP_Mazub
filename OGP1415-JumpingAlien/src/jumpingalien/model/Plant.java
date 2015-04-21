@@ -160,6 +160,18 @@ public class Plant extends GameObject {
 	private final static int MAX_HIT_POINTS=1;
 
 	@Override
+	protected void collisionReaction(int index) {
+		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index);
+		if(gameObject instanceof Mazub){
+			if(gameObject.getHitPoints() != gameObject.getMaxHitPoints()){
+				this.setHitPoints(0);
+				this.unsetWorld();
+				gameObject.addHitPoints(50);
+			}
+		}
+	}
+	
+	@Override
 	public void checkWaterContact(double deltaTime) {
 		
 	}
