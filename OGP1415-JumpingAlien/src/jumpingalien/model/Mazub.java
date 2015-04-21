@@ -861,6 +861,7 @@ public class Mazub extends GameObject {
 		}
 	}
 
+	
 	protected void collisionReaction(int index) {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index);
 		if(gameObject instanceof Plant){
