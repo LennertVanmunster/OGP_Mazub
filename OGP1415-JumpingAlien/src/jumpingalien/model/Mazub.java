@@ -836,7 +836,7 @@ public class Mazub extends GameObject {
 				this.setVerticalLocation(oldVerticalLocation);
 				this.setVerticalVelocity(0);
 			}
-			int [] overlap = this.checkLeftRightTopSideOverlap();
+			int [] overlap = this.checkLeftRightTopBottomSideOverlap();
 			if(overlap[0]==1){
 				collisionReaction(overlap[1]);
 					
