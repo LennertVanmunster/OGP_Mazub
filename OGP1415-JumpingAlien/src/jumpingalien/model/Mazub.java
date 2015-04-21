@@ -241,7 +241,17 @@ public class Mazub extends GameObject {
 	 * 			|result == (canHaveAsHorizontalLocation(horizontalLocation) && canHaveAsVericalLocation(verticalLocation))
 	 */
 	public boolean canHaveAsLocation(double horizontalLocation, double verticalLocation){
-		return this.canHaveAsHorizontalLocation(horizontalLocation) && this.canHaveAsVerticalLocation(verticalLocation);
+		if (this.getWorld()==null){
+			return true;
+		}
+		else if ((verticalLocation<0) || (verticalLocation >= this.getWorld().getWorldHeight()+1) ||
+				(horizontalLocation < 0 ) || (horizontalLocation >= this.getWorld().getWorldWidth()+1)){
+			return false;
+		}
+		else{
+			return !this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, 
+					(int) verticalLocation+1, this.getWidth()-1, this.getHeight()-2)[1];
+		}
 	}
 	
 	/**

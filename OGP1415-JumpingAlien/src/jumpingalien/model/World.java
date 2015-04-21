@@ -819,11 +819,18 @@ public class World {
 	 * @throws 	IllegalArgumentException
 	 * 			|!canHaveAsGameObject(gameObject)
 	 */
-	public void setGameObject(GameObject gameObject) throws IllegalArgumentException {
+	public void addAsGameObject(GameObject gameObject) throws IllegalArgumentException {
 		if(!canHaveAsGameObject(gameObject)){
 			throw new IllegalArgumentException("Not a valid GameObject!");
 		}
 		gameObjects.add(gameObject);
+	}
+	
+	public void removeAsGameObject(GameObject gameObject){
+		if(this.hasAsGameObject(gameObject)){
+			this.gameObjects.remove(gameObject);
+			gameObject.setWorld(null);
+		}
 	}
 	
 	/**
@@ -858,7 +865,7 @@ public class World {
 	 * @return	|gameObjects.contains(gameObject);
 	 */
 	@Raw
-	public boolean containsGameObject(GameObject gameObject) {
+	public boolean hasAsGameObject(GameObject gameObject) {
 		return gameObjects.contains(gameObject);
 	}
 	
@@ -917,10 +924,10 @@ public class World {
 	 */
 	public void terminate() {
 		if(!this.isTerminated()){
-			if(this.hasMazub()){
-				this.getMazub().setWorld(null);
-				this.setGameObject(null);
+			for(GameObject gameObject: this.gameObjects){
+				gameObject.setWorld(null);
 			}
+			this.gameObjects.clear();
 			this.isTerminated=true;
 		}
 	}
@@ -938,8 +945,9 @@ public class World {
 	 * @post	|new.contains(gameObject) == false
 	 */
 	public void removeGameObject(GameObject gameObject){
-		if(gameObject != null && containsGameObject(gameObject) && gameObject.getWorld() == null)
+		if(gameObject != null && hasAsGameObject(gameObject))
 			gameObjects.remove(gameObject);
+			gameObject.setWorld(null);
 	}
 	
 	/**

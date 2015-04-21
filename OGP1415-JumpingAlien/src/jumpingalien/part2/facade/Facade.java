@@ -454,7 +454,7 @@ public class Facade implements IFacadePart2 {
 	 *            The plant that needs to be added to the world.
 	 */
 	public void addPlant(World world, Plant plant){
-		world.setGameObject(plant);
+		world.addAsGameObject(plant);
 		plant.setWorld(world);
 	}
 
@@ -591,7 +591,7 @@ public class Facade implements IFacadePart2 {
 	 *         given school. The returned slime should not belong to a world.
 	 */
 	public Slime createSlime(int x, int y, Sprite[] sprites, School school){
-		return null;
+		return new Slime(x,y,sprites,school);
 	}
 
 	/**
