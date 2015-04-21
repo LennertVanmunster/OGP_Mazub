@@ -971,4 +971,48 @@ public class World {
 		}
 		return plants;		
 	}
+	
+	/**
+	 * Returns a list containing the slimes of this world.
+	 * 
+	 * @return	|List<Slime> slimes = new ArrayList<Slime>();
+	 *			|for(int index = 0; index < getNbOfGameObjects(); index++){
+	 *			|	GameObject gameObject = getGameObjectAtIndex(index);
+	 *			|	if(gameObject instanceof Slime){
+	 *			|		slimes.add((Slime) gameObject);
+	 *			|return slimes;
+	 *		
+	 */
+	public List<Slime> getSlimes(){
+		List<Slime> slimes = new ArrayList<Slime>();
+		for(int index = 0; index < getNbOfGameObjects(); index++){
+			GameObject gameObject = getGameObjectAtIndex(index);
+			if(gameObject instanceof Slime){
+				slimes.add((Slime) gameObject);
+			}
+		}
+		return slimes;		
+	}
+	
+	/**
+	 * Returns a list containing the slimes of this world.
+	 * 
+	 * @return	|List<Slime> slimes = new ArrayList<Slime>();
+	 *			|for(int index = 0; index < getNbOfGameObjects(); index++){
+	 *			|	GameObject gameObject = getGameObjectAtIndex(index);
+	 *			|	if(gameObject instanceof Slime){
+	 *			|		slimes.add((Slime) gameObject);
+	 *			|return slimes;
+	 *		
+	 */
+	public List<Shark> getSharks(){
+		List<Shark> sharks = new ArrayList<Shark>();
+		for(int index = 0; index < getNbOfGameObjects(); index++){
+			GameObject gameObject = getGameObjectAtIndex(index);
+			if(gameObject instanceof Shark){
+				sharks.add((Shark) gameObject);
+			}
+		}
+		return sharks;		
+	}
 }

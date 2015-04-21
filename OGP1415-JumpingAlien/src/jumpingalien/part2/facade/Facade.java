@@ -512,7 +512,7 @@ public class Facade implements IFacadePart2 {
 	 *         should not belong to a world.
 	 */
 	public Shark createShark(int x, int y, Sprite[] sprites){
-		return null;
+		return new Shark(x,y,sprites);
 	}
 
 	/**
@@ -524,7 +524,8 @@ public class Facade implements IFacadePart2 {
 	 *            The shark that needs to be added to the world.
 	 */
 	public void addShark(World world, Shark shark){
-		
+		world.addAsGameObject(shark);
+		shark.setWorld(world);
 	}
 
 	/**
@@ -537,7 +538,8 @@ public class Facade implements IFacadePart2 {
 	 *         collection, but each shark may only be returned once.
 	 */
 	public Collection<Shark> getSharks(World world){
-		return null;
+		Collection<Shark> sharks = world.getSharks();
+		return sharks;
 	}
 
 	/**
@@ -549,7 +551,7 @@ public class Facade implements IFacadePart2 {
 	 *         coordinates of the given shark's bottom left pixel in the world.
 	 */
 	public int[] getLocation(Shark shark){
-		return null;
+		return new int [] {shark.getEffectiveHorizontalLocation(),shark.getEffectiveVerticalLocation()};
 	}
 
 	/**
@@ -562,7 +564,7 @@ public class Facade implements IFacadePart2 {
 	 *         orientation as defined in the assignment.
 	 */
 	public Sprite getCurrentSprite(Shark shark){
-		return null;
+		return shark.getCurrentSprite();
 	}
 
 	/**
@@ -603,7 +605,8 @@ public class Facade implements IFacadePart2 {
 	 *            The slime that needs to be added to the world.
 	 */
 	public void addSlime(World world, Slime slime){
-		
+		world.addAsGameObject(slime);
+		slime.setWorld(world);
 	}
 
 	/**
@@ -616,7 +619,8 @@ public class Facade implements IFacadePart2 {
 	 *         collection, but each slime may only be returned once.
 	 */
 	public Collection<Slime> getSlimes(World world){
-		return null;
+		Collection<Slime> slimes = world.getSlimes();
+		return slimes;
 	}
 
 	/**
@@ -628,7 +632,7 @@ public class Facade implements IFacadePart2 {
 	 *         coordinates of the given slime's bottom left pixel in the world.
 	 */
 	public int[] getLocation(Slime slime){
-		return null;
+		return new int [] {slime.getEffectiveHorizontalLocation(),slime.getEffectiveVerticalLocation()};
 	}
 
 	/**
@@ -641,7 +645,7 @@ public class Facade implements IFacadePart2 {
 	 *         orientation as defined in the assignment.
 	 */
 	public Sprite getCurrentSprite(Slime slime){
-		return null;
+		return slime.getCurrentSprite();
 	}
 
 	/**
