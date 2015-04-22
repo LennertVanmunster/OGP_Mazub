@@ -573,7 +573,7 @@ public class Facade implements IFacadePart2 {
 	 * @return A new school for slimes, without any members.
 	 */
 	public School createSchool(){
-		return null;
+		return new School();
 	}
 
 	/**

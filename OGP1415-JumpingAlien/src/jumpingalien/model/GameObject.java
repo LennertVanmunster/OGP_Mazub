@@ -17,7 +17,112 @@ import java.util.List;
  *
  */
 public abstract class GameObject {
-
+	
+	/**
+	 * Creates a new game object with the given parameters.
+	 * @param horizontalLocation
+	 * 			The horizontal location of the new game object.
+	 * @param verticalLocation
+	 * 			The vertical location of the new game object.
+	 * @param horizontalVelocity
+	 * 			The horizontal velocity of the new game object.
+	 * @param verticalVelocity
+	 * 			The vertical velocity of the new game object.
+	 * @param initialHorizontalVelocity
+	 * 			The initial horizontal velocity of the new game object when the game object starts moving.
+	 * @param maximumHorizontalVelocity
+	 * 			The maximum horizontal velocity of the new game object.
+	 * @param initialVerticalVelocity
+	 * 			The initial vertical velocity of the new game object when the game object jumps.
+	 * @param horizontalAcceleration
+	 * 			The horizontal acceleration of the new game object when the game object moves.
+	 * @param hitPoints
+	 * 			The hit points of the new game object.
+	 * @param maxHitPoints
+	 * 			The maximum number of hit points of the new game object.
+	 * @param images
+	 * 			An array of images.
+	 * @post	The horizontal location of this new game object is equal to the 
+	 * 			given horizontal location.
+	 * 			|new.getHorizontalLocation() == horizontalLocation
+	 * @post	The vertical location of this new game object is equal to the 
+	 * 			given vertical location.
+	 * 			|new.getVerticalLocation() == verticalLocation
+	 * @post	The initial horizontal velocity 
+	 * 			of this new game object is equal to the given initial horizontal velocity.
+	 * 			|new.getInitialHorizontalVelocity() == initialHorizontalVelocity
+	 * @post	The maximum horizontal velocity this new game object is equal to the 
+	 * 			given maximum horizontal velocity.
+	 * 			|new.getMaximumHorizontalVelocity() == maximumHorizontalVelocity
+	 * @post	The horizontal velocity of this new game object is equal to the 
+	 * 			given horizontal velocity.
+	 * 			|new.getHorizontalVelocity() == horizontalVelocity
+	 * @post	The vertical velocity of this new game object is equal to the 
+	 * 			given vertical velocity.
+	 * 			|new.getVerticalVelocity() = verticalVelocity
+	 * @post	If the given horizontal velocity is greater than or equal to 0 the direction of this new game object is RIGHT.
+	 * 			Otherwise the direction of this new Mazub is LEFT.
+	 * 			|if (Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity, 0))
+	 * 			|	new.getDirection() == Direction.RIGHT
+	 * 			|else
+	 * 			|	new.getDirection() == Direction.LEFT
+	 * @post	The images of this new game object are equal to the 
+	 * 			given images.
+	 * 			|new.getImages() == images
+	 * @post	The maximum number of hit points is equal to the given maximum number of hit points.
+	 * 			| new.getMaxHitPoints(maxHitPoints);
+	 * @effect	The given number of hit points are set as the number of hitpoints for this game object.
+	 * 			| this.setHitPoints(hitPoints)
+	 * @throws	IllegalLocationException
+	 * 			Not a valid horizontal location.
+	 * 			|!canHaveAsHorizontalLocation(horizontalLocation)	
+	 * @throws	IllegalLocationException
+	 * 			Not a valid vertical location.
+	 * 			|!canHaveAsVericalLocation(verticalLocation)	
+	 * @throws	IllegalArgumentException
+	 * 			The given initial horizontal velocity is not valid for any game object or it does 
+	 * 			not match with the given maximum horizontal velocity.
+	 * 			|!isPossibleInitialHorizontalVelocity(initialHorizontalVelocity)	
+	 * @throws	IllegalArgumentException
+	 * 			The given maximum horizontal velocity is not valid for any game object or it does
+	 * 			not match with the given initial horizontal velocity.
+	 * 			|!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocity)	
+	 * @throws	IllegalArgumentException
+	 * 			Not a valid horizontal velocity.
+	 * 			|!canHaveAsHorizontalVelocity(horizontalVelocity)
+	 * @throws	IllegalArgumentException
+	 * 			Not a valid vertical velocity.
+	 * 			|!isValidVerticalVelocity(verticalVelocity)	
+	 * @throws	IllegalArgumentException
+	 * 			Not a valid number of maximum hit points.
+	 * 			|!isValidMaxHitPoints(maxHitPoints)
+	 */
+	protected GameObject(int horizontalLocation, int verticalLocation, double horizontalVelocity,
+				double verticalVelocity, double initialHorizontalVelocity, double maximumHorizontalVelocity, double initialVerticalVelocity, double horizontalAcceleration, int hitPoints, int maxHitPoints, Sprite... images)
+		throws IllegalArgumentException, IllegalLocationException {
+			setHorizontalLocation(horizontalLocation);
+			setVerticalLocation(verticalLocation);
+			if(!isPossibleInitialHorizontalVelocity(initialHorizontalVelocity))
+				throw new IllegalArgumentException("Not a valid initial horizontal velocity!");
+			this.initialHorizontalVelocity = initialHorizontalVelocity;
+			if(!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocity))
+				throw new IllegalArgumentException("Not a valid maximum horizontal velocity!");
+			this.maximumHorizontalVelocity=maximumHorizontalVelocity;
+			this.initialVerticalVelocity=initialVerticalVelocity;
+			setHorizontalVelocity(horizontalVelocity);
+			setVerticalVelocity(verticalVelocity);
+			this.horizontalAcceleration=horizontalAcceleration;
+			if (Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity, 0))
+				setDirection(Direction.RIGHT);
+			else
+				setDirection(Direction.LEFT);
+			if(!isValidMaxHitPoints(maxHitPoints)){
+				throw new IllegalArgumentException("Not a valid number of maximum hit points!");
+			}
+			this.maxHitPoints=maxHitPoints;
+			this.setHitPoints(hitPoints);
+			this.setImages(images);
+	}
 	
 	
 	/**
@@ -42,21 +147,25 @@ public abstract class GameObject {
 	 * 
 	 * @param 	horizontalLocation
 	 * 		  	The horizontal location to be checked.
-	 * @return	True if and only if the given horizontal location is greater than or equal to 0
-	 * 			and smaller than the maximum horizontal location plus one.
-	 * 			| result == ((horizontalLocation >= 0 ) && (horizontalLocation < maximumHorizontalLocation+1))
+	 * @return	True if this game object has no world.
+	 * 			| if(this.getWorld()==null)
+	 * 			|	result==true
+	 * 			Otherwise false if  the given horizontal location is less than 0
+	 * 			or greater than or equal to the maximum horizontal location plus one.
+	 * 			| result == !((horizontalLocation < 0 ) && (horizontalLocation >= maximumHorizontalLocation+1))
+	 			Otherwise true if the hit box of this game object doesn't coincide with the terrain of its world.
+	 * 			| result== !this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)[1]
 	 */
 	@Raw
 	public boolean canHaveAsHorizontalLocation(double horizontalLocation){
 		if (this.getWorld()==null){
 			return true;
-		}
-		else if ((horizontalLocation < 0 ) || (horizontalLocation >= this.getWorld().getWorldWidth()+1)){
+		}	
+		else if (horizontalLocation<0 || horizontalLocation >= this.getWorld().getWorldWidth()+1){
 			return false;
 		}
 		else{
-			return !this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, 
-					this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)[1];
+			return !this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)[1];
 		}
 	}
 	
@@ -66,21 +175,26 @@ public abstract class GameObject {
 	 * 
 	 * @param 	verticalLocation
 	 * 		  	The vertical location to be checked.
-	 * @return	True if and only if the given vertical location is greater than or equal to 0
-	 * 			and smaller than the maximums vertical location plus one.
-	 * 			|result == ((verticalLocation >= 0 ) && (verticalLocation < maximumVerticalLocation+1))
+	 *  @return	True if this game object has no world.
+	 * 			| if(this.getWorld()==null)
+	 * 			|	result==true
+	 * 			Otherwise false if  the given vertical location is less than 0
+	 * 			or greater than or equal to the maximum vertical location plus one.
+	 * 			| result == !((horizontalLocation < 0 ) && (horizontalLocation >= maximumHorizontalLocation+1))
+	 			Otherwise true if the hit box of this game object doesn't coincide with the terrain of its world.
+	 * 			| result== !this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)[1]
 	 */
 	@Raw
 	public boolean canHaveAsVerticalLocation(double verticalLocation){
-		if (this.getWorld()==null){
-			return true;
+		if(this.getWorld()==null){
+			return true; 
 		}
 		else if (verticalLocation<0 || verticalLocation >= this.getWorld().getWorldHeight()+1){
 			return false;
 		}
 		else{
-			return !this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
-					(int) verticalLocation+1, this.getWidth()-1, this.getHeight()-2)[1];
+		return !this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
+				(int) verticalLocation+1, this.getWidth()-1, this.getHeight()-2)[1];
 		}
 	}
 	
@@ -103,7 +217,7 @@ public abstract class GameObject {
 	 */
 	@Basic
 	@Raw
-	public double getHorizontalLocation(){
+	protected double getHorizontalLocation(){
 		return this.horizontalLocation;
 	}
 	
@@ -112,7 +226,7 @@ public abstract class GameObject {
 	 */
 	@Basic
 	@Raw
-	public double getVerticalLocation(){
+	protected double getVerticalLocation(){
 		return this.verticalLocation;
 	}
 	
@@ -187,6 +301,31 @@ public abstract class GameObject {
 	}
 	
 	/**
+	 * Return the maximum horizontal velocity of this game object.
+	 */
+	@Raw
+	public double getMaximumHorizontalVelocity(){
+		return this.maximumHorizontalVelocity;
+	}
+	
+	/**
+	 * Return the initial horizontal velocity of this game object.
+	 */
+	@Raw
+	public double getInitialHorizontalVelocity(){
+		return this.initialHorizontalVelocity;
+	}
+	
+	
+	/**
+	 * Return the initial vertical velocity of this game object
+	 */
+	@Raw
+	public double getInitialVerticalVelocity(){
+		return this.initialVerticalVelocity;
+	}
+	
+	/**
 	 * Set the horizontal velocity of game object to the given horizontal velocity.
 	 * 
 	 * @param 	horizontalVelocity
@@ -220,66 +359,146 @@ public abstract class GameObject {
 	@Raw
 	public void setVerticalVelocity(double verticalVelocity) 
 		throws IllegalArgumentException{
-		if(!isValidVerticalVelocity(verticalVelocity))
+		if(!canHaveAsVerticalVelocity(verticalVelocity))
 			throw new IllegalArgumentException("Not a valid vertical velocity!");
 		this.verticalVelocity = verticalVelocity;
 	}
 	
-	/**
-	 * Check whether the given horizontal velocity is a valid horizontal velocity.
-	 * @param horizontalVelocity
-	 * @return
-	 */
-	public abstract boolean canHaveAsHorizontalVelocity(double horizontalVelocity);
 	
 	/**
-	 * Check whether the given vertical velocity is a valid vertical velocity.
+	 * Check whether this game object can have the given horizontal velocity as its horizontal velocity.
+	 * @param 	horizontalVelocity
+	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the initial horizontal velocity of this game object
+	 * 			and less than or equal to the maximum horizontal velocity of this game object.
+	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
+				&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
+				|| Util.fuzzyEquals(horizontalVelocity, 0)
+	 */
+	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
+		horizontalVelocity = Math.abs(horizontalVelocity);
+		return Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
+				&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
+				|| Util.fuzzyEquals(horizontalVelocity, 0);
+	}
+	
+	/**
+	 * Check whether this game object can have the given vertical velocity as its vertical velocity.
 	 * 
 	 * @param 	verticalVelocity
 	 * 			The vertical velocity to be checked.
-	 * @return	True if and only if the given vertical velocity is less than or equal to 8 m/s (the initial vertical velocity constant).
+	 * @return	True if and only if the given vertical velocity is less than or equal to the initial vertical velocity constant of this game object.
 	 * 			| result ==  Util.fuzzyLessThanOrEqualTo(verticalVelocity, getInitialVerticalVelocity())
 	 */
-	public abstract boolean isValidVerticalVelocity(double verticalVelocity);
+	public boolean canHaveAsVerticalVelocity(double verticalVelocity){
+		return Util.fuzzyLessThanOrEqualTo(verticalVelocity, getInitialVerticalVelocity());
+	}
 	
+	/**
+	 * Check whether this game object can have the given initial horizontal velocity as its initial horizontal velocity.
+	 * 
+	 * @param 	initialHorizontalVelocity
+	 * 			The initial horizontal velocity to be checked.
+	 * @return	True if and only if the given initial horizontal velocity is a possible initial horizontal 
+	 * 			velocity for any game object and it matches with the maximum horizontal velocity of this game object.
+	 * 			|result ==  isPossibleInitialHorizontalVelocity(initialHorizontalVelocity) && 
+				matchesMaximumHorizontalVelocityInitialHorizontalVelocity(this.getMaximumHorizontalVelocity(), initialHorizontalVelocity)
+	 */
+	@Raw
+	public boolean canHaveAsInitialHorizontalVelocity(double initialHorizontalVelocity){
+		return isPossibleInitialHorizontalVelocity(initialHorizontalVelocity) && 
+				matchesMaximumHorizontalVelocityInitialHorizontalVelocity(this.getMaximumHorizontalVelocity(), initialHorizontalVelocity);
+	}
+	
+	
+	/**
+	 *  Check whether this game object can have the given maximum horizontal velocity as its maximum horizontal velocity.
+	 *  
+	 * @param 	maximumHorizontalVelocity
+	 * 			The maximum horizontal velocity to be checked.
+	 * @return	True if and only if the given maximum horizontal velocity matches with the initial horizontal
+	 * 			velocity of this game object.
+	 * 			|result =  matchesMaximumHorizontalVelocityInitialHorizontalVelocity(maximumHorizontalVelocity, this.getInitialHorizontalVelocity());
+	 */
+	@Raw
+	public boolean canHaveAsMaximumHorizontalVelocity(double maximumHorizontalVelocity){
+		return matchesMaximumHorizontalVelocityInitialHorizontalVelocity(maximumHorizontalVelocity, this.getInitialHorizontalVelocity());
+	}
+	
+	/**
+	 * Check whether the given maximum horizontal velocity matches with the given initial horizontal velocity of a game object.
+	 * 
+	 * @param 	maximumHorizontalVelocity
+	 * 			The maximum horizontal velocity to check.
+	 * @param 	initialHorizontalVelocity
+	 * 			The initial horizontal velocity to check.
+	 * @return	True if the given maximum horizontal velocity is greater than or equal to the given initial horizontal velocity.
+	 * 			| result == Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,initialHorizontalVelocity)
+	 */
+	public static boolean matchesMaximumHorizontalVelocityInitialHorizontalVelocity(
+			double maximumHorizontalVelocity, double initialHorizontalVelocity){
+		return Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,initialHorizontalVelocity);
+	}
+	
+	/**
+	 * Check whether the given initial horizontal velocity is a possible initial horizontal velocity for a game object.
+	 * 
+	 * @param 	initialHorizontalVelocity
+	 * 			The initial horizontal velocity to check.
+	 */
+	public abstract boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity);
+
 	/**
 	 * Variable registering the horizontal velocity of this game object.
 	 */
-	protected double horizontalVelocity = 0;
+	private double horizontalVelocity = 0;
 
 	/**
 	 *  Variable registering the vertical velocity of this game object.
 	 */
-	protected double verticalVelocity = 0;
+	private double verticalVelocity = 0;
+	
+	/**
+	 * Variable registering the initial horizontal velocity of this game object.
+	 */
+	private final double initialHorizontalVelocity;
+	
+	/**
+	 * Variable registering the maximum horizontal velocity of this game object.
+	 */
+	private final double maximumHorizontalVelocity;
+	
+	/**
+	 * Variable registering the initial vertical velocity of this game object.
+	 */
+	private final double initialVerticalVelocity;
+	
 	
 
 	/**
-	 * Returns the horizontal acceleration of this game object.
-	 * 
+	 * Return the horizontal acceleration of this game object.
 	 */
 	@Raw
 	public double getHorizontalAcceleration(){
-			return horizontalAcceleration;
+			return this.horizontalAcceleration;
 	}
 	
 	/**
-	 * Returns the vertical acceleration of this game object.
-	 * 
+	 * Return the vertical acceleration of all game objects.
 	 */
 	@Raw
 	public double getVerticalAcceleration(){
-			return this.verticalAcceleration;
+			return VERTICAL_ACCELERATION;
 	}
 	
 	/**
 	 *  Variable registering the horizontal acceleration of a game object.
 	 */
-	protected double horizontalAcceleration;
+	protected final double horizontalAcceleration;
 	
 	/**
-	 *  Constant registering the vertical acceleration of a game object.
+	 *  Constant registering the vertical acceleration of all game objects.
 	 */
-	protected double verticalAcceleration = -10;
+	protected static final double VERTICAL_ACCELERATION = -10;
 	
 	/**
 	 *  Return the direction of this game object.
@@ -291,7 +510,7 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Set the direction of this game object to the given value.
+	 * Set the direction of this game object to the given direction.
 	 * 
 	 * @param 	direction
 	 * 			The new direction for this game object.
@@ -332,7 +551,7 @@ public abstract class GameObject {
 	 * 			|		if(Arrays.equals(tile, coveredTile))
 	 * 			|		then overlap = true
 	 * 
-	 * @throws	IllegalArgument
+	 * @throws	IllegalArgumentException
 	 * 			If the world of this game object can not have the given game object as its game object.
 	 * 			|!world.canHaveAsGameObject(gameObject)
 	 */
@@ -1027,7 +1246,12 @@ public abstract class GameObject {
 	public int getHitPoints() {
 		return this.hitPoints;
 	}
-
+	
+	public boolean isValidMaxHitPoints(int maxHitPoints){
+		return maxHitPoints>=0;
+	}
+	
+	
 	/**
 	 * Return the current maximum number of hit-points of this game object.
 	 */
@@ -1037,14 +1261,6 @@ public abstract class GameObject {
 		return this.maxHitPoints;
 	}
 	
-	/**
-	 * Set the maximum number of hit-points of this game object.
-	 */
-	@Basic
-	@Raw
-	public void setMaxHitPoints(int hitPoints) {
-		this.maxHitPoints = hitPoints;
-	}
 	
 	public void removeHitPoints(int hitPoints){
 		int oldHitPoints = getHitPoints();
@@ -1096,7 +1312,7 @@ public abstract class GameObject {
 	/**
 	 * Variable registering the maximum number of hit-points of this game object. 
 	 */
-	protected int maxHitPoints;
+	protected final int maxHitPoints;
 	
 	public World getWorld(){
 		return this.world;

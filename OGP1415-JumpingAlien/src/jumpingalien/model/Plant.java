@@ -17,13 +17,7 @@ public class Plant extends GameObject {
 	@Raw
 	public Plant(int horizontalLocation, int verticalLocation, Sprite... images)
 	throws IllegalArgumentException{
-		this.setHorizontalLocation(horizontalLocation);
-		this.setVerticalLocation(verticalLocation);
-		this.setImages(images);
-		this.setHorizontalVelocity(0);
-		this.setVerticalVelocity(0);
-		this.setMaxHitPoints(MAX_HIT_POINTS);
-		this.setHitPoints(1);
+		super(horizontalLocation, verticalLocation, 0, 0, 0, 0.5, 0, 0, 1, MAX_HIT_POINTS, images);
 	}
 	
 	/**
@@ -35,7 +29,7 @@ public class Plant extends GameObject {
 	 * @return	|Util.fuzzyEquals(verticalVelocity, 0)
 	 */
 	@Override
-	public boolean isValidVerticalVelocity(double verticalVelocity){
+	public boolean canHaveAsVerticalVelocity(double verticalVelocity){
 		return Util.fuzzyEquals(verticalVelocity, 0);
 	}
 	
@@ -179,6 +173,22 @@ public class Plant extends GameObject {
 	@Override
 	public void checkMagmaContact(double deltaTime) {
 		
+	}
+
+	@Override
+	public double getMaximumHorizontalVelocity() {
+		return VELOCITYCONSTANT;
+	}
+
+	@Override
+	public double getInitialHorizontalVelocity() {
+		return 0;
+	}
+
+	@Override
+	public boolean isPossibleInitialHorizontalVelocity(
+			double initialHorizontalVelocity) {
+		return initialHorizontalVelocity==0;
 	}
 
 	
