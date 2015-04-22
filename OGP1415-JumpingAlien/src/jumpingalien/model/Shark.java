@@ -29,7 +29,7 @@ public class Shark extends GameObject{
 		this.setHorizontalVelocity(horizontalVelocity);
 		this.setVerticalVelocity(verticalVelocity);
 		this.setMaxHitPoints(MAX_HIT_POINTS);
-		this.setHitPoints(hitPoints);
+		this.setHitPoints(100);
 		this.verticalAcceleration = -10;
 		this.horizontalAcceleration = 1.5;
 	}
@@ -248,15 +248,16 @@ public class Shark extends GameObject{
 				this.setVerticalLocation(oldVerticalLocation);
 				this.setVerticalVelocity(0);
 			}
-//			int [] overlap = this.checkLeftRightTopBottomSideOverlap();
-//			if(overlap[0]==1){
-//				collisionReaction(overlap[1]);
-//					
-//			}		
+			int [] overlap = this.checkLeftRightTopBottomSideOverlap();
+			if(overlap[0]==1){
+				collisionReaction(overlap[1]);
+					
+			}		
 			}
-//		checkWaterContact(deltaTime);
-//		checkMagmaContact(deltaTime);	
+		checkMagmaContact(deltaTime);	
 //		this.calculateNewJumpingState();
+		if(this.getHitPoints() <= 0)
+			this.unsetWorld();
 	}
 	
 	/**
@@ -276,6 +277,41 @@ public class Shark extends GameObject{
 			return false;
 	}
 
+	/**
+	 *Check whether the shark makes contact with magma and take the corresponding actions. 
+	 * @param 	deltaTime
+	 * 			The given time period.
+	 * @post	Every 0.2 seconds while being contacted with magma, fifty hitpoints are removed
+	 * 			from shark. The first hitpoints are immediately removed at first contact.
+	 * 			|
+	 */
+	@Override
+	public void checkMagmaContact(double deltaTime){
+		boolean [] contactTiles = (this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
+				this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)).clone();
+		if(contactTiles[3] == true){
+			double time = getTimeSinceStartMagmaContact();
+			this.setTimeSinceStartMagmaContact(time + deltaTime);
+			if(time == 0)
+				this.removeHitPoints(50);
+			else if(Util.fuzzyGreaterThanOrEqualTo(this.getTimeSinceStartMagmaContact(), 0.2)){
+				this.setTimeSinceStartMagmaContact(0);
+			}
+		}
+		else{
+			this.setTimeSinceStartMagmaContact(0);
+		}
+	}
+	
+	protected void collisionReaction(int index) {
+		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index);
+		if(gameObject instanceof Mazub){
+			assert 1==2;
+			if(this.getHitPoints() != this.getMaxHitPoints()){
+				this.removeHitPoints(50);
+			}
+		}
+	}
 
 	/**
 	 * Variable registering the maximum number of hit points of a shark.
