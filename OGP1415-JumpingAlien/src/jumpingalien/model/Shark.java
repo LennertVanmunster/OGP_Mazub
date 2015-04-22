@@ -30,6 +30,8 @@ public class Shark extends GameObject{
 		this.setVerticalVelocity(verticalVelocity);
 		this.setMaxHitPoints(MAX_HIT_POINTS);
 		this.setHitPoints(hitPoints);
+		this.verticalAcceleration = -10;
+		this.horizontalAcceleration = 1.5;
 	}
 	
 
@@ -154,6 +156,18 @@ public class Shark extends GameObject{
 	private static final double INITIAL_VERTICAL_VELOCITY = 2;
 	
 	/**
+	 * Returns the vertical acceleration of this game object.
+	 * 
+	 */
+	@Raw
+	public double getVerticalAcceleration(){
+		if(checkWaterAndNoAirContact())
+			return 0;
+		else
+			return this.verticalAcceleration;
+	}
+	
+	/**
 	 * Check whether the given number of images is a valid number of images
 	 * for the class shark.
 	 * 
@@ -166,14 +180,103 @@ public class Shark extends GameObject{
 		return nbImages == 2;
 	}
 	
+	/**
+	 * Update the location and velocity of this shark.
+	 * 
+	 * @param 	deltaTime
+	 * 			The period of time that is used to update this shark.
+	 * @effect	The horizontal and vertical location are updated
+	 * 			and the horizontal and vertical velocity are updated.
+	 * 			|updateHorizontalLocation(deltaTime)
+	 *			|updateVerticalLocation(deltaTime);
+	 *			|updateHorizontalVelocity(deltaTime);
+	 *			|updateVerticalVelocity(deltaTime);
+	 * @effect	|Contact with magma and water is checked.
+	 *			|checkWaterContact(deltaTime);
+	 *			|checkMagmaContact(deltaTime);		
+	 * @throws	IllegalArgumentException 
+	 * 			The given time period is not valid a valid time period.
+	 * 			|!isValidTimePeriod(deltaTime)
+	 */
 	@Raw
 	@Override
 	public void advanceTime(double deltaTime)
 		throws IllegalArgumentException {
 		if(!isValidDeltaTime(deltaTime))
 			throw new IllegalArgumentException();
+		double deltaTimeForPixel=0;
+		double sumDeltaTimeForPixel=0;
+		double newHorizontalLocation=this.getHorizontalLocation();
+		double newVerticalLocation=this.getVerticalLocation();
+		double newHorizontalVelocity=this.getHorizontalVelocity();
+		double newVerticalVelocity=this.getVerticalVelocity();
+		double oldHorizontalLocation=this.getHorizontalLocation();
+		double oldVerticalLocation=this.getVerticalLocation();
+		while (sumDeltaTimeForPixel<deltaTime){
+			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
+			newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTimeForPixel;
+			newHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAcceleration()*deltaTimeForPixel;
+			newHorizontalLocation = this.getHorizontalLocation() + 
+					100*(this.getHorizontalVelocity()*deltaTimeForPixel + 
+					this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTimeForPixel, 2));
+			newVerticalLocation = this.getVerticalLocation() + 100*(getVerticalVelocity()*deltaTimeForPixel + 0.5*getVerticalAcceleration()*Math.pow(deltaTimeForPixel,2));
+			sumDeltaTimeForPixel+=deltaTimeForPixel;
+			try{
+				this.setHorizontalVelocity(newHorizontalVelocity);
+			} catch(IllegalArgumentException exc){
+				if (Math.abs(newHorizontalVelocity)<Math.abs(this.getInitialHorizontalVelocity()))
+					this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getInitialHorizontalVelocity());
+				else
+					this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getMaximumHorizontalVelocity());
+			}
+			try{
+				this.setVerticalVelocity(newVerticalVelocity);
+			} catch (IllegalArgumentException exc){
+				this.setVerticalVelocity(0);
+			}
+			try{
+				this.setHorizontalLocation(newHorizontalLocation);
+				oldHorizontalLocation=newHorizontalLocation;
+			} catch(IllegalLocationException exc){
+				this.setHorizontalLocation((int) oldHorizontalLocation);
+				this.setHorizontalVelocity(0);
+			}
+			try{
+				this.setVerticalLocation(newVerticalLocation);
+				oldVerticalLocation=newVerticalLocation;
+			} catch(IllegalLocationException exc){
+				this.setVerticalLocation(oldVerticalLocation);
+				this.setVerticalVelocity(0);
+			}
+//			int [] overlap = this.checkLeftRightTopBottomSideOverlap();
+//			if(overlap[0]==1){
+//				collisionReaction(overlap[1]);
+//					
+//			}		
+			}
+//		checkWaterContact(deltaTime);
+//		checkMagmaContact(deltaTime);	
+//		this.calculateNewJumpingState();
 	}
 	
+	/**
+	 * Check whether the game object makes contact with water and no contact with air
+	 * 
+	 * @return 	|if(contactTiles[2] == true && contactTiles[0] == false)
+	 * 			|then result == true
+	 * 			|else result == false
+	 */
+	public boolean checkWaterAndNoAirContact(){
+		boolean [] contactTiles = (this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
+				this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)).clone();
+		if(contactTiles[2] == true && contactTiles[0] == false){
+			return true;
+		}
+		else
+			return false;
+	}
+
+
 	/**
 	 * Variable registering the maximum number of hit points of a shark.
 	 */
