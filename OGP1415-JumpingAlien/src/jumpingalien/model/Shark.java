@@ -219,9 +219,9 @@ public class Shark extends GameObject{
 				this.setVerticalVelocity(0);
 			}
 			int [] overlap = this.checkLeftRightTopBottomSideOverlap();
-			if(overlap[0]==1){
-				collisionReaction(overlap[1],overlap[2]);
-			}
+//			if(overlap[0]==1){
+//				collisionReaction(overlap[1],overlap[2]);
+//			}
 		}
 		this.setTimeSinceStartAction(this.getTimeSinceStartAction()+deltaTime);
 		checkAirContact(deltaTime);
