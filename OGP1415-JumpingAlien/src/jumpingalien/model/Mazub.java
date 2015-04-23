@@ -466,10 +466,10 @@ public class Mazub extends GameObject {
 			try{
 				this.setHorizontalVelocity(newHorizontalVelocity);
 			} catch(IllegalArgumentException exc){
-				if (Math.abs(newHorizontalVelocity)<Math.abs(super.getInitialHorizontalVelocity()))
+				if (Math.abs(newHorizontalVelocity)<Math.abs(this.getInitialHorizontalVelocity()))
 					this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getInitialHorizontalVelocity());
 				else
-					this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*super.getMaximumHorizontalVelocity());
+					this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getMaximumHorizontalVelocity());
 			}
 			try{
 				this.setVerticalVelocity(newVerticalVelocity);
