@@ -29,9 +29,9 @@ public class Shark extends GameObject{
 	}
 	
 	/**
-	 * Check whether this game object can have the given horizontal velocity as its horizontal velocity.
+	 * Check whether this shark can have the given horizontal velocity as its horizontal velocity.
 	 * @param 	horizontalVelocity
-	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the initial horizontal velocity of this game object
+	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the initial horizontal velocity of this shark
 	 * 			and less than or equal to the maximum horizontal velocity of this game object.
 	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
 	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
@@ -46,9 +46,6 @@ public class Shark extends GameObject{
 	
 	/**
 	 * Check whether the given initial horizontal velocity is a possible initial horizontal velocity for any shark.
-	 * 
-	 * @param 	initialHorizontalVelocity
-	 * 			The initial horizontal velocity to check.
 	 * @return	True if the given initial horizontal velocity is greater than or equal to 0.
 	 * 			result == Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity, 0)
 	 */
@@ -63,7 +60,12 @@ public class Shark extends GameObject{
 	
 	/**
 	 * Returns the vertical acceleration of this shark.
-	 * 
+	 * @return	If this shark is currently only in contact with water, the vertical acceleration is zero.
+	 * 			Otherwise the vertical acceleration is equal to the gravitational constant.
+	 * 			|if(this.checkWaterAndNoAirContact())
+	 *			|	result == 0
+	 *			|else
+	 *			| 	result == VERTICAL_ACCELERATION
 	 */
 	@Raw
 	public double getVerticalAcceleration(){
@@ -73,13 +75,26 @@ public class Shark extends GameObject{
 			return VERTICAL_ACCELERATION;
 	}
 	
+	/**
+	 * Check whether this shark can have the given vertical acceleration as its vertical acceleration.
+	 * @return	The absolute value of the given vertical acceleration is less than the maximum floating vertical acceleration or the given vertical acceleration
+	 * 			is equal to the gravitational constant.
+	 * 			|	Util.fuzzyLessThanOrEqualTo(Math.abs(verticalAcceleration),MAXIMUM_FLOATING_VERTICAL_ACCELERATION) || Util.fuzzyEquals(verticalAcceleration,VERTICAL_ACCELERATION)
+	 */
 	public boolean canHaveAsVerticalAcceleration(double verticalAcceleration){
-		return Util.fuzzyLessThanOrEqualTo(Math.abs(verticalAcceleration),0.2) || Util.fuzzyEquals(verticalAcceleration,VERTICAL_ACCELERATION);
+		return Util.fuzzyLessThanOrEqualTo(Math.abs(verticalAcceleration),MAXIMUM_FLOATING_VERTICAL_ACCELERATION) || Util.fuzzyEquals(verticalAcceleration,VERTICAL_ACCELERATION);
 	}
 	
 	
 	private static final double HORIZONTAL_ACCELERATION=1.5;
 	
+	private static final double MAXIMUM_FLOATING_VERTICAL_ACCELERATION=0.2;
+	
+	/**
+	 * Check whether this shark can have the given ducking state as its ducking state.
+	 * @return 	The given ducking state is false.
+	 * 			|result== (ducking==false)
+	 */
 	public boolean canHaveAsDuckingState(boolean ducking){
 		return !ducking;
 	}

@@ -45,13 +45,14 @@ public class Slime extends GameObject {
 		throws IllegalArgumentException, IllegalLocationException {
 		super(horizontalLocation, verticalLocation, 0, 0, 0, MAXIMUM_HORIZONTAL_VELOCITY, 0, HORIZONTAL_ACCELERATION, false, 100, 100, images);
 		school.addAsSlime(this);
+		this.setSchool(school);
 	}
 	
 	
 	/**
-	 * Check whether this game object can have the given horizontal velocity as its horizontal velocity.
+	 * Check whether this slime can have the given horizontal velocity as its horizontal velocity.
 	 * @param 	horizontalVelocity
-	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the initial horizontal velocity of this game object
+	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the initial horizontal velocity of this slime
 	 * 			and less than or equal to the maximum horizontal velocity of this game object.
 	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
 	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
@@ -70,9 +71,9 @@ public class Slime extends GameObject {
 	private static final double MAXIMUM_HORIZONTAL_VELOCITY = 2.5;
 
 	/**
-	 * Returns the vertical acceleration of this game object.
+	 * Returns the vertical acceleration of this slime.
 	 * 
-	 * @return	If this game object is jumping than the vertical acceleration is equal
+	 * @return	If this slime is jumping than the vertical acceleration is equal
 	 * 			to the gravitational acceleration constant.
 	 * 			Otherwise the vertical acceleration is equal to zero.
 	 * 			|if(this.isJumping())
@@ -88,17 +89,27 @@ public class Slime extends GameObject {
 			return 0;
 	}
 	
+	/**
+	 * Check whether this slime can have the given ducking state as its ducking state.
+	 * @return 	The given ducking state is false.
+	 * 			|result== (ducking==false)
+	 */
 	public boolean canHaveAsDuckingState(boolean ducking){
 		return !ducking;
 	}
 	
+	/**
+	 * Check whether this slime can have the given vertical acceleration as its vertical acceleration.
+	 * @return	The given vertical acceleration is equal to zero or equal to the vertical acceleration constant.
+	 * 			|	result== verticalAcceleration==0 || Util.fuzzyEquals(verticalAcceleration, VERTICAL_ACCELERATION)
+	 */
 	public boolean canHaveAsVerticalAcceleration(double verticalAcceleration){
 		return verticalAcceleration==0 || Util.fuzzyEquals(verticalAcceleration, VERTICAL_ACCELERATION);
 	}
 	
 	
 	/**
-	 *  Constant registering the horizontal acceleration of all Mazubs.
+	 *  Constant registering the horizontal acceleration of all slimes.
 	 */
 	private static final double HORIZONTAL_ACCELERATION = 0.7;
 	
@@ -106,6 +117,7 @@ public class Slime extends GameObject {
 		Random r = new Random();
 		this.setCurrentActionDuration(MINIMUM_ACTION_DURATION+(MAXIMUM_ACTION_DURATION-MINIMUM_ACTION_DURATION)*r.nextDouble());
 		this.setDirection(r.nextBoolean() ? Direction.LEFT : Direction.RIGHT);
+		this.setMovingHorizontally(true);
 		this.setTimeSinceStartAction(0);
 	}
 	
@@ -291,7 +303,7 @@ public class Slime extends GameObject {
 	}
 	
 	public boolean canHaveAsSchool(School school){
-		return (school!=null && school.canHaveAsSlime(this));
+		return (school==null || school.canHaveAsSlime(this));
 	}
 	
 	public boolean hasProperSchool(){
@@ -306,7 +318,10 @@ public class Slime extends GameObject {
 		
 	}
 
-
+	/**
+	 * @return	The given initial horizontal velocity is equal to zero.
+	 * 			| result == (intialHorizontalVelocity==0)
+	 */
 	@Override
 	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity) {
 		return initialHorizontalVelocity==0;

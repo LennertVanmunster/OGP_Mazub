@@ -21,7 +21,7 @@ import java.util.*;
  * @invar	The visible window may not be bigger than the game world.
  * 			|canHaveAsVisibleWindow()
  * @invar	If possible the window shall always be positioned so that there are 
- * 			at least 200 pixels between alle pixels occupied by Mazub.
+ * 			at least 200 pixels between all pixels occupied by Mazub.
  * @invar	Each world must have proper game objects.
  * 			| hasProperGameObjects()
  *

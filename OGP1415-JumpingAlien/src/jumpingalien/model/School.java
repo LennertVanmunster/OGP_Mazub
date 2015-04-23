@@ -4,7 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class School {
-	public School(){
+	public School(Slime... slimes){
+		for(Slime slime: slimes){
+			this.addAsSlime(slime);
+			slime.setSchool(this);
+		}
 	}
 	
 	private Set<Slime> slimes= new HashSet<Slime>();
@@ -14,7 +18,7 @@ public class School {
 	}
 	
 	public boolean canHaveAsSlime(Slime slime){
-		return((this.getNbSlimes()<10 && slime != null && !this.isTerminated()) || (slime.isTerminated() && slime==null));
+		return((this.getNbSlimes()<=10 && slime != null && !this.isTerminated()) || (slime.isTerminated() && slime==null));
 	}
 	
 	public boolean hasProperSlimes(){
@@ -32,7 +36,6 @@ public class School {
 			throw new IllegalArgumentException();
 		}
 		this.slimes.add(slime);
-		slime.setSchool(this);
 	}
 	
 	public void removeAsSlime(Slime slime){

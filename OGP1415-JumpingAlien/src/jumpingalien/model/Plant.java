@@ -21,19 +21,20 @@ public class Plant extends GameObject {
 	}
 	
 	/**
-	 * Check whether this game object can have the given horizontal velocity as its horizontal velocity.
+	 * Check whether this plant can have the given horizontal velocity as its horizontal velocity.
 	 * @param 	horizontalVelocity
-	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the initial horizontal velocity of this game object
-	 * 			and less than or equal to the maximum horizontal velocity of this game object.
-	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
-	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
-	 *			|| Util.fuzzyEquals(horizontalVelocity, 0)
+	 * @return	True if the absolute value of the given horizontal velocity is equal to the velocity constant of all plants.
+	 * 			| result== Util.fuzzyEquals(Math.abs(horizontalVelocity), VELOCITYCONSTANT)
 	 */
 	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
-		horizontalVelocity = Math.abs(horizontalVelocity);
 		return Util.fuzzyEquals(Math.abs(horizontalVelocity), VELOCITYCONSTANT);
 	}
 	
+	/**
+	 * Check whether this plant can have the given ducking state as its ducking state.
+	 * @return 	The given ducking state is false.
+	 * 			|result== (ducking==false)
+	 */
 	public boolean canHaveAsDuckingState(boolean ducking){
 		return !ducking;
 	}
@@ -41,19 +42,19 @@ public class Plant extends GameObject {
 	/**
 	 * Returns the vertical acceleration of this game object.
 	 * 
-	 * @return	If this game object is jumping than the vertical acceleration is equal
-	 * 			to the gravitational acceleration constant.
-	 * 			Otherwise the vertical acceleration is equal to zero.
-	 * 			|if(this.isJumping())
-	 *			|	result == VERTICAL_ACCELERATION
-	 *			|else
-	 *			| 	result == 0
+	 * @return	Zero.
+	 *			| result == 0
 	 */
 	@Raw
 	public double getVerticalAcceleration(){
 			return 0;
 	}
 	
+	/**
+	 * Check whether this plant can have the given vertical acceleration as its vertical acceleration.
+	 * @return	The given vertical acceleration is equal to zero.
+	 * 			|	result== verticalAcceleration==0
+	 */
 	public boolean canHaveAsVerticalAcceleration(double verticalAcceleration){
 		return verticalAcceleration==0;
 	}
@@ -194,10 +195,14 @@ public class Plant extends GameObject {
 	public double getInitialHorizontalVelocity() {
 		return 0;
 	}
-
+	
+	/**
+	 * @return	The given initial horizontal velocity is equal to the velocity constant of all plants.
+	 * 			| result == (intialHorizontalVelocity==VELOCITYCONSTANT)
+	 */
 	@Override
 	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity) {
-		return initialHorizontalVelocity==0.5;
+		return initialHorizontalVelocity==VELOCITYCONSTANT;
 	}
 
 	
