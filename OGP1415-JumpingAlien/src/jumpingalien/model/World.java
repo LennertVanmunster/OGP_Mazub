@@ -22,6 +22,8 @@ import java.util.*;
  * 			|canHaveAsVisibleWindow()
  * @invar	If possible the window shall always be positioned so that there are 
  * 			at least 200 pixels between alle pixels occupied by Mazub.
+ * @invar	Each world must have proper game objects.
+ * 			| hasProperGameObjects()
  *
  * @version	1.0
  * @author 	Pieter Van Damme and Lennert Vanmunster
@@ -820,7 +822,7 @@ public class World {
 	 * 			|!canHaveAsGameObject(gameObject)
 	 */
 	public void addAsGameObject(GameObject gameObject) throws IllegalArgumentException {
-		if(!canHaveAsGameObject(gameObject)){
+		if(!canHaveAsGameObject(gameObject)|| gameObject.getWorld()!=this){
 			throw new IllegalArgumentException("Not a valid GameObject!");
 		}
 		gameObjects.add(gameObject);
@@ -848,14 +850,24 @@ public class World {
 	 *	
 	 */
 	public boolean canHaveAsGameObject(GameObject gameObject){
-		if(getNbOfGameObjects() > 100)
-			return false;
-		else if(gameObject==null){
+		if (this.isTerminated())
+			return gameObject==null;
+		else if(getNbOfGameObjects() > 100){
 			return false;
 		}
 		else{
-			return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation());
+			return gameObject!=null && !gameObject.isTerminated() && gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation());
 		}
+	}
+	
+	public boolean hasProperGameObjects(){
+		for (GameObject gameObject : gameObjects) {
+            if (!canHaveAsGameObject(gameObject))
+                return false;
+            if (gameObject.getWorld() != this)
+                return false;
+        }
+        return true;
 	}
 	
 	/**
@@ -931,6 +943,7 @@ public class World {
 			this.isTerminated=true;
 		}
 	}
+
 	
 	/**
 	 * Variable registering if the Mazub of this world is terminated.

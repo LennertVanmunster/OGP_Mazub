@@ -17,37 +17,47 @@ public class Plant extends GameObject {
 	@Raw
 	public Plant(int horizontalLocation, int verticalLocation, Sprite... images)
 	throws IllegalArgumentException{
-		super(horizontalLocation, verticalLocation, 0, 0, 0, 0.5, 0, 0, 1, MAX_HIT_POINTS, images);
+		super(horizontalLocation, verticalLocation, VELOCITYCONSTANT, 0, VELOCITYCONSTANT, VELOCITYCONSTANT, 0, 0, false, 1, MAX_HIT_POINTS, images);
 	}
 	
 	/**
-	 * Check whether the given vertical velocity is a valid vertical velocity
-	 * for the class of plants.
-	 * 
-	 * @param	verticalVelocity
-	 * 			The given vertical velocity
-	 * @return	|Util.fuzzyEquals(verticalVelocity, 0)
+	 * Check whether this game object can have the given horizontal velocity as its horizontal velocity.
+	 * @param 	horizontalVelocity
+	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the initial horizontal velocity of this game object
+	 * 			and less than or equal to the maximum horizontal velocity of this game object.
+	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
+	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
+	 *			|| Util.fuzzyEquals(horizontalVelocity, 0)
 	 */
-	@Override
-	public boolean canHaveAsVerticalVelocity(double verticalVelocity){
-		return Util.fuzzyEquals(verticalVelocity, 0);
+	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
+		horizontalVelocity = Math.abs(horizontalVelocity);
+		return Util.fuzzyEquals(Math.abs(horizontalVelocity), VELOCITYCONSTANT);
+	}
+	
+	public boolean canHaveAsDuckingState(boolean ducking){
+		return !ducking;
 	}
 	
 	/**
-	 * Check whether the given horizontal velocity is a valid horizontal velocity
-	 * for the class of plants.
+	 * Returns the vertical acceleration of this game object.
 	 * 
-	 * @param	horizontalVelocity
-	 * 			The given horizontal velocity
-	 * @return	|result == Util.fuzzyEquals(Math.abs(horizontalVelocity), VELOCITYCONSTANT)
-				|	||Util.fuzzyEquals(Math.abs(horizontalVelocity), 0);
-	 * 
+	 * @return	If this game object is jumping than the vertical acceleration is equal
+	 * 			to the gravitational acceleration constant.
+	 * 			Otherwise the vertical acceleration is equal to zero.
+	 * 			|if(this.isJumping())
+	 *			|	result == VERTICAL_ACCELERATION
+	 *			|else
+	 *			| 	result == 0
 	 */
-	@Override
-	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity) {
-		return Util.fuzzyEquals(Math.abs(horizontalVelocity), VELOCITYCONSTANT)
-				||Util.fuzzyEquals(Math.abs(horizontalVelocity), 0);
+	@Raw
+	public double getVerticalAcceleration(){
+			return 0;
 	}
+	
+	public boolean canHaveAsVerticalAcceleration(double verticalAcceleration){
+		return verticalAcceleration==0;
+	}
+	
 	
 	/**
 	 * Variable registering the velocity constant for the horizontal velocity of all plants.
@@ -60,10 +70,10 @@ public class Plant extends GameObject {
 	 * 
 	 * @param	nbImages
 	 * 			The given number of images.
-	 * @return	|result == nbImages == 2; 
+	 * @return	|result == (nbImages == 2); 
 	 */
 	@Override
-	public boolean isValidNbImages(int nbImages){
+	public boolean canHaveAsNbImages(int nbImages){
 		return nbImages == 2;
 	}
 	
@@ -86,8 +96,8 @@ public class Plant extends GameObject {
 		throws IllegalArgumentException {
 		if(!isValidDeltaTime(deltaTime))
 			throw new IllegalArgumentException();
-		if(Util.fuzzyLessThanOrEqualTo(getTimeSinceStartMove(), 0.5))
-			this.setTimeSinceStartMove(this.getTimeSinceStartMove() + deltaTime);
+		if(Util.fuzzyLessThanOrEqualTo(getTimeSinceStartAction(), 0.5))
+			this.setTimeSinceStartAction(this.getTimeSinceStartAction() + deltaTime);
 		else{
 			this.updateHorizontalVelocity();
 		}
@@ -128,7 +138,7 @@ public class Plant extends GameObject {
 	 * @effect	|setHorizontalVelocity(this.getDirection().getNumberForCalculations() * VELOCITYCONSTANT);
 	 */
 	private void updateHorizontalVelocity(){
-		this.setTimeSinceStartMove(0);
+		this.setTimeSinceStartAction(0);
 		this.setNewDirection();
 		this.setHorizontalVelocity(this.getDirection().getNumberForCalculations() * VELOCITYCONSTANT);
 	}
@@ -186,9 +196,8 @@ public class Plant extends GameObject {
 	}
 
 	@Override
-	public boolean isPossibleInitialHorizontalVelocity(
-			double initialHorizontalVelocity) {
-		return initialHorizontalVelocity==0;
+	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity) {
+		return initialHorizontalVelocity==0.5;
 	}
 
 	

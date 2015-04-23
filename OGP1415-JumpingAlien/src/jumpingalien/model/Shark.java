@@ -19,7 +19,7 @@ public class Shark extends GameObject{
 	public Shark(int horizontalLocation, int verticalLocation, double initialHorizontalVelocity,
 			double maximumHorizontalVelocity,  Sprite... images)
 	throws IllegalArgumentException{
-		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocity, maximumHorizontalVelocity, INITIAL_VERTICAL_VELOCITY, HORIZONTAL_ACCELERATION, 100, MAX_HIT_POINTS, images);
+		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocity, maximumHorizontalVelocity, INITIAL_VERTICAL_VELOCITY, HORIZONTAL_ACCELERATION, false, 100, MAX_HIT_POINTS, images);
 	}
 	
 
@@ -28,7 +28,21 @@ public class Shark extends GameObject{
 		this(horizontalLocation, verticalLocation, 0, 4, images);
 	}
 	
-	
+	/**
+	 * Check whether this game object can have the given horizontal velocity as its horizontal velocity.
+	 * @param 	horizontalVelocity
+	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the initial horizontal velocity of this game object
+	 * 			and less than or equal to the maximum horizontal velocity of this game object.
+	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
+	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
+	 *			|| Util.fuzzyEquals(horizontalVelocity, 0)
+	 */
+	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
+		horizontalVelocity = Math.abs(horizontalVelocity);
+		return Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
+				&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
+				|| Util.fuzzyEquals(horizontalVelocity, 0);
+	}
 	
 	/**
 	 * Check whether the given initial horizontal velocity is a possible initial horizontal velocity for any shark.
@@ -56,10 +70,19 @@ public class Shark extends GameObject{
 		if(checkWaterAndNoAirContact() )
 			return 0;
 		else
-			return super.getVerticalAcceleration();
+			return VERTICAL_ACCELERATION;
 	}
 	
+	public boolean canHaveAsVerticalAcceleration(double verticalAcceleration){
+		return Util.fuzzyLessThanOrEqualTo(Math.abs(verticalAcceleration),0.2) || Util.fuzzyEquals(verticalAcceleration,VERTICAL_ACCELERATION);
+	}
+	
+	
 	private static final double HORIZONTAL_ACCELERATION=1.5;
+	
+	public boolean canHaveAsDuckingState(boolean ducking){
+		return !ducking;
+	}
 	
 	/**
 	 * Check whether the given number of images is a valid number of images
@@ -70,7 +93,7 @@ public class Shark extends GameObject{
 	 * @return	|result == nbImages == 2; 
 	 */
 	@Override
-	public boolean isValidNbImages(int nbImages){
+	public boolean canHaveAsNbImages(int nbImages){
 		return nbImages == 2;
 	}
 	
@@ -93,7 +116,7 @@ public class Shark extends GameObject{
 	 */
 	public void setTimeSinceStartAirContact(double time)
 	throws IllegalArgumentException{
-		if(!isValidTimeSinceMove(time))
+		if(!isValidTimeSinceAction(time))
 			throw new IllegalArgumentException();
 		this.timeSinceAirContact = time;
 			

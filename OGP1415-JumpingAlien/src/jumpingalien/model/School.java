@@ -14,7 +14,7 @@ public class School {
 	}
 	
 	public boolean canHaveAsSlime(Slime slime){
-		return((this.getNbSlimes()<=10 && slime != null && !this.isTerminated()) || (slime.isTerminated() && slime==null));
+		return((this.getNbSlimes()<10 && slime != null && !this.isTerminated()) || (slime.isTerminated() && slime==null));
 	}
 	
 	public boolean hasProperSlimes(){
@@ -48,9 +48,9 @@ public class School {
 	
 	public void terminate(){
 		for(Slime slime: this.slimes){
-			this.removeAsSlime(slime);
-			slime.terminate();
+			slime.setSchool(null);
 		}
+		this.slimes.clear();
 		this.isTerminated=true;
 	}
 	

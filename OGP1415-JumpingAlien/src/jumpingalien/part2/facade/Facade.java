@@ -410,8 +410,8 @@ public class Facade implements IFacadePart2 {
 	 *            The alien to be set as the player's character.
 	 */
 	public void setMazub(World world, Mazub alien){
-		world.setMazub(alien);
 		alien.setWorld(world);
+		world.setMazub(alien);
 	}
 
 	/**
@@ -454,8 +454,8 @@ public class Facade implements IFacadePart2 {
 	 *            The plant that needs to be added to the world.
 	 */
 	public void addPlant(World world, Plant plant){
-		world.addAsGameObject(plant);
 		plant.setWorld(world);
+		world.addAsGameObject(plant);
 	}
 
 	/**
@@ -524,8 +524,8 @@ public class Facade implements IFacadePart2 {
 	 *            The shark that needs to be added to the world.
 	 */
 	public void addShark(World world, Shark shark){
-		world.addAsGameObject(shark);
 		shark.setWorld(world);
+		world.addAsGameObject(shark);
 	}
 
 	/**
@@ -605,8 +605,8 @@ public class Facade implements IFacadePart2 {
 	 *            The slime that needs to be added to the world.
 	 */
 	public void addSlime(World world, Slime slime){
-		world.addAsGameObject(slime);
 		slime.setWorld(world);
+		world.addAsGameObject(slime);
 	}
 
 	/**

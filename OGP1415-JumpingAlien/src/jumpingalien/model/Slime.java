@@ -43,54 +43,36 @@ public class Slime extends GameObject {
 	@Raw
 	public Slime(int horizontalLocation, int verticalLocation, Sprite[] images, School school)
 		throws IllegalArgumentException, IllegalLocationException {
-		super(horizontalLocation, verticalLocation, 0, 0, 0, MAXIMUM_HORIZONTAL_VELOCITY, 0, HORIZONTAL_ACCELERATION, 100, 100, images);
+		super(horizontalLocation, verticalLocation, 0, 0, 0, MAXIMUM_HORIZONTAL_VELOCITY, 0, HORIZONTAL_ACCELERATION, false, 100, 100, images);
 		school.addAsSlime(this);
 	}
 	
 	
 	/**
+	 * Check whether this game object can have the given horizontal velocity as its horizontal velocity.
+	 * @param 	horizontalVelocity
+	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the initial horizontal velocity of this game object
+	 * 			and less than or equal to the maximum horizontal velocity of this game object.
+	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
+	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
+	 *			|| Util.fuzzyEquals(horizontalVelocity, 0)
+	 */
+	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
+		horizontalVelocity = Math.abs(horizontalVelocity);
+		return Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
+				&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
+				|| Util.fuzzyEquals(horizontalVelocity, 0);
+	}
+	
+	/**
 	 * Constant registering the maximum horizontal velocity when not ducking of this Mazub.
 	 */
 	private static final double MAXIMUM_HORIZONTAL_VELOCITY = 2.5;
-	
-	
+
 	/**
-	 * Returns the horizontal acceleration of this Mazub.
+	 * Returns the vertical acceleration of this game object.
 	 * 
-	 * @return	If this Mazub is not moving horizontally or the absolute value of this Mazub's horizontal 
-	 * 			velocity is greater than its maximum horizontal velocity, the horizontal acceleration of this Mazub is equal to zero.
-	 * 			Otherwise the horizontal acceleration of this Mazub is equal to horizontalAcceleration.
-	 * 			| if (!this.isMovingHorizontally() || Util.fuzzyEquals(Math.abs(this.getHorizontalVelocity()), this.getMaximumHorizontalVelocity()))
-	 * 			| 	result==0
-	 * 			| else
-	 * 			| 	result==horizontalAcceleration
-	 */
-	@Raw
-	@Override
-	public double getHorizontalAcceleration(){
-		if (Util.fuzzyEquals(Math.abs(this.getHorizontalVelocity()), getMaximumHorizontalVelocity())){
-			return 0;
-		}
-		else{
-			return super.getHorizontalAcceleration();
-		}
-	}
-	
-	private void calculateNewJumpingState() {
-		this.isJumping=true;
-		int coincidingTiles[][]= this.getWorld().getTilePositionsIn(this.getEffectiveHorizontalLocation()+1, this.getEffectiveVerticalLocation(), 
-				this.getEffectiveHorizontalLocation()+this.getWidth()-1, this.getEffectiveVerticalLocation()+this.getHeight());
-		for(int tiles=0; tiles<Math.sqrt(coincidingTiles.length); tiles++){
-			if(this.getWorld().getTileValueAtTilePosition(coincidingTiles[tiles][0],coincidingTiles[tiles][1])==1){
-				this.isJumping=false;
-			}
-		}
-	}
-	
-	/**
-	 * Returns the vertical acceleration of this Mazub.
-	 * 
-	 * @return	If this Mazub is jumping than the vertical acceleration is equal
+	 * @return	If this game object is jumping than the vertical acceleration is equal
 	 * 			to the gravitational acceleration constant.
 	 * 			Otherwise the vertical acceleration is equal to zero.
 	 * 			|if(this.isJumping())
@@ -99,27 +81,22 @@ public class Slime extends GameObject {
 	 *			| 	result == 0
 	 */
 	@Raw
-	@Override
 	public double getVerticalAcceleration(){
 		if(this.isJumping())
-			return super.getVerticalAcceleration();
+			return VERTICAL_ACCELERATION;
 		else
 			return 0;
 	}
 	
-	/**
-	 * Check whether this Mazub is performing a jump.
-	 * 
-	 * @return	True if and only if either the vertical location or the vertical velocity of this mazub is greater than zero.
-	 * 			|(0 < getVerticalVelocity()) || (0 < getVerticalLocation())
-	 */
-	public boolean isJumping(){
-		return this.isJumping;
+	public boolean canHaveAsDuckingState(boolean ducking){
+		return !ducking;
 	}
 	
-	private boolean isJumping=false;
+	public boolean canHaveAsVerticalAcceleration(double verticalAcceleration){
+		return verticalAcceleration==0 || Util.fuzzyEquals(verticalAcceleration, VERTICAL_ACCELERATION);
+	}
 	
-
+	
 	/**
 	 *  Constant registering the horizontal acceleration of all Mazubs.
 	 */
@@ -139,19 +116,9 @@ public class Slime extends GameObject {
 	public double getCurrentActionDuration(){
 		return currentActionDuration;
 	}
-	
-	public double getTimeSinceStartAction() {
-		return this.timeSinceStartAction;
-	}
-
-
-	public void setTimeSinceStartAction(double timeSinceStartAction) {
-		this.timeSinceStartAction = timeSinceStartAction;
-	}
 
 	private double currentActionDuration=0;
-	
-	private double timeSinceStartAction = 0;
+
 	
 	private static final double MINIMUM_ACTION_DURATION=2;
 	
@@ -293,27 +260,21 @@ public class Slime extends GameObject {
 	 * 
 	 * @param 	nbImages
 	 * 			The number of images to be checked.
-	 * @return	The given number of images must be an even number and must be greater than or equal to 10;
-	 * 			| result == (nbImages >= 10 && nbImages%2==0)
+	 * @return	The given number of images must be equal to 2.
+	 * 			| result == (nbImages==2)
 	 * 
 	 */
 	@Override
-	public boolean isValidNbImages(int nbImages){
+	public boolean canHaveAsNbImages(int nbImages){
 		return nbImages==2;
 	}	
 	
-	public boolean isTerminated() {
-		return this.isTerminated;
-	}
 
 	public void terminate() {
-		this.getWorld().removeAsGameObject(this);
-		this.setWorld(null);
+		super.terminate();
 		this.getSchool().removeAsSlime(this);
-		this.isTerminated=true;
+		this.setSchool(null);
 	}
-	
-	private boolean isTerminated=false;
 
 	public boolean isValidVerticalVelocity(double verticalVelocity) {
 		return true;
@@ -330,7 +291,11 @@ public class Slime extends GameObject {
 	}
 	
 	public boolean canHaveAsSchool(School school){
-		return (school==null || school.canHaveAsSlime(this));
+		return (school!=null && school.canHaveAsSlime(this));
+	}
+	
+	public boolean hasProperSchool(){
+		return this.canHaveAsSchool(this.getSchool()) && this.getSchool().hasAsSlime(this);
 	}
 	
 	private School school;

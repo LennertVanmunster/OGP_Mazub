@@ -64,9 +64,6 @@ public class Mazub extends GameObject {
 	 * 			initial horizontal velocity, initial vertical velocity, maximum horizontal velocity, hitpoints, images, the constant initial vertical velocity, the constant horizontal acceleration,
 	 * 			and the constant maximum number of hitpoints.
 	 * 			| super(horizontalLocation, verticalLocation, horizontalVelocity, verticalVelocity, initialHorizontalVelocity, maximumHorizontalVelocity, INITIAL_VERTICAL_VELOCITY, HORIZONTAL_ACCELERATION, hitPoints, MAX_HIT_POINTS, images)
-	 * @post	The ducking state of this new Mazub is equal to the 
-	 * 			given ducking state.
-	 * 			|new.isDucking == ducking
 	 * @effect	If the given ducking state of the new Mazub is true the Mazub
 	 * 			starts ducking.
 	 * 			|if(isDucking())
@@ -94,17 +91,12 @@ public class Mazub extends GameObject {
 	 */
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
-				double verticalVelocity, double initialHorizontalVelocity,
-				double maximumHorizontalVelocity, boolean ducking, int hitPoints, Sprite... images)
+				double verticalVelocity, double initialHorizontalVelocityNotDucking,
+				double maximumHorizontalVelocityNotDucking, boolean ducking, int hitPoints, Sprite... images)
 		throws IllegalArgumentException, IllegalLocationException {
-		super(horizontalLocation, verticalLocation, horizontalVelocity, verticalVelocity, initialHorizontalVelocity, maximumHorizontalVelocity, INITIAL_VERTICAL_VELOCITY, HORIZONTAL_ACCELERATION, hitPoints, MAX_HIT_POINTS, images);
-		setDucking(ducking);
+		super(horizontalLocation, verticalLocation, horizontalVelocity, verticalVelocity, initialHorizontalVelocityNotDucking, maximumHorizontalVelocityNotDucking, INITIAL_VERTICAL_VELOCITY, HORIZONTAL_ACCELERATION, ducking, hitPoints, MAX_HIT_POINTS, images);
 		if(isDucking())
 			startDuck();
-		if (Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity, 0))
-			setDirection(Direction.RIGHT);
-		else
-			setDirection(Direction.LEFT);
 	}
 	
 	/**
@@ -131,56 +123,21 @@ public class Mazub extends GameObject {
 		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, 100, images);
 	}
 	
-	
 	/**
-	 * Return the initial horizontal velocity of this Mazub.
-	 * 
-	 * @return	If the ducking state of this Mazub is true, the initial horizontal velocity of this Mazub is equal to 1.
-	 * 			Otherwise the initial horizontal velocity of this Mazub is equal to its initial horizontal velocity defined in its superclass.
-	 * 			|if (this.isDucking())
-	 * 			|	result==1
-	 * 			|else
-	 * 			| 	result==super.getInitialHorizontalVelocity()
+	 * Check whether this game object can have the given horizontal velocity as its horizontal velocity.
+	 * @param 	horizontalVelocity
+	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the initial horizontal velocity of this game object
+	 * 			and less than or equal to the maximum horizontal velocity of this game object.
+	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
+	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
+	 *			|| Util.fuzzyEquals(horizontalVelocity, 0)
 	 */
-	@Raw
-	public double getInitialHorizontalVelocity(){
-		if (this.isDucking())
-			return 1;
-		else 
-			return super.getInitialHorizontalVelocity();
+	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
+		horizontalVelocity = Math.abs(horizontalVelocity);
+		return Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
+				&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
+				|| Util.fuzzyEquals(horizontalVelocity, 0);
 	}
-	
-	
-	/**
-	 * Return the maximum horizontal velocity of this Mazub.
-	 * 
-	 * @return	If the ducking state of this Mazub is true, the maximum horizontal velocity of this Mazub is equal to 1.
-	 * 			Otherwise the maximum horizontal velocity of this Mazub is equal to its maximum horizontal velocity defined in its superclass.
-	 * 			|if (this.isDucking())
-	 * 			|	result==1
-	 * 			|else
-	 * 			| 	result==super.getMaximumHorizontalVelocity()
-	 */
-	@Raw
-	public double getMaximumHorizontalVelocity(){
-		if (this.isDucking())
-			return 1;
-		else 
-			return super.getMaximumHorizontalVelocity();
-	}
-
-	/**
-	 * Check whether this Mazub is currently moving horizontally.
-	 * 
-	 * @return	True if the current horizontal velocity of this Mazub is not equal to zero.
-	 * 			| result == this.getHorizontalVelocity()!=0
-	 */
-	@Raw
-	public boolean isMovingHorizontally(){
-		return this.isMovingHorizontally;
-	}
-	
-	private boolean isMovingHorizontally=false;
 	
 	/**
 	 * Check whether the given initial horizontal velocity is a possible initial horizontal velocity for any Mazub.
@@ -199,37 +156,12 @@ public class Mazub extends GameObject {
 	 */
 	private static final double INITIAL_VERTICAL_VELOCITY = 8;
 	
-
-	
 	
 	
 	/**
-	 * Returns the horizontal acceleration of this Mazub.
+	 * Returns the vertical acceleration of this game object.
 	 * 
-	 * @return	If this Mazub is not moving horizontally or the absolute value of this Mazub's horizontal 
-	 * 			velocity is greater than its maximum horizontal velocity, the horizontal acceleration of this Mazub is equal to zero.
-	 * 			Otherwise the horizontal acceleration of this Mazub is equal to horizontalAcceleration.
-	 * 			| if (!this.isMovingHorizontally() || Util.fuzzyEquals(Math.abs(this.getHorizontalVelocity()), this.getMaximumHorizontalVelocity()))
-	 * 			| 	result==0
-	 * 			| else
-	 * 			| 	result==horizontalAcceleration
-	 */
-	@Raw
-	@Override
-	public double getHorizontalAcceleration(){
-		if (!this.isMovingHorizontally() || 
-				Util.fuzzyEquals(Math.abs(this.getHorizontalVelocity()), this.getMaximumHorizontalVelocity())){
-			return 0;
-		}
-		else{
-			return super.getHorizontalAcceleration();
-		}
-	}
-	
-	/**
-	 * Returns the vertical acceleration of this Mazub.
-	 * 
-	 * @return	If this Mazub is jumping than the vertical acceleration is equal
+	 * @return	If this game object is jumping than the vertical acceleration is equal
 	 * 			to the gravitational acceleration constant.
 	 * 			Otherwise the vertical acceleration is equal to zero.
 	 * 			|if(this.isJumping())
@@ -238,63 +170,20 @@ public class Mazub extends GameObject {
 	 *			| 	result == 0
 	 */
 	@Raw
-	@Override
 	public double getVerticalAcceleration(){
 		if(this.isJumping())
-			return super.getVerticalAcceleration();
+			return VERTICAL_ACCELERATION;
 		else
 			return 0;
 	}
 	
+	public boolean canHaveAsVerticalAcceleration(double verticalAcceleration){
+		return verticalAcceleration==0 || Util.fuzzyEquals(verticalAcceleration, VERTICAL_ACCELERATION);
+	}
+	
 	private static final double HORIZONTAL_ACCELERATION=0.9;
 	
-	/**
-	 * Check whether the given Mazub is ducking or not.
-	 * 
-	 * @return	True if and only if the Mazub is ducking.
-	 * 			| result == this.ducking
-	 */
-	@Basic 
-	@Raw
-	public boolean isDucking() {
-		return this.ducking;
-	}
 	
-	
-	/**
-	 * Set the ducking state of this Mazub to the given ducking state.
-	 * 
-	 * @param 	ducking
-	 * 			The new ducking state for this Mazub.
-	 * @post	The new ducking state of this Mazub is equal to 
-	 * 			the state expressed by the variable ducking.
-	 * 			| new.isDucking() = ducking
-	 */
-	@Raw
-	public void setDucking(boolean ducking) throws IllegalStateException{
-		if(this.isDucking() && !this.canStandUp() && ducking==false){
-			throw new IllegalStateException();
-		}
-		this.ducking = ducking;
-	}
-	
-	
-	/**
-	 * Variable registering the ducking state of this Mazub.
-	 */
-	private boolean ducking = false;
-	
-	/**
-	 * Check whether this Mazub is performing a jump.
-	 * 
-	 * @return	True if and only if either the vertical location or the vertical velocity of this mazub is greater than zero.
-	 * 			|(0 < getVerticalVelocity()) || (0 < getVerticalLocation())
-	 */
-	public boolean isJumping(){
-		return this.isJumping;
-	}
-	
-	private boolean isJumping=false;
 	
 	
 	/**
@@ -315,7 +204,7 @@ public class Mazub extends GameObject {
 	@Raw
 	public void startMove(Direction direction){
 		if (this.isMovingHorizontally()==false){
-			this.isMovingHorizontally=true;
+			this.setMovingHorizontally(true);
 			this.setDirection(direction);
 			this.setHorizontalVelocity((direction.getNumberForCalculations())*this.getInitialHorizontalVelocity());
 			this.setTimeSinceStartMove(0);
@@ -336,7 +225,7 @@ public class Mazub extends GameObject {
 	 */
 	@Raw
 	public void endMove(){
-		this.isMovingHorizontally=false;
+		this.setMovingHorizontally(false);
 		this.setHorizontalVelocity(0);
 		this.setTimeSinceEndMove(0);
 		this.setTimeSinceStartMove(0);
@@ -355,7 +244,7 @@ public class Mazub extends GameObject {
 	@Raw
 	public void startJump(){
 		if (!isJumping()){
-			this.isJumping=true;
+			this.setJumping(true);
 			this.setVerticalVelocity(getInitialVerticalVelocity());
 		}
 	}
@@ -376,6 +265,10 @@ public class Mazub extends GameObject {
 		if (this.getVerticalVelocity()>0){
 			this.setVerticalVelocity(0);
 		}
+	}
+	
+	public boolean canHaveAsDuckingState(boolean ducking){
+		return true;
 	}
 	
 	/**
@@ -405,16 +298,76 @@ public class Mazub extends GameObject {
 	
 	private boolean canEndDuck=false;
 	
-	public boolean canStandUp(){
-		if(!this.isDucking()){
-			return true;
-		}
-		else{
-			return !this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
-					this.getEffectiveVerticalLocation()+1, this.getImageAt(0).getWidth()-1, 
-					this.getImageAt(0).getHeight())[1];
-		}
+	/**
+	 * Return the time since this game object has last ended moving.
+	 * 
+	 * @note	We consider this method a part of advanceTime() and implement it defensively.
+	 */
+	@Basic
+	@Raw
+	public double getTimeSinceEndMove(){
+		return this.timeSinceEndMove;
 	}
+	
+	
+	
+	/**
+	 * Set the time since game object has last ended moving.
+	 * 
+	 * @param 	timeSinceEndMove
+	 * 			The time since this game object has last ended moving to be set.
+	 * @post	The new time since this game object last ended moving is equal to the given time since game object last ended moving.
+	 * 			|new.getTimeSinceEndMove()==timeSinceEndMove
+	 * @throws	IllegalArgumentException
+	 * 			The given time since game object last ended moving is not valid.
+	 * 			|!isValidTimeSinceMove(timeSinceEndMove)
+	 * @note	We consider this method a part of advanceTime() and implement it defensively.
+	 */
+	@Raw
+	protected void setTimeSinceEndMove(double timeSinceEndMove) throws IllegalArgumentException{
+		if(!isValidTimeSinceAction(timeSinceEndMove))
+			throw new IllegalArgumentException();
+		this.timeSinceEndMove=timeSinceEndMove;
+	}
+	
+	/**
+	 * Return the time since game object has last started moving.
+	 * @note	We consider this method a part of advanceTime() and implement it defensively.
+	 */
+	@Basic
+	@Raw
+	public double getTimeSinceStartMove(){
+		return this.timeSinceStartMove;
+	}
+	
+	/**
+	 * Set the time since game object has last started moving.
+	 * @param 	timeSinceStartMove
+	 * 			The time since this game object has last started moving to be set.
+	 * @post	The new time since this game object last started moving is equal to the given time since game object last started moving.
+	 * 			|new.getTimeSinceStartMove()==timeSinceStartMove
+	 * @throws	IllegalArgumentException
+	 * 			The given time since game object last started moving is not valid.
+	 * 			|!isValidTimeSinceMove(timeSinceStartMove)
+	 * @note	We consider this method a part of advanceTime() and implement it defensively.
+	 */
+	@Raw
+	protected void setTimeSinceStartMove(double timeSinceStartMove) throws IllegalArgumentException{
+		if(!isValidTimeSinceAction(timeSinceStartMove))
+			throw new IllegalArgumentException();
+		this.timeSinceStartMove=timeSinceStartMove;
+	}
+	
+	/**
+	 * Variable registering the time since this game object last started moving.
+	 */
+	private double timeSinceStartMove=0;
+	
+	/**
+	 * Variable registering the time since this game object has last ended moving.
+	 */
+	private double timeSinceEndMove=2;
+	
 	
 	/**
 	 * Update the location and velocity of this Mazub.
@@ -503,17 +456,6 @@ public class Mazub extends GameObject {
 		checkWaterContact(deltaTime);
 		checkMagmaContact(deltaTime);	
 		this.calculateNewJumpingState();
-	}
-	
-	private void calculateNewJumpingState() {
-		this.isJumping=true;
-		int coincidingTiles[][]= this.getWorld().getTilePositionsIn(this.getEffectiveHorizontalLocation()+1, this.getEffectiveVerticalLocation(), 
-				this.getEffectiveHorizontalLocation()+this.getWidth()-1, this.getEffectiveVerticalLocation()+this.getHeight());
-		for(int tiles=0; tiles<Math.sqrt(coincidingTiles.length); tiles++){
-			if(this.getWorld().getTileValueAtTilePosition(coincidingTiles[tiles][0],coincidingTiles[tiles][1])==1){
-				this.isJumping=false;
-			}
-		}
 	}
 
 	
@@ -631,7 +573,7 @@ public class Mazub extends GameObject {
 	 * 
 	 */
 	@Override
-	public boolean isValidNbImages(int nbImages){
+	public boolean canHaveAsNbImages(int nbImages){
 		return nbImages>=10 && nbImages%2==0;
 	}
 	
