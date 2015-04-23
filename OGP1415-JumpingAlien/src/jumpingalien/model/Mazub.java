@@ -493,6 +493,7 @@ public class Mazub extends GameObject {
 			int [] overlap = this.checkLeftRightTopBottomSideOverlap();
 			if(overlap[0]==1){
 				collisionReaction(overlap[1],overlap[2]);
+				
 					
 			}		
 			if(this.canEndDuck){
@@ -526,7 +527,6 @@ public class Mazub extends GameObject {
 			}
 		}
 		else if(gameObject instanceof Shark){
-			gameObject.removeHitPoints(50);
 			if(index2 == 0){
 				this.removeHitPoints(50);
 			}

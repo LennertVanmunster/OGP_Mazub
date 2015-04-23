@@ -1,5 +1,7 @@
 package jumpingalien.model;
 
+import java.util.Random;
+
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
@@ -46,12 +48,12 @@ public class Shark extends GameObject{
 	private static final double INITIAL_VERTICAL_VELOCITY = 2;
 	
 	/**
-	 * Returns the vertical acceleration of this game object.
+	 * Returns the vertical acceleration of this shark.
 	 * 
 	 */
 	@Raw
 	public double getVerticalAcceleration(){
-		if(checkWaterAndNoAirContact())
+		if(checkWaterAndNoAirContact() )
 			return 0;
 		else
 			return super.getVerticalAcceleration();
@@ -71,6 +73,76 @@ public class Shark extends GameObject{
 	public boolean isValidNbImages(int nbImages){
 		return nbImages == 2;
 	}
+	
+	/**
+	 * Return the time since the start of the air contact of this shark.
+	 * The time is reset when the shark loses hit  points or no longer makes contact.
+	 */
+	public double getTimeSinceStartAirContact(){
+		return this.timeSinceAirContact;
+	}
+	
+	/**
+	 * Set the time since the start of the air contact of this game object.
+	 * 
+	 * @param	time
+	 * 			The given time.
+	 * @throws	IllegalArgumentException
+	 * 			|!isValidTimeSinceMove(time)
+	 * 			
+	 */
+	public void setTimeSinceStartAirContact(double time)
+	throws IllegalArgumentException{
+		if(!isValidTimeSinceMove(time))
+			throw new IllegalArgumentException();
+		this.timeSinceAirContact = time;
+			
+	}
+	
+	/**
+	 * Variable registering the time since this game object is making contact with water.
+	 */
+	private double timeSinceAirContact = 0;
+	
+	private void startNewAction(){
+		this.lastJump += 1;
+		Random r = new Random();
+		this.setHorizontalVelocity(0);
+		this.setCurrentActionDuration(MINIMUM_ACTION_DURATION+(MAXIMUM_ACTION_DURATION-MINIMUM_ACTION_DURATION)*r.nextDouble());
+		this.setDirection(r.nextBoolean() ? Direction.LEFT : Direction.RIGHT);
+		this.setTimeSinceStartAction(0);
+		if(lastJump >= 4){
+				this.setVerticalVelocity(INITIAL_VERTICAL_VELOCITY);
+				this.lastJump = 0;
+		}
+	}
+	
+	private void setCurrentActionDuration(double duration) {
+		this.currentActionDuration=duration;
+	}
+	
+	public double getCurrentActionDuration(){
+		return currentActionDuration;
+	}
+	
+	public double getTimeSinceStartAction() {
+		return this.timeSinceStartAction;
+	}
+
+
+	public void setTimeSinceStartAction(double timeSinceStartAction) {
+		this.timeSinceStartAction = timeSinceStartAction;
+	}
+
+	private double currentActionDuration=0;
+	
+	private double timeSinceStartAction = 0;
+	
+	private static final double MINIMUM_ACTION_DURATION=1;
+	
+	private static final double MAXIMUM_ACTION_DURATION=4;
+	
+	private int lastJump = 2; 
 	
 	/**
 	 * Update the location and velocity of this shark.
@@ -104,6 +176,9 @@ public class Shark extends GameObject{
 		double newVerticalVelocity=this.getVerticalVelocity();
 		double oldHorizontalLocation=this.getHorizontalLocation();
 		double oldVerticalLocation=this.getVerticalLocation();
+		if(this.getTimeSinceStartAction()>=this.getCurrentActionDuration()){
+			this.startNewAction();
+		}
 		while (sumDeltaTimeForPixel<deltaTime){
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
 			newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTimeForPixel;
@@ -116,9 +191,6 @@ public class Shark extends GameObject{
 			try{
 				this.setHorizontalVelocity(newHorizontalVelocity);
 			} catch(IllegalArgumentException exc){
-				if (Math.abs(newHorizontalVelocity)<Math.abs(this.getInitialHorizontalVelocity()))
-					this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getInitialHorizontalVelocity());
-				else
 					this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getMaximumHorizontalVelocity());
 			}
 			try{
@@ -132,6 +204,12 @@ public class Shark extends GameObject{
 			} catch(IllegalLocationException exc){
 				this.setHorizontalLocation((int) oldHorizontalLocation);
 				this.setHorizontalVelocity(0);
+				if (this.getDirection()==Direction.LEFT){
+					this.setDirection(Direction.RIGHT);
+				}
+				else{
+					this.setDirection(Direction.LEFT);
+				}
 			}
 			try{
 				this.setVerticalLocation(newVerticalLocation);
@@ -142,18 +220,36 @@ public class Shark extends GameObject{
 			}
 			int [] overlap = this.checkLeftRightTopBottomSideOverlap();
 			if(overlap[0]==1){
-				collisionReaction(overlap[1]);
-					
-			}		
+				collisionReaction(overlap[1],overlap[2]);
 			}
-		checkMagmaContact(deltaTime);	
-//		this.calculateNewJumpingState();
+		}
+		this.setTimeSinceStartAction(this.getTimeSinceStartAction()+deltaTime);
+		checkAirContact(deltaTime);
+		checkMagmaContact(deltaTime);
 		if(this.getHitPoints() <= 0)
 			this.unsetWorld();
 	}
 	
+	protected void collisionReaction(int index1, int index2) {
+//		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
+//		if(gameObject instanceof Shark){
+//			if (this.getDirection()==Direction.LEFT){
+//				this.setDirection(Direction.RIGHT);
+//			}
+//			else{
+//				this.setDirection(Direction.LEFT);
+//			}
+//			if (gameObject.getDirection()==Direction.LEFT){
+//				gameObject.setDirection(Direction.RIGHT);
+//			}
+//			else{
+//				gameObject.setDirection(Direction.LEFT);
+//			}
+//		}	
+	}
+		
 	/**
-	 * Check whether the game object makes contact with water and no contact with air
+	 * Check whether the shark makes contact with water and no contact with air
 	 * 
 	 * @return 	|if(contactTiles[2] == true && contactTiles[0] == false)
 	 * 			|then result == true
@@ -169,6 +265,30 @@ public class Shark extends GameObject{
 			return false;
 	}
 
+	/**
+	 * Check whether the shark makes contact with air and take the corresponding actions.
+	 * 
+	 * @param 	deltaTime
+	 * 			The given time period.
+	 * @post	Every 0.2 seconds while being contacted with air, six hitpoints are removed
+	 * 			from Mazub. The first 0.2 seconds no hitpoints are removed.
+	 * 			|
+	 */
+	public void checkAirContact(double deltaTime){
+		boolean [] contactTiles = (this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
+				this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)).clone();
+		if(contactTiles[0] == true){
+			double time = getTimeSinceStartAirContact();
+			this.setTimeSinceStartAirContact(time + deltaTime);
+			if(Util.fuzzyGreaterThanOrEqualTo(this.getTimeSinceStartAirContact(), 0.2)){
+				this.removeHitPoints(6);
+				this.setTimeSinceStartAirContact(0);
+			}
+		}
+		else
+			this.setTimeSinceStartAirContact(0);
+	}
+	
 	/**
 	 *Check whether the shark makes contact with magma and take the corresponding actions. 
 	 * @param 	deltaTime

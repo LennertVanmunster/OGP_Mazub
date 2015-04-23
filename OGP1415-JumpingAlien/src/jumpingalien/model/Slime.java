@@ -336,7 +336,7 @@ public class Slime extends GameObject {
 	private School school;
 
 	@Override
-	protected void collisionReaction(int index) {
+	protected void collisionReaction(int index1, int index2) {
 		// TODO Auto-generated method stub
 		
 	}
