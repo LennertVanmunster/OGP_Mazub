@@ -1225,18 +1225,21 @@ public abstract class GameObject {
 	 * Set the new jumping state of this game object depending on its location.
 	 * @effect	If the game object's bottom perimeter overlaps with a terrain tile, the jumping state is set to false.
 	 * 			Otherwise the jumping state is set to true.
-	 * 			If
+	 * 			| if(!this.canHaveAsLocation(this.getHorizontalLocation(), this.getVerticalLocation()-1))
+	 *			| 	this.setJumping(false)
+	 *			| else
+	 *			| 	this.setJumping(true)
 	 */
 	protected void calculateNewJumpingState() {
 		this.setJumping(true);
 		if(!this.canHaveAsLocation(this.getHorizontalLocation(), this.getVerticalLocation()-1)){
-			setJumping(false);
+			this.setJumping(false);
 		}
 	}
 	
 	/**
 	 * Return the time since the start of the water contact of this game object.
-	 * The time is reset when the game object loses hit  points or no longer makes contact.
+	 * The time is reset when the game object loses hit points or no longer makes contact.
 	 */
 	public double getTimeSinceStartWaterContact(){
 		return this.timeSinceWaterContact;
@@ -1283,21 +1286,25 @@ public abstract class GameObject {
 				this.timeSinceMagmaContact = time;		
 	}
 	
-	
+	/**
+	 * Return the time since the start of the last action of this game object.
+	 */
 	public double getTimeSinceStartAction() {
 		return this.timeSinceStartAction;
 	}
 
-
+	/**
+	 * Set the time since the  start of the last action of this game object.
+	 * @param 	timeSinceStartAction
+	 * 			The time since the start of the last action to be set.
+	 * @post	| new.timeSinceStartAction == timeSinceStartAction
+	 */
 	public void setTimeSinceStartAction(double timeSinceStartAction) {
 		this.timeSinceStartAction = timeSinceStartAction;
 	}
 	
-	
-	
-	
 	/**
-	 * Check whether the given time is a valid time period since game object's last action (either start move or end move).
+	 * Check whether the given time is a valid time period since game object's last action.
 	 * @param 	time
 	 * 			The time period to be checked.
 	 * @return	True if the given time period is greater than or equal to zero.
@@ -1317,6 +1324,9 @@ public abstract class GameObject {
 	 */
 	private double timeSinceMagmaContact = 0;
 	
+	/**
+	 * The time since the start of the last action of this game object, the type of action is dependent on the type of the game object.
+	 */
 	private double timeSinceStartAction = 0;
 	
 	/**
@@ -1470,13 +1480,32 @@ public abstract class GameObject {
 		return this.maxHitPoints;
 	}
 	
-	
+	/**
+	 * Remove the given number of hit points from the current number of hit points of this game object.
+	 * @param 	hitPoints
+	 * 			The amount of hit points to be removed.
+	 * @pre		The given number of hit points must be greater than zero.
+	 * 			| hitPoints > 0
+	 * @effect	| this.setHitPoints(this.getHitPoints() - hitPoints)
+	 */
 	public void removeHitPoints(int hitPoints){
+		assert (hitPoints>0):
+			"The given number of hit points to be removed must be positive!";
 		int oldHitPoints = getHitPoints();
 		this.setHitPoints(oldHitPoints - hitPoints);
 	}
 	
+	/**
+	 * Add the given number of hit points to the current number of hit points of this game object.
+	 * @param 	hitPoints
+	 * 			The amount of hit points to be added.
+	 * @pre		The given number of hit points must be greater than zero.
+	 * 			| hitPoints > 0
+	 * @effect	| this.setHitPoints(this.getHitPoints() + hitPoints)
+	 */
 	public void addHitPoints(int hitPoints){
+		assert (hitPoints>0):
+			"The given number of hit points to be removed must be positive!";
 		int oldHitPoints = getHitPoints();
 		setHitPoints(oldHitPoints + hitPoints);
 	}
@@ -1523,6 +1552,9 @@ public abstract class GameObject {
 	 */
 	protected final int maxHitPoints;
 	
+	/**
+	 * Return the world that is currently attached to this game object.
+	 */
 	public World getWorld(){
 		return this.world;
 	}
@@ -1531,8 +1563,9 @@ public abstract class GameObject {
 	 * Set a world for this game object.
 	 * @param 	world
 	 * 			The world for this game object.
+	 * @post	| new.getWorld()==world
 	 * @throws 	IllegalArgumentException
-	 * 			|
+	 * 			| !canHaveAsWorld(world)
 	 */
 	public void setWorld(World world) throws IllegalArgumentException{
 		if (this.canHaveAsWorld(world)){
@@ -1543,27 +1576,57 @@ public abstract class GameObject {
 		}
 	}
 	
+	/**
+	 * Variable registering the world that is currently attached to this game object.
+	 */
 	protected World world;
 	
+	/**
+	 * Break the link between this game object and the world that is attached to it.
+	 * @post	|if(this.getWorld()!=null)
+	 * 			|	new.getWorld()==null
+	 * 			|	this.getWorld().hasAsGameObject(this)==false
+	 */
 	protected void unsetWorld(){
 		World world = this.getWorld();
-		if(world != null)
-			setWorld(null);
+		if(this.getWorld() != null)
+			this.setWorld(null);
 			world.removeGameObject(this);
 	}
 	
+	/**
+	 * Check whether this game object can have the given world as its world
+	 * @param 	world
+	 * @return	result == (world==null || world.canHaveAsGameObject(this))
+	 */
 	protected boolean canHaveAsWorld(World world){
 		return (world==null || world.canHaveAsGameObject(this));
 	}
 	
+	/**
+	 * Check whether this game object has a proper world.
+	 * @return 	This game object can have its world as its world and its world has this game object as one of its game objects.
+	 * 			| this.canHaveAsWorld(this.getWorld()) && this.getWorld().hasAsGameObject(this)
+	 */
 	protected boolean hasProperWorld(){
 		return this.canHaveAsWorld(this.getWorld()) && this.getWorld().hasAsGameObject(this);
 	}
 	
+	/**
+	 * Check whether this game object is terminated.
+	 */
 	public boolean isTerminated(){
 		return isTerminated;
 	}
 	
+	/**
+	 * Terminate this game object.
+	 * @post	If this game object is not already terminated its terminated state is set to true, its world is set to null and it is removed as a game object from its world.
+	 * 			|if (!this.isTerminated()){
+	 *			|	this.getWorld().removeAsGameObject(this);
+	 *			|	this.setWorld(null);
+	 *			|	this.isTerminated=true;
+	 */
 	public void terminate(){
 		if (!this.isTerminated()){
 			this.getWorld().removeAsGameObject(this);
@@ -1572,5 +1635,8 @@ public abstract class GameObject {
 		}
 	}
 	
+	/**
+	 * Variable registering the terminated state of this game object.
+	 */
 	private boolean isTerminated=false;
 }

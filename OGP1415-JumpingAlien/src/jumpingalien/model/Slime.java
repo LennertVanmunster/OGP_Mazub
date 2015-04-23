@@ -268,7 +268,7 @@ public class Slime extends GameObject {
 	}
 	
 	/**
-	 * Check whether the given number of images in the given image array is valid for all Mazubs.
+	 * Check whether the given number of images in the given image array is valid for all slimes.
 	 * 
 	 * @param 	nbImages
 	 * 			The number of images to be checked.
