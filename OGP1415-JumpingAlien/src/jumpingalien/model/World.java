@@ -9,16 +9,14 @@ import java.util.*;
 /**
  * A class which represent a game world.
  * 
- * @invar	The width (X) of the game world should be a integer multiple
- * 			of the length of a tile.
+ * @invar	Each game world can have its height as is height.
  * 			|canHaveAsWorldHeight(getWorldHeight())
- * @invar	The height (Y) of the game world should be a integer multiple
- * 			of the length of a tile.
- * 			|canHaveAsWorldHeight(getWorldHeight())
+ * @invar	Each game world can have its width as its width.
+ * 			|canHaveAsWorldWidth(getWorldWidth())
  * @invar	A game world must contain at least one player character Mazub and
  * 			no more than 100 other game objects.
  * 			|isValidAmountOfGameObjects(getAmountOfMazub(),getAmountOfOtherGameObjects())
- * @invar	The visible window may not be bigger than the game world.
+ * @invar	The visible window may not be bigger than the game world for each game world.
  * 			|canHaveAsVisibleWindow()
  * @invar	If possible the window shall always be positioned so that there are 
  * 			at least 200 pixels between all pixels occupied by Mazub.

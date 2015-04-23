@@ -5,7 +5,7 @@ import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * A class of Plants.
+ * A class of Plants. A plant is a non player object which is friendly to Mazub and restores Mazub's hit points upon contact.
  * 
  * @version	1.0
  * @authors Pieter Van Damme and Lennert Vanmunster
@@ -14,6 +14,19 @@ import be.kuleuven.cs.som.annotate.*;
  */
 public class Plant extends GameObject {
 	
+	/**
+	 * Initialize a new plant with given horizontal and vertical location and the given array of sprites. 
+	 * @param 	horizontalLocation
+	 * 			The horizontal location for this new plant.
+	 * @param 	verticalLocation
+	 * 			The vertical location for this new plant.
+	 * @param 	images
+	 * 			An array of sprites.
+	 * @effect	This new plant is initialized as a game object with the given horizontal location, vertical location, a horizontal velocity of equal to the velocity constant of all plants, 
+	 * 			a vertical velocity of zero, an initial horizontal velocity equal to the velocity constant of all plants, a maximum horizontal velocity equal to the velocity constant of all plants, 
+	 * 			an initial vertical velocity of zero, a horizontal acceleration of zero, a false ducking state, 
+	 * 			a number of hit points of 1, the maximum number of hit points for all plants and an image array containing its sprites.
+	 */
 	@Raw
 	public Plant(int horizontalLocation, int verticalLocation, Sprite... images)
 	throws IllegalArgumentException{
@@ -28,6 +41,15 @@ public class Plant extends GameObject {
 	 */
 	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
 		return Util.fuzzyEquals(Math.abs(horizontalVelocity), VELOCITYCONSTANT);
+	}
+	
+	/**
+	 * @return	The given initial horizontal velocity is equal to the velocity constant of all plants.
+	 * 			| result == (intialHorizontalVelocity==VELOCITYCONSTANT)
+	 */
+	@Override
+	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity) {
+		return initialHorizontalVelocity==VELOCITYCONSTANT;
 	}
 	
 	/**
@@ -186,24 +208,8 @@ public class Plant extends GameObject {
 		
 	}
 
-	@Override
-	public double getMaximumHorizontalVelocity() {
-		return VELOCITYCONSTANT;
-	}
-
-	@Override
-	public double getInitialHorizontalVelocity() {
-		return 0;
-	}
 	
-	/**
-	 * @return	The given initial horizontal velocity is equal to the velocity constant of all plants.
-	 * 			| result == (intialHorizontalVelocity==VELOCITYCONSTANT)
-	 */
-	@Override
-	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity) {
-		return initialHorizontalVelocity==VELOCITYCONSTANT;
-	}
+	
 
 	
 }

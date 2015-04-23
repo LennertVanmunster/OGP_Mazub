@@ -7,22 +7,51 @@ import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
 /**
- * A class of sharks
+ * A class of sharks which extends the class of game objects. A shark is a non player character which is hostile to Mazub and is primarily found in water tiles.
  * 
  * @version	1.0
  * @authors Pieter Van Damme and Lennert Vanmunster
  *
  */
 public class Shark extends GameObject{
-
+	
+	/**
+	 * Initialize a new shark with given horizontal and vertical location,
+	 * initial and maximum horizontal velocity and an array of sprites. 
+	 * @param 	horizontalLocation
+	 * 			The horizontal location for this new shark.
+	 * @param 	verticalLocation
+	 * 			The vertical location for this new shark.
+	 * @param 	initialHorizontalVelocity
+	 * 			The initial horizontal velocity for this new shark.
+	 * @param 	maximumHorizontalVelocity
+	 * 			The maximum horizontal velocity for this new shark.
+	 * @param 	images
+	 * 			An array of sprites.
+	 * @effect 	This new shark is initialized as a game object with the given horizontal location, vertical location, a horizontal velocity of zero, a vertical velocity of zero,
+	 * 			the given initial horizontal velocity, the given maximum horizontal velocity, 
+	 * 			the initial vertical velocity for all sharks, the horizontal acceleration for all sharks, a false ducking state, 
+	 * 			a number of hit points of 100, the maximum number of hit points for all sharks and an image array containing its sprites.
+	 * 			| super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocity, maximumHorizontalVelocity, INITIAL_VERTICAL_VELOCITY, HORIZONTAL_ACCELERATION, false, 100, MAX_HIT_POINTS, images)
+	 */
 	@Raw
 	public Shark(int horizontalLocation, int verticalLocation, double initialHorizontalVelocity,
-			double maximumHorizontalVelocity,  Sprite... images)
-	throws IllegalArgumentException{
+			double maximumHorizontalVelocity,  Sprite... images){
 		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocity, maximumHorizontalVelocity, INITIAL_VERTICAL_VELOCITY, HORIZONTAL_ACCELERATION, false, 100, MAX_HIT_POINTS, images);
 	}
 	
-
+	/**
+	 * Initialize a new shark with the given horizontal and vertical location, an initial horizontal velocity of zero,
+	 * a maximum horizontal velocity of 4 and an array of sprites.
+	 * @param 	horizontalLocation
+	 * 			The horizontal location for this new shark.
+	 * @param 	verticalLocation
+	 * 			The vertical location for this new shark.
+	 * @param 	images
+	 * 			An array of sprites.
+	 * @effect	This new shark is initialized with the given horizontal and vertical location, an initial horizontal velocity of zero,
+	 *			 a maximum horizontal velocity of 4 and the given array of sprites.
+	 */
 	@Raw
 	public Shark(int horizontalLocation, int verticalLocation,  Sprite... images){
 		this(horizontalLocation, verticalLocation, 0, 4, images);
@@ -85,9 +114,14 @@ public class Shark extends GameObject{
 		return Util.fuzzyLessThanOrEqualTo(Math.abs(verticalAcceleration),MAXIMUM_FLOATING_VERTICAL_ACCELERATION) || Util.fuzzyEquals(verticalAcceleration,VERTICAL_ACCELERATION);
 	}
 	
-	
+	/**
+	 * Constant registering the horizontal acceleration of all sharks.
+	 */
 	private static final double HORIZONTAL_ACCELERATION=1.5;
 	
+	/**
+	 * Constant registering the maximum vertical acceleration while floating of all sharks.
+	 */
 	private static final double MAXIMUM_FLOATING_VERTICAL_ACCELERATION=0.2;
 	
 	/**
@@ -155,29 +189,36 @@ public class Shark extends GameObject{
 		}
 	}
 	
+	/**
+	 * Set the current action duration of this slime to the given duration. This is how long the current action of this shark lasts.
+	 * @param 	duration
+	 * 			The duration to be set in seconds.
+	 * @post	| new.getCurrentActionDuration()==duration
+	 */
 	private void setCurrentActionDuration(double duration) {
 		this.currentActionDuration=duration;
 	}
 	
+	/**
+	 * Return the current action duration.
+	 */
 	public double getCurrentActionDuration(){
 		return currentActionDuration;
 	}
-	
-	public double getTimeSinceStartAction() {
-		return this.timeSinceStartAction;
-	}
 
-
-	public void setTimeSinceStartAction(double timeSinceStartAction) {
-		this.timeSinceStartAction = timeSinceStartAction;
-	}
-
+	/**
+	 * Variable registering the current action duration.
+	 */
 	private double currentActionDuration=0;
-	
-	private double timeSinceStartAction = 0;
-	
+
+	/**
+	 * Constant registering the minimum action duration.
+	 */
 	private static final double MINIMUM_ACTION_DURATION=1;
 	
+	/**
+	 * Constant registering the maximum action duration.
+	 */
 	private static final double MAXIMUM_ACTION_DURATION=4;
 	
 	private int lastJump = 2; 

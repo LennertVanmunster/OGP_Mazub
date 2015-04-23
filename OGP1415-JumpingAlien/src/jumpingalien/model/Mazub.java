@@ -12,28 +12,10 @@ import java.lang.Math;
  * involving a horizontal location, vertical location, maximum horizontal location, maximum vertical location,
  * horizontal velocity, vertical velocity, initial horizontal velocity, maximum horizontal velocity, 
  * initial vertical velocity, horizontal acceleration, vertical acceleration and an array of sprites.
- * 
- * @invar	The bottom-left pixel of each Mazub must have a valid location in the game world.
- * 			|isValidLocation(getHorizontalLocation(),getVerticalLocation())
- * @invar	Each Mazub can have its horizontal velocity as its horizontal velocity.
- * 			|canHaveAsHorizontalVelocity(getHorizontalVelocity())
- * @invar	The initial horizontal velocity of each Mazub must a valid initial horizontal velocity.
- * 			|canHaveAsInitialHorizontalVelocity(getInitialHorizontalVelocity())
- * @invar	Each Mazub can have its maximum horizontal velocity as its maximum horizontal velocity.
- * 			|canHaveAsMaximumHorizontalVelocity(getMaximumHorizontalVelocity())
- * @invar	The vertical velocity of each Mazub must be a valid vertical velocity.
- * 			|isValidVerticalVelocity(getVerticalVelocity())
- * @invar	The direction of each Mazub must be a valid direction.
- * 			|isValidDirection(getDirection())
- * @invar	The length of the image array of each Mazub must be a valid length.
- * 			|isValidNbImages(getNbImages())
- * @invar	Each image in the image array of each Mazub must be a valid image.
- * 			| for each i in 1..getNbImages():
- * 			| 	isValidImage(getImageAt(I))
  * @invar	The time since Mazub last started moving must be a valid time for each Mazub.
- * 			| isValidTimeSinceMove(getTimeSinceStartMove())
+ * 			| isValidTimeSinceAction(getTimeSinceStartMove())
  * @invar	The time since Mazub last ended moving must be a valid time for each Mazub.
- * 			| isValidTimeSinceMove(getTimeSinceEndMove())
+ * 			| isValidTimeSinceAction(getTimeSinceEndMove())
  * @version 2.0
  * @authors Pieter Van Damme and Lennert Vanmunster
  *
@@ -52,42 +34,22 @@ public class Mazub extends GameObject {
 	 * 		  	The horizontal velocity for this new Mazub.
 	 * @param 	verticalVelocity
 	 * 		  	The vertical velocity for this new Mazub.
-	 * @param 	initialHorizontalVelocity
+	 * @param 	initialHorizontalVelocityNotDucking
 	 * 		  	The initial horizontal velocity for this new Mazub when not ducking.
-	 * @param 	maximumHorizontalVelocity
+	 * @param 	maximumHorizontalVelocityNotDucking
 	 * 		  	The maximum horizontal velocity for this new Mazub when not ducking.
 	 * @param 	ducking
 	 * 		  	The ducking state for this new Mazub.
 	 * @param 	images
 	 * 		  	Array of sprites to display Mazub for this new Mazub.
 	 * @effect	This new Mazub is initialized as a game object with the given horizontal location, vertical location, horizontal velocity, vertical velocity,
-	 * 			initial horizontal velocity, initial vertical velocity, maximum horizontal velocity, hitpoints, images, the constant initial vertical velocity, the constant horizontal acceleration,
-	 * 			and the constant maximum number of hitpoints.
-	 * 			| super(horizontalLocation, verticalLocation, horizontalVelocity, verticalVelocity, initialHorizontalVelocity, maximumHorizontalVelocity, INITIAL_VERTICAL_VELOCITY, HORIZONTAL_ACCELERATION, hitPoints, MAX_HIT_POINTS, images)
+	 * 			initial horizontal velocity when not ducking, maximum horizontal velocity when not ducking, the constant initial vertical velocity for all Mazubs, the constant horizontal acceleration
+	 * 			for all Mazubs, ducking state, number of hit points, the constant maximum number of hit points for all Mazubs and an image array containing its sprites.
+	 * 			| super(horizontalLocation, verticalLocation, horizontalVelocity, verticalVelocity, initialHorizontalVelocityNotDucking, maximumHorizontalVelocityNotDucking, INITIAL_VERTICAL_VELOCITY, HORIZONTAL_ACCELERATION, ducking, hitPoints, MAX_HIT_POINTS, images)
 	 * @effect	If the given ducking state of the new Mazub is true the Mazub
 	 * 			starts ducking.
 	 * 			|if(isDucking())
 	 *			|	startDuck()
-	 * @throws	IllegalLocationException
-	 * 			Not a valid horizontal location
-	 * 			|!canHaveAsHorizontalLocation(horizontalLocation)	
-	 * @throws	IllegalLocationException
-	 * 			Not a valid vertical location
-	 * 			|!canHaveAsVericalLocation(verticalLocation)	
-	 * @throws	IllegalArgumentException
-	 * 			The given initial horizontal velocity is not valid for any Mazub or it does 
-	 * 			not match with the given maximum horizontal velocity.
-	 * 			|!isPossibleInitialHorizontalVelocity(initialHorizontalVelocityNotDucking)	
-	 * @throws	IllegalArgumentException
-	 * 			The given maximum horizontal velocity is not valid for any Mazub or it does
-	 * 			not match with the given initial horizontal velocity.
-	 * 			|!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking)	
-	 * @throws	IllegalArgumentException
-	 * 			Not a valid horizontal velocity.
-	 * 			|!canHaveAsHorizontalVelocity(horizontalVelocity)
-	 * @throws	IllegalArgumentException
-	 * 			Not a valid vertical velocity.
-	 * 			|!isValidVerticalVelocity(verticalVelocity)	
 	 */
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
@@ -110,8 +72,6 @@ public class Mazub extends GameObject {
 	 * 			The vertical location for this new Mazub.
 	 * @param	images
 	 * 			An array of sprites for this new Mazub.
-	 * @throws IllegalLocationException 
-	 * @throws IllegalArgumentException 
 	 * @effect	This new Mazub is initialized with the given horizontal location as its horizontal location,
 	 * 			the given vertical location as its vertical location, the given array of sprites as its sprites.
 	 * 			This new Mazub's initial horizontal velocity is set to 0, its maximum horizontal velocity is set to 3
@@ -186,9 +146,10 @@ public class Mazub extends GameObject {
 		return verticalAcceleration==0 || Util.fuzzyEquals(verticalAcceleration, VERTICAL_ACCELERATION);
 	}
 	
+	/**
+	 * A constant registering the horizontal acceleration of all Mazubs.
+	 */
 	private static final double HORIZONTAL_ACCELERATION=0.9;
-	
-	
 	
 	
 	/**
@@ -592,14 +553,5 @@ public class Mazub extends GameObject {
 	private final static int MAX_HIT_POINTS=500;
 	
 	
-	public boolean isTerminated() {
-		return this.isTerminated;
-	}
 
-	public void terminate() {
-		this.getWorld().terminate();
-		this.isTerminated=true;
-	}
-	
-	private boolean isTerminated=false;
 }

@@ -8,8 +8,9 @@ import java.lang.Math;
 import java.util.Random;
 
 /**
- * 
- * @invar	
+ * A class of slimes which extends the class of game objects. A slime is a non player character which is hostile to Mazub and belongs to a school of slimes.
+ * @invar	Each slime has a proper school.
+ * 			| hasProperSchool()
  * @version 2.0
  * @authors Pieter Van Damme and Lennert Vanmunster
  *
@@ -17,28 +18,23 @@ import java.util.Random;
 public class Slime extends GameObject {
 	/**
 	 * Initialize a new Slime with given horizontal and vertical location,
-	 * ducking state and an array of sprites. 
-	 * 
-	 * @throws	IllegalLocationException
-	 * 			Not a valid horizontal location
-	 * 			|!canHaveAsHorizontalLocation(horizontalLocation)	
-	 * @throws	IllegalLocationException
-	 * 			Not a valid vertical location
-	 * 			|!canHaveAsVericalLocation(verticalLocation)	
-	 * @throws	IllegalArgumentException
-	 * 			The given initial horizontal velocity is not valid for any Mazub or it does 
-	 * 			not match with the given maximum horizontal velocity.
-	 * 			|!isPossibleInitialHorizontalVelocity(initialHorizontalVelocityNotDucking)	
-	 * @throws	IllegalArgumentException
-	 * 			The given maximum horizontal velocity is not valid for any Mazub or it does
-	 * 			not match with the given initial horizontal velocity.
-	 * 			|!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking)	
-	 * @throws	IllegalArgumentException
-	 * 			Not a valid horizontal velocity.
-	 * 			|!canHaveAsHorizontalVelocity(horizontalVelocity)
-	 * @throws	IllegalArgumentException
-	 * 			Not a valid vertical velocity.
-	 * 			|!isValidVerticalVelocity(verticalVelocity)	
+	 * ducking state, school and an array of sprites. 
+	 * @param	horizontalLocation
+	 * 			The horizontal location for this new slime.
+	 * @param	verticalLocation
+	 * 			The vertical location for this new slime.
+	 * @param 	images
+	 * 			An array of sprites for this new slime.
+	 * @param	school
+	 * 			The school of slimes to which this new slime belongs.
+	 * @effect	This new slime is initialized as a game object with the given horizontal location, vertical location, a horizontal velocity of zero, a vertical velocity of zero,
+	 * 			an initial horizontal velocity when not ducking of zero, a maximum horizontal velocity when not ducking equal to the maximum horizontal velocity constant, 
+	 * 			an initial vertical velocity of zero, the constant horizontal acceleration
+	 * 			for all slimes, a false ducking state, a number of hit points of 100, a maximum number of hit points of 100 and an image array containing its sprites.
+	 * 			| super(horizontalLocation, verticalLocation, 0, 0, 0, MAXIMUM_HORIZONTAL_VELOCITY, 0, HORIZONTAL_ACCELERATION, false, 100, 100, images)
+	 * @effect	A binary relationship is established between this slime and the given school.
+	 * 			| school.addAsSlime(this)
+	 * 			| this.setSchool(school)
 	 */
 	@Raw
 	public Slime(int horizontalLocation, int verticalLocation, Sprite[] images, School school)
@@ -66,6 +62,15 @@ public class Slime extends GameObject {
 	}
 	
 	/**
+	 * @return	The given initial horizontal velocity is equal to zero.
+	 * 			| result == (intialHorizontalVelocity==0)
+	 */
+	@Override
+	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity) {
+		return initialHorizontalVelocity==0;
+	}
+	
+	/**
 	 * Constant registering the maximum horizontal velocity when not ducking of this Mazub.
 	 */
 	private static final double MAXIMUM_HORIZONTAL_VELOCITY = 2.5;
@@ -89,14 +94,6 @@ public class Slime extends GameObject {
 			return 0;
 	}
 	
-	/**
-	 * Check whether this slime can have the given ducking state as its ducking state.
-	 * @return 	The given ducking state is false.
-	 * 			|result== (ducking==false)
-	 */
-	public boolean canHaveAsDuckingState(boolean ducking){
-		return !ducking;
-	}
 	
 	/**
 	 * Check whether this slime can have the given vertical acceleration as its vertical acceleration.
@@ -113,6 +110,26 @@ public class Slime extends GameObject {
 	 */
 	private static final double HORIZONTAL_ACCELERATION = 0.7;
 	
+	/**
+	 * Check whether this slime can have the given ducking state as its ducking state.
+	 * @return 	The given ducking state is false.
+	 * 			|result== (ducking==false)
+	 */
+	public boolean canHaveAsDuckingState(boolean ducking){
+		return !ducking;
+	}
+	
+	/**
+	 * Start a new action for this slime.
+	 * @effect 	The current action duration of this slime is set to a random action duration between the minimum and maximum action duration,
+	 * 			the direction of this slime is set to a random direction, the slime's horizontal moving state is set to true and the time since
+	 * 			the start of the action of this slime is set to 0.
+	 * 			| Random r = new Random()
+	 * 			| this.setCurrentActionDuration(MINIMUM_ACTION_DURATION+(MAXIMUM_ACTION_DURATION-MINIMUM_ACTION_DURATION)*r.nextDouble())
+	 * 			| this.setDirection(r.nextBoolean() ? Direction.LEFT : Direction.RIGHT)
+	 * 			| this.setMovingHorizontally(true)
+	 * 			| this.setTimeSinceStartAction(0)
+	 */
 	private void startNewAction(){
 		Random r = new Random();
 		this.setCurrentActionDuration(MINIMUM_ACTION_DURATION+(MAXIMUM_ACTION_DURATION-MINIMUM_ACTION_DURATION)*r.nextDouble());
@@ -121,26 +138,43 @@ public class Slime extends GameObject {
 		this.setTimeSinceStartAction(0);
 	}
 	
+	/**
+	 * Set the current action duration of this slime to the given duration. This is how long the current action of this slime lasts.
+	 * @param 	duration
+	 * 			The duration to be set in seconds.
+	 * @post	| new.getCurrentActionDuration()==duration
+	 */
 	private void setCurrentActionDuration(double duration) {
 		this.currentActionDuration=duration;
 	}
 	
+	/**
+	 * Return the current action duration.
+	 */
 	public double getCurrentActionDuration(){
 		return currentActionDuration;
 	}
 
+	/**
+	 * Variable registering the current action duration.
+	 */
 	private double currentActionDuration=0;
 
-	
+	/**
+	 * Constant registering the minimum action duration.
+	 */
 	private static final double MINIMUM_ACTION_DURATION=2;
 	
+	/**
+	 * Constant registering the maximum action duration.
+	 */
 	private static final double MAXIMUM_ACTION_DURATION=6;
 	
 	/**
-	 * Update the location and velocity of this Mazub.
+	 * Update the location and velocity of this slime.
 	 * 
 	 * @param 	deltaTime
-	 * 			The period of time that is used to update this Mazub.
+	 * 			The period of time that is used to update this slime.
 	 * @effect	The horizontal and vertical location are updated
 	 * 			and the horizontal and vertical velocity are updated.
 	 * 			|updateHorizontalLocation(deltaTime)
@@ -281,35 +315,64 @@ public class Slime extends GameObject {
 		return nbImages==2;
 	}	
 	
-
+	/**
+	 * Terminate slime.
+	 * @effect	If this slime is not already terminated, it is terminated as a game object, effectively breaking the relationship between this slime and its world.
+	 * 			This slime is also removed from its school and its school is set to null
+	 * 			|if (!this.isTerminated())
+	 * 			|	super.terminate()
+	 * 			| 	this.setSchool(null)
+	 */
 	public void terminate() {
-		super.terminate();
-		this.getSchool().removeAsSlime(this);
-		this.setSchool(null);
-	}
-
-	public boolean isValidVerticalVelocity(double verticalVelocity) {
-		return true;
+		if (!this.isTerminated()){
+			super.terminate();
+			this.getSchool().removeAsSlime(this);
+			this.setSchool(null);
+		}
 	}
 	
+	/**
+	 * Set the given school as the school of this slime.
+	 * @param 	school
+	 * 			The school to be set.
+	 * @post	| if(this.canHaveAsSchool(school))
+	 * 			| 		new.getSchool()==this
+	 */
 	public void setSchool(School school){
 		if(this.canHaveAsSchool(school)){
 			this.school=school;
 		}
 	}
 	
+	/**
+	 * Return the school to which this slime belongs.
+	 */
 	public School getSchool(){
 		return this.school;
 	}
 	
+	/**
+	 * Check whether this slime can have the given school as its school.
+	 * @param 	school
+	 * @return	result == (school==null || school.canHaveAsGameObject(this))
+	 */
 	public boolean canHaveAsSchool(School school){
 		return (school==null || school.canHaveAsSlime(this));
 	}
 	
+	
+	/**
+	 * Check whether this slime has a school.
+	 * @return 	This slime can have its school as its world and its school has this slime as one of its slimes.
+	 * 			| this.canHaveAsSchool(this.getSchool()) && this.getSchool().hasAsSlime(this)
+	 */
 	public boolean hasProperSchool(){
 		return this.canHaveAsSchool(this.getSchool()) && this.getSchool().hasAsSlime(this);
 	}
 	
+	/**
+	 * Variable registering the school to which this slime belongs.
+	 */
 	private School school;
 
 	@Override
@@ -318,14 +381,7 @@ public class Slime extends GameObject {
 		
 	}
 
-	/**
-	 * @return	The given initial horizontal velocity is equal to zero.
-	 * 			| result == (intialHorizontalVelocity==0)
-	 */
-	@Override
-	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity) {
-		return initialHorizontalVelocity==0;
-	}
+	
 }
 
 
