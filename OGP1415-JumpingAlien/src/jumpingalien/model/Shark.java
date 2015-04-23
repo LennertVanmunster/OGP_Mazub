@@ -318,7 +318,7 @@ public class Shark extends GameObject{
 	protected void collisionReaction(int index) {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index);
 		if(gameObject instanceof Mazub){
-			//assert 1==2;
+			assert 1==2;
 			if(this.getHitPoints() != this.getMaxHitPoints()){
 				this.removeHitPoints(50);
 			}
