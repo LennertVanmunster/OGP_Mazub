@@ -17,7 +17,7 @@ public class Plant extends GameObject {
 	@Raw
 	public Plant(int horizontalLocation, int verticalLocation, Sprite... images)
 	throws IllegalArgumentException{
-		super(horizontalLocation, verticalLocation, 0.5, 0, 0.5, 0.5, 0, 0, 1, MAX_HIT_POINTS, images);
+		super(horizontalLocation, verticalLocation, 0, 0, 0, 0.5, 0, 0, 1, MAX_HIT_POINTS, images);
 	}
 	
 	/**
@@ -188,7 +188,7 @@ public class Plant extends GameObject {
 	@Override
 	public boolean isPossibleInitialHorizontalVelocity(
 			double initialHorizontalVelocity) {
-		return initialHorizontalVelocity==0.5;
+		return initialHorizontalVelocity==0;
 	}
 
 	
