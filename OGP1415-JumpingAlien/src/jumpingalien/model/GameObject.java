@@ -933,7 +933,7 @@ public abstract class GameObject {
 	 * @param 	index
 	 * 			The index of the other game object.
 	 */
-	protected abstract void collisionReaction(int index);
+	protected abstract void collisionReaction(int index1, int index2);
 	
 	/**
 	 * Variable registering the direction game object is facing.

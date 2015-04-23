@@ -492,7 +492,8 @@ public class Mazub extends GameObject {
 			}
 			int [] overlap = this.checkLeftRightTopBottomSideOverlap();
 			if(overlap[0]==1){
-				collisionReaction(overlap[1]);
+				collisionReaction(overlap[1],overlap[2]);
+				
 					
 			}		
 			if(this.canEndDuck){
@@ -516,13 +517,18 @@ public class Mazub extends GameObject {
 	}
 
 	
-	protected void collisionReaction(int index) {
-		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index);
+	protected void collisionReaction(int index1, int index2) {
+		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
 		if(gameObject instanceof Plant){
 			if(this.getHitPoints() != this.getMaxHitPoints()){
 				gameObject.setHitPoints(0);
 				gameObject.unsetWorld();
 				this.addHitPoints(50);
+			}
+		}
+		else if(gameObject instanceof Shark){
+			if(index2 == 0){
+				this.removeHitPoints(50);
 			}
 		}
 	}
