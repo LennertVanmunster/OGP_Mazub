@@ -415,12 +415,10 @@ public class Mazub extends GameObject {
 				this.setVerticalLocation(oldVerticalLocation);
 				this.setVerticalVelocity(0);
 			}
-			int [] overlap = this.checkLeftRightTopBottomSideOverlap();
-			if(overlap[0]==1){
-				collisionReaction(overlap[1],overlap[2]);
-				
-					
-			}		
+			int [][] overlappingGameObjects = this.checkLeftRightTopBottomSideOverlap();
+			for(int [] overlap : overlappingGameObjects)
+				if(overlap[0]==1)
+					collisionReaction(overlap[1],overlap[2]);		
 			if(this.canEndDuck){
 				this.endDuck();
 			}
@@ -434,9 +432,8 @@ public class Mazub extends GameObject {
 	protected void collisionReaction(int index1, int index2) {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
 		if(gameObject instanceof Plant){
-			if(this.getHitPoints() != this.getMaxHitPoints()){
+			if(this.getHitPoints() != this.getMaxHitPoints() && gameObject.getHitPoints() != 0){
 				gameObject.setHitPoints(0);
-				gameObject.unsetWorld();
 				this.addHitPoints(50);
 			}
 		}

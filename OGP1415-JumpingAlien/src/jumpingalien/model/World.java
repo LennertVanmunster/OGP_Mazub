@@ -731,6 +731,8 @@ public class World {
 				gameObject.advanceTime(deltaTime);
 			this.updateVisibleWindow();
 			this.checkGameOver();
+			if(gameObject != null && gameObject.getHitPoints()<= 0)
+				gameObject.unsetWorld();
 		}
 	}
 	

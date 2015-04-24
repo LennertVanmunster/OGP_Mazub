@@ -37,7 +37,7 @@ public class Shark extends GameObject{
 	@Raw
 	public Shark(int horizontalLocation, int verticalLocation, double initialHorizontalVelocity,
 			double maximumHorizontalVelocity,  Sprite... images){
-		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocity, maximumHorizontalVelocity, INITIAL_VERTICAL_VELOCITY, HORIZONTAL_ACCELERATION, false, 100, MAX_HIT_POINTS, images);
+		super(horizontalLocation, verticalLocation, 0.1, 0, initialHorizontalVelocity, maximumHorizontalVelocity, INITIAL_VERTICAL_VELOCITY, HORIZONTAL_ACCELERATION, false, 100, MAX_HIT_POINTS, images);
 	}
 	
 	/**
@@ -297,10 +297,10 @@ public class Shark extends GameObject{
 				this.setVerticalLocation(oldVerticalLocation);
 				this.setVerticalVelocity(0);
 			}
-			int [] overlap = this.checkLeftRightTopBottomSideOverlap();
-//			if(overlap[0]==1){
-//				collisionReaction(overlap[1],overlap[2]);
-//			}
+			int [][] overlappingGameObjects = this.checkLeftRightTopBottomSideOverlap();
+			for(int [] overlap : overlappingGameObjects)
+				if(overlap[0]==1)
+					collisionReaction(overlap[1],overlap[2]);
 		}
 		this.setTimeSinceStartAction(this.getTimeSinceStartAction()+deltaTime);
 		checkAirContact(deltaTime);
@@ -310,23 +310,28 @@ public class Shark extends GameObject{
 	}
 	
 	protected void collisionReaction(int index1, int index2) {
-//		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
-//		if(gameObject instanceof Shark){
-//			if (this.getDirection()==Direction.LEFT){
-//				this.setDirection(Direction.RIGHT);
-//			}
-//			else{
-//				this.setDirection(Direction.LEFT);
-//			}
-//			if (gameObject.getDirection()==Direction.LEFT){
-//				gameObject.setDirection(Direction.RIGHT);
-//			}
-//			else{
-//				gameObject.setDirection(Direction.LEFT);
-//			}
-//		}	
+		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
+		if(gameObject instanceof Shark){
+			this.setHorizontalVelocity(0);
+			gameObject.setHorizontalVelocity(0);
+			if(this.getVerticalVelocity() > 0 && this.getVerticalLocation() - gameObject.getVerticalLocation() < 0)
+				this.setVerticalVelocity(-this.getVerticalVelocity());
+			else if(this.getVerticalVelocity() < 0 && this.getVerticalLocation() - gameObject.getVerticalLocation() > 0)
+				try{
+					this.setVerticalVelocity(-this.getVerticalVelocity());
+				}catch (IllegalArgumentException exc){
+					this.setVerticalVelocity(2);
+				}
+			if (this.getDirection()==Direction.LEFT && this.getHorizontalLocation() - gameObject.getHorizontalLocation() > 0){
+				this.setDirection(Direction.RIGHT);
+			}
+			else if (this.getDirection()==Direction.RIGHT && this.getHorizontalLocation() - gameObject.getHorizontalLocation() < 0){
+				this.setDirection(Direction.LEFT);
+			}
+		}	
 	}
 		
+	
 	/**
 	 * Check whether the shark makes contact with water and no contact with air
 	 * 
@@ -394,15 +399,6 @@ public class Shark extends GameObject{
 		}
 	}
 	
-	protected void collisionReaction(int index) {
-		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index);
-		if(gameObject instanceof Mazub){
-			assert 1==2;
-			if(this.getHitPoints() != this.getMaxHitPoints()){
-				this.removeHitPoints(50);
-			}
-		}
-	}
 
 	/**
 	 * Variable registering the maximum number of hit points of a shark.

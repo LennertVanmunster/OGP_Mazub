@@ -1041,22 +1041,23 @@ public abstract class GameObject {
 	 *			|		if(overlap [0] == 1)
 	 *			|		then the array "overlap" is returned
 	 */
-	public int [] checkLeftRightTopBottomSideOverlap(){
+	public int [][] checkLeftRightTopBottomSideOverlap(){
 		int [] overlap = {0,0,0};
 		World world = this.getWorld();
 		List<GameObject> gameObjects = getGameObjectsAtTiles(world.areaOverlapsWithTiles(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()));
+		int [][] overlappingGameObjects = new int [gameObjects.size()][3];
 		for(int index = 0; index < gameObjects.size(); index++){
 			GameObject gameObject = gameObjects.get(index);
 			if(gameObject != this && world.canHaveAsGameObject(gameObject)){
 				overlap = checkLeftOrRightSideOverlap(gameObject);
 				if(overlap [0] == 1)
-					break;
+					overlappingGameObjects [index] = overlap;
 				overlap = checkTopOrBottomSideOverlap(gameObject);
 				if(overlap [0] == 1)
-					break;
+					overlappingGameObjects [index] = overlap;
 			}
 		}
-		return overlap;
+		return overlappingGameObjects;
 		}
 		
 //	/**

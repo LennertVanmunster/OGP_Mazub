@@ -130,7 +130,21 @@ public class Plant extends GameObject {
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
 			updateHorizontalLocation(deltaTimeForPixel);
 			sumDeltaTimeForPixel+=deltaTimeForPixel;
-		}	
+		}
+		int [][] overlappingGameObjects = this.checkLeftRightTopBottomSideOverlap();
+		for(int [] overlap : overlappingGameObjects)
+			if(overlap[0]==1)
+				collisionReaction(overlap[1],overlap[2]);	
+	}
+		
+	protected void collisionReaction(int index1, int index2) {
+		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
+		if(gameObject instanceof Mazub){
+			if(gameObject.getHitPoints() != gameObject.getMaxHitPoints() && this.getHitPoints() != 0){
+				this.setHitPoints(0);
+				gameObject.addHitPoints(50);
+			}
+		}
 	}
 	
 	/**
@@ -186,17 +200,6 @@ public class Plant extends GameObject {
 	 */
 	private final static int MAX_HIT_POINTS=1;
 
-	@Override
-	protected void collisionReaction(int index) {
-		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index);
-		if(gameObject instanceof Mazub){
-			if(gameObject.getHitPoints() != gameObject.getMaxHitPoints()){
-				this.setHitPoints(0);
-				this.unsetWorld();
-				gameObject.addHitPoints(50);
-			}
-		}
-	}
 	
 	@Override
 	public void checkWaterContact(double deltaTime) {
