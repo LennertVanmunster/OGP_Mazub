@@ -729,7 +729,7 @@ public class World {
 			GameObject gameObject = getGameObjectAtIndex(index);
 			if(canHaveAsGameObject(gameObject))
 				gameObject.advanceTime(deltaTime);
-			if(gameObject != null && gameObject.getHitPoints()<= 0)
+			if(gameObject != null && gameObject.getHitPoints()<= 0 && index!=0)
 				gameObject.terminate();
 		}
 		this.checkGameOver();
