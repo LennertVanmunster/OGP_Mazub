@@ -365,6 +365,7 @@ public class Mazub extends GameObject {
 		throws IllegalArgumentException {
 		if(!isValidDeltaTime(deltaTime))
 			throw new IllegalArgumentException();
+		this.setTimeSinceLastHitpointsLoss(deltaTime + this.getTimeSinceLastHitpointsLoss());
 		double deltaTimeForPixel=0;
 		double sumDeltaTimeForPixel=0;
 		double newHorizontalLocation=this.getHorizontalLocation();
@@ -452,11 +453,54 @@ public class Mazub extends GameObject {
 			}
 		}
 		else if(gameObject instanceof Shark){
-			if(index2 == 0){
-				this.removeHitPoints(50);
-			}
+			if(!isUntouchable())
+				if(index2 == 0){
+					this.removeHitPoints(50);
+					this.setTimeSinceLastHitpointsLoss(0);
+				}
 		}
 	}
+	
+	/**
+	 * Check whether this mazub can lose hitpoints when making contact 
+	 * with enemy game objects.
+	 * 
+	 * @return	True if and only if timeSinceLastHitpointsLoss is smaller than 0.6.
+	 * 			|result == this.getTimeSinceLastHitpointsLoss() < 0.6
+	 */
+	public boolean isUntouchable(){
+		return this.getTimeSinceLastHitpointsLoss() < 0.6;
+	}
+	
+	/**
+	 * Return the time since mazub last lost some hitpoints.
+	 *
+	 */ 
+	@Basic
+	public double getTimeSinceLastHitpointsLoss(){
+		return this.timeSinceLastHitpointsLoss;
+	}
+	
+	/**
+	 * Set the time since Mazub last lost some hitpoints.
+	 * 
+	 * @param 	time
+	 * 			The given time to set.
+	 * @throws	IllegalArgumentException
+	 * 			If the given time is smaller than zero.
+	 * 			|!isValidTimeSinceAction(time)
+	 */
+	public void setTimeSinceLastHitpointsLoss(double time)
+	throws IllegalArgumentException{
+		if(!isValidTimeSinceAction(time))
+			throw new IllegalArgumentException("Not a valid time!");
+		this.timeSinceLastHitpointsLoss = time;
+	}
+	
+	/**
+	 * Variable registering the time since mazubs last hitpoints loss.
+	 */
+	private double timeSinceLastHitpointsLoss = 0.6;
 	
 	/**
 	 * Check whether the game object makes contact with water and take the corresponding actions.
