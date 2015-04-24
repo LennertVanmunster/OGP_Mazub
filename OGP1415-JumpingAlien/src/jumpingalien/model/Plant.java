@@ -122,7 +122,7 @@ public class Plant extends GameObject {
 		if(Util.fuzzyLessThanOrEqualTo(getTimeSinceStartAction(), 0.5))
 			this.setTimeSinceStartAction(this.getTimeSinceStartAction() + deltaTime);
 		else{
-			this.updateHorizontalVelocity();
+			this.startNewAction();
 		}
 		double deltaTimeForPixel=0;
 		double sumDeltaTimeForPixel=0;
@@ -162,7 +162,7 @@ public class Plant extends GameObject {
 		try{
 			this.setHorizontalLocation(newHorizontalLocation);
 		} catch(IllegalLocationException exc){
-			this.updateHorizontalVelocity();
+			this.startNewAction();
 			this.setHorizontalLocation((int) oldHorizontalLocation);
 		}
 	}
@@ -174,7 +174,7 @@ public class Plant extends GameObject {
 	 * @effect	|setNewDirection();
 	 * @effect	|setHorizontalVelocity(this.getDirection().getNumberForCalculations() * VELOCITYCONSTANT);
 	 */
-	private void updateHorizontalVelocity(){
+	private void startNewAction(){
 		this.setTimeSinceStartAction(0);
 		this.setNewDirection();
 		this.setHorizontalVelocity(this.getDirection().getNumberForCalculations() * VELOCITYCONSTANT);

@@ -687,7 +687,7 @@ public class World {
 	 * @param 	isGameOver
 	 * 			The given status of the game in this world.
 	 */
-	private void setGameOver(boolean isGameOver){
+	void setGameOver(boolean isGameOver){
 		this.gameOver = isGameOver;
 	}
 	
@@ -729,11 +729,11 @@ public class World {
 			GameObject gameObject = getGameObjectAtIndex(index);
 			if(canHaveAsGameObject(gameObject))
 				gameObject.advanceTime(deltaTime);
-			this.updateVisibleWindow();
-			this.checkGameOver();
 			if(gameObject != null && gameObject.getHitPoints()<= 0)
-				gameObject.unsetWorld();
+				gameObject.terminate();
 		}
+		this.checkGameOver();
+		this.updateVisibleWindow();
 	}
 	
 	private void updateVisibleWindow(){

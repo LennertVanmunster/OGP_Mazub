@@ -405,15 +405,29 @@ public class Mazub extends GameObject {
 				this.setHorizontalLocation(newHorizontalLocation);
 				oldHorizontalLocation=newHorizontalLocation;
 			} catch(IllegalLocationException exc){
-				this.setHorizontalLocation((int) oldHorizontalLocation);
-				this.setHorizontalVelocity(0);
+				if(newHorizontalLocation>this.getWorld().getWorldWidth()){
+					this.getWorld().setGameOver(true);
+					this.terminate();
+					return;
+				}
+				else{
+					this.setHorizontalLocation((int) oldHorizontalLocation);
+					this.setHorizontalVelocity(0);
+				}
 			}
 			try{
 				this.setVerticalLocation(newVerticalLocation);
 				oldVerticalLocation=newVerticalLocation;
 			} catch(IllegalLocationException exc){
+				if(newVerticalLocation>this.getWorld().getWorldHeight()){
+					this.getWorld().setGameOver(true);
+					this.terminate();
+					return;
+				}
+				else{
 				this.setVerticalLocation(oldVerticalLocation);
 				this.setVerticalVelocity(0);
+				}
 			}
 			int [][] overlappingGameObjects = this.checkLeftRightTopBottomSideOverlap();
 			for(int [] overlap : overlappingGameObjects)

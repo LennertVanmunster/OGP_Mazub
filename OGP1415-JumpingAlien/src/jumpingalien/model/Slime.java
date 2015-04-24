@@ -244,10 +244,37 @@ public class Slime extends GameObject {
 				this.setVerticalLocation(oldVerticalLocation);
 				this.setVerticalVelocity(0);
 			}
+//			int [][] overlappingGameObjects = this.checkLeftRightTopBottomSideOverlap();
+//			for(int [] overlap : overlappingGameObjects)
+//				if(overlap[0]==1)
+//					collisionReaction(overlap[1],overlap[2]);
 		}
+		this.setTimeSinceStartAction(this.getTimeSinceStartAction()+deltaTime);
 		this.checkWaterContact(deltaTime);
 		this.checkMagmaContact(deltaTime);
 		this.calculateNewJumpingState();
+	}
+	
+	protected void collisionReaction(int index1, int index2) {
+		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
+		if(gameObject instanceof Shark){
+			this.setHorizontalVelocity(0);
+			gameObject.setHorizontalVelocity(0);
+			if(this.getVerticalVelocity() > 0 && this.getVerticalLocation() - gameObject.getVerticalLocation() < 0)
+				this.setVerticalVelocity(-this.getVerticalVelocity());
+			else if(this.getVerticalVelocity() < 0 && this.getVerticalLocation() - gameObject.getVerticalLocation() > 0)
+				try{
+					this.setVerticalVelocity(-this.getVerticalVelocity());
+				}catch (IllegalArgumentException exc){
+					this.setVerticalVelocity(2);
+				}
+			if (this.getDirection()==Direction.LEFT && this.getHorizontalLocation() - gameObject.getHorizontalLocation() > 0){
+				this.setDirection(Direction.RIGHT);
+			}
+			else if (this.getDirection()==Direction.RIGHT && this.getHorizontalLocation() - gameObject.getHorizontalLocation() < 0){
+				this.setDirection(Direction.LEFT);
+			}
+		}	
 	}
 	
 	/**
@@ -375,11 +402,6 @@ public class Slime extends GameObject {
 	 */
 	private School school;
 
-	@Override
-	protected void collisionReaction(int index1, int index2) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	
 }
