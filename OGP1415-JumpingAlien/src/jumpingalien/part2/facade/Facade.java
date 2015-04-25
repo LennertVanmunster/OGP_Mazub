@@ -555,7 +555,7 @@ public class Facade implements IFacadePart2 {
 		try{
 			return new Shark(x,y,sprites);
 		} catch (IllegalArgumentException exc){
-			throw new Modelexception("Cannot create a new shark with the given parameters!");
+			throw new ModelException("Cannot create a new shark with the given parameters!");
 		}
 	}
 
@@ -713,7 +713,7 @@ public class Facade implements IFacadePart2 {
 	 * @return The current school of the given slime.
 	 */
 	public School getSchool(Slime slime){
-		return null;
+		return slime.getSchool();
 	}
 
 }
