@@ -23,11 +23,8 @@ import java.util.*;
  * 			|canHaveAsVisibleWindowLocation(getHorizontalVisibleWindowLocation())
  * @invar	Each game object can have its visible window vertical location as its visible window vertical location.
  * 			|canHaveAsVisibleWindowLocation(getVerticalVisibleWindowLocation())
- * @invar	If possible the window shall always be positioned so that there are 
- * 			at least 200 pixels between all pixels occupied by Mazub.
- * @invar	A game world must contain at least one player character Mazub and
- * 			no more than 100 other game objects.
- * 			|isValidAmountOfGameObjects(getAmountOfMazub(),getAmountOfOtherGameObjects())
+ * @invar	The number of game objects in this world is a valid number of game object.
+ * 			|isValidNbGameObjects(getNbGameObjects())
  * @invar	Each world must have proper game objects.
  * 			| hasProperGameObjects()
  *
@@ -84,6 +81,8 @@ public class World {
 	 * 			|!isPossibleWindowLocation(0) || !matchesTileSizeNbTilesWindowDimensionWindowLocation(tileSize, nbTilesY, visibleWindowHeight, getInitialVisibleWindowLocation()[1])
 	 * @throws	IllegalArgumentException
 	 * 			|!canHaveAsMazub(alien)
+	 * @throws	IllegalArgumentException
+	 * 			|!canHaveAsTilePosition(targetTileX, targetTileY)
 	 */
 	@Raw
 	public World(int tileSize, int nbTilesX, int nbTilesY, int visibleWindowWidth, int visibleWindowHeight,
@@ -106,8 +105,11 @@ public class World {
 		//To be worked out:
 		this.setVisibleWindowLocation(getInitialVisibleWindowLocation()[0],getInitialVisibleWindowLocation()[1]);
 		createTiles(getNbTilesX(),getNbTilesY());
-		this.targetTile = new int [2];
-		setTargetTile(targetTileX,targetTileY);
+		if(!canHaveAsTilePosition(targetTileX,targetTileY)){
+			throw new IllegalArgumentException("Not a valid target tile!");
+		}
+		this.targetTile [0] = targetTileX;
+		this.targetTile [1] = targetTileY;
 		this.setMazub(alien);
 		
 	}
@@ -620,31 +622,11 @@ public class World {
 	public int getTargetTileY(){
 		return getTargetTile() [1];
 	}
-	
-	/**
-	 * Set horizontal and vertical tile position of the target tile of this world to the given horizontal and vertical tile positions.
-	 * @param	targetTileX
-	 * 			A horizontal tile position of the target tile.
-	 * @param	targetTileY
-	 * 			A vertical tile location of the target tile.
-	 * @post	|new.getTargetTileX() == targetTileX
-	 *			|tnew.getTargetTileY() == targetTileY
-	 * @throws	IllegalArgumentException
-	 * 			|!canHaveAsTilePosition(targetTileX, targetTileY)
-	 */
-	@Raw
-	private void setTargetTile(int targetTileX, int targetTileY)
-		throws IllegalArgumentException{
-		if(!canHaveAsTilePosition(targetTileX, targetTileY))
-			throw new IllegalArgumentException("Not a valid position for the target tile");
-		this.targetTile [0] = targetTileX;
-		this.targetTile [1] = targetTileY;
-	}
 
 	/**
 	 * Array of two integers registering the location of the target tile (X,Y).
 	 */
-	private final int[] targetTile;
+	private final int[] targetTile = new int[2];
 	
 	/**
 	 * Return the bottom left pixel location of the tile with the given tile position.
@@ -1199,7 +1181,15 @@ public class World {
 	
 	/**
 	 * List registering the game objects of this world.
-	 * @invar	
+	 * @invar	The set of game objects is effective.
+	 * 			|gamebObjects!=null
+	 * @invar	Each element in the set of game objects references a game object that is an acceptable
+	 * 			game object for this world.
+	 * 			|for each gameObject in gameObjects:
+	 * 			|	canHaveGameObject(gameObject)	
+	 * @invar	Each game object in the set of game object references this world as the world to which it is attached.
+	 * 			|for each gameObject in gameObjects:
+	 * 			|	gameObject.getWorld()==this	
 	 */
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 
