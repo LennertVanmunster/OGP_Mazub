@@ -332,16 +332,16 @@ public class Shark extends GameObject{
 		checkMagmaContact(deltaTime);
 	}
 	
-	protected void collisionReaction(int index1, int index2) {
+	protected void collisionReaction(int index1, int index2, int index3) {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
 		if(gameObject instanceof Slime){
 			gameObject.removeHitPoints(50);
 			this.removeHitPoints(50);
 		}
 		else if(gameObject instanceof Mazub){
-			this.removeHitPoints(50);
 			if(!((Mazub) gameObject).isUntouchable()){
-				if(index2 == 0){
+				this.removeHitPoints(50);
+				if(index3 == 0){
 					gameObject.removeHitPoints(50);
 					((Mazub) gameObject).setTimeSinceLastHitpointsLoss(0);
 				}

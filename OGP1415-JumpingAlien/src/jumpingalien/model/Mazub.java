@@ -442,7 +442,7 @@ public class Mazub extends GameObject {
 	}
 
 	
-	protected void collisionReaction(int index1, int index2) {
+	protected void collisionReaction(int index1, int index2, int index3) {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
 		if(gameObject instanceof Plant){
 			if(this.getHitPoints() != this.getMaxHitPoints() && gameObject.getHitPoints() != 0){

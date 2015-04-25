@@ -1049,12 +1049,7 @@ public abstract class GameObject {
 	public int [] checkLeftRightTopBottomSideOverlap(int [][] leftPerimeter1, int [][] rightPerimeter1, int [][] topPerimeter1, int [][] bottomPerimeter1){
 		int [] overlap = {0,0,0,0};
 		World world = this.getWorld();
-<<<<<<< HEAD
-		List<GameObject> gameObjects = getGameObjectsAtTiles(world.areaOverlapsWithTiles(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()));
-=======
 		List<GameObject> gameObjects = getGameObjectsAtTiles(world.getTilePositionsIn(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getEffectiveHorizontalLocation()+getWidth(), getEffectiveVerticalLocation()+getHeight()));
-//		int [][] overlappingGameObjects = new int [gameObjects.size()][5];
->>>>>>> origin/master
 		for(int index = 0; index < gameObjects.size(); index++){
 			GameObject gameObject = gameObjects.get(index);
 			if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject)){
@@ -1157,7 +1152,7 @@ public abstract class GameObject {
 	 * @param 	index
 	 * 			The index of the other game object.
 	 */
-	protected abstract void collisionReaction(int index1, int index2);
+	protected abstract void collisionReaction(int index1, int index2, int index3);
 	
 	/**
 	 * Variable registering the direction game object is facing.
@@ -1227,7 +1222,7 @@ public abstract class GameObject {
 	public void collisionHandler(int [] overlap, double oldHorizontalLocation, double oldVerticalLocation){
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(overlap[1]);
 		if(overlap[0]==1){
-			collisionReaction(overlap[1],overlap[2]);
+			collisionReaction(overlap[1],overlap[2],overlap[3]);
 			if(!( gameObject instanceof Plant)){
 				this.setContact(true);
 				gameObject.setContact(true);
