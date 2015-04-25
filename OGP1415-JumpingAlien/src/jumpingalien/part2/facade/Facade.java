@@ -124,7 +124,7 @@ public class Facade implements IFacadePart2 {
 	 *            The alien that has to start moving left.
 	 */
 	public void startMoveLeft(Mazub alien){
-			alien.startMove(Direction.LEFT);
+		alien.startMove(Direction.LEFT);
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class Facade implements IFacadePart2 {
 	 *            The alien that has to stop ducking.
 	 */
 	public void endDuck(Mazub alien){
-			alien.endDuck();
+		alien.endDuck();
 	}
 
 
