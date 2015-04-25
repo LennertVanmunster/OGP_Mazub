@@ -17,9 +17,11 @@ public class Facade implements IFacadePart2 {
 	 * @param sprites
 	 *            The array of sprite images for Mazub.
 	 * 
-	 * @return
+	 * @return A new Mazub with the given parameters.
+	 * @throw	ModelException
+	 * 			Invalid parameters.
 	 */
-	public Mazub createMazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites){
+	public Mazub createMazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws ModelException{
 		try{
 			return new Mazub(pixelLeftX, pixelBottomY, sprites);
 		} catch (IllegalArgumentException exc){
@@ -199,10 +201,12 @@ public class Facade implements IFacadePart2 {
 	 *            Tile x-coordinate of the target tile of the created world
 	 * @param targetTileY
 	 *            Tile y-coordinate of the target tile of the created world
+	 * @throws	ModelException
+	 * 			Invalid parameters.
 	 */
 	public World createWorld(int tileSize, int nbTilesX, int nbTilesY,
 			int visibleWindowWidth, int visibleWindowHeight, int targetTileX,
-			int targetTileY){
+			int targetTileY) throws ModelException{
 		try{
 			return new World(tileSize, nbTilesX, nbTilesY, visibleWindowWidth, visibleWindowHeight,
 				targetTileX, targetTileY);
@@ -317,8 +321,10 @@ public class Facade implements IFacadePart2 {
 	 *            The y-position y_T of the tile
 	 * @return An array which contains the x-coordinate and y-coordinate of the
 	 *         bottom left pixel of the given tile, in that order.
+	 * @throw	ModelException
+	 * 			Invalid tile position parameters.
 	 */
-	public int[] getBottomLeftPixelOfTile(World world, int tileX, int tileY){
+	public int[] getBottomLeftPixelOfTile(World world, int tileX, int tileY)throws ModelException{
 		try{
 		return world.getBottomLeftPixelOfTile(tileX, tileY);
 		} catch (IllegalArgumentException exc){
@@ -347,7 +353,8 @@ public class Facade implements IFacadePart2 {
 	 *         The returned array is ordered from left to right,
 	 *         bottom to top: all positions of the bottom row (ordered from
 	 *         small to large x_T) precede the positions of the row above that.
-	 * 
+	 * @throw	ModelException
+	 * 			Invalid pixel location parameters.
 	 */
 	public int[][] getTilePositionsIn(World world, int pixelLeft, int pixelBottom,
 			int pixelRight, int pixelTop){
@@ -472,8 +479,10 @@ public class Facade implements IFacadePart2 {
 	 * 
 	 * @return A new plant, located at the provided location. The returned plant
 	 *         should not belong to a world.
+	 * @throw	ModelException
+	 * 			Invalid parameters.
 	 */
-	public Plant createPlant(int x, int y, Sprite[] sprites){
+	public Plant createPlant(int x, int y, Sprite[] sprites) throws ModelException{
 		try{
 			return new Plant(x,y,sprites);
 		} catch (IllegalArgumentException exc){
@@ -488,8 +497,10 @@ public class Facade implements IFacadePart2 {
 	 *            The world to which the plant should be added.
 	 * @param plant
 	 *            The plant that needs to be added to the world.
+	 * @throw	ModelException
+	 * 			Cannot add the given plant to the given world.
 	 */
-	public void addPlant(World world, Plant plant){
+	public void addPlant(World world, Plant plant)throws ModelException{
 		try{
 			plant.setWorld(world);
 			world.addAsGameObject(plant);
@@ -550,8 +561,10 @@ public class Facade implements IFacadePart2 {
 	 * 
 	 * @return A new shark, located at the provided location. The returned shark
 	 *         should not belong to a world.
+	 * @throw	ModelException
+	 * 			Invalid parameters.
 	 */
-	public Shark createShark(int x, int y, Sprite[] sprites){
+	public Shark createShark(int x, int y, Sprite[] sprites) throws ModelException{
 		try{
 			return new Shark(x,y,sprites);
 		} catch (IllegalArgumentException exc){
@@ -566,8 +579,10 @@ public class Facade implements IFacadePart2 {
 	 *            The world to which the shark should be added.
 	 * @param shark
 	 *            The shark that needs to be added to the world.
+	 * @throws	ModelException
+	 * 			Cannot add the given shark to the given world.
 	 */
-	public void addShark(World world, Shark shark){
+	public void addShark(World world, Shark shark)throws ModelException{
 		try{
 			shark.setWorld(world);
 			world.addAsGameObject(shark);
@@ -639,8 +654,10 @@ public class Facade implements IFacadePart2 {
 	 * 
 	 * @return A new slime, located at the provided location and part of the
 	 *         given school. The returned slime should not belong to a world.
+	 * @throws	ModelException
+	 * 			Invalid parameters.
 	 */
-	public Slime createSlime(int x, int y, Sprite[] sprites, School school){
+	public Slime createSlime(int x, int y, Sprite[] sprites, School school) throws ModelException{
 		try{
 			return new Slime(x,y,sprites,school);
 		} catch (IllegalArgumentException exc){
@@ -655,8 +672,10 @@ public class Facade implements IFacadePart2 {
 	 *            The world to which the slime should be added.
 	 * @param slime
 	 *            The slime that needs to be added to the world.
+	 * @throw	ModelException
+	 * 			Cannot add the slime to the world.
 	 */
-	public void addSlime(World world, Slime slime){
+	public void addSlime(World world, Slime slime) throws ModelException{
 		try{
 			slime.setWorld(world);
 			world.addAsGameObject(slime);
