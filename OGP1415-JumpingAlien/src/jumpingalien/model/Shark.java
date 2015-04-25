@@ -23,19 +23,11 @@ public class Shark extends GameObject{
 	 * 			The vertical location for this new shark.
 	 * @param 	images
 	 * 			An array of sprites.
-<<<<<<< HEAD
 	 * @effect 	This new shark is initialized as a game object with the given horizontal location, vertical location, a horizontal velocity of zero, a vertical velocity of zero,
 	 * 			the initial horizontal velocity at spawn of sharks, the maximum horizontal velocity at spawn of sharks, 
 	 * 			the initial vertical velocity for all sharks, the horizontal acceleration at spawn for sharks, a false ducking state, 
 	 * 			a number of hit points equal to the shark hit point constant, a maximum number of hit points equal to the shark hit point constant and an image array containing its sprites.
 	 * 			| super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, initialVerticalVelocity, horizontalAccelerationAtSpawn, false, 100, MAX_HIT_POINTS, images)
-=======
-	 * @effect 	This new shark is initialized as a game object with the given horizontal location, vertical location, a horizontal velocity of zero point one, a vertical velocity of zero,
-	 * 			the given initial horizontal velocity, the given maximum horizontal velocity, 
-	 * 			the initial vertical velocity for all sharks, the horizontal acceleration for all sharks, a false ducking state, 
-	 * 			a number of hit points of 100, the maximum number of hit points for all sharks and an image array containing its sprites.
-	 * 			| super(horizontalLocation, verticalLocation, 0.1, 0, initialHorizontalVelocity, maximumHorizontalVelocity, INITIAL_VERTICAL_VELOCITY, HORIZONTAL_ACCELERATION, false, 100, MAX_HIT_POINTS, images)
->>>>>>> origin/master
 	 */
 	@Raw
 	public Shark(int horizontalLocation, int verticalLocation, Sprite... images){
@@ -48,15 +40,9 @@ public class Shark extends GameObject{
 	 * @param 	horizontalVelocity
 	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the initial horizontal velocity of this shark
 	 * 			and less than or equal to the maximum horizontal velocity of this game object.
-<<<<<<< HEAD
 	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocityForUpdate()) 
 	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocityForUpdate())
 	 *			|| Util.fuzzyEquals(horizontalVelocity, 0)
-=======
-	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
-	 *			|&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
-	 *			| || Util.fuzzyEquals(horizontalVelocity, 0)
->>>>>>> origin/master
 	 */
 	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
 		horizontalVelocity = Math.abs(horizontalVelocity);
@@ -86,7 +72,6 @@ public class Shark extends GameObject{
 	}
 	
 	/**
-<<<<<<< HEAD
 	 * Return the current initial horizontal velocity of this shark for use in update calculations.
 	 * 
 	 * @return	The sharks regular initial horizontal velocity.
@@ -128,29 +113,16 @@ public class Shark extends GameObject{
 	 * @return	If this shark is currently only in contact with water, the vertical acceleration is zero.
 	 * 			Otherwise the vertical acceleration is equal to the gravitational constant.
 	 * 			|if(this.checkWaterAndNoAirContact())
-=======
-	 * Returns the vertical acceleration of this shark.
 	 * @return	
 	 * 			|if(checkWaterAndNoAirContact() && this.isJumping())
->>>>>>> origin/master
-	 *			|	result == 0
-	 *			|else if(checkWaterAndNoAirContact() && !this.isJumping())
-	 *			| 	result == VERTICAL_ACCELERATION
-	 *			|else
-	 *			|	result == VERTICAL_ACCELERATION
 	 */
 	@Raw
 	public double getVerticalAcceleration(){
 		if(checkWaterAndNoAirContact() && this.isJumping()){
 			return 0;
 		}
-<<<<<<< HEAD
-		else if(checkWaterAndNoAirContact() && this.getLastJump() < 4){
-			return maximumFloatingVerticalAcceleration * this.getRandomDivingConstant();
-=======
 		else if(checkWaterAndNoAirContact() && !this.isJumping()){
-			return MAXIMUM_FLOATING_VERTICAL_ACCELERATION * this.getRandomDivingVariable();
->>>>>>> origin/master
+			return maximumFloatingVerticalAcceleration * this.getRandomDivingVariable();
 		}
 		else
 			return VERTICAL_ACCELERATION;
@@ -238,11 +210,7 @@ public class Shark extends GameObject{
 	}
 	
 	/**
-<<<<<<< HEAD
 	 * Variable registering the time since this shark started making contact with air.
-=======
-	 * Variable registering the time since this shark is making contact with water.
->>>>>>> origin/master
 	 */
 	private double timeSinceAirContact = 0;
 	
@@ -269,12 +237,8 @@ public class Shark extends GameObject{
 		this.setTimeSinceStartAction(0);
 		this.setRandomDivingVariable((2.0 *r.nextDouble() - 1.0));
 		if(this.getLastJump() >= 4){
-<<<<<<< HEAD
 				this.setVerticalVelocity(getInitialVerticalVelocity());
 				this.setLastJump(0);
-=======
-				this.setVerticalVelocity(INITIAL_VERTICAL_VELOCITY);
->>>>>>> origin/master
 		}
 	}
 	
@@ -410,47 +374,11 @@ public class Shark extends GameObject{
 			oldHorizontalLocation = this.getHorizontalLocation();
 			oldVerticalLocation = this.getVerticalLocation();
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
-<<<<<<< HEAD
-			newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTimeForPixel;
-			newHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAccelerationForUpdate()*deltaTimeForPixel;
-			newHorizontalLocation = this.getHorizontalLocation() + 
-					100*(this.getHorizontalVelocity()*deltaTimeForPixel + 
-					this.getDirection().getNumberForCalculations()*0.5*getHorizontalAccelerationForUpdate()*Math.pow(deltaTimeForPixel, 2));
-			newVerticalLocation = this.getVerticalLocation() + 100*(getVerticalVelocity()*deltaTimeForPixel + 0.5*getVerticalAcceleration()*Math.pow(deltaTimeForPixel,2));
-			sumDeltaTimeForPixel+=deltaTimeForPixel;
-			try{
-				this.setHorizontalVelocity(newHorizontalVelocity);
-			} catch(IllegalArgumentException exc){
-					this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getMaximumHorizontalVelocityForUpdate());
-			}
-			try{
-				this.setVerticalVelocity(newVerticalVelocity);
-			} catch (IllegalArgumentException exc){
-				this.setVerticalVelocity(0);
-			}
-			try{
-				this.setHorizontalLocation(newHorizontalLocation);
-			} catch(IllegalLocationException exc){
-				this.setHorizontalLocation((int) oldHorizontalLocation);
-			}
-			try{
-				this.setVerticalLocation(newVerticalLocation);
-			} catch(IllegalLocationException exc){
-				this.setVerticalLocation(oldVerticalLocation);
-				this.setVerticalVelocity(0);
-			}
-			if(this.isJumping()){
-				if(this.checkWaterAndNoAirContact()){
-					this.setJumping(false);
-					this.setVerticalVelocity(0);
-				}
-			}
-=======
 			sumDeltaTimeForPixel+=deltaTimeForPixel;
 			this.updateVelocities(deltaTimeForPixel);
 			this.updateLocations(deltaTimeForPixel, oldHorizontalLocation, oldVerticalLocation);
 			this.updateJumping();
->>>>>>> origin/master
+
 			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
 			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
 		}
@@ -649,14 +577,10 @@ public class Shark extends GameObject{
 	/**
 	 * Constant registering the maximum number of hit points of a shark.
 	 */
-<<<<<<< HEAD
 	private final static int HIT_POINTS=100;
-=======
-	private final static int MAX_HIT_POINTS=100;
 
 	@Override
 	public void checkWaterContact(double deltaTime) {
 		//Not needed!
 	}
->>>>>>> origin/master
 }
