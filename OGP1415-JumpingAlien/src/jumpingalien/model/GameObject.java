@@ -818,7 +818,7 @@ public abstract class GameObject {
 		if(!world.canHaveAsGameObject(gameObject))
 			throw new IllegalArgumentException();
 		boolean overlap = false;
-		int [][] coveredTiles = world.areaOverlapsWithTiles(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());				
+		int [][] coveredTiles = world.getTilePositionsIn(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getEffectiveHorizontalLocation()+gameObject.getWidth(), gameObject.getEffectiveVerticalLocation()+gameObject.getHeight());				
 		outerloop:
 		for(int [] tile : tiles)
 			for(int [] coveredTile: coveredTiles)
@@ -1009,7 +1009,7 @@ public abstract class GameObject {
 		World world = this.getWorld();
 		boolean overlap = false;
 		if(world.getGameHasStarted()){
-			List<GameObject> gameObjects = getGameObjectsAtTiles(world.areaOverlapsWithTiles(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()));
+			List<GameObject> gameObjects = getGameObjectsAtTiles(world.getTilePositionsIn(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getEffectiveHorizontalLocation()+getWidth(), getEffectiveVerticalLocation()+getHeight()));
 			for(int index = 0; index < gameObjects.size(); index++){
 				GameObject gameObject = gameObjects.get(index);
 				if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject)){
@@ -1049,7 +1049,12 @@ public abstract class GameObject {
 	public int [] checkLeftRightTopBottomSideOverlap(int [][] leftPerimeter1, int [][] rightPerimeter1, int [][] topPerimeter1, int [][] bottomPerimeter1){
 		int [] overlap = {0,0,0,0};
 		World world = this.getWorld();
+<<<<<<< HEAD
 		List<GameObject> gameObjects = getGameObjectsAtTiles(world.areaOverlapsWithTiles(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()));
+=======
+		List<GameObject> gameObjects = getGameObjectsAtTiles(world.getTilePositionsIn(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getEffectiveHorizontalLocation()+getWidth(), getEffectiveVerticalLocation()+getHeight()));
+//		int [][] overlappingGameObjects = new int [gameObjects.size()][5];
+>>>>>>> origin/master
 		for(int index = 0; index < gameObjects.size(); index++){
 			GameObject gameObject = gameObjects.get(index);
 			if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject)){

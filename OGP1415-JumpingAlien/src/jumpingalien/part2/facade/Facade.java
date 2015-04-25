@@ -373,7 +373,10 @@ public class Facade implements IFacadePart2 {
 	 */
 	public int getGeologicalFeature(World world, int pixelX, int pixelY)
 			throws ModelException{
-		return world.getGeologicalFeatureAtPixel(pixelX, pixelY);
+		if (pixelX%world.getTileSize()!=0 && pixelY%world.getTileSize()!=0){
+			throw new ModelException("Not a bottom left pixel of a tile!");
+		}
+		return world.getTileValueAtPixelLocation(pixelX, pixelY);
 	}
 
 	/**
@@ -399,7 +402,7 @@ public class Facade implements IFacadePart2 {
 	 *            </ul>
 	 */
 	public void setGeologicalFeature(World world, int tileX, int tileY, int tileType){
-		world.setGeologicalFeatureAtTile(tileX, tileY, tileType);
+		world.setTileValueAtTilePosition(tileX, tileY, tileType);
 	}
 
 	/**
