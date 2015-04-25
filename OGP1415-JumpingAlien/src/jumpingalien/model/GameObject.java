@@ -220,6 +220,9 @@ public abstract class GameObject {
 		else if(this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)[1]){
 			return false;
 		}
+//		else if(this != null && checkNotAllowedLeftRightTopBottomSideOverlap((int) horizontalLocation, this.getEffectiveVerticalLocation(), this.getWidth(), this.getHeight())){
+//			return false;
+//		}
 		else{
 			return true;
 		}
@@ -252,6 +255,9 @@ public abstract class GameObject {
 				(int) verticalLocation+1, this.getWidth()-1, this.getHeight()-2)[1]){
 			return false;
 		}
+//		else if(this != null && checkNotAllowedLeftRightTopBottomSideOverlap(this.getEffectiveHorizontalLocation(), (int) verticalLocation, this.getWidth(), this.getHeight() )){
+//			return false;
+//		}
 		else{
 			return true;
 		}
@@ -998,12 +1004,33 @@ public abstract class GameObject {
 		return overlappingGameObjects.clone();
 	}
 	
-	public int [] checkNotAllowedLeftRightTopBottomSideOverlap(){
-		int [] overlappingGameObjects = this.checkLeftRightTopBottomSideOverlap(this.getLeftPerimeterOfGameObject(getEffectiveHorizontalLocation()+1, getEffectiveVerticalLocation()+1, getHeight()-2),
-				 this.getRightPerimeterOfGameObject(getEffectiveHorizontalLocation()+1, getEffectiveVerticalLocation()+1, getWidth()-2, getHeight()-2),
-				 this.getTopPerimeterOfGameObject(getEffectiveHorizontalLocation()+1, getEffectiveVerticalLocation()+1, getWidth()-2, getHeight()-2),
-				 this.getBottomPerimeterOfGameObject(getEffectiveHorizontalLocation()+1, getEffectiveVerticalLocation()+1, getWidth()-2));
-		return overlappingGameObjects.clone();
+//	public int [] checkNotAllowedLeftRightTopBottomSideOverlap(){
+//		int [] overlappingGameObjects = this.checkLeftRightTopBottomSideOverlap(this.getLeftPerimeterOfGameObject(getEffectiveHorizontalLocation()+1, getEffectiveVerticalLocation()+1, getHeight()-2),
+//				 this.getRightPerimeterOfGameObject(getEffectiveHorizontalLocation()+1, getEffectiveVerticalLocation()+1, getWidth()-2, getHeight()-2),
+//				 this.getTopPerimeterOfGameObject(getEffectiveHorizontalLocation()+1, getEffectiveVerticalLocation()+1, getWidth()-2, getHeight()-2),
+//				 this.getBottomPerimeterOfGameObject(getEffectiveHorizontalLocation()+1, getEffectiveVerticalLocation()+1, getWidth()-2));
+//		return overlappingGameObjects.clone();
+//	}
+	
+	public boolean checkNotAllowedLeftRightTopBottomSideOverlap(int pixelX1, int pixelY1, int width1, int height1){
+		World world = this.getWorld();
+		boolean overlap = false;
+		if(world.getGameHasStarted()){
+			List<GameObject> gameObjects = getGameObjectsAtTiles(world.areaOverlapsWithTiles(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()));
+			for(int index = 0; index < gameObjects.size(); index++){
+				GameObject gameObject = gameObjects.get(index);
+				if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject)){
+					int pixelX2 = gameObject.getEffectiveHorizontalLocation();
+					int pixelY2 = gameObject.getEffectiveVerticalLocation();
+					int width2 = gameObject.getWidth();
+					int height2 = gameObject.getHeight();
+					if(!(pixelX1 + 1 + (width1 - 3) < pixelX2 || pixelX2 + 1 + (width2 -3) < pixelX1 || pixelY1 + 1 + (height1 - 3) < pixelY2 || pixelY2 + 1 + (height2 - 3) < pixelY1)){
+						return true;
+					}
+				}
+			}
+		}
+		return overlap;
 	}
 	
 	/**
@@ -1209,13 +1236,12 @@ public abstract class GameObject {
 				gameObject.setContact(true);
 			}
 		}
-		else if(this.getContact() == true && !( gameObject instanceof Plant)){
-			int [] overlap2 = checkNotAllowedLeftRightTopBottomSideOverlap();
-			if(overlap2[0] == 1){
-				if(overlap2[3] == 1){
+		else if(this.getContact() == true){
+			if(checkNotAllowedLeftRightTopBottomSideOverlap(this.getEffectiveHorizontalLocation(), this.getEffectiveVerticalLocation(), this.getWidth(), this.getHeight())){
+				if(checkNotAllowedLeftRightTopBottomSideOverlap((int) oldHorizontalLocation, this.getEffectiveVerticalLocation(), this.getWidth(), this.getHeight())){
 					this.setVerticalLocation(oldVerticalLocation);
 				}
-				else if(overlap2[4] == 1){
+				if(checkNotAllowedLeftRightTopBottomSideOverlap(this.getEffectiveHorizontalLocation(), (int) oldVerticalLocation, this.getWidth(), this.getHeight())){
 					this.setHorizontalLocation(oldHorizontalLocation);
 				}
 			}

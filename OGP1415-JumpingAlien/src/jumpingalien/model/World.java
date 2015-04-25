@@ -1040,6 +1040,7 @@ public class World {
 		return gameObjects.get(index);
 	}
 	
+	
 	/**
 	 * List registering the game objects of this world.
 	 */

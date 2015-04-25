@@ -425,7 +425,7 @@ public class Facade implements IFacadePart2 {
 	 *         there are no interactions between the alien and enemy objects).
 	 */
 	public boolean isImmune(Mazub alien){
-		return false;
+		return alien.isUntouchable();
 	}
 
 	/**
