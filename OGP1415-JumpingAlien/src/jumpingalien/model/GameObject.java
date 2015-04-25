@@ -847,7 +847,7 @@ public abstract class GameObject {
 	protected List<GameObject> getGameObjectsAtTiles(int [][] tiles){
 		List<GameObject> gameObjects = new ArrayList<GameObject>();
 		World world = this.getWorld();
-		for(int index = 0; index < world.getNbOfGameObjects(); index++){
+		for(int index = 0; index < world.getNbGameObjects(); index++){
 			GameObject gameObject = world.getGameObjectAtIndex(index);
 			if(world.canHaveAsGameObject(gameObject) && gameObject != this){
 				if(gameObjectOverlapsWithTiles(gameObject, tiles))	

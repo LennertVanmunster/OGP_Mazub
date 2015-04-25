@@ -884,7 +884,7 @@ public class World {
 	 * @param deltaTime
 	 */
 	public void advanceTime(double deltaTime){
-		for(int index = 0; index < this.getNbOfGameObjects(); index++){
+		for(int index = 0; index < this.getNbGameObjects(); index++){
 			GameObject gameObject = getGameObjectAtIndex(index);
 			if(canHaveAsGameObject(gameObject))
 				gameObject.advanceTime(deltaTime);
@@ -1056,7 +1056,7 @@ public class World {
 	 * @return	|gameObjects.size()
 	 */
 	@Raw
-	public int getNbOfGameObjects(){
+	public int getNbGameObjects(){
 		return gameObjects.size();
 	}
 	
@@ -1110,13 +1110,17 @@ public class World {
 	 * 
 	 * @param 	gameObject
 	 * 			The game object to be checked.
-	 * @return	|if(getNbOfGameObjects() > 100)
-	 *			|	result == false;
-	 *			|else if(gameObject==null){
-	 *			|	result == false;
-	 *			|else{
-	 *			|	result == gameObject.canHaveAsLocation(gameObject.getHorizontalLocation()
-	 *			|	,gameObject.getVerticalLocation());
+	 * @return	|if(gameObject==null)
+	 * 			|	result==false
+	 * 			|else if(!this.getGameHasStarted())
+	 * 			|	result==gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation())
+	 *			|	&& isValidNbGameObjects(this.getNbGameObjects())
+	 * 			|else
+	 * 			|	if(gameObject.isTerminate())
+	 * 			|		result==(gameObject==null)
+	 * 			|	else
+	 * 			|	result==gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation())
+	 *			|	&& isValidNbGameObjects(this.getNbGameObjects())
 	 *	
 	 */
 	public boolean canHaveAsGameObject(GameObject gameObject){
@@ -1125,7 +1129,8 @@ public class World {
 		}
 		else if (!this.getGameHasStarted()){
 			return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation())
-					&& isValidNbGameObjects(this.getNbOfGameObjects());
+					&& isValidNbGameObjects(this.getNbGameObjects());
+			
 		}
 		else{
 			if(gameObject.isTerminated()){
@@ -1133,11 +1138,21 @@ public class World {
 			}
 			else{
 				return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation())
-						&& isValidNbGameObjects(this.getNbOfGameObjects());
+						&& isValidNbGameObjects(this.getNbGameObjects());
 			}
 		}
 	}
 	
+	/**
+	 * Check whether this world has proper game objects associated with it, this includes a proper Mazub.
+	 * @return	|for(gamObject in gameObjects)
+	 * 			|	if(!this.canHavaAsGameOject(gameObject))
+	 * 			|		result==false
+	 * 			|	if(gameObject.getWorld()!=this)
+	 * 			|		result==false
+	 * 			|	else
+	 * 			|		result==true
+	 */
 	public boolean hasProperGameObjects(){
 		for (GameObject gameObject : gameObjects) {
             if (!canHaveAsGameObject(gameObject))
@@ -1152,16 +1167,12 @@ public class World {
 	 * Check whether this world contains the given game object.
 	 * @param 	gameObject
 	 * 			The given game object.
-	 * @return	|gameObjects.contains(gameObject);
+	 * @return	|result==gameObjects.contains(gameObject);
 	 */
 	@Raw
 	public boolean hasAsGameObject(GameObject gameObject) {
 		return gameObjects.contains(gameObject);
 	}
-	
-//	public boolean hasProperGameObjects(){
-//		return (this.canHaveAsGameObject(this.getGameObject()) && this.getGameObject()==null) || this.getGameObject().getWorld()==this;
-//	}
 	
 	/**
 	 * Return the index of the given game object in the list of game objects.
@@ -1188,12 +1199,12 @@ public class World {
 	
 	/**
 	 * List registering the game objects of this world.
+	 * @invar	
 	 */
 	private List<GameObject> gameObjects = new ArrayList<GameObject>();
 
 	/**
 	 * Check whether the Mazub of this world is terminated.
-	 * 
 	 * @return	|result == isTerminated
 	 */
 	public boolean isTerminated() {
@@ -1210,8 +1221,12 @@ public class World {
 	}
 
 	/**
-	 * Terminate the Mazub of this world.
-	 * 
+	 * Terminate the this world.
+	 * @effect	|if(!this.isTerminated)
+	 * 			|	for(gameObject in this.gameObjects)
+	 * 			|		gameObject.setWorld(null)
+	 * @post		|new.getNbGameObjects()==0
+	 * 			|new.isTerminated()==true
 	 */
 	public void terminate() {
 		if(!this.isTerminated()){
@@ -1225,16 +1240,18 @@ public class World {
 
 	
 	/**
-	 * Variable registering if the Mazub of this world is terminated.
+	 * Variable registering this world is terminated.
 	 */
 	private boolean isTerminated=false;
 	
 	/**
 	 * Remove the given game object from this world.
-	 * 
 	 * @param 	gameObject
-	 * 			The given game object.
-	 * @post	|new.contains(gameObject) == false
+	 * 			The game object to be removed.
+	 * @effect	|if(gameObject != null && this.hasAsGameObject(gameObject)
+	 * 			|	gameObject.setWorld(null)
+	 * @post	|if(gameObject != null && this.hasAsGameObject(gameObject)
+	 * 			|	new.contains(gameObject) == false
 	 */
 	public void removeGameObject(GameObject gameObject){
 		if(gameObject != null && hasAsGameObject(gameObject))
@@ -1243,19 +1260,19 @@ public class World {
 	}
 	
 	/**
-	 * Returns a list containing the plants of this world.
+	 * Returns an array list containing the plants of this world.
 	 * 
-	 * @return	|List<Plant> plants = new ArrayList<Plant>();
-	 *			|for(int index = 0; index < getNbOfGameObjects(); index++)
-	 *			|	GameObject gameObject = getGameObjectAtIndex(index);
+	 * @return	|List<Plant> plants = new ArrayList<Plant>()
+	 *			|for(int index = 0..this.getNbGameObjects())
+	 *			|	GameObject gameObject = getGameObjectAtIndex(index)
 	 *			|	if(gameObject instanceof Plant)
-	 *			|		plants.add((Plant) gameObject);
+	 *			|		plants.add((Plant) gameObject)
 	 *			|result == plants
 	 *		
 	 */
-	public List<Plant> getPlant(){
+	public List<Plant> getPlants(){
 		List<Plant> plants = new ArrayList<Plant>();
-		for(int index = 0; index < getNbOfGameObjects(); index++){
+		for(int index = 0; index < getNbGameObjects(); index++){
 			GameObject gameObject = getGameObjectAtIndex(index);
 			if(gameObject instanceof Plant){
 				plants.add((Plant) gameObject);
@@ -1267,17 +1284,17 @@ public class World {
 	/**
 	 * Returns a list containing the slimes of this world.
 	 * 
-	 * @return	|List<Slime> slimes = new ArrayList<Slime>();
-	 *			|for(int index = 0; index < getNbOfGameObjects(); index++){
-	 *			|	GameObject gameObject = getGameObjectAtIndex(index);
-	 *			|	if(gameObject instanceof Slime){
-	 *			|		slimes.add((Slime) gameObject);
-	 *			|return slimes;
+	 * @return	|List<Slime> slimes = new ArrayList<Slime>()
+	 *			|for(index=0..getNbGameObjects())
+	 *			|	GameObject gameObject = getGameObjectAtIndex(index)
+	 *			|	if(gameObject instanceof Slime)
+	 *			|		slimes.add((Slime) gameObject)
+	 *			|result==slimes
 	 *		
 	 */
 	public List<Slime> getSlimes(){
 		List<Slime> slimes = new ArrayList<Slime>();
-		for(int index = 0; index < getNbOfGameObjects(); index++){
+		for(int index = 0; index < getNbGameObjects(); index++){
 			GameObject gameObject = getGameObjectAtIndex(index);
 			if(gameObject instanceof Slime){
 				slimes.add((Slime) gameObject);
@@ -1287,19 +1304,19 @@ public class World {
 	}
 	
 	/**
-	 * Returns a list containing the slimes of this world.
+	 * Returns a list containing the sharks of this world.
 	 * 
-	 * @return	|List<Slime> slimes = new ArrayList<Slime>();
-	 *			|for(int index = 0; index < getNbOfGameObjects(); index++){
-	 *			|	GameObject gameObject = getGameObjectAtIndex(index);
-	 *			|	if(gameObject instanceof Slime){
-	 *			|		slimes.add((Slime) gameObject);
-	 *			|return slimes;
+	 * @return	|List<Shark> sharks = new ArrayList<Shark>()
+	 *			|for(index = 0..this.getNbGameObjects())
+	 *			|	GameObject gameObject = getGameObjectAtIndex(index)
+	 *			|	if(gameObject instanceof Shark)
+	 *			|		sharks.add((Slime) gameObject)
+	 *			|result==sharks
 	 *		
 	 */
 	public List<Shark> getSharks(){
 		List<Shark> sharks = new ArrayList<Shark>();
-		for(int index = 0; index < getNbOfGameObjects(); index++){
+		for(int index = 0; index < getNbGameObjects(); index++){
 			GameObject gameObject = getGameObjectAtIndex(index);
 			if(gameObject instanceof Shark){
 				sharks.add((Shark) gameObject);

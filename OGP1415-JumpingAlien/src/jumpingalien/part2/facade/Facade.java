@@ -472,7 +472,7 @@ public class Facade implements IFacadePart2 {
 	 *         collection, but each plant may only be returned once.
 	 */
 	public Collection<Plant> getPlants(World world){
-		Collection<Plant> plants = world.getPlant();
+		Collection<Plant> plants = world.getPlants();
 		return plants;
 	}
 
