@@ -61,7 +61,7 @@ public abstract class GameObject {
 	 * 			The horizontal velocity of the new game object.
 	 * @param verticalVelocity
 	 * 			The vertical velocity of the new game object.
-	 * @param initialHorizontalVelocityNotDucking
+	 * @param initialHorizontalVelocity
 	 * 			The initial horizontal velocity of the new game object when the game object starts moving and is not ducking.
 	 * @param maximumHorizontalVelocity
 	 * 			The maximum horizontal velocity of the new game object when it is not ducking.
@@ -83,10 +83,10 @@ public abstract class GameObject {
 	 * 			|new.getVerticalLocation() == verticalLocation
 	 * @post	The initial horizontal velocity when not ducking
 	 * 			of this new game object is equal to the given initial horizontal velocity.
-	 * 			|new.getInitialHorizontalVelocityNotDucking() == initialHorizontalVelocityNotDucking
+	 * 			|new.getInitialHorizontalVelocity() == initialHorizontalVelocity
 	 * @post	The maximum horizontal velocity this new game object when not ducking is equal to the 
 	 * 			given maximum horizontal velocity.
-	 * 			|new.getMaximumHorizontalVelocityNotDucking() == maximumHorizontalVelocityNotDucking
+	 * 			|new.getMaximumHorizontalVelocity() == maximumHorizontalVelocity
 	 * @post	The horizontal velocity of this new game object is equal to the 
 	 * 			given horizontal velocity.
 	 * 			|new.getHorizontalVelocity() == horizontalVelocity
@@ -125,11 +125,11 @@ public abstract class GameObject {
 	 * @throws	IllegalArgumentException
 	 * 			The given initial horizontal velocity is not valid for any game object or it does 
 	 * 			not match with the given maximum horizontal velocity.
-	 * 			|!isPossibleInitialHorizontalVelocity(initialHorizontalVelocityNotDucking)	
+	 * 			|!isPossibleInitialHorizontalVelocity(initialHorizontalVelocity)	
 	 * @throws	IllegalArgumentException
 	 * 			The given maximum horizontal velocity is not valid for any game object or it does
 	 * 			not match with the given initial horizontal velocity.
-	 * 			|!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking)	
+	 * 			|!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocity)	
 	 * @throws	IllegalArgumentException
 	 * 			Not a valid horizontal velocity.
 	 * 			|!canHaveAsHorizontalVelocity(horizontalVelocity)
@@ -144,21 +144,21 @@ public abstract class GameObject {
 	 * 			| !canHaveAsDuckingState(ducking)
 	 */
 	protected GameObject(int horizontalLocation, int verticalLocation, double horizontalVelocity,
-				double verticalVelocity, double initialHorizontalVelocityNotDucking, double maximumHorizontalVelocityNotDucking, double initialVerticalVelocity, double horizontalAcceleration, boolean ducking, int hitPoints, int maxHitPoints, Sprite... images)
+				double verticalVelocity, double initialHorizontalVelocity, double maximumHorizontalVelocity, double initialVerticalVelocity, double horizontalAcceleration, boolean ducking, int hitPoints, int maxHitPoints, Sprite... images)
 		throws IllegalArgumentException, IllegalLocationException {
 			setHorizontalLocation(horizontalLocation);
 			setVerticalLocation(verticalLocation);
-			if(!isPossibleInitialHorizontalVelocity(initialHorizontalVelocityNotDucking))
+			if(!isPossibleInitialHorizontalVelocity(initialHorizontalVelocity))
 				throw new IllegalArgumentException("Not a valid initial horizontal velocity!");
-			this.initialHorizontalVelocityNotDucking = initialHorizontalVelocityNotDucking;
-			if(!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocityNotDucking))
+			this.initialHorizontalVelocity = initialHorizontalVelocity;
+			if(!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocity))
 				throw new IllegalArgumentException("Not a valid maximum horizontal velocity!");
-			this.maximumHorizontalVelocityNotDucking=maximumHorizontalVelocityNotDucking;
+			this.maximumHorizontalVelocity=maximumHorizontalVelocity;
 			this.initialVerticalVelocity=Math.abs(initialVerticalVelocity);
 			setHorizontalVelocity(horizontalVelocity);
 			setVerticalVelocity(verticalVelocity);
 			this.setDucking(ducking);
-			this.horizontalAcceleration=Math.abs(horizontalAcceleration);
+			this.setHorizontalAcceleration(horizontalAcceleration);
 			if(horizontalVelocity==0){
 				this.setMovingHorizontally(false);
 			}
@@ -367,29 +367,17 @@ public abstract class GameObject {
 	
 	/**
 	 * Return the maximum horizontal velocity of this game object.
-	 * 
-	 * @return	If the ducking state of this game object is true, the maximum horizontal velocity of this game object is equal to the ducking velocity constant.
-	 * 			Otherwise the maximum horizontal velocity of this game object is equal to its maximum horizontal velocity when not ducking.
-	 * 			|if (this.isDucking())
-	 * 			|	result==DUCKING_VELOCITY
-	 * 			|else
-	 * 			| 	result==this.getMaximumHorizontalVelocityNotDucking()
 	 */
 	@Raw
-	public double getMaximumHorizontalVelocity(){
-		if (this.isDucking())
-			return DUCKING_VELOCITY;
-		else 
-			return this.getMaximumHorizontalVelocityNotDucking();
-	}
+	public abstract double getMaximumHorizontalVelocityForUpdate();
 	
 	/**
 	 * Return the maximum horizontal velocity when not ducking of this game object.
 	 */
 	@Basic
 	@Raw
-	public double getMaximumHorizontalVelocityNotDucking(){
-		return this.maximumHorizontalVelocityNotDucking;
+	public double getMaximumHorizontalVelocity(){
+		return this.maximumHorizontalVelocity;
 	}
 	
 	/**
@@ -397,28 +385,29 @@ public abstract class GameObject {
 	 */
 	@Basic
 	@Raw
-	public double getInitialHorizontalVelocityNotDucking(){
-		return this.initialHorizontalVelocityNotDucking;
+	public double getInitialHorizontalVelocity(){
+		return this.initialHorizontalVelocity;
+	}
+	
+	public void setInitialHorizontalVelocity(double initialHorizontalVelocity){
+		if(!canHaveAsInitialHorizontalVelocity(initialHorizontalVelocity)){
+			throw new IllegalArgumentException("This game object cannot have that initial horizontal velocity!");
+		}
+		this.initialHorizontalVelocity=initialHorizontalVelocity;
+	}
+	
+	public void setMaximumHorizontalVelocity(double maximumHorizontalVelocity){
+		if(!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocity)){
+			throw new IllegalArgumentException("This game object cannot have that maximum horizontal velocity!");
+		}
+		this.maximumHorizontalVelocity=maximumHorizontalVelocity;
 	}
 	
 	/**
 	 * Return the initial horizontal velocity of this game object.
-	 * 
-	 * @return	If the ducking state of this game object is true, the initial horizontal velocity of this game object is equal to the ducking velocity constant.
-	 * 			Otherwise the initial horizontal velocity of this game object is equal to its initial horizontal velocity when not ducking.
-	 * 			|if (this.isDucking())
-	 * 			|	result==DUCKING_VELOCITY
-	 * 			|else
-	 * 			| 	result==this.getInitialHorizontalVelocityNotDucking()
 	 */
 	@Raw
-	public double getInitialHorizontalVelocity(){
-		if (this.isDucking())
-			return DUCKING_VELOCITY;
-		else 
-			return this.getInitialHorizontalVelocityNotDucking();
-	}
-	
+	public abstract double getInitialHorizontalVelocityForUpdate();
 	
 	/**
 	 * Return the initial vertical velocity of this game object
@@ -524,7 +513,8 @@ public abstract class GameObject {
 	 */
 	@Raw
 	public boolean canHaveAsMaximumHorizontalVelocity(double maximumHorizontalVelocity){
-		return matchesMaximumHorizontalVelocityInitialHorizontalVelocity(maximumHorizontalVelocity, this.getInitialHorizontalVelocity());
+		return isPossibleMaximumHorizontalVelocity(maximumHorizontalVelocity)
+				&& matchesMaximumHorizontalVelocityInitialHorizontalVelocity(maximumHorizontalVelocity, this.getInitialHorizontalVelocity());
 	}
 	
 	/**
@@ -549,6 +539,8 @@ public abstract class GameObject {
 	 */
 	public abstract boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity);
 
+	public abstract boolean isPossibleMaximumHorizontalVelocity(double maximumHorizontalVelocity);
+	
 	/**
 	 * Variable registering the horizontal velocity of this game object.
 	 */
@@ -562,33 +554,25 @@ public abstract class GameObject {
 	/**
 	 * Variable registering the initial horizontal velocity of this game object when not ducking.
 	 */
-	private final double initialHorizontalVelocityNotDucking;
+	private double initialHorizontalVelocity=0;
 	
 	/**
 	 * Variable registering the maximum horizontal velocity of this game object.
 	 */
-	private final double maximumHorizontalVelocityNotDucking;
+	private double maximumHorizontalVelocity=0;
 	
 	/**
 	 * Variable registering the initial vertical velocity of this game object.
 	 */
 	private final double initialVerticalVelocity;
 	
-	/**
-	 * Variable registering the ducking velocity constant.
-	 */
-	protected final static double DUCKING_VELOCITY=1;
 	
 	/**
 	 * Check whether the given horizontal acceleration is a valid horizontal acceleration.
 	 * @param	horizontalAcceleration
 	 * 			The horizontal acceleration to be checked.
-	 * @return	The given horizontal acceleration is equal to zero or the horizontal acceleration of this game object.
-	 * 			| result == (horizontalAcceleration==0 || Util.fuzzyEquals(horizontalAcceleration,this.horizontalAcceleration))
 	 */
-	public boolean canHaveAsHorizontalAcceleration(double horizontalAcceleration){
-		return horizontalAcceleration==0 || Util.fuzzyEquals(horizontalAcceleration,this.horizontalAcceleration);
-	}
+	public abstract boolean canHaveAsHorizontalAcceleration(double horizontalAcceleration);
 
 	/**
 	 * Returns the horizontal acceleration of this game object.
@@ -602,13 +586,23 @@ public abstract class GameObject {
 	 * 			| 	result==this.horizontalAcceleration
 	 */
 	@Raw
-	public double getHorizontalAcceleration(){
+	public double getHorizontalAccelerationForUpdate(){
 		if (!this.isMovingHorizontally() || 
-				Util.fuzzyEquals(Math.abs(this.getHorizontalVelocity()), this.getMaximumHorizontalVelocity())){
+				Util.fuzzyEquals(Math.abs(this.getHorizontalVelocity()), this.getMaximumHorizontalVelocityForUpdate())){
 			return 0;
 		}
 		else{
-			return this.horizontalAcceleration;
+			return this.getHorizontalAcceleration();
+		}
+	}
+	
+	public double getHorizontalAcceleration(){
+		return this.horizontalAcceleration;
+	}
+	
+	public void setHorizontalAcceleration(double horizontalAcceleration){
+		if(canHaveAsHorizontalAcceleration(horizontalAcceleration)){
+			this.horizontalAcceleration=horizontalAcceleration;
 		}
 	}
 	
@@ -689,6 +683,13 @@ public abstract class GameObject {
 	 */
 	public abstract boolean canHaveAsDuckingState(boolean ducking);
 	
+	public void setWantsEndDuck(boolean wantsEndDuck){
+		this.wantsEndDuck=wantsEndDuck;
+	}
+	
+	public boolean wantsEndDuck(){
+		return this.wantsEndDuck;
+	}
 	
 	/**
 	 * Set the ducking state of this game object to the given ducking state.
@@ -739,6 +740,10 @@ public abstract class GameObject {
 		}
 	}
 	
+	/**
+	 * Variable registering if the game object is currently ducking and wants to stand up but is unable to do so.
+	 */
+	private boolean wantsEndDuck=false;
 	
 	/**
 	 * Variable registering the ducking state of this game object.

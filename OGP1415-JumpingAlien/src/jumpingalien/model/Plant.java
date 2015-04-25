@@ -30,17 +30,25 @@ public class Plant extends GameObject {
 	@Raw
 	public Plant(int horizontalLocation, int verticalLocation, Sprite... images)
 	throws IllegalArgumentException{
-		super(horizontalLocation, verticalLocation, VELOCITYCONSTANT, 0, VELOCITYCONSTANT, VELOCITYCONSTANT, 0, 0, false, 1, MAX_HIT_POINTS, images);
+		super(horizontalLocation, verticalLocation, velocityConstant, 0, velocityConstant, velocityConstant, 0, 0, false, HIT_POINTS, HIT_POINTS, images);
+	}
+	
+	public double getVelocityConstant(){
+		return velocityConstant;
+	}
+	
+	public static boolean isValidVelocityConstant(double velocityConstant){
+		return velocityConstant>0;
 	}
 	
 	/**
 	 * Check whether this plant can have the given horizontal velocity as its horizontal velocity.
 	 * @param 	horizontalVelocity
 	 * @return	True if the absolute value of the given horizontal velocity is equal to the velocity constant of all plants.
-	 * 			| result== Util.fuzzyEquals(Math.abs(horizontalVelocity), VELOCITYCONSTANT)
+	 * 			| result== Util.fuzzyEquals(Math.abs(horizontalVelocity), getVelocityConstant())
 	 */
 	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
-		return Util.fuzzyEquals(Math.abs(horizontalVelocity), VELOCITYCONSTANT);
+		return Util.fuzzyEquals(Math.abs(horizontalVelocity), getVelocityConstant());
 	}
 	
 	/**
@@ -49,7 +57,41 @@ public class Plant extends GameObject {
 	 */
 	@Override
 	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity) {
-		return initialHorizontalVelocity==VELOCITYCONSTANT;
+		return initialHorizontalVelocity==getVelocityConstant() && isValidVelocityConstant(getVelocityConstant());
+	}
+	
+	public boolean isPossibleMaximumHorizontalVelocity(double maximumHorizontalVelocity) {
+		return maximumHorizontalVelocity==getVelocityConstant() && isValidVelocityConstant(getVelocityConstant());
+	}
+	
+	/**
+	 * Return the initial horizontal velocity of this game object.
+	 * 
+	 * @return	If the ducking state of this game object is true, the initial horizontal velocity of this game object is equal to the ducking velocity constant.
+	 * 			Otherwise the initial horizontal velocity of this game object is equal to its initial horizontal velocity when not ducking.
+	 * 			|if (this.isDucking())
+	 * 			|	result==DUCKING_VELOCITY
+	 * 			|else
+	 * 			| 	result==this.getInitialHorizontalVelocity()
+	 */
+	@Raw
+	public double getInitialHorizontalVelocityForUpdate(){
+		return this.getInitialHorizontalVelocity();
+	}
+	
+	/**
+	 * Return the maximum horizontal velocity of this game object.
+	 * 
+	 * @return	If the ducking state of this game object is true, the maximum horizontal velocity of this game object is equal to the ducking velocity constant.
+	 * 			Otherwise the maximum horizontal velocity of this game object is equal to its maximum horizontal velocity when not ducking.
+	 * 			|if (this.isDucking())
+	 * 			|	result==DUCKING_VELOCITY
+	 * 			|else
+	 * 			| 	result==this.getMaximumHorizontalVelocity()
+	 */
+	@Raw
+	public double getMaximumHorizontalVelocityForUpdate(){
+		return this.getMaximumHorizontalVelocity();
 	}
 	
 	/**
@@ -81,11 +123,22 @@ public class Plant extends GameObject {
 		return verticalAcceleration==0;
 	}
 	
+	/**
+	 * Check whether the given horizontal acceleration is a valid horizontal acceleration.
+	 * @param	horizontalAcceleration
+	 * 			The horizontal acceleration to be checked.
+	 * @return	The given horizontal acceleration is equal to zero or the horizontal acceleration of this game object.
+	 * 			| result == (horizontalAcceleration==0 || Util.fuzzyEquals(horizontalAcceleration,this.horizontalAcceleration))
+	 */
+	public boolean canHaveAsHorizontalAcceleration(double horizontalAcceleration){
+		return horizontalAcceleration==0;
+	}
+	
 	
 	/**
 	 * Variable registering the velocity constant for the horizontal velocity of all plants.
 	 */
-	private static final double VELOCITYCONSTANT = 0.5;
+	private static final double velocityConstant = 0.5;
 	
 	/**
 	 * Check whether the given number of images is a valid number of images
@@ -158,7 +211,7 @@ public class Plant extends GameObject {
 		double oldHorizontalLocation = this.getHorizontalLocation();
 		double newHorizontalLocation = this.getHorizontalLocation() + 
 				100*(this.getHorizontalVelocity()*deltaTimeForPixel + 
-				this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTimeForPixel, 2));
+				this.getDirection().getNumberForCalculations()*0.5*getHorizontalAccelerationForUpdate()*Math.pow(deltaTimeForPixel, 2));
 		try{
 			this.setHorizontalLocation(newHorizontalLocation);
 		} catch(IllegalLocationException exc){
@@ -172,12 +225,12 @@ public class Plant extends GameObject {
 	 * 
 	 * @effect	|setTimeSinceStartMove(0);
 	 * @effect	|setNewDirection();
-	 * @effect	|setHorizontalVelocity(this.getDirection().getNumberForCalculations() * VELOCITYCONSTANT);
+	 * @effect	|setHorizontalVelocity(this.getDirection().getNumberForCalculations() * getVelocityConstant());
 	 */
 	private void startNewAction(){
 		this.setTimeSinceStartAction(0);
 		this.setNewDirection();
-		this.setHorizontalVelocity(this.getDirection().getNumberForCalculations() * VELOCITYCONSTANT);
+		this.setHorizontalVelocity(this.getDirection().getNumberForCalculations() * getVelocityConstant());
 	}
 	
 	/**
@@ -195,10 +248,12 @@ public class Plant extends GameObject {
 			this.setDirection(Direction.LEFT);
 	}
 	
+	
+	
 	/**
-	 * Variable registering the maximum number of hitpoints for plants.
+	 * Variable registering the number of hitpoints for plants.
 	 */
-	private final static int MAX_HIT_POINTS=1;
+	private final static int HIT_POINTS=1;
 
 	
 	@Override

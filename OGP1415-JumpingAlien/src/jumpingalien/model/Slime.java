@@ -31,7 +31,7 @@ public class Slime extends GameObject {
 	 * 			an initial horizontal velocity when not ducking of zero, a maximum horizontal velocity when not ducking equal to the maximum horizontal velocity constant, 
 	 * 			an initial vertical velocity of zero, the constant horizontal acceleration
 	 * 			for all slimes, a false ducking state, a number of hit points of 100, a maximum number of hit points of 100 and an image array containing its sprites.
-	 * 			| super(horizontalLocation, verticalLocation, 0, 0, 0, MAXIMUM_HORIZONTAL_VELOCITY, 0, HORIZONTAL_ACCELERATION, false, 100, 100, images)
+	 * 			| super(horizontalLocation, verticalLocation, 0, 0, 0, maximumHorizontalVelocity, 0, horizontalAcceleration, false, 100, 100, images)
 	 * @effect	A binary relationship is established between this slime and the given school.
 	 * 			| school.addAsSlime(this)
 	 * 			| this.setSchool(school)
@@ -39,7 +39,7 @@ public class Slime extends GameObject {
 	@Raw
 	public Slime(int horizontalLocation, int verticalLocation, Sprite[] images, School school)
 		throws IllegalArgumentException, IllegalLocationException {
-		super(horizontalLocation, verticalLocation, 0, 0, 0, MAXIMUM_HORIZONTAL_VELOCITY, 0, HORIZONTAL_ACCELERATION, false, 100, 100, images);
+		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, 0, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, images);
 		school.addAsSlime(this);
 		this.setSchool(school);
 	}
@@ -50,14 +50,14 @@ public class Slime extends GameObject {
 	 * @param 	horizontalVelocity
 	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the initial horizontal velocity of this slime
 	 * 			and less than or equal to the maximum horizontal velocity of this game object.
-	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
-	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
+	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocityForUpdate()) 
+	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocityForUpdate())
 	 *			|| Util.fuzzyEquals(horizontalVelocity, 0)
 	 */
 	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
 		horizontalVelocity = Math.abs(horizontalVelocity);
-		return Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocity()) 
-				&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocity())
+		return Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocityForUpdate()) 
+				&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocityForUpdate())
 				|| Util.fuzzyEquals(horizontalVelocity, 0);
 	}
 	
@@ -67,13 +67,52 @@ public class Slime extends GameObject {
 	 */
 	@Override
 	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity) {
-		return initialHorizontalVelocity==0;
+		return initialHorizontalVelocity==initialHorizontalVelocityAtSpawn && initialHorizontalVelocityAtSpawn>=0;
 	}
+	
+	public boolean isPossibleMaximumHorizontalVelocity(double maximumHorizontalVelocity){
+		return maximumHorizontalVelocity==maximumHorizontalVelocityAtSpawn && maximumHorizontalVelocityAtSpawn>0;
+	}
+	
+	/**
+	 * Return the initial horizontal velocity of this game object.
+	 * 
+	 * @return	If the ducking state of this game object is true, the initial horizontal velocity of this game object is equal to the ducking velocity constant.
+	 * 			Otherwise the initial horizontal velocity of this game object is equal to its initial horizontal velocity when not ducking.
+	 * 			|if (this.isDucking())
+	 * 			|	result==DUCKING_VELOCITY
+	 * 			|else
+	 * 			| 	result==this.getInitialHorizontalVelocity()
+	 */
+	@Raw
+	public double getInitialHorizontalVelocityForUpdate(){
+		return this.getInitialHorizontalVelocity();
+	}
+	
+	/**
+	 * Return the maximum horizontal velocity of this game object.
+	 * 
+	 * @return	If the ducking state of this game object is true, the maximum horizontal velocity of this game object is equal to the ducking velocity constant.
+	 * 			Otherwise the maximum horizontal velocity of this game object is equal to its maximum horizontal velocity when not ducking.
+	 * 			|if (this.isDucking())
+	 * 			|	result==DUCKING_VELOCITY
+	 * 			|else
+	 * 			| 	result==this.getMaximumHorizontalVelocity()
+	 */
+	@Raw
+	public double getMaximumHorizontalVelocityForUpdate(){
+		return this.getMaximumHorizontalVelocity();
+	}
+	
+	/**
+	 * 
+	 */
+	private static final double initialHorizontalVelocityAtSpawn=0;
 	
 	/**
 	 * Constant registering the maximum horizontal velocity when not ducking of this Mazub.
 	 */
-	private static final double MAXIMUM_HORIZONTAL_VELOCITY = 2.5;
+	private static final double maximumHorizontalVelocityAtSpawn = 2.5;
 
 	/**
 	 * Returns the vertical acceleration of this slime.
@@ -104,11 +143,22 @@ public class Slime extends GameObject {
 		return verticalAcceleration==0 || Util.fuzzyEquals(verticalAcceleration, VERTICAL_ACCELERATION);
 	}
 	
+	/**
+	 * Check whether the given horizontal acceleration is a valid horizontal acceleration.
+	 * @param	horizontalAcceleration
+	 * 			The horizontal acceleration to be checked.
+	 * @return	The given horizontal acceleration is equal to zero or the horizontal acceleration of this game object.
+	 * 			| result == (horizontalAcceleration==0 || Util.fuzzyEquals(horizontalAcceleration,this.horizontalAcceleration))
+	 */
+	public boolean canHaveAsHorizontalAcceleration(double horizontalAcceleration){
+		return horizontalAcceleration==horizontalAccelerationAtSpawn && horizontalAcceleration!=0;
+	}
+	
 	
 	/**
 	 *  Constant registering the horizontal acceleration of all slimes.
 	 */
-	private static final double HORIZONTAL_ACCELERATION = 0.7;
+	private static final double horizontalAccelerationAtSpawn = 0.7;
 	
 	/**
 	 * Check whether this slime can have the given ducking state as its ducking state.
@@ -136,6 +186,7 @@ public class Slime extends GameObject {
 		this.setDirection(r.nextBoolean() ? Direction.LEFT : Direction.RIGHT);
 		this.setMovingHorizontally(true);
 		this.setTimeSinceStartAction(0);
+		this.setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*this.getDirection().getNumberForCalculations());
 	}
 	
 	/**
@@ -208,16 +259,16 @@ public class Slime extends GameObject {
 		while (sumDeltaTimeForPixel<deltaTime){
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
 			newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTimeForPixel;
-			newHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAcceleration()*deltaTimeForPixel;
+			newHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAccelerationForUpdate()*deltaTimeForPixel;
 			newHorizontalLocation = this.getHorizontalLocation() + 
 					100*(this.getHorizontalVelocity()*deltaTimeForPixel + 
-					this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTimeForPixel, 2));
+					this.getDirection().getNumberForCalculations()*0.5*getHorizontalAccelerationForUpdate()*Math.pow(deltaTimeForPixel, 2));
 			newVerticalLocation = this.getVerticalLocation() + 100*(getVerticalVelocity()*deltaTimeForPixel + 0.5*getVerticalAcceleration()*Math.pow(deltaTimeForPixel,2));
 			sumDeltaTimeForPixel+=deltaTimeForPixel;
 			try{
 				this.setHorizontalVelocity(newHorizontalVelocity);
 			} catch(IllegalArgumentException exc){
-					this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getMaximumHorizontalVelocity());
+					this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getMaximumHorizontalVelocityForUpdate());
 			}
 			try{
 				this.setVerticalVelocity(newVerticalVelocity);
@@ -402,6 +453,8 @@ public class Slime extends GameObject {
 	 */
 	private School school;
 
+	
+	private final static int HIT_POINTS=100;
 
 	
 }
