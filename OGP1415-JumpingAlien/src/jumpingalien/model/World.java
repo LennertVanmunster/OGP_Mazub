@@ -733,7 +733,7 @@ public class World {
 	 */
 	public int getTileValueAtPixelLocation(int pixelX, int pixelY) throws IllegalArgumentException {
 		if(!canHaveAsPixelLocation(pixelX, pixelY))
-			throw new IllegalArgumentException("Not a valid pixel position!");
+			throw new IllegalArgumentException("Not a valid pixel location!");
 		int tile [] = getTilePositionAtPixelLocation(pixelX, pixelY);
 		return getTileValueAtTilePosition(tile[0], tile[1]);
 	}

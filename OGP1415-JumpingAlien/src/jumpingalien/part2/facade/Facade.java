@@ -20,7 +20,11 @@ public class Facade implements IFacadePart2 {
 	 * @return
 	 */
 	public Mazub createMazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites){
+		try{
 			return new Mazub(pixelLeftX, pixelBottomY, sprites);
+		} catch (IllegalArgumentException exc){
+			throw new ModelException("Cannot create a Mazub with the given arguments!");
+		}
 	}
 
 	/**
@@ -199,8 +203,12 @@ public class Facade implements IFacadePart2 {
 	public World createWorld(int tileSize, int nbTilesX, int nbTilesY,
 			int visibleWindowWidth, int visibleWindowHeight, int targetTileX,
 			int targetTileY){
-		return new World(tileSize, nbTilesX, nbTilesY, visibleWindowWidth, visibleWindowHeight,
+		try{
+			return new World(tileSize, nbTilesX, nbTilesY, visibleWindowWidth, visibleWindowHeight,
 				targetTileX, targetTileY);
+		}catch (IllegalArgumentException exc){
+			throw new ModelException("Cannot create a new world with the given arguments!");
+		}
 	}
 
 	/**
@@ -311,7 +319,11 @@ public class Facade implements IFacadePart2 {
 	 *         bottom left pixel of the given tile, in that order.
 	 */
 	public int[] getBottomLeftPixelOfTile(World world, int tileX, int tileY){
+		try{
 		return world.getBottomLeftPixelOfTile(tileX, tileY);
+		} catch (IllegalArgumentException exc){
+			throw new ModelException("The given world cannot have the given tile position as its tile position!");
+		}
 	}
 
 	/**
@@ -339,7 +351,11 @@ public class Facade implements IFacadePart2 {
 	 */
 	public int[][] getTilePositionsIn(World world, int pixelLeft, int pixelBottom,
 			int pixelRight, int pixelTop){
-		return world.getTilePositionsIn(pixelLeft, pixelBottom, pixelRight, pixelTop);
+		try{
+			return world.getTilePositionsIn(pixelLeft, pixelBottom, pixelRight, pixelTop);
+		} catch(IllegalArgumentException exc){
+			throw new ModelException("The given pixel location is not valid!");
+		}
 	}
 
 	/**
@@ -376,7 +392,11 @@ public class Facade implements IFacadePart2 {
 		if (pixelX%world.getTileSize()!=0 && pixelY%world.getTileSize()!=0){
 			throw new ModelException("Not a bottom left pixel of a tile!");
 		}
-		return world.getTileValueAtPixelLocation(pixelX, pixelY);
+		try{
+			return world.getTileValueAtPixelLocation(pixelX, pixelY);
+		}catch (IllegalArgumentException exc){
+			throw new ModelException("Not a valid pixel location!");
+		}
 	}
 
 	/**
@@ -402,7 +422,11 @@ public class Facade implements IFacadePart2 {
 	 *            </ul>
 	 */
 	public void setGeologicalFeature(World world, int tileX, int tileY, int tileType){
-		world.setTileValueAtTilePosition(tileX, tileY, tileType);
+		try{
+			world.setTileValueAtTilePosition(tileX, tileY, tileType);
+		} catch (IllegalArgumentException exc){
+			throw new ModelException("The given tile position is not a valid tile position for the given world!");
+		}
 	}
 
 	/**
@@ -414,8 +438,12 @@ public class Facade implements IFacadePart2 {
 	 *            The alien to be set as the player's character.
 	 */
 	public void setMazub(World world, Mazub alien){
-		alien.setWorld(world);
-		world.setMazub(alien);
+		try{
+			alien.setWorld(world);
+			world.setMazub(alien);
+		} catch (IllegalArgumentException exc){
+			throw new ModelException("Cannot set this Mazub in this world!");
+		}
 	}
 
 	/**
@@ -446,7 +474,11 @@ public class Facade implements IFacadePart2 {
 	 *         should not belong to a world.
 	 */
 	public Plant createPlant(int x, int y, Sprite[] sprites){
-		return new Plant(x,y,sprites);
+		try{
+			return new Plant(x,y,sprites);
+		} catch (IllegalArgumentException exc){
+			throw new ModelException("Cannot create a new plant with the given arguments!");
+		}
 	}
 
 	/**
@@ -458,8 +490,12 @@ public class Facade implements IFacadePart2 {
 	 *            The plant that needs to be added to the world.
 	 */
 	public void addPlant(World world, Plant plant){
-		plant.setWorld(world);
-		world.addAsGameObject(plant);
+		try{
+			plant.setWorld(world);
+			world.addAsGameObject(plant);
+		} catch (IllegalArgumentException exc){
+			throw new ModelException("Cannot add this plant to this world!");
+		}
 	}
 
 	/**
@@ -516,7 +552,11 @@ public class Facade implements IFacadePart2 {
 	 *         should not belong to a world.
 	 */
 	public Shark createShark(int x, int y, Sprite[] sprites){
-		return new Shark(x,y,sprites);
+		try{
+			return new Shark(x,y,sprites);
+		} catch (IllegalArgumentException exc){
+			throw new Modelexception("Cannot create a new shark with the given parameters!");
+		}
 	}
 
 	/**
@@ -528,8 +568,12 @@ public class Facade implements IFacadePart2 {
 	 *            The shark that needs to be added to the world.
 	 */
 	public void addShark(World world, Shark shark){
-		shark.setWorld(world);
-		world.addAsGameObject(shark);
+		try{
+			shark.setWorld(world);
+			world.addAsGameObject(shark);
+		}catch (IllegalArgumentException exc){
+			throw new ModelException("This shark cannot be added to this world!");
+		}
 	}
 
 	/**
@@ -597,7 +641,11 @@ public class Facade implements IFacadePart2 {
 	 *         given school. The returned slime should not belong to a world.
 	 */
 	public Slime createSlime(int x, int y, Sprite[] sprites, School school){
-		return new Slime(x,y,sprites,school);
+		try{
+			return new Slime(x,y,sprites,school);
+		} catch (IllegalArgumentException exc){
+			throw new ModelException("Invalid parameters for this new slime!");
+		}
 	}
 
 	/**
@@ -609,8 +657,12 @@ public class Facade implements IFacadePart2 {
 	 *            The slime that needs to be added to the world.
 	 */
 	public void addSlime(World world, Slime slime){
-		slime.setWorld(world);
-		world.addAsGameObject(slime);
+		try{
+			slime.setWorld(world);
+			world.addAsGameObject(slime);
+		}catch (IllegalArgumentException exc){
+			throw new ModelException("This slime cannot be added to this world!");
+		}
 	}
 
 	/**

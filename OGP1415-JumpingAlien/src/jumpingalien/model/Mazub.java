@@ -157,6 +157,8 @@ public class Mazub extends GameObject {
 	 * 
 	 * @param 	direction
 	 * 			The desired direction in which this Mazub will move.
+	 * @pre		The given direction must be a valid direction.
+	 * 			|isValidDirection(direction)
 	 * @post 	The new horizontal velocity of this Mazub is equal to the given direction times its initial horizontal velocity.
 	 * 			| new.getHorizontalVelocity() == direction*this.getInitialHorizontalVelocity()
 	 * @effect 	The direction of this mazub is set the given direction.
@@ -165,10 +167,11 @@ public class Mazub extends GameObject {
 	 * 			| new.getTimeSinceEndMove()==0
 	 * @post	The new time since this Mazub has started moving is 0.
 	 * 			| new.getTimeSinceStartMove()==0
-	 * @note	setDirection has a precondition for direction.
+	 * @note	The precondition is asserted in setDirection()
 	 */
 	@Raw
 	public void startMove(Direction direction){
+		
 		if (this.isMovingHorizontally()==false){
 			this.setMovingHorizontally(true);
 			this.setDirection(direction);
