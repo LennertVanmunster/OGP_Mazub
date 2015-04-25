@@ -1016,7 +1016,7 @@ public abstract class GameObject {
 		World world = this.getWorld();
 		boolean overlap = false;
 		if(world.getGameHasStarted()){
-			List<GameObject> gameObjects = getGameObjectsAtTiles(world.areaOverlapsWithTiles(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()));
+			List<GameObject> gameObjects = getGameObjectsAtTiles(world.getTilePositionsIn(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getEffectiveHorizontalLocation()+getWidth(), getEffectiveVerticalLocation()+getHeight()));
 			for(int index = 0; index < gameObjects.size(); index++){
 				GameObject gameObject = gameObjects.get(index);
 				if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject)){
