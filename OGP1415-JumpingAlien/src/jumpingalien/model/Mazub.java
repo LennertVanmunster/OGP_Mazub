@@ -131,10 +131,7 @@ public class Mazub extends GameObject {
 	 */
 	@Raw
 	public double getVerticalAcceleration(){
-		if(this.contact){
-			return 0;
-		}
-		else if(this.isJumping())
+		if(this.isJumping())
 			return VERTICAL_ACCELERATION;
 		else
 			return 0;
@@ -409,7 +406,6 @@ public class Mazub extends GameObject {
 			}
 			try{
 				this.setHorizontalLocation(newHorizontalLocation);
-//				oldHorizontalLocation=newHorizontalLocation;
 			} catch(IllegalLocationException exc){
 				if(newHorizontalLocation>this.getWorld().getWorldWidth()){
 					this.getWorld().setGameOver(true);
@@ -423,7 +419,6 @@ public class Mazub extends GameObject {
 			}
 			try{
 				this.setVerticalLocation(newVerticalLocation);
-//				oldVerticalLocation=newVerticalLocation;
 			} catch(IllegalLocationException exc){
 				if(newVerticalLocation>this.getWorld().getWorldHeight()){
 					this.getWorld().setGameOver(true);
@@ -457,6 +452,16 @@ public class Mazub extends GameObject {
 		}
 		else if(gameObject instanceof Shark){
 			if(!isUntouchable()){
+				gameObject.removeHitPoints(50);
+				if(index2 == 0){
+					this.removeHitPoints(50);
+					this.setTimeSinceLastHitpointsLoss(0);
+				}
+			}
+		}
+		else if(gameObject instanceof Slime){
+			if(!isUntouchable()){
+				gameObject.removeHitPoints(50);
 				if(index2 == 0){
 					this.removeHitPoints(50);
 					this.setTimeSinceLastHitpointsLoss(0);

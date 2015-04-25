@@ -98,8 +98,12 @@ public class Shark extends GameObject{
 	 */
 	@Raw
 	public double getVerticalAcceleration(){
-		if(checkWaterAndNoAirContact() )
+		if(checkWaterAndNoAirContact() && this.getLastJump() >= 4){
 			return 0;
+		}
+		else if(checkWaterAndNoAirContact() && this.getLastJump() < 4){
+			return MAXIMUM_FLOATING_VERTICAL_ACCELERATION * this.getRandomDivingConstant();
+		}
 		else
 			return VERTICAL_ACCELERATION;
 	}
@@ -177,15 +181,16 @@ public class Shark extends GameObject{
 	private double timeSinceAirContact = 0;
 	
 	private void startNewAction(){
-		this.lastJump += 1;
+		this.setLastJump(this.getLastJump() + 1);
 		Random r = new Random();
 		this.setHorizontalVelocity(0);
 		this.setCurrentActionDuration(MINIMUM_ACTION_DURATION+(MAXIMUM_ACTION_DURATION-MINIMUM_ACTION_DURATION)*r.nextDouble());
 		this.setDirection(r.nextBoolean() ? Direction.LEFT : Direction.RIGHT);
 		this.setTimeSinceStartAction(0);
-		if(lastJump >= 4){
+		this.setRandomDivingConstant((2.0 *r.nextDouble() - 1.0));
+		if(this.getLastJump() >= 4){
 				this.setVerticalVelocity(INITIAL_VERTICAL_VELOCITY);
-				this.lastJump = 0;
+				this.setLastJump(0);
 		}
 	}
 	
@@ -221,7 +226,30 @@ public class Shark extends GameObject{
 	 */
 	private static final double MAXIMUM_ACTION_DURATION=4;
 	
+	public int getLastJump(){
+		return this.lastJump;
+	}
+	
+	public void setLastJump(int lastJump){
+		if(lastJump < 0){
+			this.lastJump = 0;
+		}
+		else{
+			this.lastJump = lastJump;
+		}
+	}
+	
 	private int lastJump = 2; 
+	
+	public double getRandomDivingConstant() {
+		return randomDivingConstant;
+	}
+	
+	public void setRandomDivingConstant(double randomDivingConstant) {	
+		this.randomDivingConstant = randomDivingConstant;
+	}
+
+	private double randomDivingConstant;
 	
 	/**
 	 * Update the location and velocity of this shark.
@@ -290,18 +318,35 @@ public class Shark extends GameObject{
 				this.setVerticalLocation(oldVerticalLocation);
 				this.setVerticalVelocity(0);
 			}
+			if(this.isJumping()){
+				if(this.checkWaterAndNoAirContact()){
+					this.setJumping(false);
+					this.setVerticalVelocity(0);
+				}
+			}
 			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
 			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
 		}
 		this.setTimeSinceStartAction(this.getTimeSinceStartAction()+deltaTime);
 		checkAirContact(deltaTime);
 		checkMagmaContact(deltaTime);
-		if(this.getHitPoints() <= 0)
-			this.unsetWorld();
 	}
 	
 	protected void collisionReaction(int index1, int index2) {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
+		if(gameObject instanceof Slime){
+			gameObject.removeHitPoints(50);
+			this.removeHitPoints(50);
+		}
+		else if(gameObject instanceof Mazub){
+			this.removeHitPoints(50);
+			if(!((Mazub) gameObject).isUntouchable()){
+				if(index2 == 0){
+					gameObject.removeHitPoints(50);
+					((Mazub) gameObject).setTimeSinceLastHitpointsLoss(0);
+				}
+			}
+		}
 	}
 		
 	
@@ -318,8 +363,10 @@ public class Shark extends GameObject{
 		if(contactTiles[2] == true && contactTiles[0] == false){
 			return true;
 		}
-		else
+		else{
+			this.setJumping(true);
 			return false;
+		}
 	}
 
 	/**

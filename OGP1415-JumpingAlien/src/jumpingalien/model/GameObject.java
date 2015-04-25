@@ -1004,13 +1004,6 @@ public abstract class GameObject {
 		return overlappingGameObjects.clone();
 	}
 	
-//	public int [] checkNotAllowedLeftRightTopBottomSideOverlap(){
-//		int [] overlappingGameObjects = this.checkLeftRightTopBottomSideOverlap(this.getLeftPerimeterOfGameObject(getEffectiveHorizontalLocation()+1, getEffectiveVerticalLocation()+1, getHeight()-2),
-//				 this.getRightPerimeterOfGameObject(getEffectiveHorizontalLocation()+1, getEffectiveVerticalLocation()+1, getWidth()-2, getHeight()-2),
-//				 this.getTopPerimeterOfGameObject(getEffectiveHorizontalLocation()+1, getEffectiveVerticalLocation()+1, getWidth()-2, getHeight()-2),
-//				 this.getBottomPerimeterOfGameObject(getEffectiveHorizontalLocation()+1, getEffectiveVerticalLocation()+1, getWidth()-2));
-//		return overlappingGameObjects.clone();
-//	}
 	
 	public boolean checkNotAllowedLeftRightTopBottomSideOverlap(int pixelX1, int pixelY1, int width1, int height1){
 		World world = this.getWorld();
@@ -1054,10 +1047,9 @@ public abstract class GameObject {
 	 *			|		then the array "overlap" is returned
 	 */
 	public int [] checkLeftRightTopBottomSideOverlap(int [][] leftPerimeter1, int [][] rightPerimeter1, int [][] topPerimeter1, int [][] bottomPerimeter1){
-		int [] overlap = {0,0,0,0,0};
+		int [] overlap = {0,0,0,0};
 		World world = this.getWorld();
 		List<GameObject> gameObjects = getGameObjectsAtTiles(world.areaOverlapsWithTiles(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()));
-//		int [][] overlappingGameObjects = new int [gameObjects.size()][5];
 		for(int index = 0; index < gameObjects.size(); index++){
 			GameObject gameObject = gameObjects.get(index);
 			if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject)){
@@ -1097,7 +1089,7 @@ public abstract class GameObject {
 	 *			|result == overlap 
 	 */
 	public int [] checkTopOrBottomSideOverlap(GameObject gameObject, int [][] topPerimeter1, int [][] bottomPerimeter1, int [][] topPerimeter2, int [][] bottomPerimeter2){
-		int [] overlap = {0,0,0,0,0};
+		int [] overlap = {0,0,0,0};
 		World world = this.getWorld();		
 		outerloop:
 		for (int Y = 0; Y < this.getWidth()-1-2; Y++ ){
@@ -1112,7 +1104,6 @@ public abstract class GameObject {
 					overlap [0] = 1 ;
 					overlap [1] = world.getIndexOfGameObject(gameObject);
 					overlap [2] = 1;
-					overlap [3] = 1;
 					break outerloop;
 				}
 			}
@@ -1139,7 +1130,7 @@ public abstract class GameObject {
 	 *			|result == overlap 
 	 */
 	public int [] checkLeftOrRightSideOverlap(GameObject gameObject, int [][] leftPerimeter1, int [][] rightPerimeter1, int [][] leftPerimeter2, int [][] rightPerimeter2){
-		int [] overlap = {0,0,0,0,0};
+		int [] overlap = {0,0,0,0};
 		World world = this.getWorld();
 		outerloop:
 		for (int Y = 0; Y < this.getHeight()-2-2; Y++ ){
@@ -1148,7 +1139,6 @@ public abstract class GameObject {
 						Arrays.equals(leftPerimeter2[Y2],rightPerimeter1[Y])){
 					overlap [0] = 1 ;
 					overlap [1] = world.getIndexOfGameObject(gameObject);
-					overlap [4] = 1;
 					break outerloop;
 				}
 			}
@@ -1175,7 +1165,7 @@ public abstract class GameObject {
 		if(isValidDeltaTime(time))
 			return time;
 		else
-			return 0.01;
+			return 0.03;
 	}
 	
 	/**
@@ -1226,6 +1216,8 @@ public abstract class GameObject {
 	
 	
 	protected boolean contact;
+	
+	boolean contact2;
 
 	public void collisionHandler(int [] overlap, double oldHorizontalLocation, double oldVerticalLocation){
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(overlap[1]);
@@ -1240,6 +1232,9 @@ public abstract class GameObject {
 			if(checkNotAllowedLeftRightTopBottomSideOverlap(this.getEffectiveHorizontalLocation(), this.getEffectiveVerticalLocation(), this.getWidth(), this.getHeight())){
 				if(checkNotAllowedLeftRightTopBottomSideOverlap((int) oldHorizontalLocation, this.getEffectiveVerticalLocation(), this.getWidth(), this.getHeight())){
 					this.setVerticalLocation(oldVerticalLocation);
+					if(this instanceof Mazub){
+						this.setVerticalVelocity(0);
+					}
 				}
 				if(checkNotAllowedLeftRightTopBottomSideOverlap(this.getEffectiveHorizontalLocation(), (int) oldVerticalLocation, this.getWidth(), this.getHeight())){
 					this.setHorizontalLocation(oldHorizontalLocation);
