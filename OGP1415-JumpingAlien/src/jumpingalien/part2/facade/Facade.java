@@ -1,7 +1,6 @@
 package jumpingalien.part2.facade;
 
 import java.util.Collection;
-
 import jumpingalien.model.*;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
@@ -293,7 +292,9 @@ public class Facade implements IFacadePart2 {
 	 *         <b>left, bottom, right, top</b>.
 	 */
 	public int[] getVisibleWindow(World world){
-		return world.getVisibleWindow();
+		int[] visibleWindow = {world.getVisibleWindowLocation()[0], world.getVisibleWindowLocation()[1], 
+				world.getVisibleWindowLocation()[0]+world.getVisibleWindowWidth(), world.getVisibleWindowLocation()[1]+world.getVisibleWindowHeight()};
+		return visibleWindow;
 	}
 
 	/**
