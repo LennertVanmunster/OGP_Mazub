@@ -131,10 +131,10 @@ public class Plant extends GameObject {
 			updateHorizontalLocation(deltaTimeForPixel);
 			sumDeltaTimeForPixel+=deltaTimeForPixel;
 		}
-		int [][] overlappingGameObjects = this.checkLeftRightTopBottomSideOverlap();
-		for(int [] overlap : overlappingGameObjects)
-			if(overlap[0]==1)
-				collisionReaction(overlap[1],overlap[2]);	
+		int [] overlap = this.checkAllowedLeftRightTopBottomSideOverlap();
+		if(overlap[0]==1){
+			collisionReaction(overlap[1],overlap[2]);	
+		}
 	}
 		
 	protected void collisionReaction(int index1, int index2) {

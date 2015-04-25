@@ -131,7 +131,10 @@ public class Mazub extends GameObject {
 	 */
 	@Raw
 	public double getVerticalAcceleration(){
-		if(this.isJumping())
+		if(this.contact){
+			return 0;
+		}
+		else if(this.isJumping())
 			return VERTICAL_ACCELERATION;
 		else
 			return 0;
@@ -364,7 +367,7 @@ public class Mazub extends GameObject {
 	public void advanceTime(double deltaTime)
 		throws IllegalArgumentException {
 		if(!isValidDeltaTime(deltaTime))
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Not a valid time period!");
 		this.setTimeSinceLastHitpointsLoss(deltaTime + this.getTimeSinceLastHitpointsLoss());
 		double deltaTimeForPixel=0;
 		double sumDeltaTimeForPixel=0;
@@ -381,6 +384,8 @@ public class Mazub extends GameObject {
 			this.setTimeSinceStartMove(this.getTimeSinceStartMove()+deltaTime);
 		}
 		while (sumDeltaTimeForPixel<deltaTime){
+			oldVerticalLocation = this.getVerticalLocation();
+			oldHorizontalLocation = this.getHorizontalLocation();
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
 			newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTimeForPixel;
 			newHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAcceleration()*deltaTimeForPixel;
@@ -404,7 +409,7 @@ public class Mazub extends GameObject {
 			}
 			try{
 				this.setHorizontalLocation(newHorizontalLocation);
-				oldHorizontalLocation=newHorizontalLocation;
+//				oldHorizontalLocation=newHorizontalLocation;
 			} catch(IllegalLocationException exc){
 				if(newHorizontalLocation>this.getWorld().getWorldWidth()){
 					this.getWorld().setGameOver(true);
@@ -413,12 +418,12 @@ public class Mazub extends GameObject {
 				}
 				else{
 					this.setHorizontalLocation((int) oldHorizontalLocation);
-					this.setHorizontalVelocity(0);
+//					this.setHorizontalVelocity(0);
 				}
 			}
 			try{
 				this.setVerticalLocation(newVerticalLocation);
-				oldVerticalLocation=newVerticalLocation;
+//				oldVerticalLocation=newVerticalLocation;
 			} catch(IllegalLocationException exc){
 				if(newVerticalLocation>this.getWorld().getWorldHeight()){
 					this.getWorld().setGameOver(true);
@@ -430,10 +435,8 @@ public class Mazub extends GameObject {
 				this.setVerticalVelocity(0);
 				}
 			}
-			int [][] overlappingGameObjects = this.checkLeftRightTopBottomSideOverlap();
-			for(int [] overlap : overlappingGameObjects)
-				if(overlap[0]==1)
-					collisionReaction(overlap[1],overlap[2]);		
+			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
+			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
 			if(this.canEndDuck){
 				this.endDuck();
 			}
@@ -453,11 +456,12 @@ public class Mazub extends GameObject {
 			}
 		}
 		else if(gameObject instanceof Shark){
-			if(!isUntouchable())
+			if(!isUntouchable()){
 				if(index2 == 0){
 					this.removeHitPoints(50);
 					this.setTimeSinceLastHitpointsLoss(0);
 				}
+			}
 		}
 	}
 	
