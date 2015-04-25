@@ -350,12 +350,39 @@ public class World {
 				&& matchesTileSizeNbTilesWindowDimensionWindowLocation(this.getTileSize(), this.getNbTilesY(), this.getVisibleWindowHeight(), verticalVisibleWindowLocation);
 	}
 	
+	/**
+	 * Check whether the given Mazub matches with the given visible window parameters.
+	 * @param 	mazub
+	 * @param 	horizontalVisibleWindowLocation
+	 * @param 	verticalVisibleWindowLocation
+	 * @param 	visibleWindowWidth
+	 * @param 	visibleWindowHeight
+	 * @return	False if this world can not have the given visible window as its visible window.
+	 * 			Otherwise true if Mazub is null.
+	 * 			Otherwise true if Mazub is entirely located within the visible window and the distance between any border of Mazub and the border of the visible
+	 * 			window is not smaller than 200 unless the distance between one of Mazub's borders and on of the borlders of the game world is less than 200.
+	 * 			| if (!this.canHaveAsHorizontalVisibleWindowLocation(horizontalVisibleWindowLocation) || !this.canHaveAsVerticalVisibleWindowLocation(verticalVisibleWindowLocation)
+	 *			|	|| !this.canHaveAsVisibleWindowWidth(visibleWindowWidth) || !this.canHaveAsVisibleWindowHeight(visibleWindowHeight))
+	 *			|	result==false
+	 *			| else if (mazub==null)
+	 *			| 	result==true
+	 *			| else if ((mazub.getEffectiveHorizontalLocation()<horizontalVisibleWindowLocation) || (mazub.getEffectiveHorizontalLocation()+mazub.getWidth()>horizontalVisibleWindowLocation+visibleWindowWidth) 
+	 *			|	|| (mazub.getEffectiveVerticalLocation()<verticalVisibleWindowLocation) || (mazub.getEffectiveVerticalLocation()+mazub.getHeight()>verticalVisibleWindowLocation+visibleWindowHeight))
+	 *			|		result==false
+	 *			| else if ((mazub.getEffectiveHorizontalLocation()<200 && horizontalVisibleWindowLocation!=0) || 
+	 *			|	(mazub.getEffectiveHorizontalLocation()+mazub.getWidth()>horizontalVisibleWindowLocation+visibleWindowWidth-200 && horizontalVisibleWindowLocation+visibleWindowWidth!=this.getWorldWidth())
+	 *			|	|| (mazub.getEffectiveVerticalLocation()<200 && verticalVisibleWindowLocation!=0) ||
+	 *			|	(mazub.getEffectiveVerticalLocation()+mazub.getHeight()>verticalVisibleWindowLocation+visibleWindowHeight-200 && verticalVisibleWindowLocation+visibleWindowHeight!=this.getWorldHeight()))
+	 *			|	result==false;
+	 *			|else
+	 *			|	result==true;
+	 */
 	public boolean matchesMazubVisibleWindow(Mazub mazub, int horizontalVisibleWindowLocation, int verticalVisibleWindowLocation, int visibleWindowWidth, int visibleWindowHeight){
 		if (!this.canHaveAsHorizontalVisibleWindowLocation(horizontalVisibleWindowLocation) || !this.canHaveAsVerticalVisibleWindowLocation(verticalVisibleWindowLocation)
 				|| !this.canHaveAsVisibleWindowWidth(visibleWindowWidth) || !this.canHaveAsVisibleWindowHeight(visibleWindowHeight)){
 			return false;
 		}
-		else if (mazub==null){
+		if (mazub==null){
 			return true;
 		}
 		else if ((mazub.getEffectiveHorizontalLocation()<horizontalVisibleWindowLocation) || (mazub.getEffectiveHorizontalLocation()+mazub.getWidth()>horizontalVisibleWindowLocation+visibleWindowWidth) 
@@ -776,7 +803,7 @@ public class World {
 	}
 	
 	/**
-	 *Returns whether the game in this world has already started or not.
+	 * Return whether the game in this world has already started or not.
 	 */
 	@Basic
 	public boolean getGameHasStarted(){
@@ -788,6 +815,7 @@ public class World {
 	 * 
 	 * @param 	start
 	 * 			The given start status of this world.
+	 * @post	|new.getGameHasStarted()==start
 	 */
 	public void setGameHasStarted(boolean start){
 		this.gameHasStarted = start;
@@ -807,9 +835,10 @@ public class World {
 	}
 	
 	/**
-	 * Set the status of gameOver.
+	 * Set the current game over status..
 	 * @param 	isGameOver
 	 * 			The given status of the game in this world.
+	 * @post	|new.getGameOver()==isGameOver
 	 */
 	void setGameOver(boolean isGameOver){
 		this.gameOver = isGameOver;
@@ -821,10 +850,8 @@ public class World {
 	private boolean gameOver = false;
 	
 	/**
-	 * Returns whether the game in this world was won or not.
-	 * The game has been won if the a player has reached the finish.
-	 * The function returns false if the game has not ended yet
-	 * or if the player did not win after the game ended.
+	 * Return whether the game in this world was won or not.
+	 * The game has been won if the player has reached the finish before game over.
 	 */
 	@Basic
 	public boolean getDidPlayerWin(){
@@ -832,9 +859,13 @@ public class World {
 	}
 	
 	/**
-	 * Set the result of an ended game.
+	 * Set the player win status to the given status if the game is over.
 	 * @param 	didPlayerWin
 	 * 			The result of the game.
+	 * @post	| if(this.getGameOver())
+	 * 			|	new.getDidPlayerWin()==didPlayerWin
+	 * 			| else
+	 * 			|	result==false
 	 */
 	public void setDidPlayerWin(boolean didPlayerWin){
 		if(this.getGameOver())
@@ -844,22 +875,45 @@ public class World {
 	}
 	
 	/**
-	 * Variable registering whether the game of the given world was won by a player.
+	 * Variable registering whether the game of the given world was won by the player.
 	 */
 	private boolean didPlayerWin = false;
 	
+	/**
+	 * Advance the time of this world and all its game objects by the given time duration.
+	 * @param deltaTime
+	 */
 	public void advanceTime(double deltaTime){
-		for(int index = 0; index < getNbOfGameObjects(); index++){
+		for(int index = 0; index < this.getNbOfGameObjects(); index++){
 			GameObject gameObject = getGameObjectAtIndex(index);
 			if(canHaveAsGameObject(gameObject))
 				gameObject.advanceTime(deltaTime);
-			if(gameObject != null && gameObject.getHitPoints()<= 0 && index!=0)
+			if(gameObject!=null && gameObject.getHitPoints()<= 0 && index!=0)
 				gameObject.terminate();
 		}
 		this.checkGameOver();
 		this.updateVisibleWindow();
 	}
 	
+	/**
+	 * Update the visible window location of this game world depending on the current size and location of its Mazub.
+	 * @post	|if (this.getMazub().getEffectiveHorizontalLocation()<=200)
+	 *			|	new.getVisibleWindowLocation()[0]==0;
+	 *			|else if (this.getMazub().getEffectiveHorizontalLocation()+this.getMazub().getWidth()>=this.getWorldWidth()-200)
+	 *			|	new.getVisibleWindowLocation()[0]==this.getWorldWidth()-this.getVisibleWindowWidth()-1
+	 *			|else if (this.getMazub().getEffectiveHorizontalLocation()<=this.getVisibleWindowLocation()[0]+200)
+	 *			|	new.getVisibleWindowLocation()[0]==this.getMazub().getEffectiveHorizontalLocation()-200
+	 *			|else if (this.getMazub().getEffectiveHorizontalLocation()+this.getMazub().getWidth()>=this.getVisibleWindowLocation()[0]+this.getVisibleWindowWidth()-200)
+	 *			|	new.getVisibleWindowLocation()[0]==this.getMazub().getEffectiveHorizontalLocation()+this.getMazub().getWidth()+200-this.getVisibleWindowWidth()
+	 *			|if(this.getMazub().getEffectiveVerticalLocation()<=200)
+	 *			|	new.getVisibleWindowLocation[1]==0
+	 *			|else if (this.getMazub().getEffectiveVerticalLocation()+this.getMazub().getHeight()>=this.getWorldHeight()-200)
+	 *			|	new.getVisibleWindowLocation[1]==this.getWorldHeight()-this.getVisibleWindowHeight()-1
+	 *			|else if (this.getMazub().getEffectiveVerticalLocation()<=this.getVisibleWindowLocation()[1]+200)
+	 *			|	new.getVisibleWindowLocation[1]==this.getMazub().getEffectiveVerticalLocation()-200
+	 *			|else if (this.getMazub().getEffectiveVerticalLocation()+this.getMazub().getHeight()>=this.getVisibleWindowLocation()[1]+this.getVisibleWindowHeight()-200)
+	 *			|	new.getVisibleWindowLocation[1]==this.getMazub().getEffectiveVerticalLocation()+this.getMazub().getHeight()+200-this.getVisibleWindowHeight()
+	 */
 	private void updateVisibleWindow(){
 		int horizontalWindowPosition=this.getVisibleWindowLocation()[0];
 		int verticalWindowPosition=this.getVisibleWindowLocation()[1];
@@ -890,6 +944,19 @@ public class World {
 		this.setVisibleWindowLocation(horizontalWindowPosition, verticalWindowPosition);
 	}
 	
+	/**
+	 * Update the game over state of this world depending on the current state of its Mazub.
+	 * @post	|if(this.getMazub().getHitPoints()<=0)
+	 * 			|	this.setGameOver(true);
+	 * 			|else
+	 * 			|	int coincidingTiles[][]= this.getTilePositionsIn(this.getMazub().getEffectiveHorizontalLocation(), this.getMazub().getEffectiveVerticalLocation(), 
+	 *			|							this.getMazub().getEffectiveHorizontalLocation()+this.getMazub().getWidth(), this.getMazub().getEffectiveVerticalLocation()+this.getMazub().getHeight())
+	 * 			|	for(tiles=0..coincidingTiles.length)
+	 * 			|		if(coincidingTiles[tiles][0] == this.getTargetTileX() && coincidingTiles[tiles][1]==this.getTargetTileY())
+	 *			|			new.getGameOver()==true
+	 *			|			new.getDidPlayerWin()==true
+	 *			|			break
+	 */
 	private void checkGameOver(){
 		if(this.getMazub().getHitPoints()<=0){
 			this.setGameOver(true);
@@ -909,26 +976,37 @@ public class World {
 	
 
 	/**
-	 * Check whether this world can have the given game object as its game object.
+	 * Check whether this world can have the given Mazub as its Mazub.
 	 * 
-	 * @param 	gameObject
-	 * 			The given game object.
-	 * @return	|if(getNbOfGameObjects() > 100)
-	 *			|	result == false;
-	 *			|else if(gameObject==null){
-	 *			|	result == false;
-	 *			|else{
-	 *			|	result == gameObject.canHaveAsLocation(gameObject.getHorizontalLocation()
-	 *			|	,gameObject.getVerticalLocation());
+	 * @param 	mazub
+	 * 			The Mazub to be checked.
+	 * @return	|if(!this.getGameHasStarted())
+	 * 			|	if(mazub==null)
+	 * 			|		result==true
+	 * 			|	else
+	 * 			|		result==mazub.canHaveAsLocation(mazub.getHorizontalLocation(),mazub.getVerticalLocation())
+	 *			|		&& this.matchesMazubVisibleWindow(mazub, this.getVisibleWindowLocation()[0], this.getVisibleWindowLocation()[1],
+	 *			|				this.getVisibleWindowWidth(),this.getVisibleWindowHeight())
+	 * 			|else
+	 * 			|	if(mazub==null)
+	 * 			|		result==false
+	 * 			|	if(mazub.isTerminate())
+	 * 			|		result==(mazub==null)
+	 * 			|	else
+	 * 			|		result==mazub.canHaveAsLocation(mazub.getHorizontalLocation(),mazub.getVerticalLocation())
+	 *			|		&& this.matchesMazubVisibleWindow(mazub, this.getVisibleWindowLocation()[0], this.getVisibleWindowLocation()[1],
+	 *			|				this.getVisibleWindowWidth(),this.getVisibleWindowHeight())
 	 *	
 	 */
 	public boolean canHaveAsMazub(Mazub mazub){
 		if (!this.getGameHasStarted()){
-			if( mazub==null){
+			if(mazub==null){
 				return true;
 			}
 			else{
-				return mazub.canHaveAsLocation(mazub.getHorizontalLocation(),mazub.getVerticalLocation());
+				return mazub.canHaveAsLocation(mazub.getHorizontalLocation(),mazub.getVerticalLocation())
+						&& this.matchesMazubVisibleWindow(mazub, this.getVisibleWindowLocation()[0], this.getVisibleWindowLocation()[1],
+						this.getVisibleWindowWidth(),this.getVisibleWindowHeight());
 			}
 		}
 		else{
@@ -950,10 +1028,17 @@ public class World {
 	 * Set the Mazub of this world.
 	 * @param 	alien
 	 * 			The given alien of the class Mazub.
-	 * @post	|new.getMazub == Mazub
-	 * 
+	 * @post	new.getMazub == Mazub
+	 * @throws	IllegalArgumentException
+	 * 			!(this.canHaveAsMazub(alien) && alien.getWorld()==this)
 	 */
-	public void setMazub(Mazub alien){
+	public void setMazub(Mazub alien) throws IllegalArgumentException{
+		if (!(this.canHaveAsMazub(alien))){
+			throw new IllegalArgumentException("Not a valid Mazub!");
+		}
+		if(alien != null && alien.getWorld()!=this){
+			throw new IllegalArgumentException("Not a valid Mazub!");
+		}
 		gameObjects.add(0,alien);
 	}
 	
@@ -974,23 +1059,45 @@ public class World {
 	public int getNbOfGameObjects(){
 		return gameObjects.size();
 	}
+	
+	/**
+	 * Check whether the given number of game objects is a valid number of game objects.
+	 * @param	nbGameObjects
+	 * @return	result==(nbGameObjects<=100)
+	 */
+	public boolean isValidNbGameObjects(int nbGameObjects){
+		return nbGameObjects<=100;
+	}
 
 	/**
 	 * Add a game object to this world.
-	 * 
 	 * @param  	gameObject
 	 * 			The given game object.
-	 * @post	|new.getGameObjectAtIndex(getNbGameObjects - 1) == gameObject
+	 * @post	|if(gameObject instanceof Mazub)
+	 * 			|	new.getMazub()==gameObject
+	 * 			|else
+	 * 			|	new.getGameObjectAtIndex(getNbGameObjects - 1) == gameObject
 	 * @throws 	IllegalArgumentException
 	 * 			|!canHaveAsGameObject(gameObject)
 	 */
 	public void addAsGameObject(GameObject gameObject) throws IllegalArgumentException {
+		if(gameObject instanceof Mazub){
+			this.setMazub((Mazub) gameObject);
+			return;
+		}
 		if(!canHaveAsGameObject(gameObject)|| gameObject.getWorld()!=this){
 			throw new IllegalArgumentException("Not a valid GameObject!");
 		}
 		gameObjects.add(gameObject);
 	}
 	
+	/**
+	 * Remove the given game object from the list of game objects and set the world of the given game object to null.
+	 * @param gameObject
+	 * @post	|if(this.hasAsGameObject(gameObject)
+	 * 			|	new.hasAsGameObject(gameObject)==false
+	 * 			|	(new gameObject).getWorld()==null
+	 */
 	public void removeAsGameObject(GameObject gameObject){
 		if(this.hasAsGameObject(gameObject)){
 			this.gameObjects.remove(gameObject);
@@ -1002,7 +1109,7 @@ public class World {
 	 * Check whether this world can have the given game object as its game object.
 	 * 
 	 * @param 	gameObject
-	 * 			The given game object.
+	 * 			The game object to be checked.
 	 * @return	|if(getNbOfGameObjects() > 100)
 	 *			|	result == false;
 	 *			|else if(gameObject==null){
@@ -1013,23 +1120,20 @@ public class World {
 	 *	
 	 */
 	public boolean canHaveAsGameObject(GameObject gameObject){
-		if (!this.getGameHasStarted()){
-			if( gameObject==null){
-				return true;
-			}
-			else{
-				return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation());
-			}
+		if(gameObject==null){
+			return false;
+		}
+		else if (!this.getGameHasStarted()){
+			return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation())
+					&& isValidNbGameObjects(this.getNbOfGameObjects());
 		}
 		else{
-			if(gameObject==null){
-				return false;
-			}
 			if(gameObject.isTerminated()){
 				return gameObject==null;
 			}
 			else{
-				return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation());
+				return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation())
+						&& isValidNbGameObjects(this.getNbOfGameObjects());
 			}
 		}
 	}
