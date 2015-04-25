@@ -1,6 +1,7 @@
 package jumpingalien.part2.facade;
 
 import java.util.Collection;
+
 import jumpingalien.model.*;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
@@ -123,7 +124,7 @@ public class Facade implements IFacadePart2 {
 	 *            The alien that has to start moving left.
 	 */
 	public void startMoveLeft(Mazub alien){
-		alien.startMove(Direction.LEFT);
+			alien.startMove(Direction.LEFT);
 	}
 
 	/**
@@ -133,7 +134,9 @@ public class Facade implements IFacadePart2 {
 	 *            The alien that has to stop moving left.
 	 */
 	public void endMoveLeft(Mazub alien){
-		alien.endMove();
+		if(alien.getDirection()==Direction.LEFT){
+			alien.endMove();
+		}
 	}
 
 	/**
@@ -153,7 +156,9 @@ public class Facade implements IFacadePart2 {
 	 *            The alien that has to stop moving right.
 	 */
 	public void endMoveRight(Mazub alien){
-		alien.endMove();
+		if(alien.getDirection()==Direction.RIGHT){
+			alien.endMove();
+		}
 	}
 
 	/**
@@ -173,7 +178,7 @@ public class Facade implements IFacadePart2 {
 	 *            The alien that has to stop ducking.
 	 */
 	public void endDuck(Mazub alien){
-		alien.endDuck();
+			alien.endDuck();
 	}
 
 
