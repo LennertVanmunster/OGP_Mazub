@@ -166,6 +166,60 @@ public class World {
 	}
 	
 	/**
+	 * Return the visible window width
+	 */
+	@Basic
+	@Immutable
+	public int getVisibleWindowWidth(){
+		return this.visibleWindowWidth;
+	}
+	
+	/**
+	 * Return the visible window height
+	 */
+	@Basic
+	@Immutable
+	public int getVisibleWindowHeight(){
+		return this.visibleWindowHeight;
+	}
+	
+	/**
+	 * Return the initial visible window pixel location as an array consisting of the horizontal and vertical components.
+	 */
+	@Immutable
+	public static int[] getInitialVisibleWindowLocation(){
+		return initialVisibleWindowLocation;
+	}
+	
+	/**
+	 * Return the current visible window pixel location as an array consisting of the horizontal and vertical components.
+	 */
+	@Basic
+	public int [] getVisibleWindowLocation(){
+		return this.visibleWindowLocation.clone();
+	}
+	
+	/**
+	 * Set the current visible window pixel location to the given horizontal and vertical location.
+	 * 
+	 * @param 	horizontalLocation
+	 * 			The location of the left border of the visible window.
+	 * @param 	verticalLocation
+	 * 			The location of the bottom border of the visible window.
+	 * @post	|new.getVisibleWindowLocation()=={horizontalLocation,verticalLocation}
+	 * @throws 	IllegalArgumentException
+	 * 			|!canHaveAsHorizontalVisibleWindowLocation(horizontalLocation) || !canHaveAsVerticalVisibleWindowLocation(verticalLocation)
+	 */
+	@Raw
+	private void setVisibleWindowLocation(int horizontalLocation, int verticalLocation)
+		throws IllegalArgumentException {
+		if(!canHaveAsHorizontalVisibleWindowLocation(horizontalLocation) || !canHaveAsVerticalVisibleWindowLocation(verticalLocation))
+			throw new IllegalArgumentException("Not a valid pixel location!");
+		int [] window = {horizontalLocation, verticalLocation};
+		this.visibleWindowLocation = window;
+	}
+	
+	/**
 	 * Check whether the given tile size is a possible tile size for any world.
 	 * 
 	 * @param 	tileSize
@@ -296,6 +350,30 @@ public class World {
 				&& matchesTileSizeNbTilesWindowDimensionWindowLocation(this.getTileSize(), this.getNbTilesY(), this.getVisibleWindowHeight(), verticalVisibleWindowLocation);
 	}
 	
+	public boolean matchesMazubVisibleWindow(Mazub mazub, int horizontalVisibleWindowLocation, int verticalVisibleWindowLocation, int visibleWindowWidth, int visibleWindowHeight){
+		if (!this.canHaveAsHorizontalVisibleWindowLocation(horizontalVisibleWindowLocation) || !this.canHaveAsVerticalVisibleWindowLocation(verticalVisibleWindowLocation)
+				|| !this.canHaveAsVisibleWindowWidth(visibleWindowWidth) || !this.canHaveAsVisibleWindowHeight(visibleWindowHeight)){
+			return false;
+		}
+		else if (mazub==null){
+			return true;
+		}
+		else if ((mazub.getEffectiveHorizontalLocation()<horizontalVisibleWindowLocation) || (mazub.getEffectiveHorizontalLocation()+mazub.getWidth()>horizontalVisibleWindowLocation+visibleWindowWidth) 
+					|| (mazub.getEffectiveVerticalLocation()<verticalVisibleWindowLocation) || (mazub.getEffectiveVerticalLocation()+mazub.getHeight()>verticalVisibleWindowLocation+visibleWindowHeight)){
+				return false;
+		}
+		else if ((mazub.getEffectiveHorizontalLocation()<200 && horizontalVisibleWindowLocation!=0) || 
+				(mazub.getEffectiveHorizontalLocation()+mazub.getWidth()>horizontalVisibleWindowLocation+visibleWindowWidth-200 && horizontalVisibleWindowLocation+visibleWindowWidth!=this.getWorldWidth())
+				|| (mazub.getEffectiveVerticalLocation()<200 && verticalVisibleWindowLocation!=0) ||
+				(mazub.getEffectiveVerticalLocation()+mazub.getHeight()>verticalVisibleWindowLocation+visibleWindowHeight-200 && verticalVisibleWindowLocation+visibleWindowHeight!=this.getWorldHeight())){
+			return false;
+		}
+		else{
+			return true;
+		}
+				
+	}
+	
 	/**
 	 * Variable registering the tileSize of this World.
 	 */
@@ -310,6 +388,25 @@ public class World {
 	 * Variable registering the number of tiles in the vertical direction.
 	 */
 	private final int nbTilesY;
+	
+	/**
+	 * Variable registering the visible window width in pixels.
+	 */
+	private final int visibleWindowWidth;
+	
+	/**
+	 * Variable registering the visible window height in pixels.
+	 */
+	private final int visibleWindowHeight;
+	
+	/**
+	 * Variable registering the initial visible window location when creating a new world for all worlds.
+	 */
+	private static final int[] initialVisibleWindowLocation={0,0};	
+	/**
+	 * An array registering the current pixel coordinates of the bottom left pixel of the visible window.
+	 */
+	private int [] visibleWindowLocation;
 
 	/**
 	 * Returns the total number of tiles of this World.
@@ -323,7 +420,9 @@ public class World {
 	}
 	
 	/**
-	 * Returns the tile values of this World.
+	 * Returns the tile values of this World as matrix. The first index of the matrix denotes the horizontal
+	 * tile location of the tile and the second index the vertical tile location. The value at that position in the matrix is the 
+	 * tile value at that tile position in the world. 
 	 */
 	@Basic
 	public int [][] getTiles(){
@@ -331,41 +430,41 @@ public class World {
 	}
 	
 	/**
-	 * Return the tile at the given position.
-	 * @param 	horizontalPosition
-	 * 			The horizontal position of the tile.
+	 * Return the tile at the given tile position.
+	 * @param 	horizontalTilePosition
+	 * 			The horizontal tile position of the tile.
 	 * @param 	verticalPosition
-	 * 			The vertical position of the tile.
+	 * 			The vertical tile position of the tile.
 	 * @return	|this.getTiles()[horizontalPosition][verticalPosition]
 	 */
-	public int getTileValueAtTilePosition(int horizontalPosition,int verticalPosition) 
+	public int getTileValueAtTilePosition(int horizontalTilePosition,int verticalTilePosition) 
 			throws IllegalArgumentException{
-		if(!canHaveAsTilePosition(horizontalPosition, verticalPosition))
+		if(!canHaveAsTilePosition(horizontalTilePosition, verticalTilePosition))
 			throw new IllegalArgumentException("Not a valid tile position");
-		return this.getTiles()[horizontalPosition][verticalPosition];
+		return this.getTiles()[horizontalTilePosition][verticalTilePosition];
 	}
 	
 	/**
-	 * Set the tile value at the given position of tile to the new given value.
+	 * Set the tile value at the given tile position to the given value.
 	 * @param 	tile
 	 * 			The given value of the tile.
 	 * @param 	horizontalPosition
-	 * 			The horizontal position of the tile.
+	 * 			The horizontal tile position of the tile.
 	 * @param 	verticalPosition
-	 * 			The vertical position of the tile.
-	 * @post	|new.getTileValueAtTilePosition(horizontalPosition, verticalPosition) == tile
+	 * 			The vertical tile position of the tile.
+	 * @post	|new.getTileValueAtTilePosition(horizontalTilePosition, verticalTilePosition) == tile
 	 * @throws 	IllegalArgumentException
-	 * 			|!isValidTile(tile)
+	 * 			|!isValidTileValue(tile)
 	 * @throws	IllegalArgumentException
 	 * 			|!canHaveAsTilePosition(horizontalPosition, verticalPosition)
 	 */
-	public void setTileValueAtTilePosition(int tile, int horizontalPosition,int verticalPosition) 
+	public void setTileValueAtTilePosition(int horizontalTilePosition,int verticalTilePosition, int tile)
 			throws IllegalArgumentException{
 		if(!isValidTileValue(tile))
 			throw new IllegalArgumentException("Not a valid tile!");
-		if(!canHaveAsTilePosition(horizontalPosition, verticalPosition))
+		if(!canHaveAsTilePosition(horizontalTilePosition, verticalTilePosition))
 			throw new IllegalArgumentException("Not a valid tile position!");
-		this.tiles [horizontalPosition][verticalPosition] = tile;
+		this.tiles [horizontalTilePosition][verticalTilePosition] = tile;
 	}
 	
 	/**
@@ -375,102 +474,52 @@ public class World {
 	 * 			The number of tiles in the horizontal direction.
 	 * @param 	nbTilesY
 	 * 			The number of tiles in the vertical direction.
-	 * @post	|new.getTiles == new int [nbTilesX] [nbTilesY]
+	 * @post	|new.getTiles() == new int [nbTilesX] [nbTilesY]
 	 * @throws	IllegalArgumentException
-	 * 			|!canHaveAsNbTiles(nbTilesX) || !canHaveAsNbTiles(nbTilesY)
+	 * 			|!this.canHaveAsNbTiles(nbTilesX) || !this.canHaveAsNbTiles(nbTilesY)
 	 */
 	@Raw
 	private void createTiles(int nbTilesX, int nbTilesY) throws IllegalArgumentException{
-		if(!this.canHaveAsNbTilesX(nbTilesX) || !canHaveAsNbTilesY(nbTilesY))
+		if(!this.canHaveAsNbTilesX(nbTilesX) || !this.canHaveAsNbTilesY(nbTilesY))
 			throw new IllegalArgumentException("Not a valid number of tiles");
 		this.tiles = new int [nbTilesX] [nbTilesY]; 
 	}
 	
 	/**
 	 * Check whether the tile matrix can have the given tile position as 
-	 * its position.
-	 * @param 	horizontalPosition
-	 * 			The horizontal position of the tile.
-	 * @param 	verticalPosition
-	 * 			The vertical position of the tile.
-	 * @return	|(0 <= horizontalPosition &&  horizontalPosition < this.getNbTilesX())
-				|	&& (0 <=  verticalPosition &&  verticalPosition < this.getNbTilesY())
+	 * its tile position.
+	 * @param 	horizontalTilePosition
+	 * 			The horizontal tile position of the tile.
+	 * @param 	verticalTilePosition
+	 * 			The vertical tile position of the tile.
+	 * @return	|(0 <= horizontalTilePosition &&  horizontalTilePosition < this.getNbTilesX())
+				|	&& (0 <=  verticalTilePosition &&  verticalTilePosition < this.getNbTilesY())
 	 */
 	@Raw
-	public boolean canHaveAsTilePosition(int horizontalPosition,int verticalPosition){
-		return (0 <= horizontalPosition &&  horizontalPosition < this.getNbTilesX())
-				&& (0 <=  verticalPosition &&  verticalPosition < this.getNbTilesY());
+	public boolean canHaveAsTilePosition(int horizontalTilePosition,int verticalTilePosition){
+		return (0 <= horizontalTilePosition &&  horizontalTilePosition < this.getNbTilesX())
+				&& (0 <=  verticalTilePosition &&  verticalTilePosition < this.getNbTilesY());
 	}
 	
 	/**
-	 * Check whether the given tile is a valid tile.
+	 * Check whether the given tile is a valid tile value.
 	 * @param 	tile
-	 * 			The value of the tile.
-	 * @return	| result == (0 <= tile && tile <= NB_OF_GEOLOGICAL_FEATURES)
+	 * 			The value of the tile to be checked.
+	 * @return	| result == (0 <= tileValue && tileValue <= NB_OF_GEOLOGICAL_FEATURES)
 	 */
 	@Raw
-	public boolean isValidTileValue(int tile){
-		return (0 <= tile && tile <= NB_OF_GEOLOGICAL_FEATURES);
+	public boolean isValidTileValue(int tileValue){
+		return (0 <= tileValue && tileValue <= NB_OF_GEOLOGICAL_FEATURES);
 	}
 	
 	/**
-	 * A matrix registering the values of all tiles of this World.
+	 * A matrix registering the values of all tiles of this World. The first index of the matrix denotes the horizontal
+	 * tile position and the second index denotes the vertical tile position. The value at a certain matrix position equals the
+	 * tile value at a certain tile position for each position.
 	 */
 	private int [][] tiles;
 	
-	/**
-	 * Return the visible window width
-	 */
-	@Basic
-	@Immutable
-	public int getVisibleWindowWidth(){
-		return this.visibleWindowWidth;
-	}
 	
-	/**
-	 * Return the visible window height
-	 */
-	@Basic
-	@Immutable
-	public int getVisibleWindowHeight(){
-		return this.visibleWindowHeight;
-	}
-	
-	/**
-	 * Return the initial visible window pixel location as an array consisting of the horizontal and vertical components.
-	 */
-	@Immutable
-	public static int[] getInitialVisibleWindowLocation(){
-		return initialVisibleWindowLocation;
-	}
-	
-	/**
-	 * Return the current visible window pixel location as an array consisting of the horizontal and vertical components.
-	 */
-	@Basic
-	public int [] getVisibleWindowLocation(){
-		return this.visibleWindowLocation.clone();
-	}
-	
-	/**
-	 * Set the current visible window pixel location to the given horizontal and vertical location.
-	 * 
-	 * @param 	horizontalLocation
-	 * 			The location of the left border of the visible window.
-	 * @param 	verticalLocation
-	 * 			The location of the bottom border of the visible window.
-	 * @post	|new.getVisibleWindowLocation()=={horizontalLocation,verticalLocation}
-	 * @throws 	IllegalArgumentException
-	 * 			|!canHaveAsHorizontalVisibleWindowLocation(horizontalLocation) || !canHaveAsVerticalVisibleWindowLocation(verticalLocation)
-	 */
-	@Raw
-	private void setVisibleWindowLocation(int horizontalLocation, int verticalLocation)
-		throws IllegalArgumentException {
-		if(!canHaveAsHorizontalVisibleWindowLocation(horizontalLocation) || !canHaveAsVerticalVisibleWindowLocation(verticalLocation))
-			throw new IllegalArgumentException("Not a valid pixel location!");
-		int [] window = {horizontalLocation, verticalLocation};
-		this.visibleWindowLocation = window;
-	}
 	
 	/**
 	 * Check whether the given pixel location can be a pixel location in this world.
@@ -489,24 +538,6 @@ public class World {
 	
 	
 	/**
-	 * Variable registering the visible window width.
-	 */
-	private final int visibleWindowWidth;
-	
-	/**
-	 * Variable registering the visible window height.
-	 */
-	private final int visibleWindowHeight;
-	
-	
-	private static final int[] initialVisibleWindowLocation={0,0};	
-	/**
-	 * An array registering the pixel coordinates of the visible window, in the order
-	 * left, bottom, right, top.
-	 */
-	private int [] visibleWindowLocation;
-	
-	/**
 	 * Return the size of the given game world as an array consisting of the horizontal and vertical number of pixels.
 	 * @return |result == {this.getTileSize() * this.getNbTilesX(),this.getTileSize() * this.getNbTilesY()}
 	 */
@@ -518,7 +549,7 @@ public class World {
 	}
 	
 	/**
-	 * Return the width of this World in pixels.
+	 * Return the width of this world in pixels.
 	 */
 	@Immutable
 	public int getWorldWidth(){
@@ -534,7 +565,8 @@ public class World {
 	}
 	
 	/**
-	 * Return the tile location of the target tile.
+	 * Return the tile location of the target tile as an array consisting of the horizontal tile position of the target tile
+	 * and the vertical tile position of the target tile.
 	 */
 	@Basic
 	@Immutable
@@ -543,7 +575,7 @@ public class World {
 	}
 	
 	/**
-	 * Return the horizontal tile location of the target tile.
+	 * Return the horizontal tile position of the target tile.
 	 * 
 	 * @return	| this.getTargetTile() [0];
 	 */
@@ -553,7 +585,7 @@ public class World {
 	}
 	
 	/**
-	 * Return the vertical tile location of the target tile.
+	 * Return the vertical tile position of the target tile.
 	 * 
 	 * @return	| this.getTargetTile() [1];
 	 */
@@ -563,13 +595,13 @@ public class World {
 	}
 	
 	/**
-	 * Set horizontal and vertical tile location of the target tile of this World.
+	 * Set horizontal and vertical tile position of the target tile of this world to the given horizontal and vertical tile positions.
 	 * @param	targetTileX
-	 * 			The new horizontal tile location of the target tile.
+	 * 			A horizontal tile position of the target tile.
 	 * @param	targetTileY
-	 * 			The new vertical tile location of the target tile.
-	 * @post	|this.getTargetTileX() == targetTileX
-	 *			|this.getTargetTileY() == targetTileY
+	 * 			A vertical tile location of the target tile.
+	 * @post	|new.getTargetTileX() == targetTileX
+	 *			|tnew.getTargetTileY() == targetTileY
 	 * @throws	IllegalArgumentException
 	 * 			|!canHaveAsTilePosition(targetTileX, targetTileY)
 	 */
@@ -588,55 +620,53 @@ public class World {
 	private final int[] targetTile;
 	
 	/**
-	 * Return the bottom left pixel location of the tile with the given location.
+	 * Return the bottom left pixel location of the tile with the given tile position.
 	 * @param 	tileX
-	 * 			The horizontal location of the tile.
+	 * 			The horizontal tile position of the tile.
 	 * @param 	tileY
-	 * 			The vertical location of the tile.
-	 * @return	| result ==  { length * tileX, length * tileY}
+	 * 			The vertical tile position of the tile.
+	 * @return	| result ==  { this.getTileSize() * tileX, this.getTileSize() * tileY}
 	 */
 	public int [] getBottomLeftPixelOfTile(int tileX, int tileY)
 		throws IllegalArgumentException{
 		if(!canHaveAsTilePosition(tileX, tileY))
 			throw new IllegalArgumentException("Not a valid tile position!");
-		int length = getTileSize();
-		int [] pixelLocation = { length * tileX, length * tileY};
+		int [] pixelLocation = { this.getTileSize() * tileX, this.getTileSize() * tileY};
 		return  pixelLocation;
 	}
 	
 	/**
-	 * Return the tile at the given pixel position as an array of 2 elements with
-	 * the horizontal and vertical position in that order.
+	 * Return the tile position at the given pixel location as an array of 2 elements with
+	 * the horizontal and vertical tile position in that order.
 	 * 
 	 * @param 	pixelX
 	 * 			The horizontal location of the pixel.
 	 * @param 	pixelY
 	 * 			The vertical location of the pixel.
-	 * @return	|result == { pixelX/length, pixelY/length}
+	 * @return	|result == { pixelX/this.getTileSize(), pixelY/this.getTileSize()}
 	 * @throws 	IllegalArgumentException
 	 * 			|!canHaveAsPixelLocation(pixelX, pixelY)
 	 */
-	public int [] getTileAtPixelPosition(int pixelX, int pixelY)
+	public int [] getTilePositionAtPixelLocation(int pixelX, int pixelY)
 		throws IllegalArgumentException{
 		if(!canHaveAsPixelLocation(pixelX, pixelY))
 			throw new IllegalArgumentException("Not a valid pixel position!");
-		int length = getTileSize(); 
-		int [] tile = { pixelX/length, pixelY/length};
+		int [] tile = { pixelX/this.getTileSize(), pixelY/this.getTileSize()};
 		return tile;
 	}
 	
 	/**
-	 * Returns the tile positions of all tiles within the given rectangular
-	 * region.
+	 * Return the tile positions of all tiles within the given rectangular
+	 * region of the world.
 	 * 
 	 * @param 	pixelLeft
-	 *           The x-coordinate of the left side of the rectangular region.
+	 *           The horizontal location of the left side of the rectangular region.
 	 * @param 	pixelBottom
-	 *           The y-coordinate of the bottom side of the rectangular region.
+	 *           The vertical location of the bottom side of the rectangular region.
 	 * @param 	pixelRight
-	 *           The x-coordinate of the right side of the rectangular region.
+	 *           The horizontal location of the right side of the rectangular region.
 	 * @param 	pixelTop
-	 *           The y-coordinate of the top side of the rectangular region.
+	 *           The vertical location of the top side of the rectangular region.
 	 * 
 	 * @return An array of tile positions, where each position (x_T, y_T) is
 	 *         represented as an array of 2 elements, containing the horizontal
@@ -644,20 +674,30 @@ public class World {
 	 *         The returned array is ordered from left to right,
 	 *         bottom to top: all positions of the bottom row (ordered from
 	 *         small to large x_T) precede the positions of the row above that.
+	 *         | int[] startTile=this.getTileAtPixelPosition(pixelLeft, pixelBottom)
+	 *         | int[] stopTile=int [] stopTile = this.getTileAtPixelPosition(pixelRight, pixelTop)
+	 *         | int nbRows=stopTile[1] - startTile[1] + 1
+	 *         | int int nbColumns = stopTile[0] - startTile[0] + 1
+	 *         | int[][] tilePositions= new int[nbRow*nbColumns][2]
+	 *         | for (row=0..nbRows)
+	 *         |	for (column=0..nbColumns)
+	 *         |		tilePositions [row*nbColumns + column][0] = startTile[0]+column
+	 *		   |		tilePositions [row*nbColumns + column][1] = startTile[1]+row
+	 *		   | result==tilePositions
 	 *
 	 * @throws	IllegalArgumentException
 	 * 			|(!canHaveAsPixelLocation(pixelLeft, pixelBottom) 
-				| || !canHaveAsPixelLocation(pixelRight, pixelTop))	
+	 *			| || !canHaveAsPixelLocation(pixelRight, pixelTop))	
 	 * 
 	 */
 	public int [][] getTilePositionsIn(int pixelLeft, int pixelBottom, 
 			int pixelRight, int pixelTop) 
 		throws IllegalArgumentException{
-		if(!canHaveAsPixelLocation(pixelLeft, pixelBottom) 
-				|| !canHaveAsPixelLocation(pixelRight, pixelTop))
+		if(!this.canHaveAsPixelLocation(pixelLeft, pixelBottom) 
+				|| !this.canHaveAsPixelLocation(pixelRight, pixelTop))
 			throw new IllegalArgumentException("Not a valid pixel location!");
-		int [] startTile = getTileAtPixelPosition(pixelLeft, pixelBottom);
-		int [] stopTile = getTileAtPixelPosition(pixelRight, pixelTop);
+		int [] startTile = this.getTilePositionAtPixelLocation(pixelLeft, pixelBottom);
+		int [] stopTile = this.getTilePositionAtPixelLocation(pixelRight, pixelTop);
 		int nbRows = stopTile[1] - startTile[1] + 1;
 		int nbColumns = stopTile[0] - startTile[0] + 1;
 		int [][] tilePositions = new int [nbRows * nbColumns][2];
@@ -672,62 +712,47 @@ public class World {
 	}
 	
 	/**
-	 * Returns the geological feature of the tile at the given pixel position.
+	 * Returns the tile value of the tile at the given pixel location.
 	 * 
 	 * @param 	pixelX
 	 * 			The horizontal location of the pixel.
 	 * @param 	pixelY
 	 * 			The vertical location of the pixel.
-	 * @return	|result == getTileValueAtTilePosition(tile[0], tile[1])
+	 * @return	|result == this.getTileValueAtTilePosition(this.getTileAtPixelPosition(pixelX,pixelY)[0],this.getTileAtPixelPosition(pixelX,pixelY)[1])
 	 * @throws 	IllegalArgumentException
-	 * 			|!canHaveAsPixelLocation(pixelX, pixelY)
+	 * 			|!this.canHaveAsPixelLocation(pixelX, pixelY)
 	 */
-	public int getGeologicalFeatureAtPixel(int pixelX, int pixelY) throws IllegalArgumentException {
+	public int getTileValueAtPixelLocation(int pixelX, int pixelY) throws IllegalArgumentException {
 		if(!canHaveAsPixelLocation(pixelX, pixelY))
 			throw new IllegalArgumentException("Not a valid pixel position!");
-		int tile [] = getTileAtPixelPosition(pixelX, pixelY);
+		int tile [] = getTilePositionAtPixelLocation(pixelX, pixelY);
 		return getTileValueAtTilePosition(tile[0], tile[1]);
 	}
 	
 	/**
-	 * Set the geological feature of the given tile to the given value.
-	 * 
-	 * @param 	tileX
-	 * 			The horizontal location of the tile.
-	 * @param 	tileY
-	 * 			The vertical location of the tile.
-	 * @param 	tileType
-	 * 			The value of the given tile.
-	 * @post	|this.tiles[tileX][tileY] = tileType;
-	 */
-	public void setGeologicalFeatureAtTile(int tileX, int tileY, int tileType){
-		if(!canHaveAsTilePosition(tileX, tileY))
-			throw new IllegalArgumentException("Not a valid tile position!");
-		if(!isValidTileValue(tileType))
-			throw new IllegalArgumentException("Not a valid tile value!");
-		if(!getGameHasStarted())
-			this.tiles[tileX][tileY] = tileType;
-	}
-	
-	/**
-	 * Variable registering the number of geological features in this world.
+	 * Variable registering the number of geological features in this world, we also refer to this as the tile value of a tile.
 	 */
 	private final static int NB_OF_GEOLOGICAL_FEATURES = 4;
 	
 	/**
-	 * Check with which types of geological features this area overlaps.
-	 * It returns an array with true or false at the position of the corresponding 
+	 * Check with which types of geological features this pixel area overlaps.
+	 * It returns an array with a boolean at the position of the corresponding 
 	 * geological feature. So if the area overlaps with geological feature one,
 	 * the boolean at position one will be true.
 	 * @param 	horizontalLocation
-	 * 			The horizontal location of the area.
+	 * 			The horizontal pixel location of the area.
 	 * @param 	verticalLocation
-	 * 			The vertical location of the area.
+	 * 			The vertical pixel location of the area.
 	 * @param 	areaWidth
-	 * 			The width of the area.
+	 * 			The width of the area in pixels.
 	 * @param 	areaHeight
-	 * 			The height of the area.
-	 * @return
+	 * 			The height of the area in pixels.
+	 * @return	| boolean [] coincidesWithTerrain= {false,false,false,false}
+	 * 			| for (tiles=0..this.getTilePositionsIn(horizontalLocation, verticalLocation, 
+	 *			|					horizontalLocation+areaWidth, verticalLocation+areaHeight).length)
+	 *			|		for(index=0..NB_OF_GEOLOGICAL_FEATURES)
+	 *			|			coincidesWithTerrain[index]=true;
+	 *			| result==coincidesWithTerrain
 	 * @throws 	IllegalArgumentException
 	 * 			|!this.canHaveAsPixelLocation(horizontalLocation, verticalLocation) 
 				|	|| !this.canHaveAsPixelLocation(horizontalLocation + areaWidth, 
@@ -748,16 +773,6 @@ public class World {
 			}
 		}
 		return coincidesWithTerrain;
-	}
-	
-	public int[][] areaOverlapsWithTiles(int horizontalLocation, int verticalLocation, int areaWidth, int areaHeight) throws IllegalArgumentException{
-		if(!this.canHaveAsPixelLocation(horizontalLocation, verticalLocation) 
-				|| !this.canHaveAsPixelLocation(horizontalLocation + areaWidth, 
-						verticalLocation + areaHeight))
-			throw new IllegalArgumentException();
-		int coincidingTiles[][]= this.getTilePositionsIn(horizontalLocation, verticalLocation, 
-				horizontalLocation+areaWidth, verticalLocation+areaHeight);
-		return coincidingTiles.clone();
 	}
 	
 	/**
@@ -908,11 +923,26 @@ public class World {
 	 *	
 	 */
 	public boolean canHaveAsMazub(Mazub mazub){
-		if (mazub==null){
-			return true;
+		if (!this.getGameHasStarted()){
+			if( mazub==null){
+				return true;
+			}
+			else{
+				return mazub.canHaveAsLocation(mazub.getHorizontalLocation(),mazub.getVerticalLocation());
+			}
 		}
 		else{
-			return mazub.canHaveAsLocation(mazub.getHorizontalLocation(),mazub.getVerticalLocation());
+			if(mazub==null){
+				return false;
+			}
+			if(mazub.isTerminated()){
+				return mazub==null;
+			}
+			else{
+				return mazub.canHaveAsLocation(mazub.getHorizontalLocation(),mazub.getVerticalLocation())
+						&& this.matchesMazubVisibleWindow(mazub, this.getVisibleWindowLocation()[0], this.getVisibleWindowLocation()[1],
+								this.getVisibleWindowWidth(),this.getVisibleWindowHeight());
+			}
 		}
 	}
 	
@@ -983,13 +1013,24 @@ public class World {
 	 *	
 	 */
 	public boolean canHaveAsGameObject(GameObject gameObject){
-		if (this.isTerminated())
-			return gameObject==null;
-		else if(getNbOfGameObjects() > 100){
-			return false;
+		if (!this.getGameHasStarted()){
+			if( gameObject==null){
+				return true;
+			}
+			else{
+				return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation());
+			}
 		}
 		else{
-			return gameObject!=null && !gameObject.isTerminated() && gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation());
+			if(gameObject==null){
+				return false;
+			}
+			if(gameObject.isTerminated()){
+				return gameObject==null;
+			}
+			else{
+				return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation());
+			}
 		}
 	}
 	
