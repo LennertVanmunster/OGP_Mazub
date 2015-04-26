@@ -1292,7 +1292,8 @@ public abstract class GameObject {
 	 * @param 	oldVerticalLocation
 	 * 			The old vertical location of this game object.
 	 * @post	|if there is overlap (overlap [0] == 1)
-	 * 			| then collisionReaction(overlap[1],overlap[2],overlap[3])
+	 * 			|	if this game object is not dead
+	 * 			| 		then collisionReaction(overlap[1],overlap[2],overlap[3])
 	 * 			|	if(!( gameObject instanceof Plant))
 	 * 			|		then this.setContact(true);
 	 *			|			gameObject.setContact(true)
@@ -1310,7 +1311,9 @@ public abstract class GameObject {
 	public void collisionHandler(int [] overlap, double oldHorizontalLocation, double oldVerticalLocation){
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(overlap[1]);
 		if(overlap[0]==1){
-			collisionReaction(overlap[1],overlap[2],overlap[3]);
+			if(Util.fuzzyEquals(this.getTimeSinceDead(), 0)){
+				collisionReaction(overlap[1],overlap[2],overlap[3]);
+			}
 			if(!( gameObject instanceof Plant)){
 				this.setContact(true);
 				gameObject.setContact(true);
@@ -1709,6 +1712,57 @@ public abstract class GameObject {
 	protected boolean hasProperWorld(){
 		return this.canHaveAsWorld(this.getWorld()) && this.getWorld().hasAsGameObject(this);
 	}
+	
+	/**
+	 * Set the current velocities of this game object to zero 
+	 * and keep blocking the movements of other game objects.
+	 * 
+	 * @post	|new.getHorizontalVelocity == 0
+	 * 			|new.getVerticalVelocity == 0
+	 * @effect	|if this game object is not a plant
+	 * 			|then collisionHandler(overlap,this.getHorizontalLocation(),this.getVerticalLocation())
+	 * @throws	IllegalStateException
+	 * 			|!(this.getHitPoints() <= 0)
+	 */
+	public void block()
+	throws IllegalStateException{
+		if(!(this.getHitPoints() <= 0))
+			throw new IllegalStateException();
+		this.setHorizontalVelocity(0);
+		this.setVerticalVelocity(0);
+		if(!(this instanceof Plant)){
+			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
+			collisionHandler(overlap,this.getHorizontalLocation(),this.getVerticalLocation());
+		}
+	}
+	
+	/**
+	 * Return the time since this game object died.
+	 */
+	@Basic
+	public double getTimeSinceDead(){
+		return this.timeSinceDead;
+	}
+	
+	/**
+	 * Set the time since this game object died.
+	 * 
+	 * @param 	time
+	 * 			The given time period.
+	 * @post	|new.getTimeSinceDead == time
+	 * @throws	IllegalArgumentException
+	 * 			|time < 0
+	 */
+	public void setTimeSinceDead(double time){
+		if(time < 0)
+			throw new IllegalArgumentException();
+		this.timeSinceDead = time;
+	}
+	
+	/**
+	 * Variable registering the time since this game object died.
+	 */
+	protected double timeSinceDead = 0;
 	
 	/**
 	 * Check whether this game object is terminated.

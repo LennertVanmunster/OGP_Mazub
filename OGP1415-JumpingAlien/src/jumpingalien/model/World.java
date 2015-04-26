@@ -4,6 +4,8 @@ import be.kuleuven.cs.som.annotate.*;
 
 import java.util.*;
 
+import jumpingalien.util.Util;
+
 
 
 /**
@@ -865,10 +867,20 @@ public class World {
 	public void advanceTime(double deltaTime){
 		for(int index = 0; index < this.getNbGameObjects(); index++){
 			GameObject gameObject = this.getGameObjectAtIndex(index);
-			if(canHaveAsGameObject(gameObject))
-				gameObject.advanceTime(deltaTime);
-			if(gameObject!=null && gameObject.getHitPoints()<= 0 && index!=0)
-				gameObject.terminate();
+			if(canHaveAsGameObject(gameObject)){
+				if(Util.fuzzyEquals(gameObject.getTimeSinceDead(), 0)){
+					gameObject.advanceTime(deltaTime);
+				}
+				else{
+					gameObject.block();
+				}
+			}
+			if(gameObject!=null && gameObject.getHitPoints()<= 0 && index!=0){
+				if(gameObject.getTimeSinceDead() > 0.6){
+					gameObject.terminate();
+				}
+				gameObject.setTimeSinceDead(gameObject.getTimeSinceDead() + deltaTime);
+			}
 		}
 		this.checkGameOver();
 		this.updateVisibleWindow();

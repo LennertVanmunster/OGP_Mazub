@@ -520,7 +520,7 @@ public class Mazub extends GameObject {
 				this.addHitPoints(50);
 			}
 		}
-		else if(gameObject instanceof Shark){
+		else if(gameObject instanceof Shark && gameObject.getHitPoints() != 0){
 			if(!isUntouchable()){
 				gameObject.removeHitPoints(50);
 				if(index2 == 0){
@@ -529,7 +529,7 @@ public class Mazub extends GameObject {
 				}
 			}
 		}
-		else if(gameObject instanceof Slime){
+		else if(gameObject instanceof Slime && gameObject.getHitPoints() != 0){
 			if(!isUntouchable()){
 				gameObject.removeHitPoints(50);
 				if(index2 == 0){
