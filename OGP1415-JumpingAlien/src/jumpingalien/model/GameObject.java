@@ -220,9 +220,6 @@ public abstract class GameObject {
 		else if(this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)[1]){
 			return false;
 		}
-//		else if(this != null && checkNotAllowedLeftRightTopBottomSideOverlap((int) horizontalLocation, this.getEffectiveVerticalLocation(), this.getWidth(), this.getHeight())){
-//			return false;
-//		}
 		else{
 			return true;
 		}
@@ -255,9 +252,6 @@ public abstract class GameObject {
 				(int) verticalLocation+1, this.getWidth()-1, this.getHeight()-2)[1]){
 			return false;
 		}
-//		else if(this != null && checkNotAllowedLeftRightTopBottomSideOverlap(this.getEffectiveHorizontalLocation(), (int) verticalLocation, this.getWidth(), this.getHeight() )){
-//			return false;
-//		}
 		else{
 			return true;
 		}
@@ -1001,15 +995,44 @@ public abstract class GameObject {
 			}
 	
 
+	/**
+	 * Check whether this game object overlaps with another game object.
+	 * This overlap is an allowed overlap from the outer perimeters of the game objects.
+	 * 
+	 * @return	It returns an array with four elements and each element equal to zero or one.
+	 * 			The array is returned from another method checkLeftRightTopBottomSideOverlap.
+	 * 			This array can be interpreted by the method collisionHandler.
+	 * 			|int [] overlappingGameObject = this.checkLeftRightTopBottomSideOverlap( input 4 perimeter of this game object)
+	 * 			|result == overlappingGameObject
+	 * 
+	 */
 	public int [] checkAllowedLeftRightTopBottomSideOverlap(){
-		int [] overlappingGameObjects = this.checkLeftRightTopBottomSideOverlap(this.getLeftPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getHeight()),
+		int [] overlappingGameObject = this.checkLeftRightTopBottomSideOverlap(this.getLeftPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getHeight()),
 				 this.getRightPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()),
 				 this.getTopPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()),
 				 this.getBottomPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth()));
-		return overlappingGameObjects.clone();
+		return overlappingGameObject.clone();
 	}
 	
-	
+	/**
+	 * Check whether this game object overlaps with another game object.
+	 * This overlap is a not allowed overlap for the game objects.
+	 * 
+	 * @param 	pixelX1
+	 * 			The horizontal location of this game object.
+	 * @param 	pixelY1
+	 * 			The vertical location of this game object.
+	 * @param	width1
+	 * 			The width of this game object.
+	 * @param 	height1
+	 * 			The height of this game object.
+	 * @return	True if and only if for at least one  game object in the game world the following if statement
+	 * 			yields true: 
+	 * 			|if(!(pixelX1 + 1 + (width1 - 3) < pixelX2 || pixelX2 + 1 + (width2 -3) < pixelX1 
+	 * 			|	|| pixelY1 + 1 + (height1 - 3) < pixelY2 || pixelY2 + 1 + (height2 - 3) < pixelY1))
+     *			| then result == true
+     *			|else result == false
+	 */	
 	public boolean checkNotAllowedLeftRightTopBottomSideOverlap(int pixelX1, int pixelY1, int width1, int height1){
 		World world = this.getWorld();
 		boolean overlap = false;
@@ -1037,19 +1060,19 @@ public abstract class GameObject {
 	 * @return	The method iterates over all the game objects that can overlap with the given
 	 * 			game object. That are the game objects that overlap with one of the tile with
 	 * 			which this game object overlaps. If another game object is found that overlaps 
-	 * 			with one of the given sides then an array is returned with at the first position
-	 * 			number one defining that there is overlap and at the second position the index 
-	 * 			of the game object in the world.
-	 * 			|overlap = {0,0}
+	 * 			with one of the given sides then an array with four elements is returned.
+	 * 			This array can be interpreted by the method collisionHandler.
+	 * 			|overlap = {0,0,0,0}
 	 * 			|for each game object in gameGameObjectAtTile of this game object
-	 * 			|	if(gameObject != this && world.canHaveAsGameObject(gameObject))
-	 * 			|		overlap = checkLeftOrRightSideOverlap(gameObject);
+	 * 			|	if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject))
+	 * 			|		overlap = checkLeftOrRightSideOverlap(gameObject,perimeters...);
 	 *			|		if(overlap [0] == 1)
 	 *			|		then the array "overlap" is returned
 	 *			|		or 
-	 *			|		overlap = checkTopOrBottomSideOverlap(gameObject);
+	 *			|		overlap = checkTopOrBottomSideOverlap(gameObject,perimeters...);
 	 *			|		if(overlap [0] == 1)
 	 *			|		then the array "overlap" is returned
+	 *			|result == overlap
 	 */
 	public int [] checkLeftRightTopBottomSideOverlap(int [][] leftPerimeter1, int [][] rightPerimeter1, int [][] topPerimeter1, int [][] bottomPerimeter1){
 		int [] overlap = {0,0,0,0};
@@ -1081,16 +1104,29 @@ public abstract class GameObject {
 	 * 
 	 * @return	The method iterates over the positions of the top and bottom perimeter of this game object
 	 * 			and the top and bottom perimeter of the given game object. 
-	 * 			If one of the top positions is equal another other bottom position or the other way around
-	 * 			then an array is returned with at the first position the number one defining that 
-	 * 			there is overlap and at the second position the index of the game object in the world.
-	 * 			|overlap = {0,0}
+	 * 			If one of the top positions of this game object is equal to another bottom position
+	 * 			of the other game object then an array is returned with at the first position the 
+	 * 			number one defining that there is overlap, at the second position the index of the 
+	 * 			game object in the world and at the fourth  position the number one defining that 
+	 * 			the other game object is standing on this game object.
+	 * 			If one of the bottom positions of this game object is equal to another top position
+	 * 			of the other game object then an array is returned with at the first position the 
+	 * 			number one defining that there is overlap, at the second position the index of the 
+	 * 			game object in the world and at the third position the number one defining that 
+	 * 			the this game object is standing on the other game object.
+	 * 			|overlap = {0,0,0,0}
 	 * 			|for position1 in top perimeter and bottom perimeter
 	 * 			|	for position 2 in top perimeter and bottom perimeter
-	 * 			|		if(position1top == position2bottom || position1bottom == position2top)
+	 * 			|		if(position1top == position2bottom)
 	 * 			|		then
 	 *			|		overlap [0] = 1 ;
 	 *			|		overlap [1] = world.getIndexOfGameObject(gameObject);
+	 *			|		overlap [3] = 1;
+	 *			|		if(position2top == position1bottom)
+	 * 			|		then
+	 *			|		overlap [0] = 1 ;
+	 *			|		overlap [1] = world.getIndexOfGameObject(gameObject);
+	 *			|		overlap [2] = 1;
 	 *			|result == overlap 
 	 */
 	public int [] checkTopOrBottomSideOverlap(GameObject gameObject, int [][] topPerimeter1, int [][] bottomPerimeter1, int [][] topPerimeter2, int [][] bottomPerimeter2){
@@ -1125,7 +1161,7 @@ public abstract class GameObject {
 	 * 			If one of the left positions is equal another right position or the other way around
 	 * 			then an array is returned with at the first position the number one defining that 
 	 * 			there is overlap and at the second position the index of the game object in the world.
-	 * 			|overlap = {0,0}
+	 * 			|overlap = {0,0,0,0}
 	 * 			|for position1 in left perimeter and right perimeter
 	 * 			|	for position 2 in left perimeter and right perimeter
 	 * 			|		if(position1left == position2right || position1right == position2left)
@@ -1164,6 +1200,17 @@ public abstract class GameObject {
 	 */
 	private Direction direction = Direction.LEFT;
 	
+	/**
+	 * Calculate a new small time period based on the current velocity and acceleration. 
+	 * So that the game object can only travel one pixel per time period.
+	 * 
+	 * @param  	deltaTime
+	 * 			The given time period.
+	 * @return	|if(isValidDeltaTime(time))
+	 * 			|then result == 0.01/(Math.sqrt((Math.pow(this.getHorizontalVelocity(),2)+Math.pow(this.getVerticalVelocity(), 2)))+
+	 *			|				Math.sqrt((Math.pow(this.getHorizontalAcceleration(),2)+Math.pow(this.getVerticalAcceleration(), 2)))*deltaTime)
+	 *			|else result == 0.03 (not moving)
+	 */
 	public double getDeltaTimeForPixel(double deltaTime){
 		double time =  0.01/(Math.sqrt((Math.pow(this.getHorizontalVelocity(),2)+Math.pow(this.getVerticalVelocity(), 2)))+
 				Math.sqrt((Math.pow(this.getHorizontalAcceleration(),2)+Math.pow(this.getVerticalAcceleration(), 2)))*deltaTime);
@@ -1211,19 +1258,55 @@ public abstract class GameObject {
 		}
 	}
 	
+	/**
+	 * Return whether this game object is currently overlapping with another game object.
+	 */
+	@Basic
 	public boolean getContact(){
 		return this.contact;
 	}
 	
+	/**
+	 * Set the contact state of this game object.
+	 * 
+	 * @param 	contact
+	 * 			Boolean declaring contact or not.
+	 * @post	|new.getContact() == contact
+	 */
 	public void setContact(boolean contact){
 		this.contact = contact;
 	}
 	
-	
+	/**
+	 * Boolean registering if this game object is currently overlapping with another game object.
+	 */
 	protected boolean contact;
 	
-	boolean contact2;
-
+	/**
+	 * Check whether the location and velocities need to be adapted due to contact with another game object.
+	 * 
+	 * @param 	overlap
+	 * 			An array of four elements registering contact details (see checkTopOrBottomSideOverlap).
+	 * @param 	oldHorizontalLocation
+	 * 			The old horizontal location of this game object.
+	 * @param 	oldVerticalLocation
+	 * 			The old vertical location of this game object.
+	 * @post	|if there is overlap (overlap [0] == 1)
+	 * 			| then collisionReaction(overlap[1],overlap[2],overlap[3])
+	 * 			|	if(!( gameObject instanceof Plant))
+	 * 			|		then this.setContact(true);
+	 *			|			gameObject.setContact(true)
+	 *			|else (this.getContact() == true && !( gameObject instanceof Plant))
+	 *			|	if the current contact is not allowed
+	 *			| 		then check if the contact with the old horizontal location is not allowed
+	 *			|		if true: this.setVerticalLocation(oldVerticalLocation)
+	 *			|				if this method is used by a mazub: this.setVerticalVelocity(0)
+	 *			|		then check if the contact with the old vertical location is not allowed
+	 *			|		if true: this.setHorizontalLocation(oldHorizontalLocation);
+	 *			|	else: (the game object is not any more overlapping)
+	 *			|		this.setContact(false);
+	 *			|		gameObject.setContact(false);
+	 */
 	public void collisionHandler(int [] overlap, double oldHorizontalLocation, double oldVerticalLocation){
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(overlap[1]);
 		if(overlap[0]==1){
