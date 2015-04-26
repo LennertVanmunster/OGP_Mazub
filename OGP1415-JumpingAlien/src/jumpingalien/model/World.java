@@ -1090,7 +1090,7 @@ public class World {
 	 * 			|	(new gameObject).getWorld()==null
 	 */
 	public void removeAsGameObject(GameObject gameObject){
-		if(this.hasAsGameObject(gameObject)){
+		if(gameObject !=null && this.hasAsGameObject(gameObject)){
 			this.gameObjects.remove(gameObject);
 			gameObject.setWorld(null);
 		}
@@ -1242,20 +1242,7 @@ public class World {
 	 */
 	private boolean isTerminated=false;
 	
-	/**
-	 * Remove the given game object from this world.
-	 * @param 	gameObject
-	 * 			The game object to be removed.
-	 * @effect	|if(gameObject != null && this.hasAsGameObject(gameObject)
-	 * 			|	gameObject.setWorld(null)
-	 * @post	|if(gameObject != null && this.hasAsGameObject(gameObject)
-	 * 			|	new.contains(gameObject) == false
-	 */
-	public void removeGameObject(GameObject gameObject){
-		if(gameObject != null && hasAsGameObject(gameObject))
-			gameObjects.remove(gameObject);
-			gameObject.setWorld(null);
-	}
+	
 	
 	/**
 	 * Returns an array list containing the plants of this world.

@@ -41,7 +41,6 @@ public class Slime extends GameObject {
 		throws IllegalArgumentException, IllegalLocationException {
 		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, 0, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, images);
 		school.addAsSlime(this);
-		this.setSchool(school);
 	}
 	
 	
@@ -301,11 +300,11 @@ public class Slime extends GameObject {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
 		if(gameObject instanceof Shark){
 			gameObject.removeHitPoints(50);
-			this.removeHitPointsSchool(50);
+			this.removeHitPoints(50);
 		}
 		else if(gameObject instanceof Mazub){
 			if(!((Mazub) gameObject).isUntouchable()){
-				this.removeHitPointsSchool(50);
+				this.removeHitPoints(50);
 				if(index3 == 0){
 					gameObject.removeHitPoints(50);
 					((Mazub) gameObject).setTimeSinceLastHitpointsLoss(0);
@@ -341,7 +340,7 @@ public class Slime extends GameObject {
 			double time = getTimeSinceStartWaterContact();
 			this.setTimeSinceStartWaterContact(time + deltaTime);
 			if(Util.fuzzyGreaterThanOrEqualTo(this.getTimeSinceStartWaterContact(), 0.2)){
-				this.removeHitPointsSchool(2);
+				this.removeHitPoints(2);
 				this.setTimeSinceStartWaterContact(0);
 			}
 		}
@@ -365,7 +364,7 @@ public class Slime extends GameObject {
 			double time = getTimeSinceStartMagmaContact();
 			this.setTimeSinceStartMagmaContact(time + deltaTime);
 			if(time == 0)
-				this.removeHitPointsSchool(50);
+				this.removeHitPoints(50);
 			else if(Util.fuzzyGreaterThanOrEqualTo(this.getTimeSinceStartMagmaContact(), 0.2)){
 				this.setTimeSinceStartMagmaContact(0);
 			}
@@ -375,33 +374,71 @@ public class Slime extends GameObject {
 		}
 	}
 	
-	public void removeHitPointsSchool(int hitPoints){
-		this.removeHitPoints(hitPoints);
+	/**
+	 * Remove the given number of hit points from this slime and 1 hit point from all the slimes in its school.
+	 * @param 	hitPoints
+	 * 			The number of hit points to be removed from this slime.
+	 * @effect	All other slimes in the school of this slime lose 1 hit point.
+	 * 			| for(slimes in this.getSchool.getAllSlimes())
+	 * 			|	if(slime!=this)
+	 * 			|		(super slime).removeHitPoints(1)
+	 */
+	@Override
+	public void removeHitPoints(int hitPoints){
+		super.removeHitPoints(hitPoints);
 		for(Slime slime: this.getSchool().getAllSlimes()){
 			if(slime!=this){
-				slime.removeHitPoints(1);
+				super.removeHitPoints(1);
 			}
 		}
 	}
 	
+	/**
+	 * Make this slime migrate from its current school to the given school. 
+	 * This includes an exchange of hit points between the slimes of the current school of this slime and the given school.
+	 * @param 	newSchool
+	 * 			The new school to be set for this slime.
+	 * @effect	One hit point is added to all slimes in the school of this slime excluding this slime.
+	 * 			|for(slime in this.getSchool.getAllSlimes())
+	 * 			|	if(slime!=this)
+	 * 			|		((GameObject) slime).addHitPoints(1)
+	 * @effect	One hit point is removed from all slimes in the given school.
+	 * 			|for(slime in newSchool.getAllSlimes())
+	 * 			|	((GameObject) slime).removeHitPoints(1)
+	 * @effect	The number of hit points to added to this slime is calculated via: the number of slimes in the given school minus the number of slimes in this school plus one.
+	 * 			If that number is positive than that number is added to the hit points of this slime.
+	 *			Otherwise the absolute value of that number is removed from the hit points of this slime. 	
+	 * 			| int hitPointsToBeAdded=newSchool.getNbSlimes()-this.getSchool().getNbSlimes()+1
+	 * 			|if (hitPointsToBeAdded>0)
+	 * 			|	super.addHitPoints(newSchool.getNbSlimes())
+	 * 			|else
+	 * 			|	super.removeHitPoints(Math.abs(hitPointsToBeAdded))
+	 * @post	This new school of this slime is equal to the given school.
+	 * 			|new.getSchool()==newSchool
+	 * @post	The new school of this slime has this slime as one of its slimes.
+	 *  		|(new newSchool).hasAsSlime(this)
+	 * @post	The current school of this slime doesn't have this slime as one of its slimes.
+	 * 			| !this.getSchool().hasAsSlime(new this)
+	 * 
+	 */
 	public void joinSchool(School newSchool){
 		for(Slime slime: this.getSchool().getAllSlimes()){
 			if(slime!=this){
-				slime.addHitPoints(1);
+				((GameObject) slime).addHitPoints(1);
 			}
 		}
 		for(Slime slime: newSchool.getAllSlimes()){
-			slime.removeHitPoints(1);
+			((GameObject) slime).removeHitPoints(1);
 		}
 		int hitPointsToBeAdded=newSchool.getNbSlimes()-this.getSchool().getNbSlimes()+1;
-		if(hitPointsToBeAdded>=0){
-			this.addHitPoints(hitPointsToBeAdded);
+		if(hitPointsToBeAdded>0){
+			super.addHitPoints(hitPointsToBeAdded);
 		}
 		else{
-			this.removeHitPoints(Math.abs(hitPointsToBeAdded));
+			super.removeHitPoints(Math.abs(hitPointsToBeAdded));
 		}
-		this.setSchool(newSchool);
-		school.addAsSlime(this);
+		this.getSchool().removeAsSlime(this);
+		newSchool.addAsSlime(this);
 	}
 	
 	/**
@@ -442,6 +479,9 @@ public class Slime extends GameObject {
 	 * 			| 		new.getSchool()==this
 	 */
 	public void setSchool(School school){
+		if (school==null && this.getSchool()!=null && (this.getSchool().hasAsSlime(this))){
+			throw new IllegalArgumentException();
+		}
 		if(this.canHaveAsSchool(school)){
 			this.school=school;
 		}
@@ -460,7 +500,7 @@ public class Slime extends GameObject {
 	 * @return	result == (school==null || school.canHaveAsGameObject(this))
 	 */
 	public boolean canHaveAsSchool(School school){
-		return  ((this.isTerminated() && school==null) || (!this.isTerminated() && school.canHaveAsSlime(this)));
+		return  (school==null || school.canHaveAsSlime(this));
 	}
 	
 	

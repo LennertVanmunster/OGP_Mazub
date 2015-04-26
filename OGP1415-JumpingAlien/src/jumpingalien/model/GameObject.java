@@ -1692,7 +1692,7 @@ public abstract class GameObject {
 		World world = this.getWorld();
 		if(this.getWorld() != null)
 			this.setWorld(null);
-			world.removeGameObject(this);
+			world.removeAsGameObject(this);
 	}
 	
 	/**
@@ -1701,7 +1701,7 @@ public abstract class GameObject {
 	 * @return	result == (world==null || world.canHaveAsGameObject(this))
 	 */
 	protected boolean canHaveAsWorld(World world){
-		return (world==null || world.canHaveAsGameObject(this));
+		return (this.isTerminated() && world==null || world.canHaveAsGameObject(this));
 	}
 	
 	/**
@@ -1781,9 +1781,9 @@ public abstract class GameObject {
 	 */
 	public void terminate(){
 		if (!this.isTerminated()){
+			this.isTerminated=true;
 			this.getWorld().removeAsGameObject(this);
 			this.setWorld(null);
-			this.isTerminated=true;
 		}
 	}
 	
