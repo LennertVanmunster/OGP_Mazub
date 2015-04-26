@@ -18,7 +18,11 @@ public class School {
 	}
 	
 	public boolean canHaveAsSlime(Slime slime){
-		return((this.getNbSlimes()<=10 && slime != null && !this.isTerminated()) || (slime.isTerminated() && slime==null));
+		return((this.isValidNbSlimes(this.getNbSlimes()) && slime != null && !this.isTerminated()) || (this.isTerminated() && slime==null));
+	}
+	
+	public boolean isValidNbSlimes(int nbSlimes){
+		return true;
 	}
 	
 	public boolean hasProperSlimes(){
@@ -32,7 +36,7 @@ public class School {
 	}
 	
 	public void addAsSlime(Slime slime){
-		if (!this.canHaveAsSlime(slime) || slime.getSchool()!=null){
+		if (!this.canHaveAsSlime(slime)){
 			throw new IllegalArgumentException();
 		}
 		this.slimes.add(slime);
@@ -47,6 +51,11 @@ public class School {
 	
 	public int getNbSlimes(){
 		return slimes.size();
+	}
+	
+	public Set<Slime> getAllSlimes(){
+		Set<Slime> allSlimes= new HashSet<Slime>(this.slimes);
+		return allSlimes;
 	}
 	
 	public void terminate(){

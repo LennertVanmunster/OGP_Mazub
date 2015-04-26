@@ -301,15 +301,24 @@ public class Slime extends GameObject {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
 		if(gameObject instanceof Shark){
 			gameObject.removeHitPoints(50);
-			this.removeHitPoints(50);
+			this.removeHitPointsSchool(50);
 		}
 		else if(gameObject instanceof Mazub){
 			if(!((Mazub) gameObject).isUntouchable()){
-				this.removeHitPoints(50);
+				this.removeHitPointsSchool(50);
 				if(index3 == 0){
 					gameObject.removeHitPoints(50);
 					((Mazub) gameObject).setTimeSinceLastHitpointsLoss(0);
 				}
+			}
+		}
+		else if(gameObject instanceof Slime){
+			Slime otherSlime= (Slime) gameObject;
+			if (this.getSchool().getNbSlimes()>otherSlime.getSchool().getNbSlimes()){
+				otherSlime.joinSchool(this.getSchool());
+			}
+			else if(this.getSchool().getNbSlimes()<otherSlime.getSchool().getNbSlimes()){
+				this.joinSchool(otherSlime.getSchool());
 			}
 		}
 	}
@@ -332,7 +341,7 @@ public class Slime extends GameObject {
 			double time = getTimeSinceStartWaterContact();
 			this.setTimeSinceStartWaterContact(time + deltaTime);
 			if(Util.fuzzyGreaterThanOrEqualTo(this.getTimeSinceStartWaterContact(), 0.2)){
-				this.removeHitPoints(2);
+				this.removeHitPointsSchool(2);
 				this.setTimeSinceStartWaterContact(0);
 			}
 		}
@@ -356,7 +365,7 @@ public class Slime extends GameObject {
 			double time = getTimeSinceStartMagmaContact();
 			this.setTimeSinceStartMagmaContact(time + deltaTime);
 			if(time == 0)
-				this.removeHitPoints(50);
+				this.removeHitPointsSchool(50);
 			else if(Util.fuzzyGreaterThanOrEqualTo(this.getTimeSinceStartMagmaContact(), 0.2)){
 				this.setTimeSinceStartMagmaContact(0);
 			}
@@ -364,6 +373,35 @@ public class Slime extends GameObject {
 		else{
 			this.setTimeSinceStartMagmaContact(0);
 		}
+	}
+	
+	public void removeHitPointsSchool(int hitPoints){
+		this.removeHitPoints(hitPoints);
+		for(Slime slime: this.getSchool().getAllSlimes()){
+			if(slime!=this){
+				slime.removeHitPoints(1);
+			}
+		}
+	}
+	
+	public void joinSchool(School newSchool){
+		for(Slime slime: this.getSchool().getAllSlimes()){
+			if(slime!=this){
+				slime.addHitPoints(1);
+			}
+		}
+		for(Slime slime: newSchool.getAllSlimes()){
+			slime.removeHitPoints(1);
+		}
+		int hitPointsToBeAdded=newSchool.getNbSlimes()-this.getSchool().getNbSlimes()+1;
+		if(hitPointsToBeAdded>=0){
+			this.addHitPoints(hitPointsToBeAdded);
+		}
+		else{
+			this.removeHitPoints(Math.abs(hitPointsToBeAdded));
+		}
+		this.setSchool(newSchool);
+		school.addAsSlime(this);
 	}
 	
 	/**
@@ -422,7 +460,7 @@ public class Slime extends GameObject {
 	 * @return	result == (school==null || school.canHaveAsGameObject(this))
 	 */
 	public boolean canHaveAsSchool(School school){
-		return (school==null || school.canHaveAsSlime(this));
+		return  ((this.isTerminated() && school==null) || (!this.isTerminated() && school.canHaveAsSlime(this)));
 	}
 	
 	
