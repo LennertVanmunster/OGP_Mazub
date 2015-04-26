@@ -1115,12 +1115,16 @@ public class World {
 	 *	
 	 */
 	public boolean canHaveAsGameObject(GameObject gameObject){
+		boolean isValidNbSchools=true;
 		if(gameObject==null){
 			return false;
 		}
 		else if (!this.getGameHasStarted()){
+			if(gameObject instanceof Slime && this.getAllDifferentSchools().contains(((Slime) gameObject).getSchool())){
+				isValidNbSchools=isValidNbSchools(this.getNbSchools());
+			}
 			return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation())
-					&& isValidNbGameObjects(this.getNbGameObjects());
+				&& isValidNbGameObjects(this.getNbGameObjects()) && isValidNbSchools;
 			
 		}
 		else{
@@ -1128,8 +1132,11 @@ public class World {
 				return gameObject==null;
 			}
 			else{
+				if(gameObject instanceof Slime && this.getAllDifferentSchools().contains(((Slime) gameObject).getSchool())){
+					isValidNbSchools=isValidNbSchools(this.getNbSchools());
+				}
 				return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation())
-						&& isValidNbGameObjects(this.getNbGameObjects());
+						&& isValidNbGameObjects(this.getNbGameObjects()) && isValidNbSchools;
 			}
 		}
 	}
@@ -1292,6 +1299,24 @@ public class World {
 			}
 		}
 		return slimes;		
+	}
+	
+	public Set<School> getAllDifferentSchools(){
+		List<Slime> allSlimes= this.getSlimes();
+		Set<School> allDifferentSchools= new HashSet<School>();
+		for(Slime slime: allSlimes){
+			School school= slime.getSchool();
+			allDifferentSchools.add(school);
+		}
+		return allDifferentSchools;
+	}
+	
+	public int getNbSchools(){
+		return getAllDifferentSchools().size();
+	}
+	
+	public boolean isValidNbSchools(int nbSchools){
+		return nbSchools<=10;
 	}
 	
 	/**
