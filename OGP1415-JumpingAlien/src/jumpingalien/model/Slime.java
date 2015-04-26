@@ -257,6 +257,8 @@ public class Slime extends GameObject {
 			this.startNewAction();
 		}
 		while (sumDeltaTimeForPixel<deltaTime){
+			oldHorizontalLocation = this.getHorizontalLocation();
+			oldVerticalLocation = this.getVerticalLocation();
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
 			newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTimeForPixel;
 			newHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAccelerationForUpdate()*deltaTimeForPixel;
@@ -277,28 +279,17 @@ public class Slime extends GameObject {
 			}
 			try{
 				this.setHorizontalLocation(newHorizontalLocation);
-				oldHorizontalLocation=newHorizontalLocation;
 			} catch(IllegalLocationException exc){
 				this.setHorizontalLocation((int) oldHorizontalLocation);
-				this.setHorizontalVelocity(0);
-				if (this.getDirection()==Direction.LEFT){
-					this.setDirection(Direction.RIGHT);
-				}
-				else{
-					this.setDirection(Direction.LEFT);
-				}
 			}
 			try{
 				this.setVerticalLocation(newVerticalLocation);
-				oldVerticalLocation=newVerticalLocation;
 			} catch(IllegalLocationException exc){
 				this.setVerticalLocation(oldVerticalLocation);
 				this.setVerticalVelocity(0);
 			}
-//			int [][] overlappingGameObjects = this.checkLeftRightTopBottomSideOverlap();
-//			for(int [] overlap : overlappingGameObjects)
-//				if(overlap[0]==1)
-//					collisionReaction(overlap[1],overlap[2]);
+			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
+			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
 		}
 		this.setTimeSinceStartAction(this.getTimeSinceStartAction()+deltaTime);
 		this.checkWaterContact(deltaTime);
@@ -306,27 +297,23 @@ public class Slime extends GameObject {
 		this.calculateNewJumpingState();
 	}
 	
-	protected void collisionReaction(int index1, int index2) {
+	protected void collisionReaction(int index1, int index2, int index3) {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
 		if(gameObject instanceof Shark){
-			this.setHorizontalVelocity(0);
-			gameObject.setHorizontalVelocity(0);
-			if(this.getVerticalVelocity() > 0 && this.getVerticalLocation() - gameObject.getVerticalLocation() < 0)
-				this.setVerticalVelocity(-this.getVerticalVelocity());
-			else if(this.getVerticalVelocity() < 0 && this.getVerticalLocation() - gameObject.getVerticalLocation() > 0)
-				try{
-					this.setVerticalVelocity(-this.getVerticalVelocity());
-				}catch (IllegalArgumentException exc){
-					this.setVerticalVelocity(2);
+			gameObject.removeHitPoints(50);
+			this.removeHitPoints(50);
+		}
+		else if(gameObject instanceof Mazub){
+			if(!((Mazub) gameObject).isUntouchable()){
+				this.removeHitPoints(50);
+				if(index3 == 0){
+					gameObject.removeHitPoints(50);
+					((Mazub) gameObject).setTimeSinceLastHitpointsLoss(0);
 				}
-			if (this.getDirection()==Direction.LEFT && this.getHorizontalLocation() - gameObject.getHorizontalLocation() > 0){
-				this.setDirection(Direction.RIGHT);
 			}
-			else if (this.getDirection()==Direction.RIGHT && this.getHorizontalLocation() - gameObject.getHorizontalLocation() < 0){
-				this.setDirection(Direction.LEFT);
-			}
-		}	
+		}
 	}
+	
 	
 	/**
 	 * Check whether the game object makes contact with water and take the corresponding actions.

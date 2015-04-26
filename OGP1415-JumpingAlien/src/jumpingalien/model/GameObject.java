@@ -1233,7 +1233,7 @@ public abstract class GameObject {
 				gameObject.setContact(true);
 			}
 		}
-		else if(this.getContact() == true){
+		else if(this.getContact() == true && !( gameObject instanceof Plant)){
 			if(checkNotAllowedLeftRightTopBottomSideOverlap(this.getEffectiveHorizontalLocation(), this.getEffectiveVerticalLocation(), this.getWidth(), this.getHeight())){
 				if(checkNotAllowedLeftRightTopBottomSideOverlap((int) oldHorizontalLocation, this.getEffectiveVerticalLocation(), this.getWidth(), this.getHeight())){
 					this.setVerticalLocation(oldVerticalLocation);
