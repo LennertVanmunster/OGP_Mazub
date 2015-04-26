@@ -43,6 +43,8 @@ import java.util.List;
  * 			| isValidTimeSinceAction(getTimeSinceStartWaterContact())
  * @invar	The time since this game object last started contacting magma must be a valid time for each game object.
  * 			| isValidTimeSinceAction(getTimeSinceStartMagmaContact())
+ * @invar	Each game object can have its number of hit points as its number of hit points.
+ * 			| canHaveAsHitPoints(getHitPoints())
  * @invar	Each game object has a proper world to which it is attached.
  * 			| hasProperWorld()
  * @version	1.0
@@ -62,9 +64,9 @@ public abstract class GameObject {
 	 * @param verticalVelocity
 	 * 			The vertical velocity of the new game object.
 	 * @param initialHorizontalVelocity
-	 * 			The initial horizontal velocity of the new game object when the game object starts moving and is not ducking.
+	 * 			The initial horizontal velocity of the new game object when the game object starts moving.
 	 * @param maximumHorizontalVelocity
-	 * 			The maximum horizontal velocity of the new game object when it is not ducking.
+	 * 			The maximum horizontal velocity of the new game object.
 	 * @param initialVerticalVelocity
 	 * 			The initial vertical velocity of the new game object when the game object jumps.
 	 * @param horizontalAcceleration
@@ -81,10 +83,10 @@ public abstract class GameObject {
 	 * @post	The vertical location of this new game object is equal to the 
 	 * 			given vertical location.
 	 * 			|new.getVerticalLocation() == verticalLocation
-	 * @post	The initial horizontal velocity when not ducking
+	 * @post	The initial horizontal velocity
 	 * 			of this new game object is equal to the given initial horizontal velocity.
 	 * 			|new.getInitialHorizontalVelocity() == initialHorizontalVelocity
-	 * @post	The maximum horizontal velocity this new game object when not ducking is equal to the 
+	 * @post	The maximum horizontal velocity this new game object is equal to the 
 	 * 			given maximum horizontal velocity.
 	 * 			|new.getMaximumHorizontalVelocity() == maximumHorizontalVelocity
 	 * @post	The horizontal velocity of this new game object is equal to the 
@@ -143,6 +145,8 @@ public abstract class GameObject {
 	 * 			This game object cannot have the given ducking state as its ducking state.
 	 * 			| !canHaveAsDuckingState(ducking)
 	 */
+	@Raw
+	@Model
 	protected GameObject(int horizontalLocation, int verticalLocation, double horizontalVelocity,
 				double verticalVelocity, double initialHorizontalVelocity, double maximumHorizontalVelocity, double initialVerticalVelocity, double horizontalAcceleration, boolean ducking, int hitPoints, int maxHitPoints, Sprite... images)
 		throws IllegalArgumentException, IllegalLocationException {
@@ -209,7 +213,6 @@ public abstract class GameObject {
 	 			Otherwise true if the hit box of this game object doesn't coincide with the terrain of its world.
 	 * 			| result== !this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)[1]
 	 */
-	@Raw
 	public boolean canHaveAsHorizontalLocation(double horizontalLocation){
 		if (this.getWorld()==null){
 			return true;
@@ -240,7 +243,6 @@ public abstract class GameObject {
 	 			Otherwise true if the hit box of this game object doesn't coincide with the terrain of its world.
 	 * 			| result== !this.getWorld().areaCoincidesWithTerrain((int) horizontalLocation, this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)[1]
 	 */
-	@Raw
 	public boolean canHaveAsVerticalLocation(double verticalLocation){
 		if(this.getWorld()==null){
 			return true; 
@@ -276,7 +278,7 @@ public abstract class GameObject {
 	 */
 	@Basic
 	@Raw
-	protected double getHorizontalLocation(){
+	public double getHorizontalLocation(){
 		return this.horizontalLocation;
 	}
 	
@@ -285,7 +287,7 @@ public abstract class GameObject {
 	 */
 	@Basic
 	@Raw
-	protected double getVerticalLocation(){
+	public double getVerticalLocation(){
 		return this.verticalLocation;
 	}
 	
@@ -300,8 +302,7 @@ public abstract class GameObject {
 	 * 			The given horizontal location is not valid.
 	 * 			| !canHaveAsHorizontalLocation(horizontalLocation)
 	 */
-	@Raw
-	protected void setHorizontalLocation(double horizontalLocation) throws IllegalLocationException{
+	public void setHorizontalLocation(double horizontalLocation) throws IllegalLocationException{
 		if(!canHaveAsHorizontalLocation(horizontalLocation))
 			throw new IllegalLocationException(horizontalLocation, this.getVerticalLocation());
 		this.horizontalLocation=horizontalLocation;
@@ -318,18 +319,13 @@ public abstract class GameObject {
 	 * 			The given vertical location is not valid.
 	 * 			|!canHaveAsVericalLocation(verticalLocation)	  
 	 */
-	@Raw
-	protected void setVerticalLocation(double verticalLocation) 
+	public void setVerticalLocation(double verticalLocation) 
 			throws IllegalLocationException {
 		if(!canHaveAsVerticalLocation(verticalLocation))
 			throw new IllegalLocationException(this.getHorizontalLocation(), this.verticalLocation);
 		this.verticalLocation = verticalLocation;
 	}
 	
-	public int[] getBorders(){
-		return new int[] {this.getEffectiveHorizontalLocation(), this.getEffectiveVerticalLocation(), 
-				this.getEffectiveHorizontalLocation()+this.getWidth(), this.getEffectiveVerticalLocation()+this.getHeight()};
-	}
 	
 	/**
 	 * Variable registering the calculated horizontal location of this game object.
@@ -360,37 +356,59 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Return the maximum horizontal velocity of this game object.
+	 * Return the current maximum horizontal velocity of this game object for use in update calculations.
 	 */
 	@Raw
-	public abstract double getMaximumHorizontalVelocityForUpdate();
+	protected abstract double getMaximumHorizontalVelocityForUpdate();
 	
 	/**
-	 * Return the maximum horizontal velocity when not ducking of this game object.
+	 * Return the maximum horizontal velocity of this game object.
 	 */
 	@Basic
 	@Raw
-	public double getMaximumHorizontalVelocity(){
+	protected double getMaximumHorizontalVelocity(){
 		return this.maximumHorizontalVelocity;
 	}
 	
 	/**
-	 * Return the initial horizontal velocity when not ducking of this game object.
+	 * Return the initial horizontal velocity of this game object.
 	 */
 	@Basic
 	@Raw
-	public double getInitialHorizontalVelocity(){
+	protected double getInitialHorizontalVelocity(){
 		return this.initialHorizontalVelocity;
 	}
 	
-	public void setInitialHorizontalVelocity(double initialHorizontalVelocity){
+	/**
+	 * Set the initial horizontal velocity of this game object to the given initial horizontal velocity.
+	 * @param 	initialHorizontalVelocity
+	 * 			The initial horizontal velocity to be set.
+	 * @post	The new initial horizontal velocity of this game object is equal to the given initial horizontal velocity.
+	 * 			| new.getInitialHorizontalVelocity()==initialHorizontalVelocity
+	 * @throws	IllegalArgumentException
+	 * 			The given initial horizontal velocity is not a valid initial horizontal velocity.
+	 * 			|(!canHaveAsInitialHorizontalVelocity(initialHorizontalVelocity))
+	 */
+	@Raw
+	protected void setInitialHorizontalVelocity(double initialHorizontalVelocity){
 		if(!canHaveAsInitialHorizontalVelocity(initialHorizontalVelocity)){
 			throw new IllegalArgumentException("This game object cannot have that initial horizontal velocity!");
 		}
 		this.initialHorizontalVelocity=initialHorizontalVelocity;
 	}
 	
-	public void setMaximumHorizontalVelocity(double maximumHorizontalVelocity){
+	/**
+	 * Set the maximum horizontal velocity of this game object to the given maximum horizontal velocity.
+	 * @param 	maximumHorizontalVelocity
+	 * 			The maximum horizontal velocity to be set.
+	 * @post	The new maximum horizontal velocity of this game object is equal to the given maximum horizontal velocity.
+	 * 			| new.getMaximumHorizontalVelocity()==maximumHorizontalVelocity
+	 * @throws	IllegalArgumentException
+	 * 			The given maximum horizontal velocity is not a valid maximum horizontal velocity.
+	 * 			|(!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocity))
+	 */
+	@Raw
+	protected void setMaximumHorizontalVelocity(double maximumHorizontalVelocity){
 		if(!canHaveAsMaximumHorizontalVelocity(maximumHorizontalVelocity)){
 			throw new IllegalArgumentException("This game object cannot have that maximum horizontal velocity!");
 		}
@@ -398,16 +416,18 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Return the initial horizontal velocity of this game object.
+	 * Return the current initial horizontal velocity of this game object for use in update calculations.
 	 */
 	@Raw
-	public abstract double getInitialHorizontalVelocityForUpdate();
+	protected abstract double getInitialHorizontalVelocityForUpdate();
 	
 	/**
-	 * Return the initial vertical velocity of this game object
+	 * Return the initial vertical velocity of this game object.
 	 */
+	@Basic
+	@Immutable
 	@Raw
-	public double getInitialVerticalVelocity(){
+	protected double getInitialVerticalVelocity(){
 		return this.initialVerticalVelocity;
 	}
 	
@@ -457,7 +477,8 @@ public abstract class GameObject {
 	 * @return	True if the given vertical velocity is greater than or equal to zero.
 	 * 			| result == (initialVerticalVelocity>=0)
 	 */
-	public boolean isValidInitialVerticalVelocity(double initialVerticalVelocity){
+	@Raw
+	protected boolean isValidInitialVerticalVelocity(double initialVerticalVelocity){
 		return initialVerticalVelocity>=0;
 	}
 	
@@ -465,6 +486,7 @@ public abstract class GameObject {
 	 * Check whether this game object can have the given horizontal velocity as its horizontal velocity.
 	 * @param 	horizontalVelocity
 	 */
+	@Raw
 	public abstract boolean canHaveAsHorizontalVelocity(double horizontalVelocity);
 	
 	/**
@@ -475,6 +497,7 @@ public abstract class GameObject {
 	 * @return	True if and only if the given vertical velocity is less than or equal to the initial vertical velocity constant of this game object.
 	 * 			| result ==  Util.fuzzyLessThanOrEqualTo(verticalVelocity, getInitialVerticalVelocity())
 	 */
+	@Raw
 	public boolean canHaveAsVerticalVelocity(double verticalVelocity){
 		return Util.fuzzyLessThanOrEqualTo(verticalVelocity, getInitialVerticalVelocity());
 	}
@@ -521,7 +544,7 @@ public abstract class GameObject {
 	 * @return	True if the given maximum horizontal velocity is greater than or equal to the given initial horizontal velocity.
 	 * 			| result == Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,initialHorizontalVelocity)
 	 */
-	public static boolean matchesMaximumHorizontalVelocityInitialHorizontalVelocity(
+	protected static boolean matchesMaximumHorizontalVelocityInitialHorizontalVelocity(
 			double maximumHorizontalVelocity, double initialHorizontalVelocity){
 		return Util.fuzzyGreaterThanOrEqualTo(maximumHorizontalVelocity,initialHorizontalVelocity);
 	}
@@ -531,9 +554,9 @@ public abstract class GameObject {
 	 * @param 	initialHorizontalVelocity
 	 * 			The initial horizontal velocity to check.
 	 */
-	public abstract boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity);
+	protected abstract boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity);
 
-	public abstract boolean isPossibleMaximumHorizontalVelocity(double maximumHorizontalVelocity);
+	protected abstract boolean isPossibleMaximumHorizontalVelocity(double maximumHorizontalVelocity);
 	
 	/**
 	 * Variable registering the horizontal velocity of this game object.
@@ -546,7 +569,7 @@ public abstract class GameObject {
 	private double verticalVelocity = 0;
 	
 	/**
-	 * Variable registering the initial horizontal velocity of this game object when not ducking.
+	 * Variable registering the initial horizontal velocity of this game object.
 	 */
 	private double initialHorizontalVelocity=0;
 	
@@ -566,6 +589,7 @@ public abstract class GameObject {
 	 * @param	horizontalAcceleration
 	 * 			The horizontal acceleration to be checked.
 	 */
+	@Raw
 	public abstract boolean canHaveAsHorizontalAcceleration(double horizontalAcceleration);
 
 	/**
@@ -590,10 +614,25 @@ public abstract class GameObject {
 		}
 	}
 	
+	/**
+	 * Return the horizontal acceleration of this game object.
+	 */
+	@Basic
+	@Raw
 	public double getHorizontalAcceleration(){
 		return this.horizontalAcceleration;
 	}
 	
+	/**
+	 * Set the horizontal acceleration of this game object to the given horizontal acceleration.
+	 * @param 	horizontalAcceleration
+	 * 			The horizontal acceleration to be set.
+	 * @post	If this game object can have the given horizontal acceleration as its horizontal acceleration, 
+	 * 			the new horizontal acceleration of this game object is equal to the given horizontal acceleration.
+	 * 			|if(canHaveAsHorizontalAcceleration(horizontalAcceleration))
+	 * 			|	new.getHorizontalAcceleration()==horizontalAcceleration
+	 */
+	@Raw
 	public void setHorizontalAcceleration(double horizontalAcceleration){
 		if(canHaveAsHorizontalAcceleration(horizontalAcceleration)){
 			this.horizontalAcceleration=horizontalAcceleration;
@@ -611,15 +650,16 @@ public abstract class GameObject {
 	 * @param 	verticalAcceleration
 	 * 			The vertical acceleration to be checked.
 	 */
+	@Raw
 	public abstract boolean canHaveAsVerticalAcceleration(double verticalAcceleration);
 
 	/**
-	 *  Variable registering the horizontal acceleration of a game object.
+	 * Variable registering the horizontal acceleration of a game object.
 	 */
 	private double horizontalAcceleration;
 	
 	/**
-	 *  Constant registering the gravitational acceleration.
+	 * Constant registering the gravitational acceleration.
 	 */
 	protected static final double VERTICAL_ACCELERATION = -10;
 	
@@ -659,11 +699,13 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Check whether the given game object is ducking or not.
-	 * 
-	 * @return	True if and only if the game object is ducking.
-	 * 			| result == this.ducking
+	 * Variable registering the direction game object is facing.
 	 */
+	private Direction direction = Direction.LEFT;
+	/**
+	 * Return the ducking state of this game object.
+	 */
+	
 	@Basic 
 	@Raw
 	public boolean isDucking() {
@@ -675,13 +717,27 @@ public abstract class GameObject {
 	 * @param 	ducking
 	 * 			The given ducking state.
 	 */
+	@Raw
 	public abstract boolean canHaveAsDuckingState(boolean ducking);
 	
-	public void setWantsEndDuck(boolean wantsEndDuck){
+	/**
+	 * Set the state of wanting to end duck of this game object to the given boolean.
+	 * @param 	wantsEndDuck
+	 * 			The  state of wanting to end duck to be set.
+	 * @post	The new wanting to end duck state of this game object is equal to the given boolean.
+	 * 			| new.wantsEndDuck()==true
+	 */
+	@Raw
+	protected void setWantsEndDuck(boolean wantsEndDuck){
 		this.wantsEndDuck=wantsEndDuck;
 	}
 	
-	public boolean wantsEndDuck(){
+	/**
+	 * Return if this object currently wants to end its duck.
+	 */
+	@Basic
+	@Raw
+	protected boolean wantsEndDuck(){
 		return this.wantsEndDuck;
 	}
 	
@@ -723,7 +779,7 @@ public abstract class GameObject {
 	 *			|		this.getEffectiveVerticalLocation()+1, this.getImageAt(0).getWidth()-1, 
 	 *			|		this.getImageAt(0).getHeight())[1]
 	 */
-	public boolean canStandUp(){
+	protected boolean canStandUp(){
 		if(!this.isDucking()){
 			return true;
 		}
@@ -747,6 +803,8 @@ public abstract class GameObject {
 	/**
 	 * Return the jumping state of this game object.
 	 */
+	@Basic
+	@Raw
 	public boolean isJumping(){
 		return this.isJumping;
 	}
@@ -758,6 +816,7 @@ public abstract class GameObject {
 	 * @post	The new jumping state of this game object is equal to the given jumping state.
 	 * 			| new.isJumping()==jumping
 	 */
+	@Raw
 	public void setJumping(boolean jumping){
 		this.isJumping=jumping;
 	}
@@ -770,6 +829,7 @@ public abstract class GameObject {
 	/**
 	 * Return the horizontal moving state of this game object.
 	 */
+	@Basic
 	@Raw
 	public boolean isMovingHorizontally(){
 		return this.isMovingHorizontally;
@@ -782,6 +842,7 @@ public abstract class GameObject {
 	 * @post	The new horizontal moving state of this game object is equal to the given horizontal moving state.
 	 * 			| new.isMovingHorizontally()==isMovingHorizontally
 	 */
+	@Raw
 	public void setMovingHorizontally(boolean isMovingHorizontally){
 		this.isMovingHorizontally=isMovingHorizontally;
 	}
@@ -806,6 +867,7 @@ public abstract class GameObject {
 	 * 			|	for each coveredTile in coveredTiles
 	 * 			|		if(Arrays.equals(tile, coveredTile))
 	 * 			|		then overlap = true
+	 * 			|result==overlap
 	 * 
 	 * @throws	IllegalArgumentException
 	 * 			If the world of this game object can not have the given game object as its game object.
@@ -879,7 +941,7 @@ public abstract class GameObject {
 	 * 			If the world can not have the given location as its location.
 	 * 			|!world.canHaveAsPixelLocation(pixelX, pixelY)
 	 */
-	public int [][] getTopPerimeterOfGameObject(int pixelX, int pixelY,int width, int height)
+	protected int [][] getTopPerimeterOfGameObject(int pixelX, int pixelY,int width, int height)
 			throws IllegalArgumentException{
 				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
 					throw new IllegalArgumentException();
@@ -913,7 +975,7 @@ public abstract class GameObject {
 	 * 			If the world can not have the given location as its location.
 	 * 			|!world.canHaveAsPixelLocation(pixelX, pixelY)
 	 */
-	public int [][] getBottomPerimeterOfGameObject(int pixelX, int pixelY,int width)
+	protected int [][] getBottomPerimeterOfGameObject(int pixelX, int pixelY,int width)
 			throws IllegalArgumentException{
 				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
 					throw new IllegalArgumentException();
@@ -946,7 +1008,7 @@ public abstract class GameObject {
 	 * 			If the world can not have the given location as its location.
 	 * 			|!world.canHaveAsPixelLocation(pixelX, pixelY)
 	 */
-	public int [][] getLeftPerimeterOfGameObject(int pixelX, int pixelY, int height)
+	protected int [][] getLeftPerimeterOfGameObject(int pixelX, int pixelY, int height)
 	throws IllegalArgumentException{
 		if(!world.canHaveAsPixelLocation(pixelX, pixelY))
 			throw new IllegalArgumentException();
@@ -981,7 +1043,7 @@ public abstract class GameObject {
 	 * 			If the world can not have the given location as its location.
 	 * 			|!world.canHaveAsPixelLocation(pixelX, pixelY)
 	 */
-	public int [][] getRightPerimeterOfGameObject(int pixelX, int pixelY, int width, int height)
+	protected int [][] getRightPerimeterOfGameObject(int pixelX, int pixelY, int width, int height)
 			throws IllegalArgumentException{
 				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
 					throw new IllegalArgumentException();
@@ -1006,7 +1068,7 @@ public abstract class GameObject {
 	 * 			|result == overlappingGameObject
 	 * 
 	 */
-	public int [] checkAllowedLeftRightTopBottomSideOverlap(){
+	protected int [] checkAllowedLeftRightTopBottomSideOverlap(){
 		int [] overlappingGameObject = this.checkLeftRightTopBottomSideOverlap(this.getLeftPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getHeight()),
 				 this.getRightPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()),
 				 this.getTopPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()),
@@ -1033,7 +1095,7 @@ public abstract class GameObject {
      *			| then result == true
      *			|else result == false
 	 */	
-	public boolean checkNotAllowedLeftRightTopBottomSideOverlap(int pixelX1, int pixelY1, int width1, int height1){
+	protected boolean checkNotAllowedLeftRightTopBottomSideOverlap(int pixelX1, int pixelY1, int width1, int height1){
 		World world = this.getWorld();
 		boolean overlap = false;
 		if(world.getGameHasStarted()){
@@ -1074,7 +1136,7 @@ public abstract class GameObject {
 	 *			|		then the array "overlap" is returned
 	 *			|result == overlap
 	 */
-	public int [] checkLeftRightTopBottomSideOverlap(int [][] leftPerimeter1, int [][] rightPerimeter1, int [][] topPerimeter1, int [][] bottomPerimeter1){
+	protected int [] checkLeftRightTopBottomSideOverlap(int [][] leftPerimeter1, int [][] rightPerimeter1, int [][] topPerimeter1, int [][] bottomPerimeter1){
 		int [] overlap = {0,0,0,0};
 		World world = this.getWorld();
 		List<GameObject> gameObjects = getGameObjectsAtTiles(world.getTilePositionsIn(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getEffectiveHorizontalLocation()+getWidth(), getEffectiveVerticalLocation()+getHeight()));
@@ -1129,7 +1191,7 @@ public abstract class GameObject {
 	 *			|		overlap [2] = 1;
 	 *			|result == overlap 
 	 */
-	public int [] checkTopOrBottomSideOverlap(GameObject gameObject, int [][] topPerimeter1, int [][] bottomPerimeter1, int [][] topPerimeter2, int [][] bottomPerimeter2){
+	protected int [] checkTopOrBottomSideOverlap(GameObject gameObject, int [][] topPerimeter1, int [][] bottomPerimeter1, int [][] topPerimeter2, int [][] bottomPerimeter2){
 		int [] overlap = {0,0,0,0};
 		World world = this.getWorld();		
 		outerloop:
@@ -1170,7 +1232,7 @@ public abstract class GameObject {
 	 *			|		overlap [1] = world.getIndexOfGameObject(gameObject);
 	 *			|result == overlap 
 	 */
-	public int [] checkLeftOrRightSideOverlap(GameObject gameObject, int [][] leftPerimeter1, int [][] rightPerimeter1, int [][] leftPerimeter2, int [][] rightPerimeter2){
+	protected int [] checkLeftOrRightSideOverlap(GameObject gameObject, int [][] leftPerimeter1, int [][] rightPerimeter1, int [][] leftPerimeter2, int [][] rightPerimeter2){
 		int [] overlap = {0,0,0,0};
 		World world = this.getWorld();
 		outerloop:
@@ -1195,10 +1257,6 @@ public abstract class GameObject {
 	 */
 	protected abstract void collisionReaction(int index1, int index2, int index3);
 	
-	/**
-	 * Variable registering the direction game object is facing.
-	 */
-	private Direction direction = Direction.LEFT;
 	
 	/**
 	 * Calculate a new small time period based on the current velocity and acceleration. 
@@ -1211,7 +1269,7 @@ public abstract class GameObject {
 	 *			|				Math.sqrt((Math.pow(this.getHorizontalAcceleration(),2)+Math.pow(this.getVerticalAcceleration(), 2)))*deltaTime)
 	 *			|else result == 0.03 (not moving)
 	 */
-	public double getDeltaTimeForPixel(double deltaTime){
+	protected double getDeltaTimeForPixel(double deltaTime){
 		double time =  0.01/(Math.sqrt((Math.pow(this.getHorizontalVelocity(),2)+Math.pow(this.getVerticalVelocity(), 2)))+
 				Math.sqrt((Math.pow(this.getHorizontalAcceleration(),2)+Math.pow(this.getVerticalAcceleration(), 2)))*deltaTime);
 		if(isValidDeltaTime(time))
@@ -1262,6 +1320,7 @@ public abstract class GameObject {
 	 * Return whether this game object is currently overlapping with another game object.
 	 */
 	@Basic
+	@Raw
 	public boolean getContact(){
 		return this.contact;
 	}
@@ -1273,6 +1332,7 @@ public abstract class GameObject {
 	 * 			Boolean declaring contact or not.
 	 * @post	|new.getContact() == contact
 	 */
+	@Raw
 	public void setContact(boolean contact){
 		this.contact = contact;
 	}
@@ -1280,7 +1340,7 @@ public abstract class GameObject {
 	/**
 	 * Boolean registering if this game object is currently overlapping with another game object.
 	 */
-	protected boolean contact;
+	private boolean contact;
 	
 	/**
 	 * Check whether the location and velocities need to be adapted due to contact with another game object.
@@ -1308,7 +1368,7 @@ public abstract class GameObject {
 	 *			|		this.setContact(false);
 	 *			|		gameObject.setContact(false);
 	 */
-	public void collisionHandler(int [] overlap, double oldHorizontalLocation, double oldVerticalLocation){
+	protected void collisionHandler(int [] overlap, double oldHorizontalLocation, double oldVerticalLocation){
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(overlap[1]);
 		if(overlap[0]==1){
 			if(Util.fuzzyEquals(this.getTimeSinceDead(), 0)){
@@ -1342,6 +1402,8 @@ public abstract class GameObject {
 	 * Return the time since the start of the water contact of this game object.
 	 * The time is reset when the game object loses hit points or no longer makes contact.
 	 */
+	@Basic
+	@Raw
 	public double getTimeSinceStartWaterContact(){
 		return this.timeSinceWaterContact;
 	}
@@ -1350,6 +1412,8 @@ public abstract class GameObject {
 	 * Return the time since the start of the magma contact of this game object.
 	 * The time is reset when the game object loses hit points or no longer makes contact.
 	 */
+	@Basic
+	@Raw
 	public double getTimeSinceStartMagmaContact(){
 		return this.timeSinceMagmaContact;
 	}
@@ -1363,6 +1427,7 @@ public abstract class GameObject {
 	 * 			|!isValidTimeSinceMove(time)
 	 * 			
 	 */
+	@Raw
 	public void setTimeSinceStartWaterContact(double time)
 	throws IllegalArgumentException{
 		if(!isValidTimeSinceAction(time))
@@ -1380,6 +1445,7 @@ public abstract class GameObject {
 	 * 			|!isValidTimeSinceMove(time)
 	 * 			
 	 */
+	@Raw
 	public void setTimeSinceStartMagmaContact(double time)
 			throws IllegalArgumentException{
 				if(!isValidTimeSinceAction(time))
@@ -1411,7 +1477,7 @@ public abstract class GameObject {
 	 * @return	True if the given time period is greater than or equal to zero.
 	 * 			| result == Util.fuzzyGreaterThanOrEqualTo(time, 0)
 	 */
-	protected static boolean isValidTimeSinceAction(double time){
+	public static boolean isValidTimeSinceAction(double time){
 		return Util.fuzzyGreaterThanOrEqualTo(time, 0);
 	}
 	
@@ -1433,12 +1499,12 @@ public abstract class GameObject {
 	/**
 	 * Check whether the game object makes contact with water and take the corresponding actions.
 	 */
-	public abstract void checkWaterContact(double deltaTime);
+	protected abstract void checkWaterContact(double deltaTime);
 	
 	/**
 	 *Check whether the game object makes contact with magma and take the corresponding actions. 
 	 */
-	public abstract void checkMagmaContact(double deltaTime);
+	protected abstract void checkMagmaContact(double deltaTime);
 	
 	/**
 	 * Return the current Sprite of this game object.
@@ -1567,8 +1633,27 @@ public abstract class GameObject {
 		return this.hitPoints;
 	}
 	
-	public boolean isValidMaxHitPoints(int maxHitPoints){
+	/**
+	 * Check whether the given number of maximum hit points is a valid number of maximum hit points.
+	 * @param 	maxHitPoints
+	 * 			The number of maximum hit points to be checked.
+	 * @return	The given number of maximum hit points is greater than or equal to zero.
+	 * 			|result==(maxHitPoints>=0)
+	 */
+	public static boolean isValidMaxHitPoints(int maxHitPoints){
 		return maxHitPoints>=0;
+	}
+	
+	/**
+	 * Check whether this game object can have the given number of hit points as its hit points.
+	 * @param 	hitPoints
+	 * 			The hit points to be checked.
+	 * @return	The maximum number of hit points of this game object is valid and the given number of hit points is less than or equal to its maximum number of hit points.
+	 * 			| result==(isValidMaxHitPoints(this.getMaxHitPoints()) && hitPoints <= this.getMaxHitPoints())
+	 */
+	@Raw
+	public boolean canHaveAsHitPoints(int hitPoints){
+		return isValidMaxHitPoints(this.getMaxHitPoints()) && hitPoints <= this.getMaxHitPoints();
 	}
 	
 	
@@ -1646,12 +1731,12 @@ public abstract class GameObject {
 	/**
 	 * Variable registering the number of hit-points of this game object. 
 	 */
-	protected int hitPoints;
+	private int hitPoints;
 	
 	/**
 	 * Variable registering the maximum number of hit-points of this game object. 
 	 */
-	protected final int maxHitPoints;
+	private final int maxHitPoints;
 	
 	/**
 	 * Return the world that is currently attached to this game object.
@@ -1709,7 +1794,7 @@ public abstract class GameObject {
 	 * @return 	This game object can have its world as its world and its world has this game object as one of its game objects.
 	 * 			| this.canHaveAsWorld(this.getWorld()) && this.getWorld().hasAsGameObject(this)
 	 */
-	protected boolean hasProperWorld(){
+	public boolean hasProperWorld(){
 		return this.canHaveAsWorld(this.getWorld()) && this.getWorld().hasAsGameObject(this);
 	}
 	

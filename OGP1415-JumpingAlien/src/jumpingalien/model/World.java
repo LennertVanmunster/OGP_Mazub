@@ -38,8 +38,8 @@ public class World {
 	
 	/**
 	 * Initialize a new game world with given a tile size, given number of tiles in the 
-	 * horizontal and vertical direction, given width and height of the visible window and 
-	 * a given location of the target tile (X,Y).
+	 * horizontal and vertical direction, given width and height of the visible window, 
+	 * a given location of the target tile (X,Y) and the given Mazub.
 	 * 
 	 * @param 	tileSize
 	 * 			The size of a tile (in pixels) for this new World.
@@ -134,7 +134,7 @@ public class World {
 	 * @effect	|this(tileSize, nbTilesX, nbTilesY, visibleWindowWidth, visibleWindowHeight, targetTileX, targetTileY, null)
 	 */
 	public World(int tileSize, int nbTilesX, int nbTilesY, int visibleWindowWidth, int visibleWindowHeight,
-			int targetTileX, int targetTileY){
+			int targetTileX, int targetTileY) throws IllegalArgumentException{
 		this(tileSize, nbTilesX, nbTilesY, visibleWindowWidth, visibleWindowHeight, targetTileX, targetTileY, null);
 	}
 	
@@ -183,6 +183,7 @@ public class World {
 	 * Return the visible window width.
 	 */
 	@Basic
+	@Raw
 	@Immutable
 	public int getVisibleWindowWidth(){
 		return this.visibleWindowWidth;
@@ -192,6 +193,7 @@ public class World {
 	 * Return the visible window height.
 	 */
 	@Basic
+	@Raw
 	@Immutable
 	public int getVisibleWindowHeight(){
 		return this.visibleWindowHeight;
@@ -200,6 +202,8 @@ public class World {
 	/**
 	 * Return the initial visible window pixel location as an array consisting of the horizontal and vertical components.
 	 */
+	@Basic
+	@Raw
 	@Immutable
 	public static int[] getInitialVisibleWindowLocation(){
 		return initialVisibleWindowLocation;
@@ -209,6 +213,7 @@ public class World {
 	 * Return the current visible window pixel location as an array consisting of the horizontal and vertical components.
 	 */
 	@Basic
+	@Raw
 	public int [] getVisibleWindowLocation(){
 		return this.visibleWindowLocation.clone();
 	}
@@ -264,6 +269,7 @@ public class World {
 	 * 			The window dimension to check.
 	 * @return	| result == windowDimension > 0
 	 */
+	@Raw
 	public static boolean isPossibleVisibleWindowDimension(int windowDimension){
 		return windowDimension>0;
 	}
@@ -275,6 +281,7 @@ public class World {
 	 * 			The window location to check.
 	 * @return	| result == windowLocation >= 0
 	 */
+	@Raw
 	public static boolean isPossibleWindowLocation(int windowLocation){
 		return windowLocation>=0;
 	}
@@ -287,6 +294,7 @@ public class World {
 	 * @param 	windowLocation
 	 * @return	|tileSize * nbTiles >= windowDimension + windowLocation
 	 */
+	@Raw
 	public static boolean matchesTileSizeNbTilesWindowDimensionWindowLocation(int tileSize, int nbTiles, int windowDimension, int windowLocation){
 		return tileSize * nbTiles >= windowDimension + windowLocation;	
 	}
@@ -297,6 +305,7 @@ public class World {
 	 * @return	|result==isPossibleTileSize(tileSize) && matchesTileSizeNbTilesWindowDimensionWindowLocation(tileSize, this.getNbTiles(), this.getVisibleWindowWidth(), this.getVisibleWindowLocation()[0])
 	 *			|	&& matchesTileSizeNbTilesWindowDimensionWindowLocation(tileSize, this.getNbTiles(), this.getVisibleWindowHeight(),this.getVisibleWindowLocation()[1])
 	 */
+	@Raw
 	public boolean canHaveAsTileSize(int tileSize){
 		return isPossibleTileSize(tileSize) && matchesTileSizeNbTilesWindowDimensionWindowLocation(tileSize, getNbTiles(), getVisibleWindowWidth(), getVisibleWindowLocation()[0])
 				&& matchesTileSizeNbTilesWindowDimensionWindowLocation(tileSize, getNbTiles(), getVisibleWindowHeight(),getVisibleWindowLocation()[1]);
@@ -307,6 +316,7 @@ public class World {
 	 * @param 	nbTilesX
 	 * @return	|result==isPossibleNbTiles(nbTilesX) && matchesTileSizeNbTilesWindowDimensionWindowLocation(this.getTileSize(), nbTilesX, this.getVisibleWindowWidth(), this.getVisibleWindowLocation()[0])
 	 */
+	@Raw
 	public boolean canHaveAsNbTilesX(int nbTilesX){
 		return isPossibleNbTiles(nbTilesX) && matchesTileSizeNbTilesWindowDimensionWindowLocation(getTileSize(), nbTilesX, getVisibleWindowWidth(), getVisibleWindowLocation()[0]);
 	}
@@ -316,6 +326,7 @@ public class World {
 	 * @param 	nbTilesY
 	 * @return	|result==isPossibleNbTiles(nbTilesY) && matchesTileSizeNbTilesWindowDimensionWindowLocation(this.getTileSize(), nbTilesY, this.getVisibleWindowHeight(), this.getVisibleWindowLocation()[1])
 	 */
+	@Raw
 	public boolean canHaveAsNbTilesY(int nbTilesY){
 		return isPossibleNbTiles(nbTilesY) && matchesTileSizeNbTilesWindowDimensionWindowLocation(getTileSize(), nbTilesY, getVisibleWindowHeight(), getVisibleWindowLocation()[1]);
 	}
@@ -326,6 +337,7 @@ public class World {
 	 * @return	|result==isPossibleVisibleWindowDimension(visibleWindowWidth) && 
 	 *			|	matchesTileSizeNbTilesWindowDimensionWindowLocation(this.getTileSize(), this.getNbTilesX(), visibleWindowWidth, this.getVisibleWindowLocation()[0])
 	 */
+	@Raw
 	public boolean canHaveAsVisibleWindowWidth(int visibleWindowWidth){
 		return isPossibleVisibleWindowDimension(visibleWindowWidth) && 
 				matchesTileSizeNbTilesWindowDimensionWindowLocation(getTileSize(), getNbTilesX(), visibleWindowWidth, getVisibleWindowLocation()[0]);
@@ -337,6 +349,7 @@ public class World {
 	 * @return	|result==isPossibleVisibleWindowDimension(visibleWindowHeight) && 
 	 *			|	matchesTileSizeNbTilesWindowDimensionWindowLocation(this.getTileSize(), this.getNbTilesY(), visibleWindowHeight, this.getVisibleWindowLocation()[1])
 	 */
+	@Raw
 	public boolean canHaveAsVisibleWindowHeight(int visibleWindowHeight){
 		return isPossibleVisibleWindowDimension(visibleWindowHeight) && 
 				matchesTileSizeNbTilesWindowDimensionWindowLocation(getTileSize(), getNbTilesY(), visibleWindowHeight, getVisibleWindowLocation()[1]);
@@ -348,6 +361,7 @@ public class World {
 	 * @return	|result==isPossibleWindowLocation(horizontalVisibleWindowLocation) &&
 	 *			|	matchesTileSizeNbTilesWindowDimensionWindowLocation(this.getTileSize(), this.getNbTilesX(), this.getVisibleWindowWidth(), horizontalVisibleWindowLocation)
 	 */
+	@Raw
 	public boolean canHaveAsHorizontalVisibleWindowLocation(int horizontalVisibleWindowLocation){
 		return isPossibleWindowLocation(horizontalVisibleWindowLocation) &&
 				matchesTileSizeNbTilesWindowDimensionWindowLocation(getTileSize(), getNbTilesX(), getVisibleWindowWidth(), horizontalVisibleWindowLocation);
@@ -359,6 +373,7 @@ public class World {
 	 * @return	|result==isPossibleWindowLocation(verticalVisibleWindowLocation)
 	 *			|	&& matchesTileSizeNbTilesWindowDimensionWindowLocation(this.getTileSize(), this.getNbTilesY(), this.getVisibleWindowHeight(), verticalVisibleWindowLocation)
 	 */
+	@Raw
 	public boolean canHaveAsVerticalVisibleWindowLocation(int verticalVisibleWindowLocation){
 		return isPossibleWindowLocation(verticalVisibleWindowLocation)
 				&& matchesTileSizeNbTilesWindowDimensionWindowLocation(getTileSize(), getNbTilesY(), getVisibleWindowHeight(), verticalVisibleWindowLocation);
@@ -391,6 +406,7 @@ public class World {
 	 *			|else
 	 *			|	result==true;
 	 */
+	@Raw
 	public boolean matchesMazubVisibleWindow(Mazub mazub, int horizontalVisibleWindowLocation, int verticalVisibleWindowLocation, int visibleWindowWidth, int visibleWindowHeight){
 		if (!this.canHaveAsHorizontalVisibleWindowLocation(horizontalVisibleWindowLocation) || !this.canHaveAsVerticalVisibleWindowLocation(verticalVisibleWindowLocation)
 				|| !this.canHaveAsVisibleWindowWidth(visibleWindowWidth) || !this.canHaveAsVisibleWindowHeight(visibleWindowHeight)){
@@ -416,7 +432,7 @@ public class World {
 	}
 	
 	/**
-	 * Variable registering the tileSize of this World.
+	 * Variable registering the tile size of this World.
 	 */
 	private final int tileSize;
 	
@@ -441,20 +457,22 @@ public class World {
 	private final int visibleWindowHeight;
 	
 	/**
-	 * Variable registering the initial visible window location when creating a new world for all worlds.
+	 * Array registering the initial visible window location when creating a new world for all worlds.
 	 */
 	private static final int[] initialVisibleWindowLocation={0,0};	
+	
 	/**
 	 * An array registering the current pixel coordinates of the bottom left pixel of the visible window.
 	 */
-	private int [] visibleWindowLocation;
+	private int [] visibleWindowLocation = new int[2];
 	
 	/**
-	 * Returns the tile values of this World as matrix. The first index of the matrix denotes the horizontal
+	 * Return the tile values of this World as matrix. The first index of the matrix denotes the horizontal
 	 * tile location of the tile and the second index the vertical tile location. The value at that position in the matrix is the 
 	 * tile value at that tile position in the world. 
 	 */
 	@Basic
+	@Raw
 	public int [][] getTiles(){
 		return this.tiles.clone();
 	}
@@ -525,7 +543,6 @@ public class World {
 	 * @return	|(0 <= horizontalTilePosition &&  horizontalTilePosition < this.getNbTilesX())
 				|	&& (0 <=  verticalTilePosition &&  verticalTilePosition < this.getNbTilesY())
 	 */
-	@Raw
 	public boolean canHaveAsTilePosition(int horizontalTilePosition,int verticalTilePosition){
 		return (0 <= horizontalTilePosition &&  horizontalTilePosition < getNbTilesX())
 				&& (0 <=  verticalTilePosition &&  verticalTilePosition < getNbTilesY());
@@ -540,7 +557,6 @@ public class World {
 	 * @return	|(0 <= pixelX && pixelX <= getWorldWidth())
 	 *			|	&& (0 <= pixelY && pixelY <= getWorldHeight())
 	 */
-	@Raw
 	public boolean canHaveAsPixelLocation(int pixelX, int pixelY){
 		return (0 <= pixelX && pixelX < getWorldWidth())
 				&& (0 <= pixelY && pixelY < getWorldHeight());
@@ -570,6 +586,7 @@ public class World {
 	 * @return |result == {this.getTileSize() * this.getNbTilesX(),this.getTileSize() * this.getNbTilesY()}
 	 */
 	@Basic
+	@Raw
 	@Immutable
 	public int [] getWorldSizeInPixels(){
 		int[] worldSizeInPixels={getTileSize() * getNbTilesX(),getTileSize() * getNbTilesY()};
@@ -579,6 +596,7 @@ public class World {
 	/**
 	 * Return the width of this world in pixels.
 	 */
+	@Raw
 	@Immutable
 	public int getWorldWidth(){
 		return getWorldSizeInPixels() [0];
@@ -587,6 +605,7 @@ public class World {
 	/**
 	 *Returns the height of this world in pixels.
 	 */
+	@Raw
 	@Immutable
 	public int getWorldHeight(){
 		return getWorldSizeInPixels() [1];
@@ -597,6 +616,7 @@ public class World {
 	 * and the vertical tile position of the target tile.
 	 */
 	@Basic
+	@Raw
 	@Immutable
 	public int [] getTargetTile(){
 		return this.targetTile.clone();
@@ -607,6 +627,7 @@ public class World {
 	 * 
 	 * @return	| this.getTargetTile() [0];
 	 */
+	@Raw
 	@Immutable
 	public int getTargetTileX(){
 		return getTargetTile() [0];
@@ -617,6 +638,7 @@ public class World {
 	 * 
 	 * @return	| this.getTargetTile() [1];
 	 */
+	@Raw
 	@Immutable
 	public int getTargetTileY(){
 		return getTargetTile() [1];
@@ -787,6 +809,7 @@ public class World {
 	 * Return whether the game in this world has already started or not.
 	 */
 	@Basic
+	@Raw
 	public boolean getGameHasStarted(){
 		return this.gameHasStarted;
 	}
@@ -798,6 +821,7 @@ public class World {
 	 * 			The given start status of this world.
 	 * @post	|new.getGameHasStarted()==start
 	 */
+	@Raw
 	public void setGameHasStarted(boolean start){
 		this.gameHasStarted = start;
 	}
@@ -811,6 +835,7 @@ public class World {
 	 * Returns whether the current game is over or not.
 	 */
 	@Basic
+	@Raw
 	public boolean getGameOver(){
 		return this.gameOver;
 	}
@@ -821,6 +846,7 @@ public class World {
 	 * 			The given status of the game in this world.
 	 * @post	|new.getGameOver()==isGameOver
 	 */
+	@Raw
 	void setGameOver(boolean isGameOver){
 		this.gameOver = isGameOver;
 	}
@@ -835,6 +861,7 @@ public class World {
 	 * The game has been won if the player has reached the finish before game over.
 	 */
 	@Basic
+	@Raw
 	public boolean getDidPlayerWin(){
 			return this.didPlayerWin;
 	}
@@ -848,6 +875,7 @@ public class World {
 	 * 			| else
 	 * 			|	result==false
 	 */
+	@Raw
 	public void setDidPlayerWin(boolean didPlayerWin){
 		if(getGameOver())
 			this.didPlayerWin = didPlayerWin;	
@@ -1046,6 +1074,7 @@ public class World {
 	 * 
 	 * @return	|gameObjects.size()
 	 */
+	@Basic
 	@Raw
 	public int getNbGameObjects(){
 		return gameObjects.size();
@@ -1056,6 +1085,7 @@ public class World {
 	 * @param	nbGameObjects
 	 * @return	result==(nbGameObjects<=100)
 	 */
+	@Raw
 	public boolean isValidNbGameObjects(int nbGameObjects){
 		return nbGameObjects<=100;
 	}
@@ -1167,6 +1197,7 @@ public class World {
 	 * 			The given game object.
 	 * @return	|result==gameObjects.contains(gameObject);
 	 */
+	@Basic
 	@Raw
 	public boolean hasAsGameObject(GameObject gameObject) {
 		return gameObjects.contains(gameObject);
@@ -1179,6 +1210,7 @@ public class World {
 	 * 			The given game object.
 	 * @return	| result == gameObjects.indexOf(gameObject)
 	 */
+	@Basic
 	@Raw
 	public int getIndexOfGameObject(GameObject gameObject) {
 		return gameObjects.indexOf(gameObject);
@@ -1190,6 +1222,8 @@ public class World {
 	 * 			The index of the game object in the list of game objects.
 	 * @return	|result == gameObjects.get(index)
 	 */
+	@Basic
+	@Raw
 	public GameObject getGameObjectAtIndex(int index){
 		return gameObjects.get(index);
 	}
@@ -1214,6 +1248,7 @@ public class World {
 	 * Check whether the Mazub of this world is terminated.
 	 * @return	|result == isTerminated
 	 */
+	@Basic
 	public boolean isTerminated() {
 		return isTerminated;
 	}
@@ -1288,6 +1323,13 @@ public class World {
 		return slimes;		
 	}
 	
+	/**
+	 * Return a set with all the different schools that are reference by the slimes that reference this game world.
+	 * @return 	|Set<School> allDifferentSchools= new HashSet<School>()
+	 * 			|for(each slime in this.getSlimes(){
+	 * 			|	allDifferentSchools.add(slime.getSchool()
+	 * 			|result==allDifferentSchools
+	 */
 	public Set<School> getAllDifferentSchools(){
 		List<Slime> allSlimes= this.getSlimes();
 		Set<School> allDifferentSchools= new HashSet<School>();
@@ -1298,10 +1340,20 @@ public class World {
 		return allDifferentSchools;
 	}
 	
+	/**
+	 * Return the number of different schools that are reference by the slimes that reference this game world
+	 * @return	|this.getAllDifferentSchools().size()
+	 */
 	public int getNbSchools(){
 		return getAllDifferentSchools().size();
 	}
 	
+	/**
+	 * Check whether the given number of schools is a valid number of schools for this game world.
+	 * @param	 nbSchools
+	 * @return	| nbSchools<=10
+	 */
+	@Raw
 	public boolean isValidNbSchools(int nbSchools){
 		return nbSchools<=10;
 	}
