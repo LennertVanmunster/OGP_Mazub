@@ -8,7 +8,16 @@ import be.kuleuven.cs.som.annotate.*;
 
 /**
  * A class of sharks which extends the class of game objects. A shark is a non player character which is hostile to Mazub and is primarily found in water tiles.
- * 
+ * @invar	Each shark can have its current action duration as its action duration.
+ * 			|isValidActionDuration(getActionDuration())
+ * @invar	Each shark can have its number of movements since its last jump as its number of movements since its last jump.
+ * 			|isValidNbMovements(getNbMovementsSinceJump())
+ * @invar	The random movement chance of all shark is a valid chance.
+ * 			|isValidChance(getRandomMovementChance)
+ * @invar	Each shark can have its current action duration as its action duration.
+ * 			|isValidActionDuration(getCurrentActionDuration())
+ * @invar	Each shark can have its current random diving multiplier as its random diving multiplier.
+ * 			|isValidRandomDivingMultiplier(getRandomDivingMultiplier()) 
  * @version	1.0
  * @authors Pieter Van Damme and Lennert Vanmunster
  *
@@ -58,7 +67,7 @@ public class Shark extends GameObject{
 	 * 			result == (Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity, 0) && initialHorizontalVelocity==initialHorizontalVelocityAtSpawn)
 	 */
 	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity){
-		return initialHorizontalVelocity==initialHorizontalVelocityAtSpawn && Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocityAtSpawn, 0);
+		return initialHorizontalVelocity==getInitialHorizontalVelocityAtSpawn() && Util.fuzzyGreaterThanOrEqualTo(getInitialHorizontalVelocityAtSpawn(), 0);
 	}
 	
 	/**
@@ -68,7 +77,7 @@ public class Shark extends GameObject{
 	 * 			result == (maximumHorizontalVelocityAtSpawn>0 && maximumHorizontalVelocity==maximumHorizontalVelocityAtSpawn)
 	 */
 	public boolean isPossibleMaximumHorizontalVelocity(double maximumHorizontalVelocity){
-		return maximumHorizontalVelocity==maximumHorizontalVelocityAtSpawn && maximumHorizontalVelocityAtSpawn>0;
+		return maximumHorizontalVelocity==getMaximumHorizontalVelocityAtSpawn() && getMaximumHorizontalVelocityAtSpawn()>0;
 	}
 	
 	/**
@@ -94,6 +103,22 @@ public class Shark extends GameObject{
 	}
 	
 	/**
+	 * Return the maximum horizontal velocity of all sharks at spawn.
+	 */
+	@Immutable
+	public static double getMaximumHorizontalVelocityAtSpawn(){
+		return maximumHorizontalVelocityAtSpawn;
+	}
+	
+	/**
+	 * Return the initial horizontal velocity of all sharks at spawn.
+	 */
+	@Immutable
+	public static double getInitialHorizontalVelocityAtSpawn(){
+		return initialHorizontalVelocityAtSpawn;
+	}
+	
+	/**
 	 * Variable storing the maximum horizontal velocity of all sharks at spawn.
 	 */
 	private static final double maximumHorizontalVelocityAtSpawn=4;
@@ -108,6 +133,7 @@ public class Shark extends GameObject{
 	 */
 	private static final double initialVerticalVelocity = 2;
 	
+	
 	/**
 	 * Return the current vertical acceleration of this shark.
 	 * @return	If this shark is currently only in contact with water, the vertical acceleration is zero.
@@ -118,24 +144,25 @@ public class Shark extends GameObject{
 	 */
 	@Raw
 	public double getVerticalAcceleration(){
-		if(checkWaterAndNoAirContact() && this.isJumping()){
-			return 0;
+		if(this.isJumping()){
+			return VERTICAL_ACCELERATION;
 		}
 		else if(checkWaterAndNoAirContact() && !this.isJumping()){
-			return maximumFloatingVerticalAcceleration * this.getRandomDivingVariable();
+			return getMaximumFloatingVerticalAcceleration() * this.getRandomDivingMultiplier();
 		}
-		else
-			return VERTICAL_ACCELERATION;
+		else{
+			return 0;
+		}
 	}
 	
 	/**
 	 * Check whether this shark can have the given vertical acceleration as its vertical acceleration.
 	 * @return	The absolute value of the given vertical acceleration is less than the maximum floating vertical acceleration or the given vertical acceleration
 	 * 			is equal to the gravitational constant.
-	 * 			|	Util.fuzzyLessThanOrEqualTo(Math.abs(verticalAcceleration),maximumFloatingVerticalAcceleration) || Util.fuzzyEquals(verticalAcceleration,VERTICAL_ACCELERATION)
+	 * 			|	Util.fuzzyLessThanOrEqualTo(Math.abs(verticalAcceleration),getMaximumFloatingVerticalAcceleration()) || Util.fuzzyEquals(verticalAcceleration,VERTICAL_ACCELERATION)
 	 */
 	public boolean canHaveAsVerticalAcceleration(double verticalAcceleration){
-		return Util.fuzzyLessThanOrEqualTo(Math.abs(verticalAcceleration),maximumFloatingVerticalAcceleration) || Util.fuzzyEquals(verticalAcceleration,VERTICAL_ACCELERATION);
+		return Util.fuzzyLessThanOrEqualTo(Math.abs(verticalAcceleration),getMaximumFloatingVerticalAcceleration()) || Util.fuzzyEquals(verticalAcceleration,VERTICAL_ACCELERATION);
 	}
 	
 	/**
@@ -147,6 +174,22 @@ public class Shark extends GameObject{
 	 */
 	public boolean canHaveAsHorizontalAcceleration(double horizontalAcceleration){
 		return horizontalAcceleration==horizontalAccelerationAtSpawn && horizontalAccelerationAtSpawn!=0;
+	}
+	
+	/**
+	 * Return the horizontal acceleration of all sharks at spawn.
+	 */
+	@Immutable
+	public static double getHorizontalAccelerationAtSpawn(){
+		return horizontalAccelerationAtSpawn;
+	}
+	
+	/**
+	 * Return the maximum floating vertical acceleration of all sharks.
+	 */
+	@Immutable
+	public static double getMaximumFloatingVerticalAcceleration(){
+		return maximumFloatingVerticalAcceleration;
 	}
 	
 	/**
@@ -182,85 +225,210 @@ public class Shark extends GameObject{
 		return nbImages == 2;
 	}
 	
-	/**
-	 * Return the time since the start of the air contact of this shark.
-	 */
-	public double getTimeSinceStartAirContact(){
-		return this.timeSinceAirContact;
-	}
+	
 	
 	/**
-	 * Set the time since the start of the air contact of this game object.
-	 * 
-	 * @param	time
-	 * 			The time to be set.
-	 * @post	The new time since start air contact is equal to the given time.
-	 * 			|new.getTimeSinceStartAirContact()==time
-	 * @throws	IllegalArgumentException
-	 * 			The given time is not a valid action time.
-	 * 			|!isValidTimeSinceAction(time)
-	 * 			
-	 */
-	public void setTimeSinceStartAirContact(double time)
-	throws IllegalArgumentException{
-		if(!isValidTimeSinceAction(time))
-			throw new IllegalArgumentException();
-		this.timeSinceAirContact = time;
-			
-	}
-	
-	/**
-	 * Variable registering the time since this shark started making contact with air.
-	 */
-	private double timeSinceAirContact = 0;
-	
-	/**
-	 * Method to start a new action of this shark.
-	 * 
-	 * @post	|new.getLastJump() == setLastJump(this.getLastJump() + 1)
-	 * @post	|new.gethorizontalVelocity() == 0
-	 * @post	|new.getCurrentActionDuration() == MINIMUM_ACTION_DURATION+(MAXIMUM_ACTION_DURATION
-	 * 			|									-MINIMUM_ACTION_DURATION)*r.nextDouble()
-	 * @post	|new.getDirection() == r.nextBoolean() ? Direction.LEFT : Direction.RIGHT
-	 * @post	|new.getTimeSinceStartAction() == 0
-	 * @post	|new.getRandomVariable() == (2.0 *r.nextDouble() - 1.0)
-	 * @post	|if(this.getLastJump() >= 4)
-	 * 			| then new.getVerticalVelocity() == INITIAL_VERTICAL_VELOCITY
+	 * Method to start a new action of this shark. This action can be either a random vertical movement or a jump.
+	 * @post	The new current action duration of this shark is equal to a random double between the minimum action duration and the maximum action duration.
+	 * 			|new.getCurrentActionDuration() == RandomDouble(getMinimumActionDuration()..getMaximumActionDuration)
+	 * @post	The new direction of this shark is equal to a random direction. 
+	 * 			The new horizontal velocity of this shark is equal to its current initial horizontal velocity in this direction. 
+	 * 			|new.getDirection()==RandomDirection()
+	 * 			|new.getHorizontalVelocity==new.getDirection().getNumberForCalculations()*this.getInitialHorizontalVelocityForUpdate()
+	 * @post	The new time since the start of an action is equal to zero.
+	 * 			|new.getTimeSinceStartAction()==0
+	 * @post	If the current number of movements since this shark's last jump is greater than or equal to 4 and a randomly generated double
+	 * 			between 0 and 1 is greater than the random movement chance of sharks and this shark is currently not already jumping, this shark starts jumping. This consists of setting 
+	 * 			the vertical velocity of this shark to the initial vertical velocity of sharks, setting its jumping state to true an setting 
+	 * 			the number of movements since this shark last jumped to zero.
+	 * 			|if(this.getNbMovementsSinceLastJump()>=4 && RandomDouble(0,1)>getRandomMovementChance()
+	 * 			|	new.isJumping==true
+	 * 			|	new.getVerticalVelocity()==getInitialVerticalVelocity()
+	 * 			|	new.getTimeSinceLastJump()==0
+	 * 			Otherwise the shark starts a random diving action. The new number of movements since the last jump of this shark is equal to the
+	 * 			old number of movements since the last jump of this shark incremented by 1, the new jumping state of this shark is false and the new
+	 * 			random diving multiplier is equal to a random double between -1 and 1.
+	 * 			|else:
+	 * 			|	new.isJumping()==false
+	 * 			|	new.getRandomDivingMultiplier()==RandomDouble(-1,1)
+	 * 			|	new.getNbMovementsSinceLastJump()==this.getNbMovementsSinceLastJump()+1
 	 */
 	private void startNewAction(){
-		this.setLastJump(this.getLastJump() + 1);
 		Random r = new Random();
-		this.setCurrentActionDuration(minimumActionDuration+(maximumActionDuration-minimumActionDuration)*r.nextDouble());
+		this.setCurrentActionDuration(getMinimumActionDuration()+(getMaximumActionDuration()-getMinimumActionDuration())*r.nextDouble());
 		this.setDirection(r.nextBoolean() ? Direction.LEFT : Direction.RIGHT);
 		this.setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*this.getDirection().getNumberForCalculations());
 		this.setMovingHorizontally(true);
 		this.setTimeSinceStartAction(0);
-		this.setRandomDivingVariable((2.0 *r.nextDouble() - 1.0));
-		if(this.getLastJump() >= 4){
-				this.setVerticalVelocity(getInitialVerticalVelocity());
-				this.setLastJump(0);
+		if(this.getNbMovementsSinceLastJump() >= 4 &&!isJumping()){
+			this.setVerticalVelocity(getInitialVerticalVelocity());
+			this.setJumping(true);
+			this.setNbMovementsSinceLastJump(0);
+		}
+		else{
+			this.setNbMovementsSinceLastJump(this.getNbMovementsSinceLastJump() + 1);
+			this.setRandomDivingMultiplier(2.0 *r.nextDouble() - 1.0);
+			this.setJumping(false);
 		}
 	}
 	
 	/**
 	 * Set the current action duration of this shark to the given duration. This is how long the current action of this shark lasts.
 	 * @param 	duration
-	 * 			The duration to be set in seconds.
+	 * 			The action duration to be set.
+	 * @pre		The given duration must be a valid action duration.
+	 * 			| isValidActionDuration(duration)
 	 * @post	| new.getCurrentActionDuration()==duration
 	 */
 	private void setCurrentActionDuration(double duration) {
+		assert (isValidActionDuration(duration)):
+			"The given duration is not a valid action duration!";
 		this.currentActionDuration=duration;
 	}
 	
 	/**
-	 * Return the current action duration.
+	 * Return the number of movements since this sharks last jump.
+	 */
+	public int getNbMovementsSinceLastJump(){
+		return this.nbMovementsSinceLastJump;
+	}
+	
+	/**
+	 * Set the number of movements since this sharks last jump. If the given number is not a valid number of movements
+	 * the number of movements is set to zero.
+	 * @param 	nbMovementsSinceLastJump
+	 * 			The number of movements to be set.
+	 * @post	If the given number is not a valid number of movements, the new number of movements of this shark is equal to zero.
+	 * 			Otherwise it is equal to the given number.
+	 * 			|if(!isValidNbMovementsSinceLastJump())
+	 * 			|	new.getNbMovementsSinceLastJump()==0
+	 * 			|else
+	 * 			|	new.getNbMovementsSinceLastJump()==nbMovementsSinceLastJump
+	 */
+	public void setNbMovementsSinceLastJump(int nbMovementsSinceLastJump){
+		if(!isValidNbMovements(nbMovementsSinceLastJump)){
+			this.nbMovementsSinceLastJump = 0;
+		}
+		else{
+			this.nbMovementsSinceLastJump = nbMovementsSinceLastJump;
+		}
+	}
+	
+	/**
+	 * Check whether the given number of movements is a valid number of movements for all sharks.
+	 * @param 	nbMovements
+	 * 			The number of movements to be checked
+	 * @return	The given number must be greater than or equal to zero.
+	 * 			| result== (nbMovements>=0)
+	 */
+	public static boolean isValidNbMovements(int nbMovements){
+		return nbMovements>=0;
+	}
+	
+	/**
+	 * Return the random movements chance of all sharks.
+	 */
+	public static double getRandomMovementChance(){
+		return randomMovementChance;
+	}
+	
+	/**
+	 * Check whether the given chance is a valid chance.
+	 * @param chance
+	 * 			The chance to be checked.
+	 * @return	The chance must be greater than or equal to zero and less than or equal to 1.
+	 * 			|chance>=0 && Util.fuzzyLessThanOrEqualTo(chance, 1)
+	 */
+	public static boolean isValidChance(double chance){
+		return chance>=0 && Util.fuzzyLessThanOrEqualTo(chance, 1);
+	}
+	
+	/**
+	 * Return the current action duration of this shark.
 	 */
 	public double getCurrentActionDuration(){
 		return currentActionDuration;
 	}
+	
+	/**
+	 * Return the minimum action duration for all sharks.
+	 */
+	public static double getMinimumActionDuration(){
+		return minimumActionDuration;
+	}
+	
+	/**
+	 * Return the maximum action duration for all sharks.
+	 */
+	public static double getMaximumActionDuration(){
+		return maximumActionDuration;
+	}
+	
+	/**
+	 * Check whether the given action duration is a valid action duration for all sharks.
+	 * @param 	actionDuration
+	 * 			The duration to be checked.
+	 * @return	True if the given duration is greater than or equal to the minimum action duration of sharks
+	 * 			and less than or equal to the maximum action duration of sharks.
+	 * 			| result == (Util.fuzzyGreaterThanOrEqualTo(actionDuration, getMinimumActionDuration())
+				|			&& Util.fuzzyLessThanOrEqualTo(actionDuration, getMaximumActionDuration()))
+	 */
+	public static boolean isValidActionDuration(double actionDuration){
+		return Util.fuzzyGreaterThanOrEqualTo(actionDuration, getMinimumActionDuration())
+				&& Util.fuzzyLessThanOrEqualTo(actionDuration, getMaximumActionDuration());
+	}
+	
+	
+	/**
+	 * Return the current random diving multiplier of this shark.
+	 */
+	public double getRandomDivingMultiplier() {
+		return randomDivingMultiplier;
+	}
+	
+	/**
+	 * Set the random diving multiplier of this shark to the given random diving multiplier. If the given multiplier is not a valid
+	 * random diving multiplier the random diving multiplier is set to zero.
+	 * @param 	randomDivingMultiplier
+	 * 			The diving multiplier to be set.
+	 * @post	If the given random diving multiplier is not valid the new random diving multiplier is equal to zero.
+	 * 			Otherwise it is equal to the given multiplier.
+	 * 			|if(!isValidRandomDivingMultiplier(randomDivingMultiplier):
+	 *			|	new.getRandomDivingMultiplier == 0
+	 *			|else: 
+	 *			|	new.getRandomDivingMultiplier == randomDivingMultiplier
+	 *			
+	 */
+	public void setRandomDivingMultiplier(double randomDivingMultiplier) {
+		if(!isValidRandomDivingMultiplier(randomDivingMultiplier)){
+			this.randomDivingMultiplier = 0;
+		}
+		else{
+			this.randomDivingMultiplier = randomDivingMultiplier;
+		}
+	}
+	
+	/**
+	 * Check whether the given random diving multiplier is a valid random diving multiplier for any shark.
+	 * @param 	randomDivingMultiplier
+	 * 			| The random diving multiplier to be checked.
+	 * @return	The given multiplier must be greater than or equal to -1 and less than or equal to 1.
+	 * 			|(Util.fuzzyGreaterThanOrEqualTo(randomDivingMultiplier,-1) 
+				| && Util.fuzzyLessThanOrEqualTo(randomDivingMultiplier, 1))
+	 */
+	public static boolean isValidRandomDivingMultiplier(double randomDivingMultiplier){
+		return (randomDivingMultiplier>=-1 
+				&& randomDivingMultiplier<=1);
+	}
 
 	/**
-	 * Variable registering the current action duration.
+	 * Variable registering the random diving multiplier, this number is used to calculate the random diving vertical acceleration of a shark when 
+	 * the shark is not jumping.
+	 */
+	private double randomDivingMultiplier;
+
+	/**
+	 * Variable registering the current action duration of this shark.
 	 */
 	private double currentActionDuration=0;
 
@@ -275,66 +443,16 @@ public class Shark extends GameObject{
 	private static final double maximumActionDuration=4;
 	
 	/**
-	 * Return the number of movements since this sharks last jump.
-	 */
-	public int getLastJump(){
-		return this.lastJump;
-	}
-	
-	/**
-	 * Set the number of movements since this sharks last jump.
-	 * @param 	lastJump
-	 * 			The given number of movements.
-	 * @post	|if(lastJump < 0 || lastJump >= 5)
-	 * 			| then new.getLastJump() == 0
-	 * 			|else new.getLastJump() == lastJump
-	 */
-	public void setLastJump(int lastJump){
-		if(lastJump < 0 || lastJump >= 5){
-			this.lastJump = 0;
-		}
-		else{
-			this.lastJump = lastJump;
-		}
-	}
-	
-	/**
 	 * Variable registering the number of movements since this sharks last jump.
 	 */
-	private int lastJump = 2; 
+	private int nbMovementsSinceLastJump = 2; 
 	
 	/**
-	 * Return a number between in the range of -1...1;
+	 * Variable registering the chance if the next action will be a random movement or a jump.
 	 */
-	public double getRandomDivingVariable() {
-		return randomDivingVariable;
-	}
+	private static final double randomMovementChance=0.5;
 	
-	/**
-	 * Set the diving variable of this shark.
-	 * 
-	 * @param 	randomDivingVariable
-	 * 			The diving variable, a number in the range of -1...1.
-	 * @post	|if(!(Util.fuzzyLessThanOrEqualTo(-1, randomDivingVariable) 
-	 *			|	&& Util.fuzzyLessThanOrEqualTo(-1, randomDivingVariable))
-	 *			|then new.getRandomDivingVariable == 0
-	 *			|else new.getRandomDivingVariable == randomDivingVariable
-	 *			
-	 */
-	public void setRandomDivingVariable(double randomDivingVariable) {
-		if(!(Util.fuzzyLessThanOrEqualTo(-1, randomDivingVariable) 
-				&& Util.fuzzyLessThanOrEqualTo(-1, randomDivingVariable))){
-			this.randomDivingVariable = 0;
-		}
-		else{
-			this.randomDivingVariable = randomDivingVariable;
-		}
-	}
-
-	/**
-	 * Variable registering the random diving variable, a number in the range of -1...1.
-	 */
-	private double randomDivingVariable;
+	
 	
 	/**
 	 * Update the location and velocity of this shark.
@@ -378,7 +496,6 @@ public class Shark extends GameObject{
 			this.updateVelocities(deltaTimeForPixel);
 			this.updateLocations(deltaTimeForPixel, oldHorizontalLocation, oldVerticalLocation);
 			this.updateJumping();
-
 			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
 			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
 		}
@@ -399,7 +516,7 @@ public class Shark extends GameObject{
 		try{
 			this.setHorizontalVelocity(newHorizontalVelocity);
 		} catch(IllegalArgumentException exc){
-				this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getMaximumHorizontalVelocity());
+				this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getMaximumHorizontalVelocityForUpdate());
 		}
 		try{
 			this.setVerticalVelocity(newVerticalVelocity);
@@ -439,17 +556,30 @@ public class Shark extends GameObject{
 	/**
 	 * Update the jumping state of this shark.
 	 * 
-	 * @post	|if(this.isJumping())
-	 * 			|	if(this.checkWaterAndNoAirContact())
-	 * 			|	then new.isJumping() == false
-	 * 			|   and new.getVerticalVelocity == 0
+	 * @post	If this shark is currently jumping and fully submerged in water and falling downwards. The new jumping state of this shark is false
+	 * 			and its new vertical velocity is zero.
+	 * 			|if(this.isJumping() && this.checkWaterAndNoAirContact() && this.getVerticalVelocity()<0):
+	 *			|	new.isJumping() == false
+	 * 			|   new.getVerticalVelocity == 0
+	 * 			Otherwise if this shark is cannot have the location beneath it as its location and is not fully submerged in water the new jumping
+	 * 			state of this shark is false and its new vertical velocity is zero.
+	 * 			|else if(!this.canHaveAsLocation(this.getHorizontalLocation(), this.getVerticalLocation()-1) && !this.checkWaterAndNoAirContact())
+	 *			|	new.isJumping()=false
+	 *			|	new.getVerticalVelocity==0
+	 *			Otherwise is this shark can have the location beneath it as its location and is not fully submerged in water the new jumping state of this shark is true.
+	 *			|new.isJumping==true
 	 */
 	private void updateJumping(){
-		if(this.isJumping()){
-			if(this.checkWaterAndNoAirContact()){
-				this.setJumping(false);
-				this.setVerticalVelocity(0);
-			}
+		if(this.checkWaterAndNoAirContact() && this.getVerticalVelocity()<0 && this.isJumping()){
+			this.setJumping(false);
+			this.setVerticalVelocity(0);
+		}
+		else if(!this.canHaveAsLocation(this.getHorizontalLocation(), this.getVerticalLocation()-1) && !this.checkWaterAndNoAirContact()){
+			this.setJumping(false);
+			this.setVerticalVelocity(0);
+		}
+		else if(this.canHaveAsLocation(this.getHorizontalLocation(), this.getVerticalLocation()-1) && !this.checkWaterAndNoAirContact()){
+			this.setJumping(true);
 		}
 	}
 	
@@ -496,9 +626,12 @@ public class Shark extends GameObject{
 	/**
 	 * Check whether the shark makes contact with water and no contact with air
 	 * 
-	 * @return 	|if(contactTiles[2] == true && contactTiles[0] == false)
-	 * 			|then result == true
-	 * 			|else result == false and this.setJumping(true)
+	 * @return 	If the shark is only located within water tiles and no air tiles, return true.
+	 * 			|boolean [] contactTiles = (this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
+				|this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)).clone()
+	 * 			|if(contactTiles[2] == true && contactTiles[0] == false)
+	 * 			|	result == true
+	 * 			|else result == false
 	 */
 	public boolean checkWaterAndNoAirContact(){
 		boolean [] contactTiles = (this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
@@ -507,7 +640,6 @@ public class Shark extends GameObject{
 			return true;
 		}
 		else{
-			this.setJumping(true);
 			return false;
 		}
 	}
@@ -573,6 +705,38 @@ public class Shark extends GameObject{
 			this.setTimeSinceStartMagmaContact(0);
 		}
 	}
+	
+	/**
+	 * Return the time since the start of the air contact of this shark.
+	 */
+	public double getTimeSinceStartAirContact(){
+		return this.timeSinceAirContact;
+	}
+	
+	/**
+	 * Set the time since the start of the air contact of this game object.
+	 * 
+	 * @param	time
+	 * 			The time to be set.
+	 * @post	The new time since start air contact is equal to the given time.
+	 * 			|new.getTimeSinceStartAirContact()==time
+	 * @throws	IllegalArgumentException
+	 * 			The given time is not a valid action time.
+	 * 			|!isValidTimeSinceAction(time)
+	 * 			
+	 */
+	public void setTimeSinceStartAirContact(double time)
+	throws IllegalArgumentException{
+		if(!isValidTimeSinceAction(time))
+			throw new IllegalArgumentException();
+		this.timeSinceAirContact = time;
+			
+	}
+	
+	/**
+	 * Variable registering the time since this shark started making contact with air.
+	 */
+	private double timeSinceAirContact = 0;
 	
 	/**
 	 * Constant registering the maximum number of hit points of a shark.
