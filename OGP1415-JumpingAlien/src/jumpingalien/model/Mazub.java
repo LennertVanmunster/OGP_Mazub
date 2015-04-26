@@ -455,6 +455,9 @@ public class Mazub extends GameObject {
 			oldVerticalLocation = getVerticalLocation();
 			oldHorizontalLocation = getHorizontalLocation();
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
+			if(!(deltaTimeForPixel<deltaTime - sumDeltaTimeForPixel)){
+				deltaTimeForPixel = deltaTime - sumDeltaTimeForPixel + 1E-10;
+			}
 			newVerticalVelocity = getVerticalVelocity() + getVerticalAcceleration()*deltaTimeForPixel;
 			newHorizontalVelocity = getHorizontalVelocity() + getDirection().getNumberForCalculations()*getHorizontalAccelerationForUpdate()*deltaTimeForPixel;
 			newHorizontalLocation = getHorizontalLocation() + 

@@ -50,7 +50,8 @@ public class Plant extends GameObject {
 	 * 			| result== Util.fuzzyEquals(Math.abs(horizontalVelocity), getVelocityConstant())
 	 */
 	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
-		return Util.fuzzyEquals(Math.abs(horizontalVelocity), getVelocityConstant());
+		return Util.fuzzyEquals(Math.abs(horizontalVelocity), getVelocityConstant())
+				|| Util.fuzzyEquals(horizontalVelocity, 0);
 	}
 	
 	/**
