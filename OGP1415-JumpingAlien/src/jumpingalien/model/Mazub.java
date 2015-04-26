@@ -418,14 +418,19 @@ public class Mazub extends GameObject {
 	 * @param 	deltaTime
 	 * 			The period of time that is used to update this Mazub.
 	 * @effect	The horizontal and vertical location are updated
-	 * 			and the horizontal and vertical velocity are updated.
-	 * 			|updateHorizontalLocation(deltaTime)
-	 *			|updateVerticalLocation(deltaTime);
-	 *			|updateHorizontalVelocity(deltaTime);
-	 *			|updateVerticalVelocity(deltaTime);
+	 * 			and the horizontal and vertical velocity are updated. 
+	 * 			|updateVelocities(deltaTimeForPixel)
+	 *			|updateLocations(deltaTimeForPixel, oldHorizontalLocation, oldVerticalLocation)
+	 *			The jumping state is updated.
+	 *			|updateJumping()
+	 *			The collison with other objects is checked.
+	 *			|collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation)
 	 * @effect	|Contact with magma and water is checked.
 	 *			|checkWaterContact(deltaTime);
-	 *			|checkMagmaContact(deltaTime);		
+	 *			|checkMagmaContact(deltaTime);
+	 * @post	|if(!isMovingHorizontally())
+	 * 			| then new.getTimeSinceEndMove == getTimeSinceEndMove()+deltaTime
+	 * 			|else new.getTimeSinceStartMove == getTimeSinceEndMove()+deltaTime		
 	 * @throws	IllegalArgumentException 
 	 * 			The given time period is not valid a valid time period.
 	 * 			|!isValidTimePeriod(deltaTime)
@@ -439,10 +444,6 @@ public class Mazub extends GameObject {
 		this.setTimeSinceLastHitpointsLoss(deltaTime + getTimeSinceLastHitpointsLoss());
 		double deltaTimeForPixel=0;
 		double sumDeltaTimeForPixel=0;
-		double newHorizontalLocation=getHorizontalLocation();
-		double newVerticalLocation=getVerticalLocation();
-		double newHorizontalVelocity=getHorizontalVelocity();
-		double newVerticalVelocity=getVerticalVelocity();
 		double oldHorizontalLocation=getHorizontalLocation();
 		double oldVerticalLocation=getVerticalLocation();
 		if(!isMovingHorizontally()){
@@ -458,51 +459,9 @@ public class Mazub extends GameObject {
 			if(!(deltaTimeForPixel<deltaTime - sumDeltaTimeForPixel)){
 				deltaTimeForPixel = deltaTime - sumDeltaTimeForPixel + 1E-10;
 			}
-			newVerticalVelocity = getVerticalVelocity() + getVerticalAcceleration()*deltaTimeForPixel;
-			newHorizontalVelocity = getHorizontalVelocity() + getDirection().getNumberForCalculations()*getHorizontalAccelerationForUpdate()*deltaTimeForPixel;
-			newHorizontalLocation = getHorizontalLocation() + 
-					100*(getHorizontalVelocity()*deltaTimeForPixel + 
-					getDirection().getNumberForCalculations()*0.5*getHorizontalAccelerationForUpdate()*Math.pow(deltaTimeForPixel, 2));
-			newVerticalLocation = getVerticalLocation() + 100*(getVerticalVelocity()*deltaTimeForPixel + 0.5*getVerticalAcceleration()*Math.pow(deltaTimeForPixel,2));
 			sumDeltaTimeForPixel+=deltaTimeForPixel;
-			try{
-				setHorizontalVelocity(newHorizontalVelocity);
-			} catch(IllegalArgumentException exc){
-				if (Math.abs(newHorizontalVelocity)<Math.abs(getInitialHorizontalVelocityForUpdate()))
-					setHorizontalVelocity(getDirection().getNumberForCalculations()*getInitialHorizontalVelocityForUpdate());
-				else
-					setHorizontalVelocity(getDirection().getNumberForCalculations()*getMaximumHorizontalVelocityForUpdate());
-			}
-			try{
-				setVerticalVelocity(newVerticalVelocity);
-			} catch (IllegalArgumentException exc){
-				setVerticalVelocity(0);
-			}
-			try{
-				setHorizontalLocation(newHorizontalLocation);
-			} catch(IllegalLocationException exc){
-				if(newHorizontalLocation>getWorld().getWorldWidth()){
-					getWorld().setGameOver(true);
-					this.terminate();
-					return;
-				}
-				else{
-					setHorizontalLocation((int) oldHorizontalLocation);
-				}
-			}
-			try{
-				setVerticalLocation(newVerticalLocation);
-			} catch(IllegalLocationException exc){
-				if(newVerticalLocation>getWorld().getWorldHeight()){
-					getWorld().setGameOver(true);
-					this.terminate();
-					return;
-				}
-				else{
-					setVerticalLocation(oldVerticalLocation);
-					setVerticalVelocity(0);
-				}
-			}
+			this.updateVelocities(deltaTimeForPixel);
+			this.updateLocations(deltaTimeForPixel, oldHorizontalLocation, oldVerticalLocation);
 			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
 			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
 			if(wantsEndDuck()){
@@ -513,8 +472,102 @@ public class Mazub extends GameObject {
 		checkMagmaContact(deltaTime);	
 		calculateNewJumpingState();
 	}
-
 	
+	/**
+	 * Update the velocities of this Mazub.
+	 * 
+	 * @param 	deltaTime
+	 * 			A given period of time used in the calculations.
+	 */
+	public void updateVelocities(double deltaTime){
+		double newVerticalVelocity = getVerticalVelocity() + getVerticalAcceleration()*deltaTime;
+		double newHorizontalVelocity = getHorizontalVelocity() + getDirection().getNumberForCalculations()*getHorizontalAccelerationForUpdate()*deltaTime;
+		try{
+			setHorizontalVelocity(newHorizontalVelocity);
+		} catch(IllegalArgumentException exc){
+			if (Math.abs(newHorizontalVelocity)<Math.abs(getInitialHorizontalVelocityForUpdate()))
+				setHorizontalVelocity(getDirection().getNumberForCalculations()*getInitialHorizontalVelocityForUpdate());
+			else
+				setHorizontalVelocity(getDirection().getNumberForCalculations()*getMaximumHorizontalVelocityForUpdate());
+		}
+		try{
+			setVerticalVelocity(newVerticalVelocity);
+		} catch (IllegalArgumentException exc){
+			setVerticalVelocity(0);
+		}
+	}
+
+	/**
+	 * Update the locations of this mazub.
+	 * 
+	 * @param 	deltaTime
+	 * 			A given period of time used in the calculations.
+	 * @param 	oldHorizontalLocation
+	 * 			The old horizontal location.
+	 * @param 	oldVerticalLocation
+	 * 			The old vertical location.
+	 */
+	public void updateLocations(double deltaTime, double oldHorizontalLocation, double oldVerticalLocation){
+		double newHorizontalLocation = this.getHorizontalLocation() + 
+				100*(this.getHorizontalVelocity()*deltaTime + 
+				this.getDirection().getNumberForCalculations()*0.5*getHorizontalAccelerationForUpdate()*Math.pow(deltaTime, 2));
+		double newVerticalLocation = this.getVerticalLocation() + 100*(getVerticalVelocity()*deltaTime + 0.5*getVerticalAcceleration()*Math.pow(deltaTime,2));
+		try{
+			setHorizontalLocation(newHorizontalLocation);
+		} catch(IllegalLocationException exc){
+			if(newHorizontalLocation>getWorld().getWorldWidth()){
+				getWorld().setGameOver(true);
+				this.terminate();
+				return;
+			}
+			else{
+				setHorizontalLocation((int) oldHorizontalLocation);
+			}
+		}
+		try{
+			setVerticalLocation(newVerticalLocation);
+		} catch(IllegalLocationException exc){
+			if(newVerticalLocation>getWorld().getWorldHeight()){
+				getWorld().setGameOver(true);
+				this.terminate();
+				return;
+			}
+			else{
+				setVerticalLocation(oldVerticalLocation);
+				setVerticalVelocity(0);
+			}
+		}
+	}
+
+	/**
+	 * Execute the right actions after a collision with another game object.
+	 * 
+	 * @param 	index1
+	 * 			The index registering the position of the other 
+	 * 			game object in list of all game objects of this world.
+	 * @param 	index2
+	 * 			The index registering whether the bottom perimeter was 
+	 * 			overlapping during the contact with the other game object.
+	 * @param 	index3
+	 * 			The index registering whether the top perimeter was
+	 * 			overlapping during the contact with the other game object.
+	 * @post	|if(gameObject instanceof Plant)
+	 * 			|	if(this.getHitPoints() != this.getMaxHitPoints() && gameObject.getHitPoints() != 0)
+	 * 			|	then gameObject.setHitPoints(0)
+	 *			|		 this.addHitPoints(50)
+	 *			|else if(gameObject instanceof Shark && gameObject.getHitPoints() != 0)
+	 *			|	if(!isUntouchable())
+	 *			|		then gameObject.removeHitPoints(50)
+	 *			|		if(index2 == 0)
+	 *			|			then this.removeHitPoints(50)
+	 *			|			this.setTimeSinceLastHitpointsLoss(0)
+	 *			|else if(gameObject instanceof Slime && gameObject.getHitPoints() != 0)
+	 *			|	if(!isUntouchable())
+	 *			|		gameObject.removeHitPoints(50)
+	 *			|		if(index2 == 0)
+	 *			|			this.removeHitPoints(50)
+	 *			|			this.setTimeSinceLastHitpointsLoss(0)
+	 */
 	protected void collisionReaction(int index1, int index2, int index3) {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
 		if(gameObject instanceof Plant){
