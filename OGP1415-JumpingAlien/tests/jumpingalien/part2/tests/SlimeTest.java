@@ -235,5 +235,6 @@ public class SlimeTest {
 	@Test
 	public void hasProperSchool_trueCase(){
 		assertTrue(slime1School1.hasProperSchool());
+		
 	}
 }

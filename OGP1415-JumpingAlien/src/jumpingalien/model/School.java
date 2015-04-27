@@ -59,16 +59,16 @@ public class School {
 	 * @return	If the slime is null, the result is false
 	 * 			|if(slime==null)
 	 * 			|	result==false
-	 * 			Otherwise if the current number of slimes of this school is a valid number of slimes and this school is not terminated or the given slime is terminated, the result is true.
+	 * 			Otherwise if this school is not terminated or the given slime is terminated, the result is true.
 	 * 			|else
-	 * 			|	result==((!this.isTerminated() || slime.isTerminated()) && this.isValidNbSlimes(this.getNbSlimes()))
+	 * 			|	result==((!this.isTerminated() || slime.isTerminated())
 	 */
 	public boolean canHaveAsSlime(Slime slime){
 		if(slime==null){
 			return false;
 		}
 		else{
-			return ((!this.isTerminated() || slime.isTerminated()) && this.isValidNbSlimes(this.getNbSlimes()));
+			return ((!this.isTerminated() || slime.isTerminated()));
 		}
 	}
 	
@@ -111,11 +111,12 @@ public class School {
 	 * @post	The given slime references this school as the school to which it is attached.
 	 * 			|(new slime).getSchool()==this
 	 * @throws	IllegalArgumentException
-	 * 			The school cannot have this slime as one of its slimes or the given slime already references another school.
-	 * 			|!this.canHaveAsSlime(slime) || slime.getSchool()!=null
+	 * 			The school cannot have this slime as one of its slimes or the given slime already references another school or the
+	 * 			maximum number of slimes in this school has been reached.
+	 * 			|!this.canHaveAsSlime(slime) || slime.getSchool()!=null || !this.isValidNbSlimes(this.getNbSlimes()+1)
 	 */
 	public void addAsSlime(Slime slime){
-		if (!this.canHaveAsSlime(slime) || slime.getSchool()!=null){
+		if (!this.canHaveAsSlime(slime) || slime.getSchool()!=null || !this.isValidNbSlimes(this.getNbSlimes()+1)){
 			throw new IllegalArgumentException();
 		}
 		this.slimes.add(slime);

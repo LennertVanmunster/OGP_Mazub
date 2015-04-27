@@ -1792,7 +1792,7 @@ public abstract class GameObject {
 	 * @return	result == (world==null || world.canHaveAsGameObject(this))
 	 */
 	protected boolean canHaveAsWorld(World world){
-		return (this.isTerminated() && world==null || world.canHaveAsGameObject(this));
+		return (world==null || world.canHaveAsGameObject(this));
 	}
 	
 	/**

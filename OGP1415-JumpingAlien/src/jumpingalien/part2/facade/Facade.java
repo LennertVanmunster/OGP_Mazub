@@ -451,8 +451,7 @@ public class Facade implements IFacadePart2 {
 	 */
 	public void setMazub(World world, Mazub alien){
 		try{
-			alien.setWorld(world);
-			world.setMazub(alien);
+			world.addAsGameObject(alien);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Cannot set this Mazub in this world!");
 		}
@@ -506,11 +505,11 @@ public class Facade implements IFacadePart2 {
 	 * 			Cannot add the given plant to the given world.
 	 */
 	public void addPlant(World world, Plant plant)throws ModelException{
-		try{
+		//try{
 			world.addAsGameObject(plant);
-		} catch (IllegalArgumentException exc){
-			throw new ModelException("Cannot add this plant to this world!");
-		}
+		//} catch (IllegalArgumentException exc){
+			//throw new ModelException("Cannot add this plant to this world!");
+		//}
 	}
 
 	/**

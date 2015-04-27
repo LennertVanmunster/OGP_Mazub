@@ -230,7 +230,7 @@ public class World {
 	 * 			|!canHaveAsHorizontalVisibleWindowLocation(horizontalLocation) || !canHaveAsVerticalVisibleWindowLocation(verticalLocation)
 	 */
 	@Raw
-	private void setVisibleWindowLocation(int horizontalLocation, int verticalLocation)
+	public void setVisibleWindowLocation(int horizontalLocation, int verticalLocation)
 		throws IllegalArgumentException {
 		if(!canHaveAsHorizontalVisibleWindowLocation(horizontalLocation) || !canHaveAsVerticalVisibleWindowLocation(verticalLocation))
 			throw new IllegalArgumentException("Not a valid pixel location!");
@@ -398,11 +398,10 @@ public class World {
 	 *			| else if ((mazub.getEffectiveHorizontalLocation()<horizontalVisibleWindowLocation) || (mazub.getEffectiveHorizontalLocation()+mazub.getWidth()>horizontalVisibleWindowLocation+visibleWindowWidth) 
 	 *			|	|| (mazub.getEffectiveVerticalLocation()<verticalVisibleWindowLocation) || (mazub.getEffectiveVerticalLocation()+mazub.getHeight()>verticalVisibleWindowLocation+visibleWindowHeight))
 	 *			|		result==false
-	 *			| else if ((mazub.getEffectiveHorizontalLocation()<200 && horizontalVisibleWindowLocation!=0) || 
-	 *			|	(mazub.getEffectiveHorizontalLocation()+mazub.getWidth()>horizontalVisibleWindowLocation+visibleWindowWidth-200 && horizontalVisibleWindowLocation+visibleWindowWidth!=this.getWorldWidth())
-	 *			|	|| (mazub.getEffectiveVerticalLocation()<200 && verticalVisibleWindowLocation!=0) ||
-	 *			|	(mazub.getEffectiveVerticalLocation()+mazub.getHeight()>verticalVisibleWindowLocation+visibleWindowHeight-200 && verticalVisibleWindowLocation+visibleWindowHeight!=this.getWorldHeight()))
-	 *			|	result==false;
+	 *			| else if ((mazub.getEffectiveHorizontalLocation()- horizontalVisibleWindowLocation<200 && mazub.getEffectiveHorizontalLocation()>=200) || 
+	 *			|		(horizontalVisibleWindowLocation+visibleWindowWidth-mazub.getEffectiveHorizontalLocation()-mazub.getWidth()<200 && this.getWorldWidth()-mazub.getEffectiveHorizontalLocation()-mazub.getWidth()>=200)
+	 *			|		|| (mazub.getEffectiveVerticalLocation()- verticalVisibleWindowLocation<200 && mazub.getEffectiveVerticalLocation()>=200 ||
+	 *			|		(verticalVisibleWindowLocation+visibleWindowHeight-mazub.getEffectiveVerticalLocation()-mazub.getHeight()<200 && this.getWorldHeight()-mazub.getEffectiveVerticalLocation()-mazub.getHeight()>=200)))
 	 *			|else
 	 *			|	result==true;
 	 */
@@ -419,10 +418,10 @@ public class World {
 					|| (mazub.getEffectiveVerticalLocation()<verticalVisibleWindowLocation) || (mazub.getEffectiveVerticalLocation()+mazub.getHeight()>verticalVisibleWindowLocation+visibleWindowHeight)){
 				return false;
 		}
-		else if ((mazub.getEffectiveHorizontalLocation()<200 && horizontalVisibleWindowLocation!=0) || 
-				(mazub.getEffectiveHorizontalLocation()+mazub.getWidth()>horizontalVisibleWindowLocation+visibleWindowWidth-200 && horizontalVisibleWindowLocation+visibleWindowWidth!=this.getWorldWidth())
-				|| (mazub.getEffectiveVerticalLocation()<200 && verticalVisibleWindowLocation!=0) ||
-				(mazub.getEffectiveVerticalLocation()+mazub.getHeight()>verticalVisibleWindowLocation+visibleWindowHeight-200 && verticalVisibleWindowLocation+visibleWindowHeight!=this.getWorldHeight())){
+		else if ((mazub.getEffectiveHorizontalLocation()- horizontalVisibleWindowLocation<200 && mazub.getEffectiveHorizontalLocation()>=200) || 
+				(horizontalVisibleWindowLocation+visibleWindowWidth-mazub.getEffectiveHorizontalLocation()-mazub.getWidth()<200 && this.getWorldWidth()-mazub.getEffectiveHorizontalLocation()-mazub.getWidth()>=200)
+				|| (mazub.getEffectiveVerticalLocation()- verticalVisibleWindowLocation<200 && mazub.getEffectiveVerticalLocation()>=200 ||
+				(verticalVisibleWindowLocation+visibleWindowHeight-mazub.getEffectiveVerticalLocation()-mazub.getHeight()<200 && this.getWorldHeight()-mazub.getEffectiveVerticalLocation()-mazub.getHeight()>=200))){
 			return false;
 		}
 		else{
@@ -485,6 +484,7 @@ public class World {
 	 * 			The vertical tile position of the tile.
 	 * @return	|this.getTiles()[horizontalPosition][verticalPosition]
 	 */
+	@Basic
 	public int getTileValueAtTilePosition(int horizontalTilePosition,int verticalTilePosition) 
 			throws IllegalArgumentException{
 		if(!canHaveAsTilePosition(horizontalTilePosition, verticalTilePosition))
@@ -569,8 +569,8 @@ public class World {
 	 * @return	| result == (0 <= tileValue && tileValue <= NB_OF_GEOLOGICAL_FEATURES)
 	 */
 	@Raw
-	public boolean isValidTileValue(int tileValue){
-		return (0 <= tileValue && tileValue <= NB_OF_GEOLOGICAL_FEATURES);
+	public static boolean isValidTileValue(int tileValue){
+		return (0 <= tileValue && tileValue < NB_OF_GEOLOGICAL_FEATURES);
 	}
 	
 	/**
@@ -586,7 +586,6 @@ public class World {
 	 * @return |result == {this.getTileSize() * this.getNbTilesX(),this.getTileSize() * this.getNbTilesY()}
 	 */
 	@Basic
-	@Raw
 	@Immutable
 	public int [] getWorldSizeInPixels(){
 		int[] worldSizeInPixels={getTileSize() * getNbTilesX(),getTileSize() * getNbTilesY()};
@@ -596,7 +595,6 @@ public class World {
 	/**
 	 * Return the width of this world in pixels.
 	 */
-	@Raw
 	@Immutable
 	public int getWorldWidth(){
 		return getWorldSizeInPixels() [0];
@@ -605,7 +603,6 @@ public class World {
 	/**
 	 *Returns the height of this world in pixels.
 	 */
-	@Raw
 	@Immutable
 	public int getWorldHeight(){
 		return getWorldSizeInPixels() [1];
@@ -847,7 +844,7 @@ public class World {
 	 * @post	|new.getGameOver()==isGameOver
 	 */
 	@Raw
-	void setGameOver(boolean isGameOver){
+	public void setGameOver(boolean isGameOver){
 		this.gameOver = isGameOver;
 	}
 	
@@ -1032,8 +1029,8 @@ public class World {
 			if(mazub==null){
 				return false;
 			}
-			if(mazub.isTerminated()){
-				return mazub==null;
+			if(this.isTerminated() && !mazub.isTerminated()){
+				return false;
 			}
 			else{
 				return mazub.canHaveAsLocation(mazub.getHorizontalLocation(),mazub.getVerticalLocation())
@@ -1049,14 +1046,14 @@ public class World {
 	 * 			The given alien of the class Mazub.
 	 * @post	new.getMazub == Mazub
 	 * @throws	IllegalArgumentException
-	 * 			!(this.canHaveAsMazub(alien) && alien.getWorld()==this)
+	 * 			!(this.canHaveAsMazub(alien) || this.getGameHasStarted()
 	 */
 	public void setMazub(Mazub alien) throws IllegalArgumentException{
 		if (!(this.canHaveAsMazub(alien))){
 			throw new IllegalArgumentException("Not a valid Mazub!");
 		}
-		if(alien != null && alien.getWorld()!=this){
-			throw new IllegalArgumentException("Not a valid Mazub!");
+		if(this.getGameHasStarted()){
+			throw new IllegalArgumentException("Cannot set a Mazub in a started game!");
 		}
 		gameObjects.add(0,alien);
 	}
@@ -1083,11 +1080,11 @@ public class World {
 	/**
 	 * Check whether the given number of game objects is a valid number of game objects.
 	 * @param	nbGameObjects
-	 * @return	result==(nbGameObjects<=100)
+	 * @return	result==(nbGameObjects<=100 && nbGameObjects>=0)
 	 */
 	@Raw
-	public boolean isValidNbGameObjects(int nbGameObjects){
-		return nbGameObjects<=100;
+	public static boolean isValidNbGameObjects(int nbGameObjects){
+		return nbGameObjects<=100 && nbGameObjects>=0;
 	}
 
 	/**
@@ -1096,18 +1093,32 @@ public class World {
 	 * 			The given game object.
 	 * @post	|if(gameObject instanceof Mazub)
 	 * 			|	new.getMazub()==gameObject
+	 * 			|	gameObject.getWorld()==this
 	 * 			|else
 	 * 			|	new.getGameObjectAtIndex(getNbGameObjects - 1) == gameObject
+	 * 			|	gameObject.getWorld()==this
+	 * @throws	IllegalArgumentException
+	 * 			|(gameObject instanceof Mazub && !canHaveAsMazub())
+	 * 			|else if (gameObject instanceof Slime && !this.getAllDifferentSchools().contains(((Slime) gameObject).getSchool()) && !isValidNbSchools(this.getNbSchools()+1))
 	 * @throws 	IllegalArgumentException
-	 * 			|!canHaveAsGameObject(gameObject)
+	 * 			|!canHaveAsGameObject(gameObject) || gameObject.getWorld()!=null || this.getGameHasStarted()
 	 */
 	public void addAsGameObject(GameObject gameObject) throws IllegalArgumentException {
 		if(gameObject instanceof Mazub){
 			this.setMazub((Mazub) gameObject);
+			((Mazub) gameObject).setWorld(this);
 			return;
 		}
-		if(!canHaveAsGameObject(gameObject)|| gameObject.getWorld()!=null){
+		else if (gameObject instanceof Slime){
+			if (!this.getAllDifferentSchools().contains(((Slime) gameObject).getSchool()) && !isValidNbSchools(this.getNbSchools()+1)){
+				throw new IllegalArgumentException("Too many schools!");
+			}
+		}
+		if(!canHaveAsGameObject(gameObject) || gameObject.getWorld()!=null){
 			throw new IllegalArgumentException("Not a valid GameObject!");
+		}
+		if(this.getGameHasStarted()){
+			throw new IllegalArgumentException("The game has already started!");
 		}
 		gameObjects.add(gameObject);
 		gameObject.setWorld(this);
@@ -1146,16 +1157,11 @@ public class World {
 	 *	
 	 */
 	public boolean canHaveAsGameObject(GameObject gameObject){
-		boolean isValidNbSchools=true;
 		if(gameObject==null){
 			return false;
 		}
 		else if (!this.getGameHasStarted()){
-			if(gameObject instanceof Slime && this.getAllDifferentSchools().contains(((Slime) gameObject).getSchool())){
-				isValidNbSchools=isValidNbSchools(this.getNbSchools());
-			}
-			return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation())
-				&& isValidNbGameObjects(this.getNbGameObjects()) && isValidNbSchools;
+			return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation());
 			
 		}
 		else{
@@ -1163,11 +1169,7 @@ public class World {
 				return gameObject==null;
 			}
 			else{
-				if(gameObject instanceof Slime && this.getAllDifferentSchools().contains(((Slime) gameObject).getSchool())){
-					isValidNbSchools=isValidNbSchools(this.getNbSchools());
-				}
-				return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation())
-						&& isValidNbGameObjects(this.getNbGameObjects()) && isValidNbSchools;
+				return gameObject.canHaveAsLocation(gameObject.getHorizontalLocation(),gameObject.getVerticalLocation());
 			}
 		}
 	}
@@ -1258,16 +1260,16 @@ public class World {
 	 * Terminate the this world.
 	 * @effect	|if(!this.isTerminated)
 	 * 			|	for(gameObject in this.gameObjects)
-	 * 			|		gameObject.setWorld(null)
+	 * 			|		this.removeAsGameObject(gameObject);
 	 * @post		|new.getNbGameObjects()==0
 	 * 			|new.isTerminated()==true
 	 */
 	public void terminate() {
 		if(!this.isTerminated()){
 			for(GameObject gameObject: this.gameObjects){
-				gameObject.setWorld(null);
+				this.removeAsGameObject(gameObject);
 			}
-			this.gameObjects.clear();
+			this.setGameHasStarted(true);
 			this.isTerminated=true;
 		}
 	}
