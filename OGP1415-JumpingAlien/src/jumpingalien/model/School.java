@@ -40,17 +40,6 @@ public class School {
 	}
 	
 	/**
-	 * Set collecting the references to the slimes attached to this school
-	 * @invar	Each element in the set of slimes references a slime that is an acceptable slime for this school.
-	 * 			| for each slime in slimes:
-	 * 			|	this.canHaveAsSlime(slime)
-	 * @invar	Each slime in the set of slimes references this school as the school to which it is attached.
-	 * 			| for each slime in slimes:
-	 * 			| 	slime.getSchool()==this
-	 */
-	private Set<Slime> slimes= new HashSet<Slime>();
-	
-	/**
 	 * Check whether this school has the given slime as one of its slimes.
 	 * @param 	slime
 	 * 			The slime to be checked.
@@ -182,9 +171,8 @@ public class School {
 	 */
 	public void terminate(){
 		for(Slime slime: this.slimes){
-			slime.setSchool(null);
+			this.removeAsSlime(slime);
 		}
-		this.slimes.clear();
 		this.isTerminated=true;
 	}
 	
@@ -194,6 +182,18 @@ public class School {
 	public boolean isTerminated(){
 		return this.isTerminated;
 	}
+	
+	/**
+	 * Set collecting the references to the slimes attached to this school
+	 * @invar	Each element in the set of slimes references a slime that is an acceptable slime for this school.
+	 * 			| for each slime in slimes:
+	 * 			|	this.canHaveAsSlime(slime)
+	 * @invar	Each slime in the set of slimes references this school as the school to which it is attached.
+	 * 			| for each slime in slimes:
+	 * 			| 	slime.getSchool()==this
+	 */
+	private Set<Slime> slimes= new HashSet<Slime>();
+	
 	
 	/**
 	 * Variable storing the terminated state of this school.
