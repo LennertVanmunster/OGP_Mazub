@@ -561,8 +561,8 @@ public class GameObjectTest {
 		assertEquals(testGameObject.getWorld(), staticTestWorld);
 	}
 	
-	@Test (expected = NullPointerException.class)
-	public void testSetWorld_FalseCase() throws Exception{
+	@Test
+	public void testSetWorld_nullCase(){
 		testGameObject.setWorld(null);
 	}
 	

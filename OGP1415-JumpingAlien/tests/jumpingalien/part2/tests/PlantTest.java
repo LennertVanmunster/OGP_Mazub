@@ -29,7 +29,6 @@ public class PlantTest {
 		staticTestWorld.setTileValueAtTilePosition( 0, 0, FEATURE_SOLID);
 		staticTestWorld.setTileValueAtTilePosition( 1, 1, FEATURE_SOLID);
 		staticTestPlant = new Plant(100, 550, spriteArrayForSize(3, 3));
-		staticTestPlant.setWorld(staticTestWorld);
 		staticTestWorld.addAsGameObject(staticTestPlant);
 	}
 
@@ -43,7 +42,6 @@ public class PlantTest {
 		testWorld.setTileValueAtTilePosition( 0, 0, FEATURE_SOLID);
 		testWorld.setTileValueAtTilePosition( 1, 1, FEATURE_SOLID);
 		testPlant = new Plant(100, 550, spriteArrayForSize(3, 3));
-		testPlant.setWorld(testWorld);
 		testWorld.addAsGameObject(testPlant);
 		//Used in advance time of plant
 		testMazub = new Mazub(0, 499, spriteArrayForSize(3, 3));

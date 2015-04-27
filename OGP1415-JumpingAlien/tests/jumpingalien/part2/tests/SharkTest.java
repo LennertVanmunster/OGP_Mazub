@@ -27,7 +27,6 @@ public class SharkTest {
 		staticTestWorld = new World(500, 3, 3, 1000, 1000, 2, 2);
 		staticTestWorld.setTileValueAtTilePosition( 0, 0, FEATURE_WATER);
 		staticTestShark = new Shark(0, 499, spriteArrayForSize(3, 3));
-		staticTestShark.setWorld(staticTestWorld);
 		staticTestWorld.addAsGameObject(staticTestShark);
 	}
 
@@ -39,7 +38,6 @@ public class SharkTest {
 		testWorld = new World(500, 3, 3, 1000, 1000, 2, 2);
 		testWorld.setTileValueAtTilePosition( 0, 0, FEATURE_WATER);
 		testShark = new Shark(100, 300, spriteArrayForSize(3, 3));
-		testShark.setWorld(testWorld);
 		testWorld.addAsGameObject(testShark);		
 	}
 	
