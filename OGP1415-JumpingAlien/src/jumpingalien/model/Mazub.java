@@ -703,7 +703,7 @@ public class Mazub extends GameObject {
 	 * 			|
 	 */
 	@Override
-	public void checkWaterContact(double deltaTime){
+	protected void checkWaterContact(double deltaTime){
 		boolean [] contactTiles = (this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
 				this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)).clone();
 		if(contactTiles[2] == true){
@@ -727,7 +727,7 @@ public class Mazub extends GameObject {
 	 * 			|
 	 */
 	@Override
-	public void checkMagmaContact(double deltaTime){
+	protected void checkMagmaContact(double deltaTime){
 		boolean [] contactTiles = (this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
 				this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)).clone();
 		if(contactTiles[3] == true){

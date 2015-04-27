@@ -554,7 +554,7 @@ public class Shark extends GameObject{
 	 * @param 	deltaTime
 	 * 			A given period of time used in the calculations.
 	 */
-	public void updateVelocities(double deltaTime){
+	protected void updateVelocities(double deltaTime){
 		double newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTime;
 		double newHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAcceleration()*deltaTime;
 		try{
@@ -579,7 +579,7 @@ public class Shark extends GameObject{
 	 * @param 	oldVerticalLocation
 	 * 			The old vertical location.
 	 */
-	public void updateLocations(double deltaTime, double oldHorizontalLocation, double oldVerticalLocation){
+	protected void updateLocations(double deltaTime, double oldHorizontalLocation, double oldVerticalLocation){
 		double newHorizontalLocation = this.getHorizontalLocation() + 
 				100*(this.getHorizontalVelocity()*deltaTime + 
 				this.getDirection().getNumberForCalculations()*0.5*getHorizontalAcceleration()*Math.pow(deltaTime, 2));
@@ -677,7 +677,7 @@ public class Shark extends GameObject{
 	 * 			|	result == true
 	 * 			|else result == false
 	 */
-	public boolean checkWaterAndNoAirContact(){
+	protected boolean checkWaterAndNoAirContact(){
 		boolean [] contactTiles = (this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
 				this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)).clone();
 		if(contactTiles[2] == true && contactTiles[0] == false){
@@ -702,7 +702,7 @@ public class Shark extends GameObject{
 	 *			|		then this.setTimeSinceStartAirContact(0);
 	 *			|else this.setTimeSinceStartAirContact(0);
 	 */
-	public void checkAirContact(double deltaTime){
+	protected void checkAirContact(double deltaTime){
 		boolean [] contactTiles = (this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
 				this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)).clone();
 		if(contactTiles[0] == true){
@@ -733,7 +733,7 @@ public class Shark extends GameObject{
 	 *	
 	 */
 	@Override
-	public void checkMagmaContact(double deltaTime){
+	protected void checkMagmaContact(double deltaTime){
 		boolean [] contactTiles = (this.getWorld().areaCoincidesWithTerrain(this.getEffectiveHorizontalLocation(), 
 				this.getEffectiveVerticalLocation()+1, this.getWidth()-1, this.getHeight()-2)).clone();
 		if(contactTiles[3] == true){
@@ -791,7 +791,7 @@ public class Shark extends GameObject{
 	private final static int HIT_POINTS=100;
 
 	@Override
-	public void checkWaterContact(double deltaTime) {
+	protected void checkWaterContact(double deltaTime) {
 		//Not needed!
 	}
 }
