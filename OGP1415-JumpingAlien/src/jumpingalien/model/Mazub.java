@@ -453,6 +453,7 @@ public class Mazub extends GameObject {
 			setTimeSinceStartMove(getTimeSinceStartMove()+deltaTime);
 		}
 		while (sumDeltaTimeForPixel<deltaTime){
+			calculateNewJumpingState();
 			oldVerticalLocation = getVerticalLocation();
 			oldHorizontalLocation = getHorizontalLocation();
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
@@ -479,7 +480,7 @@ public class Mazub extends GameObject {
 	 * @param 	deltaTime
 	 * 			A given period of time used in the calculations.
 	 */
-	public void updateVelocities(double deltaTime){
+	private void updateVelocities(double deltaTime){
 		double newVerticalVelocity = getVerticalVelocity() + getVerticalAcceleration()*deltaTime;
 		double newHorizontalVelocity = getHorizontalVelocity() + getDirection().getNumberForCalculations()*getHorizontalAccelerationForUpdate()*deltaTime;
 		try{
@@ -507,7 +508,7 @@ public class Mazub extends GameObject {
 	 * @param 	oldVerticalLocation
 	 * 			The old vertical location.
 	 */
-	public void updateLocations(double deltaTime, double oldHorizontalLocation, double oldVerticalLocation){
+	private void updateLocations(double deltaTime, double oldHorizontalLocation, double oldVerticalLocation){
 		double newHorizontalLocation = this.getHorizontalLocation() + 
 				100*(this.getHorizontalVelocity()*deltaTime + 
 				this.getDirection().getNumberForCalculations()*0.5*getHorizontalAccelerationForUpdate()*Math.pow(deltaTime, 2));
