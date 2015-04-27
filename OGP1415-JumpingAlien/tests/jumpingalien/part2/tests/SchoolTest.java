@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jumpingalien.model.*;
-import jumpingalien.util.*;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
