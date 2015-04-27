@@ -170,10 +170,12 @@ public class School {
 	 * 			|this.isTerminated()==true
 	 */
 	public void terminate(){
-		for(Slime slime: this.slimes){
-			this.removeAsSlime(slime);
-		}
+		if(!this.isTerminated()){
+			for(Slime slime: this.slimes){
+				this.removeAsSlime(slime);
+			}
 		this.isTerminated=true;
+		}
 	}
 	
 	/**

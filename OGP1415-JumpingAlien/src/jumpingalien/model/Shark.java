@@ -14,8 +14,6 @@ import be.kuleuven.cs.som.annotate.*;
  * 			|isValidNbMovements(getNbMovementsSinceJump())
  * @invar	The random movement chance of all shark is a valid chance.
  * 			|isValidChance(getRandomMovementChance)
- * @invar	Each shark can have its current action duration as its action duration.
- * 			|isValidActionDuration(getCurrentActionDuration())
  * @invar	Each shark can have its current random diving multiplier as its random diving multiplier.
  * 			|isValidRandomDivingMultiplier(getRandomDivingMultiplier()) 
  * @version	1.0

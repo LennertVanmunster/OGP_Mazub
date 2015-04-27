@@ -507,7 +507,6 @@ public class Facade implements IFacadePart2 {
 	 */
 	public void addPlant(World world, Plant plant)throws ModelException{
 		try{
-			plant.setWorld(world);
 			world.addAsGameObject(plant);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Cannot add this plant to this world!");
@@ -589,7 +588,6 @@ public class Facade implements IFacadePart2 {
 	 */
 	public void addShark(World world, Shark shark)throws ModelException{
 		try{
-			shark.setWorld(world);
 			world.addAsGameObject(shark);
 		}catch (IllegalArgumentException exc){
 			throw new ModelException("This shark cannot be added to this world!");
@@ -682,7 +680,6 @@ public class Facade implements IFacadePart2 {
 	 */
 	public void addSlime(World world, Slime slime) throws ModelException{
 		try{
-			slime.setWorld(world);
 			world.addAsGameObject(slime);
 		}catch (IllegalArgumentException exc){
 			throw new ModelException("This slime cannot be added to this world!");

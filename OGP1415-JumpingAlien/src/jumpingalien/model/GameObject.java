@@ -661,7 +661,7 @@ public abstract class GameObject {
 	/**
 	 * Constant registering the gravitational acceleration.
 	 */
-	protected static final double VERTICAL_ACCELERATION = -10;
+	public static final double VERTICAL_ACCELERATION = -10;
 	
 	/**
 	 *  Return the direction of this game object.
@@ -1875,6 +1875,7 @@ public abstract class GameObject {
 			this.isTerminated=true;
 			this.getWorld().removeAsGameObject(this);
 			this.setWorld(null);
+			
 		}
 	}
 	

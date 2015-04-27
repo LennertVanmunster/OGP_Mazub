@@ -1106,10 +1106,11 @@ public class World {
 			this.setMazub((Mazub) gameObject);
 			return;
 		}
-		if(!canHaveAsGameObject(gameObject)|| gameObject.getWorld()!=this){
+		if(!canHaveAsGameObject(gameObject)|| gameObject.getWorld()!=null){
 			throw new IllegalArgumentException("Not a valid GameObject!");
 		}
 		gameObjects.add(gameObject);
+		gameObject.setWorld(this);
 	}
 	
 	/**

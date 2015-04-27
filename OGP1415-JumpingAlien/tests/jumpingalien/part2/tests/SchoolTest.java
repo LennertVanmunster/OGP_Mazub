@@ -23,9 +23,7 @@ public class SchoolTest {
 	private static Slime firstSlimeFirstSchool;
 	private static Slime secondSlimeFirstSchool;
 	private static Slime firstSlimeSecondSchool;
-	private static Slime secondSlimeSecondSchool;
 	private static School terminatedSchool;
-	private static School schoolWithNullSlime;
 	
 	@BeforeClass
 	public static void setUpBeforeClass(){
@@ -35,7 +33,6 @@ public class SchoolTest {
 		secondSlimeFirstSchool= new Slime(10,0,spriteArrayForSize(2,2),firstSchool);
 		secondSchool= new School();
 		firstSlimeSecondSchool= new Slime(20,0,spriteArrayForSize(2, 2),secondSchool);
-		secondSlimeSecondSchool= new Slime(30,0,spriteArrayForSize(2,2),secondSchool);
 		terminatedSchool=new School();
 		terminatedSchool.terminate();
 	}
@@ -165,9 +162,17 @@ public class SchoolTest {
 		assertTrue(firstTestSchool.isTerminated());
 	}
 	
+	@Test
 	public void terminate_noSlimesCase(){
 		emptySchool.terminate();
 		assertEquals(emptySchool.getNbSlimes(),0);
 		assertTrue(emptySchool.isTerminated());
 	}
+	
+	@Test
+	public void terminate_alreadyTerminatedCase(){
+		terminatedSchool.terminate();
+		assertTrue(terminatedSchool.isTerminated());
+	}
+	
 }
