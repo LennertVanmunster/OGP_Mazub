@@ -48,7 +48,7 @@ public class MazubTest {
 	@Test
 	public void testSetHorizontalLocation_LegalCase() {
 		testMazub.setHorizontalLocation(10);
-		assertEquals(testMazub.getHorizontalLocation(),10);
+		assertEquals(testMazub.getEffectiveHorizontalLocation(),10);
 		
 	}
 

@@ -216,7 +216,7 @@ public abstract class GameObject {
 	public boolean canHaveAsHorizontalLocation(double horizontalLocation){
 		if (this.getWorld()==null){
 			return true;
-		}	
+		}
 		else if (horizontalLocation<0 || horizontalLocation >= this.getWorld().getWorldWidth()+1){
 			return false;
 		}
@@ -1311,7 +1311,8 @@ public abstract class GameObject {
 	 */
 	protected void calculateNewJumpingState() {
 		this.setJumping(true);
-		if(!this.canHaveAsLocation(this.getHorizontalLocation(), this.getVerticalLocation()-1) || this.contact == true){
+		if((!this.canHaveAsLocation(this.getHorizontalLocation(), this.getVerticalLocation()-1) || this.contact == true) 
+				&& Util.fuzzyEquals(this.getVerticalVelocity(), 0)){
 			this.setJumping(false);
 		}
 	}
