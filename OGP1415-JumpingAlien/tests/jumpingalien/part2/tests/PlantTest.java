@@ -3,7 +3,6 @@ package jumpingalien.part2.tests;
 
 import static jumpingalien.tests.util.TestUtils.spriteArrayForSize;
 import static org.junit.Assert.*;
-import jumpingalien.model.Direction;
 import jumpingalien.model.Mazub;
 import jumpingalien.model.Plant;
 import jumpingalien.model.World;
@@ -123,6 +122,17 @@ public class PlantTest {
 	public void testCanHaveAsVerticalAcceleration_FalseCase(){
 		assertFalse(testPlant.canHaveAsVerticalAcceleration(0.1));
 		assertFalse(testPlant.canHaveAsVerticalAcceleration(-0.5));
+	}
+	
+	@Test
+	public void testCanHaveAsHorizontalAcceleration_TrueCase(){
+		assertTrue(testPlant.canHaveAsHorizontalAcceleration(0));
+	}
+	
+	@Test
+	public void testCanHaveAsHorizontalAcceleration_FalseCase(){
+		assertFalse(testPlant.canHaveAsHorizontalAcceleration(0.1));
+		assertFalse(testPlant.canHaveAsHorizontalAcceleration(-0.5));
 	}
 	
 	@Test

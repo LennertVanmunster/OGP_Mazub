@@ -64,7 +64,7 @@ public class Shark extends GameObject{
 	 * Check whether the given initial horizontal velocity is a possible initial horizontal velocity for any shark.
 	 * @return	True if the given initial horizontal velocity is equal to the initial horizontal velocity at spawn for sharks, denoting its
 	 * 			immutability, and the given velocity is greater than or equal to zero.
-	 * 			result == (Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity, 0) && initialHorizontalVelocity==initialHorizontalVelocityAtSpawn)
+	 * 			|result == (Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity, 0) && initialHorizontalVelocity==initialHorizontalVelocityAtSpawn)
 	 */
 	@Raw
 	@Override
