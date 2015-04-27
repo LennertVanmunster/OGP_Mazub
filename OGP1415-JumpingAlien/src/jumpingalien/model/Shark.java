@@ -53,6 +53,8 @@ public class Shark extends GameObject{
 	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocityForUpdate())
 	 *			|| Util.fuzzyEquals(horizontalVelocity, 0)
 	 */
+	@Raw
+	@Override
 	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
 		horizontalVelocity = Math.abs(horizontalVelocity);
 		return Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,getInitialHorizontalVelocityForUpdate()) 
@@ -66,6 +68,8 @@ public class Shark extends GameObject{
 	 * 			immutability, and the given velocity is greater than or equal to zero.
 	 * 			result == (Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity, 0) && initialHorizontalVelocity==initialHorizontalVelocityAtSpawn)
 	 */
+	@Raw
+	@Override
 	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity){
 		return initialHorizontalVelocity==getInitialHorizontalVelocityAtSpawn() && Util.fuzzyGreaterThanOrEqualTo(getInitialHorizontalVelocityAtSpawn(), 0);
 	}
@@ -76,6 +80,8 @@ public class Shark extends GameObject{
 	 * 			immutability, and the given velocity is greater than or equal to zero.
 	 * 			result == (maximumHorizontalVelocityAtSpawn>0 && maximumHorizontalVelocity==maximumHorizontalVelocityAtSpawn)
 	 */
+	@Raw
+	@Override
 	public boolean isPossibleMaximumHorizontalVelocity(double maximumHorizontalVelocity){
 		return maximumHorizontalVelocity==getMaximumHorizontalVelocityAtSpawn() && getMaximumHorizontalVelocityAtSpawn()>0;
 	}
@@ -87,6 +93,7 @@ public class Shark extends GameObject{
 	 * 			| 	result==this.getInitialHorizontalVelocity()
 	 */
 	@Raw
+	@Override
 	public double getInitialHorizontalVelocityForUpdate(){
 		return getInitialHorizontalVelocity();
 	}
@@ -98,6 +105,7 @@ public class Shark extends GameObject{
 	 * 			| 	result==this.getMaximumHorizontalVelocity()
 	 */
 	@Raw
+	@Override
 	public double getMaximumHorizontalVelocityForUpdate(){
 		return getMaximumHorizontalVelocity();
 	}
@@ -105,6 +113,8 @@ public class Shark extends GameObject{
 	/**
 	 * Return the maximum horizontal velocity of all sharks at spawn.
 	 */
+	@Basic
+	@Raw
 	@Immutable
 	public static double getMaximumHorizontalVelocityAtSpawn(){
 		return maximumHorizontalVelocityAtSpawn;
@@ -113,6 +123,8 @@ public class Shark extends GameObject{
 	/**
 	 * Return the initial horizontal velocity of all sharks at spawn.
 	 */
+	@Basic
+	@Raw
 	@Immutable
 	public static double getInitialHorizontalVelocityAtSpawn(){
 		return initialHorizontalVelocityAtSpawn;
@@ -142,7 +154,7 @@ public class Shark extends GameObject{
 	 * @return	
 	 * 			|if(checkWaterAndNoAirContact() && this.isJumping())
 	 */
-	@Raw
+	@Override
 	public double getVerticalAcceleration(){
 		if(this.isJumping()){
 			return VERTICAL_ACCELERATION;
@@ -161,6 +173,8 @@ public class Shark extends GameObject{
 	 * 			is equal to the gravitational constant.
 	 * 			|	Util.fuzzyLessThanOrEqualTo(Math.abs(verticalAcceleration),getMaximumFloatingVerticalAcceleration()) || Util.fuzzyEquals(verticalAcceleration,VERTICAL_ACCELERATION)
 	 */
+	@Raw
+	@Override
 	public boolean canHaveAsVerticalAcceleration(double verticalAcceleration){
 		return Util.fuzzyLessThanOrEqualTo(Math.abs(verticalAcceleration),getMaximumFloatingVerticalAcceleration()) || Util.fuzzyEquals(verticalAcceleration,VERTICAL_ACCELERATION);
 	}
@@ -172,6 +186,8 @@ public class Shark extends GameObject{
 	 * @return	The given horizontal acceleration is not equal to zero and equal to the horizontal acceleration of sharks at spawn, denoting its immutability.
 	 * 			| result == (horizontalAcceleration==0 && horizontalAcceleration==horizontalAccelerationAtSpawn)
 	 */
+	@Raw
+	@Override
 	public boolean canHaveAsHorizontalAcceleration(double horizontalAcceleration){
 		return horizontalAcceleration==horizontalAccelerationAtSpawn && horizontalAccelerationAtSpawn!=0;
 	}
@@ -179,6 +195,8 @@ public class Shark extends GameObject{
 	/**
 	 * Return the horizontal acceleration of all sharks at spawn.
 	 */
+	@Basic
+	@Raw
 	@Immutable
 	public static double getHorizontalAccelerationAtSpawn(){
 		return horizontalAccelerationAtSpawn;
@@ -187,6 +205,8 @@ public class Shark extends GameObject{
 	/**
 	 * Return the maximum floating vertical acceleration of all sharks.
 	 */
+	@Basic
+	@Raw
 	@Immutable
 	public static double getMaximumFloatingVerticalAcceleration(){
 		return maximumFloatingVerticalAcceleration;
@@ -207,6 +227,8 @@ public class Shark extends GameObject{
 	 * @return 	The given ducking state is false.
 	 * 			|result== (ducking==false)
 	 */
+	@Raw
+	@Override
 	public boolean canHaveAsDuckingState(boolean ducking){
 		return !ducking;
 	}
@@ -220,6 +242,7 @@ public class Shark extends GameObject{
 	 * @return	The given number must be equal to two.
 	 * 			|result == nbImages == 2; 
 	 */
+	@Raw
 	@Override
 	public boolean canHaveAsNbImages(int nbImages){
 		return nbImages == 2;
@@ -260,7 +283,7 @@ public class Shark extends GameObject{
 		this.setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*this.getDirection().getNumberForCalculations());
 		this.setMovingHorizontally(true);
 		this.setTimeSinceStartAction(0);
-		if(this.getNbMovementsSinceLastJump() >= 4 &&!isJumping()){
+		if(this.getNbMovementsSinceLastJump() >= 4 && !isJumping() && (r.nextDouble()>getRandomMovementChance())){
 			this.setVerticalVelocity(getInitialVerticalVelocity());
 			this.setJumping(true);
 			this.setNbMovementsSinceLastJump(0);
@@ -280,7 +303,8 @@ public class Shark extends GameObject{
 	 * 			| isValidActionDuration(duration)
 	 * @post	| new.getCurrentActionDuration()==duration
 	 */
-	private void setCurrentActionDuration(double duration) {
+	@Raw
+	public void setCurrentActionDuration(double duration) {
 		assert (isValidActionDuration(duration)):
 			"The given duration is not a valid action duration!";
 		this.currentActionDuration=duration;
@@ -289,6 +313,8 @@ public class Shark extends GameObject{
 	/**
 	 * Return the number of movements since this sharks last jump.
 	 */
+	@Basic
+	@Raw
 	public int getNbMovementsSinceLastJump(){
 		return this.nbMovementsSinceLastJump;
 	}
@@ -305,6 +331,7 @@ public class Shark extends GameObject{
 	 * 			|else
 	 * 			|	new.getNbMovementsSinceLastJump()==nbMovementsSinceLastJump
 	 */
+	@Raw
 	public void setNbMovementsSinceLastJump(int nbMovementsSinceLastJump){
 		if(!isValidNbMovements(nbMovementsSinceLastJump)){
 			this.nbMovementsSinceLastJump = 0;
@@ -321,6 +348,7 @@ public class Shark extends GameObject{
 	 * @return	The given number must be greater than or equal to zero.
 	 * 			| result== (nbMovements>=0)
 	 */
+	@Raw
 	public static boolean isValidNbMovements(int nbMovements){
 		return nbMovements>=0;
 	}
@@ -328,6 +356,9 @@ public class Shark extends GameObject{
 	/**
 	 * Return the random movements chance of all sharks.
 	 */
+	@Basic
+	@Raw
+	@Immutable
 	public static double getRandomMovementChance(){
 		return randomMovementChance;
 	}
@@ -339,6 +370,7 @@ public class Shark extends GameObject{
 	 * @return	The chance must be greater than or equal to zero and less than or equal to 1.
 	 * 			|chance>=0 && Util.fuzzyLessThanOrEqualTo(chance, 1)
 	 */
+	@Raw
 	public static boolean isValidChance(double chance){
 		return chance>=0 && Util.fuzzyLessThanOrEqualTo(chance, 1);
 	}
@@ -346,6 +378,8 @@ public class Shark extends GameObject{
 	/**
 	 * Return the current action duration of this shark.
 	 */
+	@Basic
+	@Raw
 	public double getCurrentActionDuration(){
 		return currentActionDuration;
 	}
@@ -353,6 +387,9 @@ public class Shark extends GameObject{
 	/**
 	 * Return the minimum action duration for all sharks.
 	 */
+	@Basic
+	@Raw
+	@Immutable
 	public static double getMinimumActionDuration(){
 		return minimumActionDuration;
 	}
@@ -360,6 +397,9 @@ public class Shark extends GameObject{
 	/**
 	 * Return the maximum action duration for all sharks.
 	 */
+	@Basic
+	@Raw
+	@Immutable
 	public static double getMaximumActionDuration(){
 		return maximumActionDuration;
 	}
@@ -373,6 +413,7 @@ public class Shark extends GameObject{
 	 * 			| result == (Util.fuzzyGreaterThanOrEqualTo(actionDuration, getMinimumActionDuration())
 				|			&& Util.fuzzyLessThanOrEqualTo(actionDuration, getMaximumActionDuration()))
 	 */
+	@Raw
 	public static boolean isValidActionDuration(double actionDuration){
 		return Util.fuzzyGreaterThanOrEqualTo(actionDuration, getMinimumActionDuration())
 				&& Util.fuzzyLessThanOrEqualTo(actionDuration, getMaximumActionDuration());
@@ -382,6 +423,8 @@ public class Shark extends GameObject{
 	/**
 	 * Return the current random diving multiplier of this shark.
 	 */
+	@Basic
+	@Raw
 	public double getRandomDivingMultiplier() {
 		return randomDivingMultiplier;
 	}
@@ -396,9 +439,9 @@ public class Shark extends GameObject{
 	 * 			|if(!isValidRandomDivingMultiplier(randomDivingMultiplier):
 	 *			|	new.getRandomDivingMultiplier == 0
 	 *			|else: 
-	 *			|	new.getRandomDivingMultiplier == randomDivingMultiplier
-	 *			
+	 *			|	new.getRandomDivingMultiplier == randomDivingMultiplier		
 	 */
+	@Raw
 	public void setRandomDivingMultiplier(double randomDivingMultiplier) {
 		if(!isValidRandomDivingMultiplier(randomDivingMultiplier)){
 			this.randomDivingMultiplier = 0;
@@ -414,8 +457,9 @@ public class Shark extends GameObject{
 	 * 			| The random diving multiplier to be checked.
 	 * @return	The given multiplier must be greater than or equal to -1 and less than or equal to 1.
 	 * 			|(Util.fuzzyGreaterThanOrEqualTo(randomDivingMultiplier,-1) 
-				| && Util.fuzzyLessThanOrEqualTo(randomDivingMultiplier, 1))
+	 *			| && Util.fuzzyLessThanOrEqualTo(randomDivingMultiplier, 1))
 	 */
+	@Raw
 	public static boolean isValidRandomDivingMultiplier(double randomDivingMultiplier){
 		return (randomDivingMultiplier>=-1 
 				&& randomDivingMultiplier<=1);
@@ -608,7 +652,7 @@ public class Shark extends GameObject{
 	protected void collisionReaction(int index1, int index2, int index3) {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
 		if(gameObject instanceof Slime){
-			gameObject.removeHitPoints(50);
+			((Slime) gameObject).removeHitPointsSchool(50);
 			this.removeHitPoints(50);
 		}
 		else if(gameObject instanceof Mazub){
@@ -709,6 +753,8 @@ public class Shark extends GameObject{
 	/**
 	 * Return the time since the start of the air contact of this shark.
 	 */
+	@Basic
+	@Raw
 	public double getTimeSinceStartAirContact(){
 		return this.timeSinceAirContact;
 	}
@@ -725,6 +771,7 @@ public class Shark extends GameObject{
 	 * 			|!isValidTimeSinceAction(time)
 	 * 			
 	 */
+	@Raw
 	public void setTimeSinceStartAirContact(double time)
 	throws IllegalArgumentException{
 		if(!isValidTimeSinceAction(time))

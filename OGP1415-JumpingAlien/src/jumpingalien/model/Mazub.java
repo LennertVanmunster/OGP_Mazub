@@ -551,7 +551,7 @@ public class Mazub extends GameObject {
 	 * @param 	index3
 	 * 			The index registering whether the top perimeter was
 	 * 			overlapping during the contact with the other game object.
-	 * @post	|if(gameObject instanceof Plant)
+	 * @effect	|if(gameObject instanceof Plant)
 	 * 			|	if(this.getHitPoints() != this.getMaxHitPoints() && gameObject.getHitPoints() != 0)
 	 * 			|	then gameObject.setHitPoints(0)
 	 *			|		 this.addHitPoints(50)
@@ -568,6 +568,7 @@ public class Mazub extends GameObject {
 	 *			|			this.removeHitPoints(50)
 	 *			|			this.setTimeSinceLastHitpointsLoss(0)
 	 */
+	@Override
 	protected void collisionReaction(int index1, int index2, int index3) {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
 		if(gameObject instanceof Plant){
@@ -587,7 +588,7 @@ public class Mazub extends GameObject {
 		}
 		else if(gameObject instanceof Slime && gameObject.getHitPoints() != 0){
 			if(!isUntouchable()){
-				gameObject.removeHitPoints(50);
+				((Slime) gameObject).removeHitPointsSchool(50);
 				if(index2 == 0){
 					this.removeHitPoints(50);
 					this.setTimeSinceLastHitpointsLoss(0);

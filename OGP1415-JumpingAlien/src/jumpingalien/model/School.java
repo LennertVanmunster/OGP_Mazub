@@ -2,6 +2,7 @@ package jumpingalien.model;
 
 import java.util.HashSet;
 import java.util.Set;
+import be.kuleuven.cs.som.annotate.*;
 
 /**
  * A class of schools. School are groups of slimes.
@@ -21,11 +22,14 @@ public class School {
 	 * 			|for(slime in slimes)
 	 * 			|	new.hasAsSlime(slime)==true
 	 * 			|	slime.getSchool()==this
+	 * @throws	IllegalArgumentException
+	 * 			At least one of the slimes cannot be added to this school.
+	 * 			|(!this.canHaveAsSlime(slime) || slime.getSchool()!=null)
 	 */
-	public School(Slime... slimes){
+	@Raw
+	public School(Slime... slimes) throws IllegalArgumentException{
 		for(Slime slime: slimes){
 			this.addAsSlime(slime);
-			slime.setSchool(this);
 		}
 	}
 	
@@ -53,6 +57,8 @@ public class School {
 	 * @return	True if the set of slimes of this world contains the given slime.
 	 * 			|result==this.slimes.contains(slime)
 	 */
+	@Basic
+	@Raw
 	public boolean hasAsSlime(Slime slime){
 		return this.slimes.contains(slime);
 	}
@@ -80,11 +86,12 @@ public class School {
 	/**
 	 * Check whether the given number of slimes is a valid number of slimes for all schools.
 	 * @param nbSlimes
-	 * 			The number of slimes to be checked.
-	 * @return	True.
+	 * 			The number of slimes must be greater than or equal to zero.
+	 * @return	nbSlimes>=0.
 	 */
+	@Raw
 	public boolean isValidNbSlimes(int nbSlimes){
-		return true;
+		return nbSlimes>=0;
 	}
 	
 	/**
@@ -147,6 +154,8 @@ public class School {
 	/**
 	 * Return the number of slimes attached to this school.
 	 */
+	@Basic
+	@Raw
 	public int getNbSlimes(){
 		return slimes.size();
 	}
@@ -154,6 +163,8 @@ public class School {
 	/**
 	 * Return a copy of the set of slimes of this school.
 	 */
+	@Basic
+	@Raw
 	public Set<Slime> getAllSlimes(){
 		Set<Slime> allSlimes= new HashSet<Slime>(this.slimes);
 		return allSlimes;

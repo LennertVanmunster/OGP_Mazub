@@ -34,7 +34,6 @@ public class Slime extends GameObject {
 	 * 			| super(horizontalLocation, verticalLocation, 0, 0, 0, maximumHorizontalVelocity, 0, horizontalAcceleration, false, 100, 100, images)
 	 * @effect	A binary relationship is established between this slime and the given school.
 	 * 			| school.addAsSlime(this)
-	 * 			| this.setSchool(school)
 	 */
 	@Raw
 	public Slime(int horizontalLocation, int verticalLocation, Sprite[] images, School school)
@@ -53,6 +52,8 @@ public class Slime extends GameObject {
 	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocityForUpdate())
 	 *			|| Util.fuzzyEquals(horizontalVelocity, 0)
 	 */
+	@Raw
+	@Override
 	public boolean canHaveAsHorizontalVelocity(double horizontalVelocity){
 		horizontalVelocity = Math.abs(horizontalVelocity);
 		return Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocityForUpdate()) 
@@ -61,29 +62,35 @@ public class Slime extends GameObject {
 	}
 	
 	/**
-	 * @return	The given initial horizontal velocity is equal to zero.
-	 * 			| result == (intialHorizontalVelocity==0)
+	 * Check whether the given initial horizontal velocity is a possible initial horizontal velocity for slimes.
+	 * @return	The given initial horizontal velocity is equal to the initial horizontal velocity of all slimes at spawn and is greater than or equal to zero.
+	 * 			| result == (intialHorizontalVelocity>=0 && initialHorizontalVelocity==initialHorizontalVelocityAtSpawn)
 	 */
+	@Raw
 	@Override
 	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity) {
 		return initialHorizontalVelocity==initialHorizontalVelocityAtSpawn && initialHorizontalVelocityAtSpawn>=0;
 	}
 	
+	/**
+	 * Check whether the given maximum horizontal velocity is a possible maximum horizontal velocity for slimes.
+	 * @return	The given maximum horizontal velocity is equal to the maximum horizontal velocity of all slimes at spawn and is greater than to zero.
+	 * 			| result == (maximumHorizontalVelocity>0 && maximumHorizontalVelocity==maixmumHorizontalVelocityAtSpawn)
+	 */
+	@Raw
+	@Override
 	public boolean isPossibleMaximumHorizontalVelocity(double maximumHorizontalVelocity){
 		return maximumHorizontalVelocity==maximumHorizontalVelocityAtSpawn && maximumHorizontalVelocityAtSpawn>0;
 	}
 	
 	/**
-	 * Return the initial horizontal velocity of this game object.
+	 * Return the initial horizontal velocity of this game object for used in update calculations.
 	 * 
-	 * @return	If the ducking state of this game object is true, the initial horizontal velocity of this game object is equal to the ducking velocity constant.
-	 * 			Otherwise the initial horizontal velocity of this game object is equal to its initial horizontal velocity when not ducking.
-	 * 			|if (this.isDucking())
-	 * 			|	result==DUCKING_VELOCITY
-	 * 			|else
-	 * 			| 	result==this.getInitialHorizontalVelocity()
+	 * @return	The regular initial horizontal velocity of slimes.
+	 * 			| result==this.getInitialHorizontalVelocity()
 	 */
 	@Raw
+	@Immutable
 	public double getInitialHorizontalVelocityForUpdate(){
 		return this.getInitialHorizontalVelocity();
 	}
@@ -91,30 +98,27 @@ public class Slime extends GameObject {
 	/**
 	 * Return the maximum horizontal velocity of this game object.
 	 * 
-	 * @return	If the ducking state of this game object is true, the maximum horizontal velocity of this game object is equal to the ducking velocity constant.
-	 * 			Otherwise the maximum horizontal velocity of this game object is equal to its maximum horizontal velocity when not ducking.
-	 * 			|if (this.isDucking())
-	 * 			|	result==DUCKING_VELOCITY
-	 * 			|else
+	 * @return	The regulear maximum horizontal velocity of slimes.
 	 * 			| 	result==this.getMaximumHorizontalVelocity()
 	 */
 	@Raw
+	@Immutable
 	public double getMaximumHorizontalVelocityForUpdate(){
 		return this.getMaximumHorizontalVelocity();
 	}
 	
 	/**
-	 * 
+	 * Variable registering the initial horizontal velocity of all slimes at spawn.
 	 */
 	private static final double initialHorizontalVelocityAtSpawn=0;
 	
 	/**
-	 * Constant registering the maximum horizontal velocity when not ducking of this Mazub.
+	 * Variable registering the maximum horizontal velocity of all slimes at spawn.
 	 */
 	private static final double maximumHorizontalVelocityAtSpawn = 2.5;
 
 	/**
-	 * Returns the vertical acceleration of this slime.
+	 * Returns the current vertical acceleration of this slime.
 	 * 
 	 * @return	If this slime is jumping than the vertical acceleration is equal
 	 * 			to the gravitational acceleration constant.
@@ -125,6 +129,7 @@ public class Slime extends GameObject {
 	 *			| 	result == 0
 	 */
 	@Raw
+	@Override
 	public double getVerticalAcceleration(){
 		if(this.isJumping())
 			return VERTICAL_ACCELERATION;
@@ -138,6 +143,7 @@ public class Slime extends GameObject {
 	 * @return	The given vertical acceleration is equal to zero or equal to the vertical acceleration constant.
 	 * 			|	result== verticalAcceleration==0 || Util.fuzzyEquals(verticalAcceleration, VERTICAL_ACCELERATION)
 	 */
+	@Raw
 	public boolean canHaveAsVerticalAcceleration(double verticalAcceleration){
 		return verticalAcceleration==0 || Util.fuzzyEquals(verticalAcceleration, VERTICAL_ACCELERATION);
 	}
@@ -146,16 +152,18 @@ public class Slime extends GameObject {
 	 * Check whether the given horizontal acceleration is a valid horizontal acceleration.
 	 * @param	horizontalAcceleration
 	 * 			The horizontal acceleration to be checked.
-	 * @return	The given horizontal acceleration is equal to zero or the horizontal acceleration of this game object.
-	 * 			| result == (horizontalAcceleration==0 || Util.fuzzyEquals(horizontalAcceleration,this.horizontalAcceleration))
+	 * @return	The given horizontal acceleration is not equal to zero and equal to the horizontal acceleration at spawn of all slimes.
+	 * 			| result == (horizontalAcceleration!=0 && horizontalAcceleration==horizontalAccelerationAtSpawn)
 	 */
+	@Raw
+	@Override
 	public boolean canHaveAsHorizontalAcceleration(double horizontalAcceleration){
 		return horizontalAcceleration==horizontalAccelerationAtSpawn && horizontalAcceleration!=0;
 	}
 	
 	
 	/**
-	 *  Constant registering the horizontal acceleration of all slimes.
+	 *  Variable registering the horizontal acceleration of all slimes at spawn.
 	 */
 	private static final double horizontalAccelerationAtSpawn = 0.7;
 	
@@ -164,6 +172,8 @@ public class Slime extends GameObject {
 	 * @return 	The given ducking state is false.
 	 * 			|result== (ducking==false)
 	 */
+	@Override
+	@Raw
 	public boolean canHaveAsDuckingState(boolean ducking){
 		return !ducking;
 	}
@@ -171,13 +181,15 @@ public class Slime extends GameObject {
 	/**
 	 * Start a new action for this slime.
 	 * @effect 	The current action duration of this slime is set to a random action duration between the minimum and maximum action duration,
-	 * 			the direction of this slime is set to a random direction, the slime's horizontal moving state is set to true and the time since
-	 * 			the start of the action of this slime is set to 0.
+	 * 			the direction of this slime is set to a random direction, the slime's horizontal moving state is set to true, the time since
+	 * 			the start of the action of this slime is set to 0 and the horizontal velocity of this slime is set to the initial horizontal velocity of slimes
+	 * 			in the calculated random direction.
 	 * 			| Random r = new Random()
 	 * 			| this.setCurrentActionDuration(MINIMUM_ACTION_DURATION+(MAXIMUM_ACTION_DURATION-MINIMUM_ACTION_DURATION)*r.nextDouble())
 	 * 			| this.setDirection(r.nextBoolean() ? Direction.LEFT : Direction.RIGHT)
 	 * 			| this.setMovingHorizontally(true)
 	 * 			| this.setTimeSinceStartAction(0)
+	 * 			| this.setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*new.getDirection().getNumberForCalculations())
 	 */
 	private void startNewAction(){
 		Random r = new Random();
@@ -194,29 +206,32 @@ public class Slime extends GameObject {
 	 * 			The duration to be set in seconds.
 	 * @post	| new.getCurrentActionDuration()==duration
 	 */
+	@Raw
 	private void setCurrentActionDuration(double duration) {
 		this.currentActionDuration=duration;
 	}
 	
 	/**
-	 * Return the current action duration.
+	 * Return the current action duration of this slime.
 	 */
+	@Basic
+	@Raw
 	public double getCurrentActionDuration(){
 		return currentActionDuration;
 	}
 
 	/**
-	 * Variable registering the current action duration.
+	 * Variable registering the current action duration of this slime.
 	 */
 	private double currentActionDuration=0;
 
 	/**
-	 * Constant registering the minimum action duration.
+	 * Constant registering the minimum action duration of all slimes.
 	 */
 	private static final double MINIMUM_ACTION_DURATION=2;
 	
 	/**
-	 * Constant registering the maximum action duration.
+	 * Constant registering the maximum action duration of all slimes.
 	 */
 	private static final double MAXIMUM_ACTION_DURATION=6;
 	
@@ -296,15 +311,44 @@ public class Slime extends GameObject {
 		this.calculateNewJumpingState();
 	}
 	
+	/**
+	 * Execute the right actions after a collision with another game object.
+	 * 
+	 * @param 	index1
+	 * 			The index registering the position of the other 
+	 * 			game object in list of all game objects of this world.
+	 * @param 	index2
+	 * 			The index registering whether the bottom perimeter was 
+	 * 			overlapping during the contact with the other game object.
+	 * @param 	index3
+	 * 			The index registering whether the top perimeter was
+	 * 			overlapping during the contact with the other game object.
+	 * @effect	|GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1)
+	 * 			|if(gameObject instanceof Shark)
+	 * 			|	gameObject.removeHitPoints(50)
+	 * 			|	this.removeHitPoints(50)
+	 *			|else if(gameObject instanceof Mazub)
+	 *			|	if(!((Mazub) gameObject).isUntouchable())
+	 *			|		this.removeHitPoints(50)
+	 *			|		if(index3 == 0)
+	 *			|			gameObject.removeHitPoints(50)
+	 *			|			((Mazub) gameObject).setTimeSinceLastHitpointsLoss(0)
+	 *			|else if(gameObject instanceof Slime)
+	 *			|	Slime otherSlime= (Slime) gameObject
+	 *			|	if (this.getSchool().getNbSlimes()>otherSlime.getSchool().getNbSlimes())
+	 *			|		otherSlime.joinSchool(this.getSchool())
+	 *			|	else if(this.getSchool().getNbSlimes()<otherSlime.getSchool().getNbSlimes())
+	 *			|		this.joinSchool(otherSlime.getSchool())
+	 */
 	protected void collisionReaction(int index1, int index2, int index3) {
 		GameObject gameObject = this.getWorld().getGameObjectAtIndex(index1);
 		if(gameObject instanceof Shark){
 			gameObject.removeHitPoints(50);
-			this.removeHitPoints(50);
+			this.removeHitPointsSchool(50);
 		}
 		else if(gameObject instanceof Mazub){
 			if(!((Mazub) gameObject).isUntouchable()){
-				this.removeHitPoints(50);
+				this.removeHitPointsSchool(50);
 				if(index3 == 0){
 					gameObject.removeHitPoints(50);
 					((Mazub) gameObject).setTimeSinceLastHitpointsLoss(0);
@@ -340,7 +384,7 @@ public class Slime extends GameObject {
 			double time = getTimeSinceStartWaterContact();
 			this.setTimeSinceStartWaterContact(time + deltaTime);
 			if(Util.fuzzyGreaterThanOrEqualTo(this.getTimeSinceStartWaterContact(), 0.2)){
-				this.removeHitPoints(2);
+				this.removeHitPointsSchool(2);
 				this.setTimeSinceStartWaterContact(0);
 			}
 		}
@@ -364,7 +408,7 @@ public class Slime extends GameObject {
 			double time = getTimeSinceStartMagmaContact();
 			this.setTimeSinceStartMagmaContact(time + deltaTime);
 			if(time == 0)
-				this.removeHitPoints(50);
+				this.removeHitPointsSchool(50);
 			else if(Util.fuzzyGreaterThanOrEqualTo(this.getTimeSinceStartMagmaContact(), 0.2)){
 				this.setTimeSinceStartMagmaContact(0);
 			}
@@ -381,14 +425,15 @@ public class Slime extends GameObject {
 	 * @effect	All other slimes in the school of this slime lose 1 hit point.
 	 * 			| for(slimes in this.getSchool.getAllSlimes())
 	 * 			|	if(slime!=this)
-	 * 			|		(super slime).removeHitPoints(1)
+	 * 			|		this.removeHitPoints(1)
+	 * @effect	This slime loses the given number of hit points.
+	 * 			| super.removeHitPoints(hitPoints)
 	 */
-	@Override
-	public void removeHitPoints(int hitPoints){
-		super.removeHitPoints(hitPoints);
+	public void removeHitPointsSchool(int hitPoints){
+		this.removeHitPoints(hitPoints);
 		for(Slime slime: this.getSchool().getAllSlimes()){
-			if(slime!=this){
-				super.removeHitPoints(1);
+			if (slime != this){
+				this.removeHitPoints(1);
 			}
 		}
 	}
@@ -401,18 +446,18 @@ public class Slime extends GameObject {
 	 * @effect	One hit point is added to all slimes in the school of this slime excluding this slime.
 	 * 			|for(slime in this.getSchool.getAllSlimes())
 	 * 			|	if(slime!=this)
-	 * 			|		((GameObject) slime).addHitPoints(1)
+	 * 			|		this.addHitPoints(1)
 	 * @effect	One hit point is removed from all slimes in the given school.
 	 * 			|for(slime in newSchool.getAllSlimes())
-	 * 			|	((GameObject) slime).removeHitPoints(1)
+	 * 			|	this.removeHitPoints(1)
 	 * @effect	The number of hit points to added to this slime is calculated via: the number of slimes in the given school minus the number of slimes in this school plus one.
 	 * 			If that number is positive than that number is added to the hit points of this slime.
 	 *			Otherwise the absolute value of that number is removed from the hit points of this slime. 	
 	 * 			| int hitPointsToBeAdded=newSchool.getNbSlimes()-this.getSchool().getNbSlimes()+1
 	 * 			|if (hitPointsToBeAdded>0)
-	 * 			|	super.addHitPoints(newSchool.getNbSlimes())
+	 * 			|	this.addHitPoints(newSchool.getNbSlimes())
 	 * 			|else
-	 * 			|	super.removeHitPoints(Math.abs(hitPointsToBeAdded))
+	 * 			|	this.removeHitPoints(Math.abs(hitPointsToBeAdded))
 	 * @post	This new school of this slime is equal to the given school.
 	 * 			|new.getSchool()==newSchool
 	 * @post	The new school of this slime has this slime as one of its slimes.
@@ -424,22 +469,27 @@ public class Slime extends GameObject {
 	public void joinSchool(School newSchool){
 		for(Slime slime: this.getSchool().getAllSlimes()){
 			if(slime!=this){
-				((GameObject) slime).addHitPoints(1);
+				slime.addHitPoints(1);
 			}
 		}
 		for(Slime slime: newSchool.getAllSlimes()){
-			((GameObject) slime).removeHitPoints(1);
+			slime.removeHitPoints(1);
 		}
 		int hitPointsToBeAdded=newSchool.getNbSlimes()-this.getSchool().getNbSlimes()+1;
 		if(hitPointsToBeAdded>0){
-			super.addHitPoints(hitPointsToBeAdded);
+			this.addHitPoints(hitPointsToBeAdded);
 		}
 		else{
-			super.removeHitPoints(Math.abs(hitPointsToBeAdded));
+			this.removeHitPoints(Math.abs(hitPointsToBeAdded));
 		}
 		this.getSchool().removeAsSlime(this);
 		newSchool.addAsSlime(this);
 	}
+	
+	/**
+	 * Constant registering the number of hit points of all slimes.
+	 */
+	private final static int HIT_POINTS=100;
 	
 	/**
 	 * Check whether the given number of images in the given image array is valid for all slimes.
@@ -450,6 +500,7 @@ public class Slime extends GameObject {
 	 * 			| result == (nbImages==2)
 	 * 
 	 */
+	@Raw
 	@Override
 	public boolean canHaveAsNbImages(int nbImages){
 		return nbImages==2;
@@ -458,16 +509,15 @@ public class Slime extends GameObject {
 	/**
 	 * Terminate slime.
 	 * @effect	If this slime is not already terminated, it is terminated as a game object, effectively breaking the relationship between this slime and its world.
-	 * 			This slime is also removed from its school and its school is set to null
+	 * 			This slime is also removed from its school.
 	 * 			|if (!this.isTerminated())
 	 * 			|	super.terminate()
-	 * 			| 	this.setSchool(null)
+	 * 			| 	this.getSchool.removeAsSlime(this)
 	 */
 	public void terminate() {
 		if (!this.isTerminated()){
 			super.terminate();
 			this.getSchool().removeAsSlime(this);
-			this.setSchool(null);
 		}
 	}
 	
@@ -475,21 +525,30 @@ public class Slime extends GameObject {
 	 * Set the given school as the school of this slime.
 	 * @param 	school
 	 * 			The school to be set.
-	 * @post	| if(this.canHaveAsSchool(school))
-	 * 			| 		new.getSchool()==this
+	 * @post	| new.getSchool()==this
+	 * @throws	IllegalArgumentException
+	 * 			The given school is not effective and the current school of this slime is effective and the current school of this slime
+	 * 			references this slime as one of its slimes.
+	 * 			|school==null && this.getSchool()!=null && (this.getSchool().hasAsSlime(this))
+	 * @throws	IllegalArgumentException
+	 * 			This slime can not have the given school as its school.
+	 * 			|!this.canHaveAsSchool(school)
 	 */
-	public void setSchool(School school){
+	public void setSchool(School school) throws IllegalArgumentException{
 		if (school==null && this.getSchool()!=null && (this.getSchool().hasAsSlime(this))){
 			throw new IllegalArgumentException();
 		}
-		if(this.canHaveAsSchool(school)){
-			this.school=school;
+		if(!this.canHaveAsSchool(school)){
+			throw new IllegalArgumentException();
 		}
+		this.school=school;
 	}
 	
 	/**
 	 * Return the school to which this slime belongs.
 	 */
+	@Basic
+	@Raw
 	public School getSchool(){
 		return this.school;
 	}
@@ -499,6 +558,7 @@ public class Slime extends GameObject {
 	 * @param 	school
 	 * @return	result == (school==null || school.canHaveAsGameObject(this))
 	 */
+	@Raw
 	public boolean canHaveAsSchool(School school){
 		return  (school==null || school.canHaveAsSlime(this));
 	}
@@ -509,6 +569,7 @@ public class Slime extends GameObject {
 	 * @return 	This slime can have its school as its world and its school has this slime as one of its slimes.
 	 * 			| this.canHaveAsSchool(this.getSchool()) && this.getSchool().hasAsSlime(this)
 	 */
+	@Raw
 	public boolean hasProperSchool(){
 		return this.canHaveAsSchool(this.getSchool()) && this.getSchool().hasAsSlime(this);
 	}
@@ -519,7 +580,6 @@ public class Slime extends GameObject {
 	private School school;
 
 	
-	private final static int HIT_POINTS=100;
 
 	
 }
