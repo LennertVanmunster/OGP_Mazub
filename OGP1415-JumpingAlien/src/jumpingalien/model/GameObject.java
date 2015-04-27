@@ -1425,7 +1425,7 @@ public abstract class GameObject {
 	 * @param	time
 	 * 			The given time.
 	 * @throws	IllegalArgumentException
-	 * 			|!isValidTimeSinceMove(time)
+	 * 			|!isValidTimeSinceAction(time)
 	 * 			
 	 */
 	@Raw
@@ -1443,7 +1443,7 @@ public abstract class GameObject {
 	 * @param	time
 	 * 			The given time.
 	 * @throws	IllegalArgumentException
-	 * 			|!isValidTimeSinceMove(time)
+	 * 			|!isValidTimeSinceAction(time)
 	 * 			
 	 */
 	@Raw
@@ -1466,8 +1466,13 @@ public abstract class GameObject {
 	 * @param 	timeSinceStartAction
 	 * 			The time since the start of the last action to be set.
 	 * @post	| new.timeSinceStartAction == timeSinceStartAction
+	 * @throws	|IllegalArgumentException
+	 * 			|!isValidTimeSinceAction(time)
 	 */
-	public void setTimeSinceStartAction(double timeSinceStartAction) {
+	public void setTimeSinceStartAction(double timeSinceStartAction) 
+		throws IllegalArgumentException{
+		if(!isValidTimeSinceAction(timeSinceStartAction))
+			throw new IllegalArgumentException();
 		this.timeSinceStartAction = timeSinceStartAction;
 	}
 	
@@ -1654,7 +1659,7 @@ public abstract class GameObject {
 	 */
 	@Raw
 	public boolean canHaveAsHitPoints(int hitPoints){
-		return isValidMaxHitPoints(this.getMaxHitPoints()) && hitPoints <= this.getMaxHitPoints();
+		return isValidMaxHitPoints(hitPoints) && hitPoints <= this.getMaxHitPoints();
 	}
 	
 	
@@ -1671,30 +1676,30 @@ public abstract class GameObject {
 	 * Remove the given number of hit points from the current number of hit points of this game object.
 	 * @param 	hitPoints
 	 * 			The amount of hit points to be removed.
-	 * @pre		The given number of hit points must be greater than zero.
-	 * 			| hitPoints > 0
-	 * @effect	| this.setHitPoints(this.getHitPoints() - hitPoints)
+	 * @post	The given number of hit points must be greater than or equal to zero.
+	 * 			If the given number is smaller then nothing is changed.
+	 * 			| if(hitPoints >= 0)
+	 * 			|then this.setHitPoints(this.getHitPoints() - hitPoints)
 	 */
 	public void removeHitPoints(int hitPoints){
-		assert (hitPoints>0):
-			"The given number of hit points to be removed must be positive!";
 		int oldHitPoints = getHitPoints();
-		this.setHitPoints(oldHitPoints - hitPoints);
+		if(hitPoints >= 0)
+			this.setHitPoints(oldHitPoints - hitPoints);
 	}
 	
 	/**
 	 * Add the given number of hit points to the current number of hit points of this game object.
 	 * @param 	hitPoints
 	 * 			The amount of hit points to be added.
-	 * @pre		The given number of hit points must be greater than zero.
-	 * 			| hitPoints > 0
-	 * @effect	| this.setHitPoints(this.getHitPoints() + hitPoints)
+	 * @post	The given number of hit points must be greater than or equal zero.
+	 * 			If the given number is smaller then nothing is changed.
+	 * 			| if(hitPoints >= 0)
+	 * 			|then this.setHitPoints(this.getHitPoints() + hitPoints)
 	 */
 	public void addHitPoints(int hitPoints){
-		assert (hitPoints>0):
-			"The given number of hit points to be removed must be positive!";
 		int oldHitPoints = getHitPoints();
-		setHitPoints(oldHitPoints + hitPoints);
+		if(hitPoints >= 0)
+			setHitPoints(oldHitPoints + hitPoints);
 	}
 	
 	/**
