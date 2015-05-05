@@ -512,8 +512,6 @@ public class Slime extends GameObject {
 	 * This includes an exchange of hit points between the slimes of the current school of this slime and the given school.
 	 * @param 	newSchool
 	 * 			The new school to be set for this slime.
-	 * @pre		The number of slimes in the school of this lime must be greater than the number of slimes in the given school.
-	 * 			|this.getSchool().getNbSlimes()>newSchool.getNbSlimes()
 	 * @effect	One hit point is added to all slimes in the school of this slime excluding this slime.
 	 * 			|for(slime in this.getSchool.getAllSlimes())
 	 * 			|	if(slime!=this)
@@ -538,8 +536,6 @@ public class Slime extends GameObject {
 	 * 
 	 */
 	public void joinSchool(School newSchool){
-		assert (this.getSchool().getNbSlimes()>newSchool.getNbSlimes()):
-			"The number of slimes in the school of this lime must be greater than the number of slimes in the given school.";
 		for(Slime slime: this.getSchool().getAllSlimes()){
 			if(slime!=this){
 				slime.addHitPoints(1);
