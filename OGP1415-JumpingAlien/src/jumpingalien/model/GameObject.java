@@ -1752,6 +1752,47 @@ public abstract class GameObject {
 	}
 	
 	/**
+	 * Check whether this game object can lose hitpoints when making contact 
+	 * with enemy game objects.
+	 * 
+	 * @return	True if and only if timeSinceLastHitpointsLoss is smaller than 0.6.
+	 * 			|result == this.getTimeSinceLastHitpointsLoss() < 0.6
+	 */
+	public boolean isUntouchable(){
+		return getTimeSinceLastHitpointsLoss() < 0.6;
+	}
+	
+	/**
+	 * Return the time since gameObject last lost some hitpoints.
+	 *
+	 */ 
+	@Basic
+	public double getTimeSinceLastHitpointsLoss(){
+		return this.timeSinceLastHitpointsLoss;
+	}
+	
+	/**
+	 * Set the time since game object last lost some hitpoints.
+	 * 
+	 * @param 	time
+	 * 			The given time to set.
+	 * @throws	IllegalArgumentException
+	 * 			If the given time is smaller than zero.
+	 * 			|!isValidTimeSinceAction(time)
+	 */
+	public void setTimeSinceLastHitpointsLoss(double time)
+	throws IllegalArgumentException{
+		if(!isValidTimeSinceAction(time))
+			throw new IllegalArgumentException("Not a valid time!");
+		this.timeSinceLastHitpointsLoss = time;
+	}
+	
+	/**
+	 * Variable registering the time since the game objects last hitpoints loss.
+	 */
+	private double timeSinceLastHitpointsLoss = 0.6;
+	
+	/**
 	 * Set a world for this game object.
 	 * @param 	world
 	 * 			The world for this game object.

@@ -433,6 +433,15 @@ public class Slime extends GameObject {
 				this.joinSchool(otherSlime.getSchool());
 			}
 		}
+		else if(gameObject instanceof Buzam){
+			if( !gameObject.isUntouchable()){
+				this.removeHitPointsSchool(50);
+				if(index3 == 0){
+					gameObject.removeHitPoints(50);
+					gameObject.setTimeSinceLastHitpointsLoss(0);
+				}
+			}
+		}
 	}
 	
 	

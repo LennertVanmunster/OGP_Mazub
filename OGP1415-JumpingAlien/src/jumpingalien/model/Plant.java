@@ -252,6 +252,12 @@ public class Plant extends GameObject {
 				gameObject.addHitPoints(50);
 			}
 		}
+		else if(gameObject instanceof Buzam){
+			if(gameObject.getHitPoints() != gameObject.getMaxHitPoints() && this.getHitPoints() != 0){
+				this.setHitPoints(0);
+				gameObject.addHitPoints(50);
+			}
+		}
 	}
 	
 	/**

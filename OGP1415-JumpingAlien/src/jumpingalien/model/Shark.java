@@ -662,6 +662,15 @@ public class Shark extends GameObject{
 				}
 			}
 		}
+		else if(gameObject instanceof Buzam){
+			if(!gameObject.isUntouchable()){
+				this.removeHitPoints(50);
+				if(index3 == 0){
+					gameObject.removeHitPoints(50);
+					gameObject.setTimeSinceLastHitpointsLoss(0);
+				}
+			}
+		}
 	}
 		
 	

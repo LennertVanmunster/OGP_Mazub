@@ -9,48 +9,48 @@ import java.lang.Math;
 import java.util.List;
 
 /**
- * A class of Mazubs, rectangular player-controlled objects in the game jumping alien.
- * @invar	The time since Mazub last started moving must be a valid time for each Mazub.
+ * A class of Buzams, rectangular player-controlled objects in the game jumping alien.
+ * @invar	The time since Buzam last started moving must be a valid time for each Buzam.
  * 			| isValidTimeSinceAction(getTimeSinceStartMove())
- * @invar	The time since Mazub last ended moving must be a valid time for each Mazub.
+ * @invar	The time since Buzam last ended moving must be a valid time for each Buzam.
  * 			| isValidTimeSinceAction(getTimeSinceEndMove())
  * @version 2.0
  * @authors Pieter Van Damme and Lennert Vanmunster
  *
  */
-public class Mazub extends GameObject {
+public class Buzam extends GameObject {
 	/**
-	 * Initialize a new Mazub as a game object with given horizontal and vertical location,
+	 * Initialize a new Buzam as a game object with given horizontal and vertical location,
 	 * horizontal and vertical velocity, initial and maximum horizontal velocity,
 	 * ducking state and an array of sprites. 
 	 * 
 	 * @param 	horizontalLocation
-	 * 		  	The horizontal location for this new Mazub.
+	 * 		  	The horizontal location for this new Buzam.
 	 * @param 	verticalLocation
-	 * 		  	The vertical location for this new Mazub.
+	 * 		  	The vertical location for this new Buzam.
 	 * @param 	horizontalVelocity
-	 * 		  	The horizontal velocity for this new Mazub.
+	 * 		  	The horizontal velocity for this new Buzam.
 	 * @param 	verticalVelocity
-	 * 		  	The vertical velocity for this new Mazub.
+	 * 		  	The vertical velocity for this new Buzam.
 	 * @param 	initialHorizontalVelocityNotDucking
-	 * 		  	The initial horizontal velocity for this new Mazub when not ducking.
+	 * 		  	The initial horizontal velocity for this new Buzam when not ducking.
 	 * @param 	maximumHorizontalVelocityNotDucking
-	 * 		  	The maximum horizontal velocity for this new Mazub when not ducking.
+	 * 		  	The maximum horizontal velocity for this new Buzam when not ducking.
 	 * @param 	ducking
-	 * 		  	The ducking state for this new Mazub.
+	 * 		  	The ducking state for this new Buzam.
 	 * @param 	images
-	 * 		  	Array of sprites to display Mazub for this new Mazub.
-	 * @effect	This new Mazub is initialized as a game object with the given horizontal location, vertical location, horizontal velocity, vertical velocity,
-	 * 			initial horizontal velocity when not ducking, maximum horizontal velocity when not ducking, the initial vertical velocity for all Mazubs, the horizontal acceleration
-	 * 			for all Mazubs, ducking state, the initial number of hit points for all Mazubs, the constant maximum number of hit points for all Mazubs, the given ducking state, and an image array containing its sprites.
+	 * 		  	Array of sprites to display Buzam for this new Buzam.
+	 * @effect	This new Buzam is initialized as a game object with the given horizontal location, vertical location, horizontal velocity, vertical velocity,
+	 * 			initial horizontal velocity when not ducking, maximum horizontal velocity when not ducking, the initial vertical velocity for all Buzams, the horizontal acceleration
+	 * 			for all Buzams, ducking state, the initial number of hit points for all Buzams, the constant maximum number of hit points for all Buzams, the given ducking state, and an image array containing its sprites.
 	 * 			| super(horizontalLocation, verticalLocation, horizontalVelocity, verticalVelocity, initialHorizontalVelocityNotDucking, maximumHorizontalVelocityNotDucking, INITIAL_VERTICAL_VELOCITY, horizontalAcceleration, ducking, hitPoints, MAX_HIT_POINTS, images)
-	 * @effect	If the given ducking state of the new Mazub is true the Mazub
+	 * @effect	If the given ducking state of the new Buzam is true the Buzam
 	 * 			starts ducking.
 	 * 			|if(isDucking())
 	 *			|	startDuck()
 	 */
 	@Raw
-	public Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
+	public Buzam(int horizontalLocation, int verticalLocation, double horizontalVelocity,
 				double verticalVelocity, double initialHorizontalVelocityNotDucking,
 				double maximumHorizontalVelocityNotDucking, boolean ducking, Sprite... images)
 		throws IllegalArgumentException, IllegalLocationException {
@@ -61,31 +61,31 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Initialize this new Mazub to a Mazub with a horizontal and vertical velocity of 0m/s, 
+	 * Initialize this new Buzam to a Buzam with a horizontal and vertical velocity of 0m/s, 
 	 * an initial horizontal velocity of 1m/s, a maximum horizontal velocity of 3m/s and a false ducking state
 	 * with the given horizontal location, vertical location and array of sprites.
 	 * 
 	 * @param 	horizontalLocation
-	 * 			The horizontal location for this new Mazub.
+	 * 			The horizontal location for this new Buzam.
 	 * @param 	verticalLocation
-	 * 			The vertical location for this new Mazub.
+	 * 			The vertical location for this new Buzam.
 	 * @param	images
-	 * 			An array of sprites for this new Mazub.
-	 * @effect	This new Mazub is initialized with the given horizontal location as its horizontal location,
+	 * 			An array of sprites for this new Buzam.
+	 * @effect	This new Buzam is initialized with the given horizontal location as its horizontal location,
 	 * 			the given vertical location as its vertical location, the given array of sprites as its sprites.
-	 * 			This new Mazub's initial horizontal velocity is set to 0, its maximum horizontal velocity is set to 3
+	 * 			This new Buzam's initial horizontal velocity is set to 0, its maximum horizontal velocity is set to 3
 	 * 			and its ducking state is set to false.
 	 * 			|this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, images)
 	 */
 	@Raw
-	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
+	public Buzam(int horizontalLocation, int verticalLocation, Sprite... images){
 		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, images);
 	}
 	
 	/**
-	 * Check whether this Mazub can have the given horizontal velocity as its horizontal velocity.
-	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the current initial horizontal velocity of this Mazub
-	 * 			and less than or equal to the current maximum horizontal velocity of this Mazub.
+	 * Check whether this Buzam can have the given horizontal velocity as its horizontal velocity.
+	 * @return	True if the absolute value of the given horizontal velocity is equal to zero or greater than or equal to the current initial horizontal velocity of this Buzam
+	 * 			and less than or equal to the current maximum horizontal velocity of this Buzam.
 	 * 			| result== Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity,this.getInitialHorizontalVelocityForUpdate()) 
 	 *			&& Util.fuzzyLessThanOrEqualTo(horizontalVelocity, this.getMaximumHorizontalVelocityForUpdate())
 	 *			|| Util.fuzzyEquals(horizontalVelocity, 0)
@@ -99,11 +99,11 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Check whether the given initial horizontal velocity is a possible initial horizontal velocity for any Mazub.
+	 * Check whether the given initial horizontal velocity is a possible initial horizontal velocity for any Buzam.
 	 * 
 	 * @param 	initialHorizontalVelocity
 	 * 			The initial horizontal velocity to check.
-	 * @return	True if the given initial horizontal velocity is greater than or equal to the ducking velocity for all Mazubs.
+	 * @return	True if the given initial horizontal velocity is greater than or equal to the ducking velocity for all Buzams.
 	 * 			result == Util.fuzzyGreaterThanOrEqualTo(initialHorizontalVelocity, getDuckingVelocity())
 	 */
 	public boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity){
@@ -115,17 +115,17 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Return the ducking velocity for all Mazubs.
+	 * Return the ducking velocity for all Buzams.
 	 */
 	public static double getDuckingVelocity(){
 		return duckingVelocity;
 	}
 	
 	/**
-	 * Return the current initial horizontal velocity of this Mazub to be used in updates of this Mazub.
+	 * Return the current initial horizontal velocity of this Buzam to be used in updates of this Buzam.
 	 * 
-	 * @return	If the ducking state of this Mazub is true, this method returns the ducking velocity of all Mazubs.
-	 * 			Otherwise it returns this Mazub's regular initial horizontal velocity.
+	 * @return	If the ducking state of this Buzam is true, this method returns the ducking velocity of all Buzams.
+	 * 			Otherwise it returns this Buzam's regular initial horizontal velocity.
 	 * 			|if (this.isDucking())
 	 * 			|	result==getDuckingVelocity()
 	 * 			|else
@@ -140,10 +140,10 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Return the current maximum horizontal velocity of this Mazub to be used in updates of this Mazub.
+	 * Return the current maximum horizontal velocity of this Buzam to be used in updates of this Buzam.
 	 * 
-	 * @return	If the ducking state of this Mazub is true, this method returns the ducking velocity of all Mazubs.
-	 * 			Otherwise it returns this Mazub's regular maximum horizontal velocity.
+	 * @return	If the ducking state of this Buzam is true, this method returns the ducking velocity of all Buzams.
+	 * 			Otherwise it returns this Buzam's regular maximum horizontal velocity.
 	 * 			|if (this.isDucking())
 	 * 			|	result==getDuckingVelocity()
 	 * 			|else
@@ -158,21 +158,21 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 *  Variable registering the initial vertical velocity of all Mazubs.
+	 *  Variable registering the initial vertical velocity of all Buzams.
 	 */
 	private static final double initialVerticalVelocity = 8;
 	
 	/**
-	 * Variable registering the ducking velocity of all Mazubs.
+	 * Variable registering the ducking velocity of all Buzams.
 	 */
 	private final static double duckingVelocity=1;
 	
 	
 	
 	/**
-	 * Returns the vertical acceleration of this Mazub.
+	 * Returns the vertical acceleration of this Buzam.
 	 * 
-	 * @return	If this Mazub is jumping than the vertical acceleration is equal
+	 * @return	If this Buzam is jumping than the vertical acceleration is equal
 	 * 			to the gravitational acceleration constant.
 	 * 			Otherwise the vertical acceleration is equal to zero.
 	 * 			|if(this.isJumping())
@@ -189,7 +189,7 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Check whether the given horizontal acceleration is a valid horizontal acceleration for any Mazub.
+	 * Check whether the given horizontal acceleration is a valid horizontal acceleration for any Buzam.
 	 * @param	horizontalAcceleration
 	 * 			The horizontal acceleration to be checked.
 	 * @return	The given horizontal acceleration is not equal to zero.
@@ -200,7 +200,7 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Check whether this Mazub can have the given vertical acceleration as its vertical acceleration.
+	 * Check whether this Buzam can have the given vertical acceleration as its vertical acceleration.
 	 * @return	The given vertical acceleration is equal to zero or equal to the vertical acceleration constant.
 	 * 			|	result== verticalAcceleration==0 || Util.fuzzyEquals(verticalAcceleration, VERTICAL_ACCELERATION)
 	 */
@@ -209,30 +209,30 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * A variable registering the horizontal acceleration of all Mazubs at the start of the game.
-	 * This variable is solely used to initialize the regular horizontal acceleration of each Mazub.
+	 * A variable registering the horizontal acceleration of all Buzams at the start of the game.
+	 * This variable is solely used to initialize the regular horizontal acceleration of each Buzam.
 	 */
 	private static final double horizontalAccelerationAtStartGame=0.9;
 	
 	
 	/**
-	 * Start the horizontal movement of this Mazub in the given direction.
+	 * Start the horizontal movement of this Buzam in the given direction.
 	 * 
 	 * @param 	direction
-	 * 			The desired direction in which this Mazub will move.
+	 * 			The desired direction in which this Buzam will move.
 	 * @pre		The given direction must be a valid direction.
 	 * 			|isValidDirection(direction)
-	 * @post	If this Mazub's horizontal moving state is false.
+	 * @post	If this Buzam's horizontal moving state is false.
 	 * 			|if(!this.isMovingHorizontally()):
 	 * 				The new horizontal moving state is true.
 	 * 			|	new.isMovingHorizontally()==true
-	 * 				The new horizontal velocity of this Mazub is equal to the given direction times its current initial horizontal velocity.
+	 * 				The new horizontal velocity of this Buzam is equal to the given direction times its current initial horizontal velocity.
 	 * 			|	new.getHorizontalVelocity() == direction*this.getInitialHorizontalVelocityForUpdate()
-	 *				The new time since this Mazub has last ended moving is 0.
+	 *				The new time since this Buzam has last ended moving is 0.
 	 * 			|	new.getTimeSinceEndMove()==0
-	 * 				The new time since this Mazub has started moving is 0.
+	 * 				The new time since this Buzam has started moving is 0.
 	 * 			| 	new.getTimeSinceStartMove()==0
-	 * 		 		The new direction of this mazub is equal to the given direction.
+	 * 		 		The new direction of this Buzam is equal to the given direction.
 	 * 			| 	this.getDirection()==direction
 	 * @note	The precondition is asserted in setDirection()
 	 */
@@ -250,14 +250,14 @@ public class Mazub extends GameObject {
 	
 	
 	/**
-	 * End the horizontal movement of this Mazub.
-	 * @post	The new horizontal moving state of this Mazub is false.
+	 * End the horizontal movement of this Buzam.
+	 * @post	The new horizontal moving state of this Buzam is false.
 	 * 			| new.getMovingHorizontally()
-	 * @post	The new horizontal velocity of this Mazub is equal to 0.
+	 * @post	The new horizontal velocity of this Buzam is equal to 0.
 	 * 			| new.getHorizontalVelocity()= 0
-	 * @post	The new time since this Mazub has last ended moving is 0.
+	 * @post	The new time since this Buzam has last ended moving is 0.
 	 * 			| new.getTimeSinceEndMove()==0
-	 * @post	The new time since this Mazub has started moving is 0.
+	 * @post	The new time since this Buzam has started moving is 0.
 	 * 			| new.getTimeSinceStartMove()==0
 	 */
 	@Raw
@@ -269,9 +269,9 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Make this Mazub jump if this Mazub isn't jumping already.
+	 * Make this Buzam jump if this Buzam isn't jumping already.
 	 * 
-	 * @effect	If this Mazub isn't jumping, the vertical velocity of this Mazub is set to the initial vertical velocity and its jumping state is set to true.
+	 * @effect	If this Buzam isn't jumping, the vertical velocity of this Buzam is set to the initial vertical velocity and its jumping state is set to true.
 	 * 			| if (!isJumping())
 	 * 			| 	this.setVerticalVelocity(getInitialverticalVelocity())
 	 * 			|	this.setJumping(true)
@@ -289,9 +289,9 @@ public class Mazub extends GameObject {
 	
 	
 	/**
-	 * End the jump of this Mazub if this Mazub is traveling upwards.
+	 * End the jump of this Buzam if this Buzam is traveling upwards.
 	 * 
-	 * @effect	If this Mazub is traveling upwards, then this mazub's vertical velocity is set to zero.
+	 * @effect	If this Buzam is traveling upwards, then this Buzam's vertical velocity is set to zero.
 	 * 			| if(this.getVerticalVelocity()>0)
 	 * 			|	this.setVerticalVelocity(0)
 	 * @note	The method setVerticalVelocity will never throw an exception in 
@@ -306,7 +306,7 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Check whether this Mazub can have the given ducking state as its ducking state.
+	 * Check whether this Buzam can have the given ducking state as its ducking state.
 	 * @return 	True.
 	 * 			|result==true
 	 */
@@ -316,9 +316,9 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Make this Mazub duck.
+	 * Make this Buzam duck.
 	 * 
-	 * @effect	The ducking state of this Mazub is set to true and canEndDuck is set to false.
+	 * @effect	The ducking state of this Buzam is set to true and canEndDuck is set to false.
 	 * 			| this.setDucking(true)
 	 * 			| this.setCanEndDuck(true)
 	 */
@@ -328,12 +328,12 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * End this Mazub's duck.
+	 * End this Buzam's duck.
 	 * 
-	 * @effect	The ducking state of this Mazub is set to false.
+	 * @effect	The ducking state of this Buzam is set to false.
 	 * 			| this.setDucking(false)
 	 * @throws	IllegalStateException
-	 * 			Mazub is currently not able to stand up.
+	 * 			Buzam is currently not able to stand up.
 	 * 			| !this.canStandUp()
 	 */
 	public void endDuck(){
@@ -346,7 +346,7 @@ public class Mazub extends GameObject {
 	
 	
 	/**
-	 * Return the time since this Mazub has last ended moving.
+	 * Return the time since this Buzam has last ended moving.
 	 */
 	@Basic
 	@Raw
@@ -357,14 +357,14 @@ public class Mazub extends GameObject {
 	
 	
 	/**
-	 * Set the time since this Mazub has last ended moving.
+	 * Set the time since this Buzam has last ended moving.
 	 * 
 	 * @param 	timeSinceEndMove
-	 * 			The time since this Mazub has last ended moving to be set.
-	 * @post	The new time since this Mazub last ended moving is equal to the given time since Mazub last ended moving.
+	 * 			The time since this Buzam has last ended moving to be set.
+	 * @post	The new time since this Buzam last ended moving is equal to the given time since Buzam last ended moving.
 	 * 			|new.getTimeSinceEndMove()==timeSinceEndMove
 	 * @throws	IllegalArgumentException
-	 * 			The given time since Mazub last ended moving is not a valid action time.
+	 * 			The given time since Buzam last ended moving is not a valid action time.
 	 * 			|!isValidTimeSinceAction(timeSinceEndMove)
 	 * @note	We consider this method a part of advanceTime() and implement it defensively.
 	 */
@@ -376,7 +376,7 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Return the time since this Mazub has last started moving.
+	 * Return the time since this Buzam has last started moving.
 	 */
 	@Basic
 	@Raw
@@ -385,10 +385,10 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Set the time since this Mazub has last started moving.
+	 * Set the time since this Buzam has last started moving.
 	 * @param 	timeSinceStartMove
-	 * 			The time since this Mazub has last started moving to be set.
-	 * @post	The new time since this Mazub last started moving is equal to the given time since Mazub last started moving.
+	 * 			The time since this Buzam has last started moving to be set.
+	 * @post	The new time since this Buzam last started moving is equal to the given time since Buzam last started moving.
 	 * 			|new.getTimeSinceStartMove()==timeSinceStartMove
 	 * @throws	IllegalArgumentException
 	 * 			The given time since game object last started moving is not a valid action.
@@ -414,26 +414,8 @@ public class Mazub extends GameObject {
 	
 	
 	/**
-	 * Update the location and velocity of this Mazub.
-	 * @param 	deltaTime
-	 * 			The period of time that is used to update this Mazub.
-	 * @effect	The horizontal and vertical location are updated
-	 * 			and the horizontal and vertical velocity are updated. 
-	 * 			|updateVelocities(deltaTimeForPixel)
-	 *			|updateLocations(deltaTimeForPixel, oldHorizontalLocation, oldVerticalLocation)
-	 *			The jumping state is updated.
-	 *			|updateJumping()
-	 *			The collison with other objects is checked.
-	 *			|collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation)
-	 * @effect	|Contact with magma and water is checked.
-	 *			|checkWaterContact(deltaTime);
-	 *			|checkMagmaContact(deltaTime);
-	 * @post	|if(!isMovingHorizontally())
-	 * 			| then new.getTimeSinceEndMove == getTimeSinceEndMove()+deltaTime
-	 * 			|else new.getTimeSinceStartMove == getTimeSinceEndMove()+deltaTime		
-	 * @throws	IllegalArgumentException 
-	 * 			The given time period is not valid a valid time period.
-	 * 			|!isValidTimePeriod(deltaTime)
+	 * Update the location and velocity of this Buzam. Does nothing because Buzam can
+	 * only be controlled by a program.
 	 */
 	@Raw
 	@Override
@@ -475,7 +457,7 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Update the velocities of this Mazub.
+	 * Update the velocities of this Buzam.
 	 * 
 	 * @param 	deltaTime
 	 * 			A given period of time used in the calculations.
@@ -499,7 +481,7 @@ public class Mazub extends GameObject {
 	}
 
 	/**
-	 * Update the locations of this mazub.
+	 * Update the locations of this Buzam.
 	 * 
 	 * @param 	deltaTime
 	 * 			A given period of time used in the calculations.
@@ -596,9 +578,9 @@ public class Mazub extends GameObject {
 				}
 			}
 		}
-		else if(gameObject instanceof Buzam && gameObject.getHitPoints() != 0){
+		else if(gameObject instanceof Mazub && gameObject.getHitPoints() != 0){
 			if(!isUntouchable() && !gameObject.isUntouchable()){
-				((Slime) gameObject).removeHitPointsSchool(50);
+				((Mazub) gameObject).removeHitPoints(50);
 				if(index2 == 0){
 					this.removeHitPoints(50);
 					this.setTimeSinceLastHitpointsLoss(0);
@@ -608,18 +590,18 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Check whether the left, right, top or bottom of this mazub overlaps with another game object.
+	 * Check whether the left, right, top or bottom of this Buzam overlaps with another game object.
 	 * 
 	 * @return	The method iterates over all the game objects that can overlap with 
-	 * 			this mazub. That are the game objects that overlap with one of the tile with
-	 * 			which this mazub overlaps. If another game object is found that overlaps 
+	 * 			this Buzam. That are the game objects that overlap with one of the tile with
+	 * 			which this Buzam overlaps. If another game object is found that overlaps 
 	 * 			with one of the given sides then an array is returned with at the first position
 	 * 			number one defining that there is overlap, at the second position the index 
 	 * 			of the game object in the world, at the third position a number registering whether 
 	 * 			the bottom perimeter was overlapping during the contact with the other game object
 	 * 			and an index registering whether the top perimeter was
 	 * 			overlapping during the contact with the other game object.
-	 * 			During the iteration is checked whether Mazub currently does not have his maximum number
+	 * 			During the iteration is checked whether Buzam currently does not have his maximum number
 	 * 			of hitpoints and if the other game object is not a plant.
 	 * 			|overlap = {0,0,0,0}
 	 * 			|for each game object in gameGameObjectAtTile of this game object
@@ -661,13 +643,14 @@ public class Mazub extends GameObject {
 		return overlap;
 		}
 	
+	
 	/**
 	 * Check whether the game object makes contact with water and take the corresponding actions.
 	 * 
 	 * @param 	deltaTime
 	 * 			The given time period.
 	 * @post	Every 0.2 seconds while being contacted with water, two hitpoints are removed
-	 * 			from Mazub. The first 0.2 seconds no hitpoints are removed.
+	 * 			from Buzam. The first 0.2 seconds no hitpoints are removed.
 	 * 			|
 	 */
 	@Override
@@ -691,7 +674,7 @@ public class Mazub extends GameObject {
 	 * @param 	deltaTime
 	 * 			The given time period.
 	 * @post	Every 0.2 seconds while being contacted with magma, fifty hitpoints are removed
-	 * 			from Mazub. The first hitpoints are immediately removed at first contact.
+	 * 			from Buzam. The first hitpoints are immediately removed at first contact.
 	 * 			|
 	 */
 	@Override
@@ -713,7 +696,7 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Return the current Sprite of this Mazub.
+	 * Return the current Sprite of this Buzam.
 	 */
 	@Override
 	public Sprite getCurrentSprite(){
@@ -750,7 +733,7 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Check whether the given number of images in the given image array is valid for all Mazubs.
+	 * Check whether the given number of images in the given image array is valid for all Buzams.
 	 * 
 	 * @param 	nbImages
 	 * 			The number of images to be checked.
@@ -764,13 +747,13 @@ public class Mazub extends GameObject {
 	}
 	
 	/**
-	 * Constant registering the maximum number of hit points for any Mazub.
+	 * Constant registering the maximum number of hit points for any Buzam.
 	 */
 	private final static int MAX_HIT_POINTS=500;
 	
 	/**
-	 * Variable registering the initial number of hit points for any Mazub.
+	 * Variable registering the initial number of hit points for any Buzam.
 	 */
-	private final static int initialHitPoints=100;
+	private final static int initialHitPoints=500;
 
 }
