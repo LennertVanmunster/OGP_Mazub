@@ -751,7 +751,13 @@ public class Facade implements IFacadePart3 {
 	 *            The sprites to be used by Buzam (following the same structure
 	 *            as the table for Mazub in the assignment).
 	 */
-	public Buzam createBuzam(int pixelLeftX, int pixelBottomY, Sprite[] sprites);
+	public Buzam createBuzam(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws ModelException{
+		try{
+			return new Buzam(pixelLeftX, pixelBottomY, sprites);
+		} catch (IllegalArgumentException exc){
+			throw new ModelException("Cannot create a Buzam with the given arguments!");
+		}
+	}
 
 	/**
 	 * Create a new instance of Buzam, at the specified location, and with the
@@ -768,8 +774,15 @@ public class Facade implements IFacadePart3 {
 	 *            The program to execute, or null of Buzam should not execute a
 	 *            program.
 	 */
+	//TODO
 	public Buzam createBuzamWithProgram(int pixelLeftX, int pixelBottomY,
-			Sprite[] sprites, Program program);
+			Sprite[] sprites, Program program){
+		try{
+			return new Buzam(pixelLeftX, pixelBottomY, sprites);
+		} catch (IllegalArgumentException exc){
+			throw new ModelException("Cannot create a Buzam with the given arguments!");
+		}
+	}
 
 	/**
 	 * /**
@@ -789,8 +802,16 @@ public class Facade implements IFacadePart3 {
 	 * @return A new plant, located at the provided location. The returned plant
 	 *         should not belong to a world.
 	 */
+	//TODO
 	public Plant createPlantWithProgram(int x, int y, Sprite[] sprites,
-			Program program);
+			Program program) throws ModelException{
+		try{
+			return new Plant(x,y,sprites);
+		} catch (IllegalArgumentException exc){
+			throw new ModelException("Cannot create a new plant with the given arguments!");
+		}
+	}
+	
 
 	/**
 	 * Creates a new shark, located at the provided pixel location (x, y).
@@ -809,8 +830,15 @@ public class Facade implements IFacadePart3 {
 	 * @return A new shark, located at the provided location. The returned shark
 	 *         should not belong to a world.
 	 */
+	//TODO
 	public Shark createSharkWithProgram(int x, int y, Sprite[] sprites,
-			Program program);
+			Program program)throws ModelException{
+		try{
+			return new Shark(x,y,sprites);
+		} catch (IllegalArgumentException exc){
+			throw new ModelException("Cannot create a new Shark with the given arguments!");
+		}
+	}
 
 	/**
 	 * Creates a new slime, located at the provided pixel location (x, y).
@@ -831,8 +859,15 @@ public class Facade implements IFacadePart3 {
 	 * @return A new slime, located at the provided location and part of the
 	 *         given school. The returned slime should not belong to a world.
 	 */
+	//TODO
 	public Slime createSlimeWithProgram(int x, int y, Sprite[] sprites,
-			School school, Program program);
+			School school, Program program)throws ModelException{
+		try{
+			return new Slime(x,y,sprites,school);
+		} catch (IllegalArgumentException exc){
+			throw new ModelException("Invalid parameters for this new slime!");
+		}
+	}
 
 	/**
 	 * Parse the given text into the program.
@@ -845,7 +880,10 @@ public class Facade implements IFacadePart3 {
 	 *         ParseOutcome.Success if parsing was successful, or
 	 *         ParseOutcome.Failure if parsing was not successful.
 	 */
-	ParseOutcome<?> parse(String text);
+	//TODO
+	ParseOutcome<?> parse(String text){
+
+	}
 
 	/**
 	 * Returns whether the given program is well-formed according to the rules
@@ -855,7 +893,10 @@ public class Facade implements IFacadePart3 {
 	 *            The program to check.
 	 * @return true if the program is well-formed; false otherwise.
 	 */
-	boolean isWellFormed(Program program);
+	//TODO
+	boolean isWellFormed(Program program){
+		return true;
+	}
 
 	/**
 	 * Add the given Buzam to the given world.
@@ -865,7 +906,13 @@ public class Facade implements IFacadePart3 {
 	 * @param plant
 	 *            The Buzam object that needs to be added to the world.
 	 */
-	public void addBuzam(World world, Buzam buzam);
+	public void addBuzam(World world, Buzam buzam)throws ModelException{
+		try{
+			world.addAsGameObject(buzam);
+		}catch (IllegalArgumentException exc){
+			throw new ModelException("This buzam cannot be added to this world!");
+		}
+	}
 
 	/**
 	 * Returns the current location of the given Buzam object.
@@ -875,7 +922,9 @@ public class Facade implements IFacadePart3 {
 	 * @return An array, consisting of 2 integers {x, y}, that represents the
 	 *         coordinates of the given alien's bottom left pixel in the world.
 	 */
-	public int[] getLocation(Buzam alien);
+	public int[] getLocation(Buzam alien){
+		return new int [] {alien.getEffectiveHorizontalLocation(),alien.getEffectiveVerticalLocation()};
+	}
 
 	/**
 	 * Return the current velocity (in m/s) of the given alien.
@@ -887,7 +936,9 @@ public class Facade implements IFacadePart3 {
 	 *         horizontal and vertical components of the given alien's current
 	 *         velocity, in units of m/s.
 	 */
-	public double[] getVelocity(Buzam alien);
+	public double[] getVelocity(Buzam alien){
+		return new double [] {alien.getHorizontalVelocity(),alien.getVerticalVelocity()};
+	}
 
 	/**
 	 * Return the current acceleration (in m/s^2) of the given alien.
@@ -899,7 +950,9 @@ public class Facade implements IFacadePart3 {
 	 *         horizontal and vertical components of the given alien's current
 	 *         acceleration, in units of m/s^2.
 	 */
-	public double[] getAcceleration(Buzam alien);
+	public double[] getAcceleration(Buzam alien){
+		return new double [] {alien.getHorizontalAccelerationForUpdate(),alien.getVerticalAcceleration()};
+	}
 
 	/**
 	 * Return the current size of the given alien.
@@ -910,7 +963,9 @@ public class Facade implements IFacadePart3 {
 	 * @return An array, consisting of 2 integers {w, h}, that represents the
 	 *         current width and height of the given alien, in number of pixels.
 	 */
-	public int[] getSize(Buzam alien);
+	public int[] getSize(Buzam alien){
+		return new int[]{alien.getWidth(),alien.getHeight()};
+	}
 
 	/**
 	 * Return the current sprite image for the given alien.
@@ -922,10 +977,14 @@ public class Facade implements IFacadePart3 {
 	 *         twin of Mazub, follows the same rules as Mazub with respect to
 	 *         its sprites.
 	 */
-	public Sprite getCurrentSprite(Buzam alien);
+	public Sprite getCurrentSprite(Buzam alien){
+		return alien.getCurrentSprite();
+	}
 
 	/**
 	 * Returns the current number of hitpoints of the given alien.
 	 */
-	public int getNbHitPoints(Buzam alien);
+	public int getNbHitPoints(Buzam alien){
+		return alien.getHitPoints();
+	}
 }
