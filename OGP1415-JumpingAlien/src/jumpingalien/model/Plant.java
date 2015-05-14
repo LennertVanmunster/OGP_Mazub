@@ -33,7 +33,7 @@ public class Plant extends GameObject {
 	@Raw
 	public Plant(int horizontalLocation, int verticalLocation, Program program, Sprite... images)
 	throws IllegalArgumentException{
-		super(horizontalLocation, verticalLocation, velocityConstant, 0, velocityConstant, velocityConstant, 0, 0, false, HIT_POINTS, HIT_POINTS,program, images);
+		super(horizontalLocation, verticalLocation, velocityConstant, 0, velocityConstant, velocityConstant, 0, 0, false, HIT_POINTS, HIT_POINTS, program, images);
 	}
 	
 	/**
@@ -205,10 +205,15 @@ public class Plant extends GameObject {
 		throws IllegalArgumentException {
 		if(!isValidDeltaTime(deltaTime))
 			throw new IllegalArgumentException();
-		if(Util.fuzzyLessThanOrEqualTo(getTimeSinceStartAction(), 0.5))
-			this.setTimeSinceStartAction(this.getTimeSinceStartAction() + deltaTime);
+		if(this.getProgram()!=null){
+			this.getProgram().execute(deltaTime);
+		}
 		else{
-			this.startNewAction();
+			if(Util.fuzzyLessThanOrEqualTo(getTimeSinceStartAction(), 0.5))
+				this.setTimeSinceStartAction(this.getTimeSinceStartAction() + deltaTime);
+			else{
+				this.startNewAction();
+			}
 		}
 		double deltaTimeForPixel=0;
 		double sumDeltaTimeForPixel=0;

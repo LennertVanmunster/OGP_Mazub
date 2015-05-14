@@ -528,8 +528,16 @@ public class Shark extends GameObject{
 		double sumDeltaTimeForPixel=0;
 		double oldHorizontalLocation=this.getHorizontalLocation();
 		double oldVerticalLocation=this.getVerticalLocation();
-		if(this.getTimeSinceStartAction()>=this.getCurrentActionDuration()){
-			this.startNewAction();
+		if(this.getProgram()!=null){
+			this.getProgram().execute(deltaTime);
+		}
+		else{
+			if(this.getTimeSinceStartAction()<=this.getCurrentActionDuration()){
+				this.setTimeSinceStartAction(this.getTimeSinceStartAction()+deltaTime);
+			}
+			else{
+				this.startNewAction();
+			}
 		}
 		while (sumDeltaTimeForPixel<deltaTime){
 			oldHorizontalLocation = this.getHorizontalLocation();
@@ -542,7 +550,6 @@ public class Shark extends GameObject{
 			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
 			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
 		}
-		this.setTimeSinceStartAction(this.getTimeSinceStartAction()+deltaTime);
 		checkAirContact(deltaTime);
 		checkMagmaContact(deltaTime);
 	}

@@ -179,6 +179,7 @@ public abstract class GameObject {
 			}
 			this.maxHitPoints=maxHitPoints;
 			this.setHitPoints(hitPoints);
+			this.setProgram(program);
 			this.setImages(images);
 	}
 	
@@ -1792,6 +1793,18 @@ public abstract class GameObject {
 	 * Variable registering the time since the game objects last hitpoints loss.
 	 */
 	private double timeSinceLastHitpointsLoss = 0.6;
+	
+	protected Program program;
+	
+	public void setProgram(Program program){
+		if (program.isWellFormed()){
+			this.program=program;
+		}
+	}
+	
+	public Program getProgram(){
+		return this.program;
+	}
 	
 	/**
 	 * Set a world for this game object.

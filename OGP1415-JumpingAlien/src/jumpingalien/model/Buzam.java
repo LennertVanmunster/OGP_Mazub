@@ -424,11 +424,14 @@ public class Buzam extends GameObject {
 		throws IllegalArgumentException {
 		if(!isValidDeltaTime(deltaTime))
 			throw new IllegalArgumentException("Not a valid time period!");
-		this.setTimeSinceLastHitpointsLoss(deltaTime + getTimeSinceLastHitpointsLoss());
+		if(this.getProgram()!=null){
+			this.getProgram().execute(deltaTime);
+		}
 		double deltaTimeForPixel=0;
 		double sumDeltaTimeForPixel=0;
 		double oldHorizontalLocation=getHorizontalLocation();
 		double oldVerticalLocation=getVerticalLocation();
+		this.setTimeSinceLastHitpointsLoss(deltaTime + getTimeSinceLastHitpointsLoss());
 		if(!isMovingHorizontally()){
 			setTimeSinceEndMove(getTimeSinceEndMove()+deltaTime);
 		}

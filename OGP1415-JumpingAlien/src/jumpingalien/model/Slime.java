@@ -329,6 +329,17 @@ public class Slime extends GameObject {
 		throws IllegalArgumentException {
 		if(!isValidDeltaTime(deltaTime))
 			throw new IllegalArgumentException();
+		if(this.getProgram()!=null){
+			this.getProgram().execute(deltaTime);
+		}
+		else{
+			if(this.getTimeSinceStartAction()<=this.getCurrentActionDuration()){
+				this.setTimeSinceStartAction(this.getTimeSinceStartAction()+deltaTime);
+			}
+			else{
+				this.startNewAction();
+			}
+		}
 		double deltaTimeForPixel=0;
 		double sumDeltaTimeForPixel=0;
 		double newHorizontalLocation=this.getHorizontalLocation();
@@ -337,9 +348,6 @@ public class Slime extends GameObject {
 		double newVerticalVelocity=this.getVerticalVelocity();
 		double oldHorizontalLocation=this.getHorizontalLocation();
 		double oldVerticalLocation=this.getVerticalLocation();
-		if(this.getTimeSinceStartAction()>=this.getCurrentActionDuration()){
-			this.startNewAction();
-		}
 		while (sumDeltaTimeForPixel<deltaTime){
 			oldHorizontalLocation = this.getHorizontalLocation();
 			oldVerticalLocation = this.getVerticalLocation();
@@ -375,7 +383,7 @@ public class Slime extends GameObject {
 			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
 			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
 		}
-		this.setTimeSinceStartAction(this.getTimeSinceStartAction()+deltaTime);
+		
 		this.checkWaterContact(deltaTime);
 		this.checkMagmaContact(deltaTime);
 		this.calculateNewJumpingState();
