@@ -1,13 +1,13 @@
 package jumpingalien.programs.expressions;
 
-import jumpingalien.programs.types.*;
-
-public abstract class Expression {
+public class Expression {
 	
 	public Expression(){
 		
 	}
 	
-	public abstract Type getType();
+	public boolean getTrue(){
+		return true;
+	}
 
 }
