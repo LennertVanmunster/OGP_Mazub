@@ -4,6 +4,7 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.types.*;
 
 /**
  * @author Pieter
@@ -20,5 +21,8 @@ public class Random extends Expression {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Type getType(){
+		return new DoubleType();
+	}
 
 }

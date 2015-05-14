@@ -9,7 +9,7 @@ import jumpingalien.part3.programs.SourceLocation;
  * @author Pieter
  *
  */
-public class BinaryOperation extends Expression{
+public abstract class BinaryOperation extends Expression{
 
 
 	public BinaryOperation(Expression left, Expression right, SourceLocation sourceLocation) {
@@ -49,5 +49,6 @@ public class BinaryOperation extends Expression{
 	private Expression expressionLeft;
 	
 	private Expression expressionRight;
+	
 
 }

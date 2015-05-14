@@ -4,6 +4,8 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.types.BoolType;
+import jumpingalien.programs.types.Type;
 
 /**
  * @author Pieter
@@ -20,4 +22,7 @@ public class Or extends BinaryOperation {
 		super(left, right, sourceLocation);
 	}
 
+	public Type getType(){
+		return new BoolType();
+	}
 }

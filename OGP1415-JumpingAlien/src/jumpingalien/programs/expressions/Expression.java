@@ -1,8 +1,9 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.types.*;
 
-public class Expression {
+public abstract class Expression {
 	
 	public Expression(Expression expression, SourceLocation sourceLocation){
 		this.setSourceLocation(sourceLocation);
@@ -44,6 +45,7 @@ public class Expression {
 	}
 
 	private SourceLocation sourceLocation;
-
+	
+	public abstract Type getType();
 
 }

@@ -4,6 +4,7 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.IProgramFactory.Direction;
+import jumpingalien.programs.types.*;
 import jumpingalien.part3.programs.SourceLocation;
 
 /**
@@ -14,6 +15,11 @@ public class DirectionConstant extends Expression {
 
 	public DirectionConstant(Direction value, SourceLocation sourceLocation) {
 		super(sourceLocation);
+		this.setDirection(value);
+	}
+	
+	public DirectionConstant(Direction value) {
+		super(new SourceLocation(0,0));
 		this.setDirection(value);
 	}
 	
@@ -33,5 +39,8 @@ public class DirectionConstant extends Expression {
 
 	private Direction direction;
 
+	public Type getType(){
+		return new DirectionType();
+	}
 
 }
