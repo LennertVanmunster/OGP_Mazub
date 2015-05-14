@@ -1,5 +1,11 @@
 package jumpingalien.programs.types;
 
-public class Type {
+import jumpingalien.programs.expressions.*;
 
+public abstract class Type {
+	public  Type(){
+		
+	}
+	
+	public abstract Expression getDefaultValue();
 }

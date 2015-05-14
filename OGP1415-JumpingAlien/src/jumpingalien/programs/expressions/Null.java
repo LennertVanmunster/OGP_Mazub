@@ -2,13 +2,11 @@ package jumpingalien.programs.expressions;
 
 import jumpingalien.programs.types.*;
 
-public class False extends Expression {
-
-	public False(){
-		
+public class Null extends Expression{
+	public Null(){
 	}
 	
 	public Type getType(){
-		return new BoolType();
+		return new GameObjectType();
 	}
 }

@@ -1,5 +1,7 @@
 package jumpingalien.programs.expressions;
 
+import jumpingalien.programs.types.*;
+
 public class DoubleConstant extends Expression {
 
 
@@ -8,6 +10,10 @@ public class DoubleConstant extends Expression {
 	 */
 	public DoubleConstant(double value) {
 		this.value = value;
+	}
+	
+	public Type getType(){
+		return new DoubleType();
 	}
 	
 	
