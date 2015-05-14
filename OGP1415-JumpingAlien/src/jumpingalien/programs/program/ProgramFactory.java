@@ -14,104 +14,92 @@ public class ProgramFactory implements IProgramFactory<Expression, Statement, Ty
 	@Override
 	public Expression createReadVariable(String variableName,
 			Type variableType, SourceLocation sourceLocation) {
-		return new ReadVariable(variableName, variableType);
+		return new ReadVariable(variableName, variableType, sourceLocation);
 	}
 
 	@Override
 	public Expression createDoubleConstant(double value,
 			SourceLocation sourceLocation) {
-		return new DoubleConstant(value);
+		return new DoubleConstant(value, sourceLocation);
 	}
 
 	@Override
 	public Expression createTrue(SourceLocation sourceLocation) {
-		return new True();
+		return new True(sourceLocation);
 	}
 
 	@Override
 	public Expression createFalse(SourceLocation sourceLocation) {
-		return new False();
+		return new False(sourceLocation);
 	}
 
 	@Override
 	public Expression createNull(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Null(sourceLocation);
 	}
 
 	@Override
 	public Expression createSelf(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Self(sourceLocation);
 	}
 
 	@Override
 	public Expression createDirectionConstant(
 			jumpingalien.part3.programs.IProgramFactory.Direction value,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new DirectionConstant(value, sourceLocation);
 	}
 
 	@Override
 	public Expression createAddition(Expression left, Expression right,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Addition(left, right, sourceLocation);
 	}
 
 	@Override
 	public Expression createSubtraction(Expression left, Expression right,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Subtraction(left, right, sourceLocation);
 	}
 
 	@Override
 	public Expression createMultiplication(Expression left, Expression right,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Multiplication(left, right, sourceLocation);
 	}
 
 	@Override
 	public Expression createDivision(Expression left, Expression right,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Division(left, right, sourceLocation);
 	}
 
 	@Override
 	public Expression createSqrt(Expression expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Sqrt(expr,sourceLocation);
 	}
 
 	@Override
 	public Expression createRandom(Expression maxValue,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Random(maxValue, sourceLocation);
 	}
 
 	@Override
 	public Expression createAnd(Expression left, Expression right,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new And(left, right, sourceLocation);
 	}
 
 	@Override
 	public Expression createOr(Expression left, Expression right,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Or(left, right, sourceLocation);
 	}
 
 	@Override
 	public Expression createNot(Expression expr, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Not(expr, sourceLocation);
 	}
 
 	@Override
