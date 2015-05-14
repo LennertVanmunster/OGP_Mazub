@@ -31,10 +31,14 @@ public class Plant extends GameObject {
 	 * 			a number of hit points of 1, the maximum number of hit points for all plants and an image array containing its sprites.
 	 */
 	@Raw
-	public Plant(int horizontalLocation, int verticalLocation, Program program, Sprite... images)
-	throws IllegalArgumentException{
+	public Plant(int horizontalLocation, int verticalLocation, Program program, Sprite... images) throws IllegalArgumentException{
 		super(horizontalLocation, verticalLocation, velocityConstant, 0, velocityConstant, velocityConstant, 0, 0, false, HIT_POINTS, HIT_POINTS, program, images);
 	}
+	
+	public Plant(int horizontalLocation, int verticalLocation, Sprite... images) throws IllegalArgumentException{
+		super(horizontalLocation, verticalLocation, velocityConstant, 0, velocityConstant, velocityConstant, 0, 0, false, HIT_POINTS, HIT_POINTS, null, images);
+	}
+	
 	
 	/**
 	 * Return the velocity constant of plants.

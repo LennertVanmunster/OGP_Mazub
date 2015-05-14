@@ -56,7 +56,7 @@ public class Buzam extends GameObject {
 				double maximumHorizontalVelocityNotDucking, boolean ducking,Program program, Sprite... images)
 		throws IllegalArgumentException, IllegalLocationException {
 		super(horizontalLocation, verticalLocation, horizontalVelocity, verticalVelocity, initialHorizontalVelocityNotDucking, 
-				maximumHorizontalVelocityNotDucking, initialVerticalVelocity, horizontalAccelerationAtStartGame, ducking, initialHitPoints, MAX_HIT_POINTS,program, images);
+				maximumHorizontalVelocityNotDucking, initialVerticalVelocity, horizontalAccelerationAtStartGame, ducking, initialHitPoints, MAX_HIT_POINTS, program, images);
 		if(isDucking())
 			startDuck();
 	}
@@ -81,6 +81,11 @@ public class Buzam extends GameObject {
 	@Raw
 	public Buzam(int horizontalLocation, int verticalLocation, Program program, Sprite... images){
 		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, program, images);
+	}
+	
+	@Raw
+	public Buzam(int horizontalLocation, int verticalLocation, Sprite... images){
+		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, null, images);
 	}
 	
 	/**

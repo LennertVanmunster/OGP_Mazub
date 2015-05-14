@@ -1797,7 +1797,10 @@ public abstract class GameObject {
 	protected Program program;
 	
 	public void setProgram(Program program){
-		if (program.isWellFormed()){
+		if (program==null){
+			this.program=program;
+		}
+		else if (program.isWellFormed()){
 			this.program=program;
 		}
 	}

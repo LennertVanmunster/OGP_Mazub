@@ -45,6 +45,13 @@ public class Slime extends GameObject {
 		school.addAsSlime(this);
 	}
 	
+	@Raw
+	public Slime(int horizontalLocation, int verticalLocation, Sprite[] images, School school)
+		throws IllegalArgumentException, IllegalLocationException {
+		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, 0, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, null, images);
+		school.addAsSlime(this);
+	}
+	
 	
 	/**
 	 * Check whether this slime can have the given horizontal velocity as its horizontal velocity.

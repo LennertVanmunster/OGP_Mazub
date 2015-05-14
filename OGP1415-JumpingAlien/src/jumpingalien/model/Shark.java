@@ -42,6 +42,12 @@ public class Shark extends GameObject{
 		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, initialVerticalVelocity, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, program, images);
 	}
 	
+	public Shark(int horizontalLocation, int verticalLocation, Sprite... images){
+		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, initialVerticalVelocity, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, null, images);
+	}
+	
+	
+	
 	
 	/**
 	 * Check whether this shark can have the given horizontal velocity as its horizontal velocity.

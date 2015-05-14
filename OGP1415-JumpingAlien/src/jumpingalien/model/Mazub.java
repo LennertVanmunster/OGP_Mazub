@@ -1,7 +1,6 @@
 package jumpingalien.model;
 
 
-import jumpingalien.programs.program.Program;
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
@@ -53,7 +52,7 @@ public class Mazub extends GameObject {
 	@Raw
 	public Mazub(int horizontalLocation, int verticalLocation, double horizontalVelocity,
 				double verticalVelocity, double initialHorizontalVelocityNotDucking,
-				double maximumHorizontalVelocityNotDucking, boolean ducking,Program program, Sprite... images)
+				double maximumHorizontalVelocityNotDucking, boolean ducking, Sprite... images)
 		throws IllegalArgumentException, IllegalLocationException {
 		super(horizontalLocation, verticalLocation, horizontalVelocity, verticalVelocity, initialHorizontalVelocityNotDucking, 
 				maximumHorizontalVelocityNotDucking, initialVerticalVelocity, horizontalAccelerationAtStartGame, ducking, initialHitPoints, MAX_HIT_POINTS, null, images);
@@ -79,8 +78,8 @@ public class Mazub extends GameObject {
 	 * 			|this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, images)
 	 */
 	@Raw
-	public Mazub(int horizontalLocation, int verticalLocation,Program program, Sprite... images){
-		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, null, images);
+	public Mazub(int horizontalLocation, int verticalLocation, Sprite... images){
+		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, images);
 	}
 	
 	/**
