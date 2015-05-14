@@ -37,7 +37,7 @@ public class Facade implements IFacadePart3 {
 	 */
 	public Mazub createMazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws ModelException{
 		try{
-			return new Mazub(pixelLeftX, pixelBottomY, null, sprites);
+			return new Mazub(pixelLeftX, pixelBottomY, sprites);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Cannot create a Mazub with the given arguments!");
 		}
