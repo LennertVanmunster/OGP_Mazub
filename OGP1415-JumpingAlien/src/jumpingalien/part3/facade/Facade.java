@@ -1,13 +1,23 @@
 package jumpingalien.part3.facade;
 
 import java.util.Collection;
+import java.util.Optional;
+
+import org.antlr.v4.runtime.CharStream;
 
 import jumpingalien.model.*;
 import jumpingalien.part2.facade.IFacadePart2;
+import jumpingalien.part3.programs.IProgramFactory;
 import jumpingalien.part3.programs.ParseOutcome;
 import jumpingalien.part3.programs.ProgramParser;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
+import jumpingalien.programs.*;
+import jumpingalien.programs.expressions.Expression;
+import jumpingalien.programs.program.Program;
+import jumpingalien.programs.program.ProgramFactory;
+import jumpingalien.programs.statements.Statement;
+import jumpingalien.programs.types.Type;
 
 public class Facade implements IFacadePart3 {
 	
@@ -27,7 +37,7 @@ public class Facade implements IFacadePart3 {
 	 */
 	public Mazub createMazub(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws ModelException{
 		try{
-			return new Mazub(pixelLeftX, pixelBottomY, sprites);
+			return new Mazub(pixelLeftX, pixelBottomY, null, sprites);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Cannot create a Mazub with the given arguments!");
 		}
@@ -491,7 +501,7 @@ public class Facade implements IFacadePart3 {
 	 */
 	public Plant createPlant(int x, int y, Sprite[] sprites) throws ModelException{
 		try{
-			return new Plant(x,y,sprites);
+			return new Plant(x,y, null,sprites);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Cannot create a new plant with the given arguments!");
 		}
@@ -572,7 +582,7 @@ public class Facade implements IFacadePart3 {
 	 */
 	public Shark createShark(int x, int y, Sprite[] sprites) throws ModelException{
 		try{
-			return new Shark(x,y,sprites);
+			return new Shark(x,y, null, sprites);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Cannot create a new shark with the given parameters!");
 		}
@@ -664,7 +674,7 @@ public class Facade implements IFacadePart3 {
 	 */
 	public Slime createSlime(int x, int y, Sprite[] sprites, School school) throws ModelException{
 		try{
-			return new Slime(x,y,sprites,school);
+			return new Slime(x,y,sprites,school, null);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Invalid parameters for this new slime!");
 		}
@@ -753,7 +763,7 @@ public class Facade implements IFacadePart3 {
 	 */
 	public Buzam createBuzam(int pixelLeftX, int pixelBottomY, Sprite[] sprites) throws ModelException{
 		try{
-			return new Buzam(pixelLeftX, pixelBottomY, sprites);
+			return new Buzam(pixelLeftX, pixelBottomY, null, sprites);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Cannot create a Buzam with the given arguments!");
 		}
@@ -774,11 +784,10 @@ public class Facade implements IFacadePart3 {
 	 *            The program to execute, or null of Buzam should not execute a
 	 *            program.
 	 */
-	//TODO
 	public Buzam createBuzamWithProgram(int pixelLeftX, int pixelBottomY,
 			Sprite[] sprites, Program program){
 		try{
-			return new Buzam(pixelLeftX, pixelBottomY, sprites);
+			return new Buzam(pixelLeftX, pixelBottomY,program, sprites);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Cannot create a Buzam with the given arguments!");
 		}
@@ -802,11 +811,10 @@ public class Facade implements IFacadePart3 {
 	 * @return A new plant, located at the provided location. The returned plant
 	 *         should not belong to a world.
 	 */
-	//TODO
 	public Plant createPlantWithProgram(int x, int y, Sprite[] sprites,
 			Program program) throws ModelException{
 		try{
-			return new Plant(x,y,sprites);
+			return new Plant(x,y,program, sprites);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Cannot create a new plant with the given arguments!");
 		}
@@ -830,11 +838,10 @@ public class Facade implements IFacadePart3 {
 	 * @return A new shark, located at the provided location. The returned shark
 	 *         should not belong to a world.
 	 */
-	//TODO
 	public Shark createSharkWithProgram(int x, int y, Sprite[] sprites,
 			Program program)throws ModelException{
 		try{
-			return new Shark(x,y,sprites);
+			return new Shark(x,y,program, sprites);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Cannot create a new Shark with the given arguments!");
 		}
@@ -859,11 +866,10 @@ public class Facade implements IFacadePart3 {
 	 * @return A new slime, located at the provided location and part of the
 	 *         given school. The returned slime should not belong to a world.
 	 */
-	//TODO
 	public Slime createSlimeWithProgram(int x, int y, Sprite[] sprites,
 			School school, Program program)throws ModelException{
 		try{
-			return new Slime(x,y,sprites,school);
+			return new Slime(x,y,sprites,school,program);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Invalid parameters for this new slime!");
 		}
@@ -880,9 +886,18 @@ public class Facade implements IFacadePart3 {
 	 *         ParseOutcome.Success if parsing was successful, or
 	 *         ParseOutcome.Failure if parsing was not successful.
 	 */
-	//TODO
-	ParseOutcome<?> parse(String text){
-
+	public ParseOutcome<?> parse(String text){
+		 IProgramFactory<Expression, Statement, Type, Program> factory = new ProgramFactory();
+		 ProgramParser<Expression, Statement, Type, Program> parser = new ProgramParser<>(factory);
+		 Optional<Program> parseResult = parser.parseString(text);
+		 if(parseResult.isPresent()){
+			 System.out.print("PARSING OK! ");
+			 return ParseOutcome.success(parseResult.get());
+		 }
+		 else{
+			 System.out.print("PARSING NOT OK! ");
+			 return ParseOutcome.failure(parser.getErrors()); 
+		 }
 	}
 
 	/**
@@ -893,9 +908,9 @@ public class Facade implements IFacadePart3 {
 	 *            The program to check.
 	 * @return true if the program is well-formed; false otherwise.
 	 */
-	//TODO
-	boolean isWellFormed(Program program){
-		return true;
+	
+	public boolean isWellFormed(Program program){
+		return program.isWellFormed();
 	}
 
 	/**

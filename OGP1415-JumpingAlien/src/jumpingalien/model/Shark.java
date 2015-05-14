@@ -2,6 +2,7 @@ package jumpingalien.model;
 
 import java.util.Random;
 
+import jumpingalien.programs.program.Program;
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
@@ -37,8 +38,8 @@ public class Shark extends GameObject{
 	 * 			| super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, initialVerticalVelocity, horizontalAccelerationAtSpawn, false, 100, MAX_HIT_POINTS, images)
 	 */
 	@Raw
-	public Shark(int horizontalLocation, int verticalLocation, Sprite... images){
-		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, initialVerticalVelocity, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, images);
+	public Shark(int horizontalLocation, int verticalLocation, Program program, Sprite... images){
+		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, initialVerticalVelocity, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, program, images);
 	}
 	
 	

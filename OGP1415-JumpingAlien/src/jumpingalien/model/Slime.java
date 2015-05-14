@@ -1,5 +1,6 @@
 package jumpingalien.model;
 
+import jumpingalien.programs.program.Program;
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
@@ -38,9 +39,9 @@ public class Slime extends GameObject {
 	 * 			| school.addAsSlime(this)
 	 */
 	@Raw
-	public Slime(int horizontalLocation, int verticalLocation, Sprite[] images, School school)
+	public Slime(int horizontalLocation, int verticalLocation, Sprite[] images, School school, Program program)
 		throws IllegalArgumentException, IllegalLocationException {
-		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, 0, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, images);
+		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, 0, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, program, images);
 		school.addAsSlime(this);
 	}
 	

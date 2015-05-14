@@ -5,7 +5,7 @@ import java.util.Map;
 
 import jumpingalien.part3.programs.IProgramFactory;
 import jumpingalien.part3.programs.SourceLocation;
-import jumpingalien.programs.expressions.Expression;
+import jumpingalien.programs.expressions.*;
 import jumpingalien.programs.statements.Statement;
 import jumpingalien.programs.types.Type;
 
@@ -27,8 +27,7 @@ public class ProgramFactory implements IProgramFactory<Expression, Statement, Ty
 
 	@Override
 	public Expression createTrue(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TrueBoolean();
 	}
 
 	@Override

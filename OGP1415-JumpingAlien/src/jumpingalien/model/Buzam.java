@@ -1,6 +1,7 @@
 package jumpingalien.model;
 
 
+import jumpingalien.programs.program.Program;
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
@@ -52,10 +53,10 @@ public class Buzam extends GameObject {
 	@Raw
 	public Buzam(int horizontalLocation, int verticalLocation, double horizontalVelocity,
 				double verticalVelocity, double initialHorizontalVelocityNotDucking,
-				double maximumHorizontalVelocityNotDucking, boolean ducking, Sprite... images)
+				double maximumHorizontalVelocityNotDucking, boolean ducking,Program program, Sprite... images)
 		throws IllegalArgumentException, IllegalLocationException {
 		super(horizontalLocation, verticalLocation, horizontalVelocity, verticalVelocity, initialHorizontalVelocityNotDucking, 
-				maximumHorizontalVelocityNotDucking, initialVerticalVelocity, horizontalAccelerationAtStartGame, ducking, initialHitPoints, MAX_HIT_POINTS, images);
+				maximumHorizontalVelocityNotDucking, initialVerticalVelocity, horizontalAccelerationAtStartGame, ducking, initialHitPoints, MAX_HIT_POINTS,program, images);
 		if(isDucking())
 			startDuck();
 	}
@@ -78,8 +79,8 @@ public class Buzam extends GameObject {
 	 * 			|this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, images)
 	 */
 	@Raw
-	public Buzam(int horizontalLocation, int verticalLocation, Sprite... images){
-		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, images);
+	public Buzam(int horizontalLocation, int verticalLocation, Program program, Sprite... images){
+		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, program, images);
 	}
 	
 	/**

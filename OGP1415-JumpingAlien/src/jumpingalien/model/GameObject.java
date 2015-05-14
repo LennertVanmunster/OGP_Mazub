@@ -1,5 +1,6 @@
 package jumpingalien.model;
 
+import jumpingalien.programs.program.Program;
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
@@ -148,7 +149,7 @@ public abstract class GameObject {
 	@Raw
 	@Model
 	protected GameObject(int horizontalLocation, int verticalLocation, double horizontalVelocity,
-				double verticalVelocity, double initialHorizontalVelocity, double maximumHorizontalVelocity, double initialVerticalVelocity, double horizontalAcceleration, boolean ducking, int hitPoints, int maxHitPoints, Sprite... images)
+				double verticalVelocity, double initialHorizontalVelocity, double maximumHorizontalVelocity, double initialVerticalVelocity, double horizontalAcceleration, boolean ducking, int hitPoints, int maxHitPoints, Program program, Sprite... images )
 		throws IllegalArgumentException, IllegalLocationException {
 			setHorizontalLocation(horizontalLocation);
 			setVerticalLocation(verticalLocation);
