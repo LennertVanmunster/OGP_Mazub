@@ -30,7 +30,7 @@ public class While extends Statement{
 	private Statement body;
 	
 	public void execute(Program program){
-		while(condition.evaluate()){
+		while((boolean) condition.evaluate(program)){
 			body.execute(program);
 		}
 	}

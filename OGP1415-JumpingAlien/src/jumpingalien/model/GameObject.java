@@ -859,7 +859,7 @@ public abstract class GameObject {
 	
 	public abstract void startMove(Direction direction);
 	
-	public abstract void endMove(Direction direcation);
+	public abstract void endMove(Direction direction);
 	
 	public abstract void startJump();
 	

@@ -2,6 +2,7 @@ package jumpingalien.programs.expressions;
 
 import jumpingalien.model.GameObject;
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.GameObjectType;
 import jumpingalien.programs.types.Type;
 
@@ -25,7 +26,7 @@ public class GameObjectExpression extends Expression{
 
 	GameObject gameObject=null;
 	
-	public GameObject evaluate(){
+	public GameObject evaluate(Program program){
 		return getGameObject();
 	}
 

@@ -25,6 +25,6 @@ public class Print extends Statement{
 
 	@Override
 	public void execute(Program program) {
-		System.out.println(value.evaluate());
+		System.out.println(value.evaluate(program));
 	}
 }

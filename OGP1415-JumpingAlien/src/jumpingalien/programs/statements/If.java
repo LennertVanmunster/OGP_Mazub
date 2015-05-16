@@ -46,7 +46,7 @@ public class If extends Statement{
 	private Statement elseBody;
 	
 	public void execute(Program program){
-		if(condition.evaluate()){
+		if((boolean) condition.evaluate(program)){
 			getIfBody().execute(program);
 		}
 		else{

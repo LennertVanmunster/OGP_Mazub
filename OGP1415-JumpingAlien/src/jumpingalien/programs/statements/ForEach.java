@@ -129,7 +129,7 @@ public class ForEach extends Statement{
 		for(GameObject gameObject: gameObjectList){
 			program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
 			Expression sortExpression = getSort();
-			double sortDouble= sortExpression.evaluate();
+			double sortDouble= (double) sortExpression.evaluate(program);
 			Double sortDoubleObject = new Double(sortDouble);
 			sortMap.put(gameObject, sortDoubleObject);
 		}

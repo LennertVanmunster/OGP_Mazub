@@ -22,6 +22,6 @@ public class StartRun extends Statement {
 	
 	public void execute(Program program){
 		GameObject gameObject = program.getGameObject();
-		gameObject.startMove(((DirectionConstant) getDirection()).evaluate());
+		gameObject.startMove((Direction) getDirection().evaluate(program));
 	}
 }
