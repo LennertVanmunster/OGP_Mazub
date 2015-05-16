@@ -3,7 +3,10 @@
  */
 package jumpingalien.programs.expressions;
 
+import jumpingalien.model.GameObject;
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.program.Program;
+import jumpingalien.programs.types.DoubleType;
 import jumpingalien.programs.types.Type;
 
 /**
@@ -27,6 +30,12 @@ public class GetWidth extends Expression {
 	@Override
 	public Type getType() {
 		return new DoubleType();
+	}
+
+
+	@Override
+	public Object evaluate(Program program) {
+		return ((GameObject)this.getExpression().evaluate(program)).getWidth();
 	}
 
 }

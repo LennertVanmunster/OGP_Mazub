@@ -1,6 +1,7 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.program.*;
 
 import jumpingalien.programs.types.*;
 
@@ -32,7 +33,7 @@ public class DoubleConstant extends Expression {
 
 	private double value;
 	
-	public double evaluate(){
+	public Object evaluate(Program program){
 		return this.getValue();
 	}
 	

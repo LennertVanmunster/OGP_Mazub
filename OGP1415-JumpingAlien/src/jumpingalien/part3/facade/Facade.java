@@ -3,8 +3,6 @@ package jumpingalien.part3.facade;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.CharStream;
-
 import jumpingalien.model.*;
 import jumpingalien.part2.facade.IFacadePart2;
 import jumpingalien.part3.programs.IProgramFactory;
@@ -12,7 +10,6 @@ import jumpingalien.part3.programs.ParseOutcome;
 import jumpingalien.part3.programs.ProgramParser;
 import jumpingalien.util.ModelException;
 import jumpingalien.util.Sprite;
-import jumpingalien.programs.*;
 import jumpingalien.programs.expressions.Expression;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.program.ProgramFactory;

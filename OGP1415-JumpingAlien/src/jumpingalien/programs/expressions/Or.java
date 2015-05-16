@@ -4,6 +4,7 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.BoolType;
 import jumpingalien.programs.types.Type;
 
@@ -24,5 +25,11 @@ public class Or extends BinaryOperation {
 
 	public Type getType(){
 		return new BoolType();
+	}
+
+	@Override
+	public Object evaluate(Program program) {
+		return (boolean)this.getExpressionLeft().evaluate(program) ||
+				(boolean)this.getExpressionRight().evaluate(program);
 	}
 }

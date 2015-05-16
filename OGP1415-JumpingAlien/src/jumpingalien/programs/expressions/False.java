@@ -1,6 +1,7 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.*;
 
 public class False extends Expression {
@@ -13,7 +14,7 @@ public class False extends Expression {
 		this(new SourceLocation(0,0));
 	}
 	
-	public boolean evaluate(){
+	public Object evaluate(Program program){
 		return false;
 	}
 	

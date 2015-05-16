@@ -4,6 +4,7 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.*;
 
 /**
@@ -22,6 +23,11 @@ public class Sqrt extends Expression {
 	
 	public Type getType(){
 		return new DoubleType();
+	}
+
+	@Override
+	public Object evaluate(Program program) {
+		return Math.sqrt((double) this.getExpression().evaluate(program));
 	}
 
 }
