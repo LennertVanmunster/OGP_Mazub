@@ -180,6 +180,9 @@ public abstract class GameObject {
 			this.maxHitPoints=maxHitPoints;
 			this.setHitPoints(hitPoints);
 			this.setProgram(program);
+			if(program != null){
+				program.setGameObject(this);
+			}
 			this.setImages(images);
 	}
 	

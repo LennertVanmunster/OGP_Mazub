@@ -1,6 +1,8 @@
 package jumpingalien.programs.program;
 
 import java.util.Map;
+
+import jumpingalien.model.GameObject;
 import jumpingalien.programs.types.*;
 import jumpingalien.programs.statements.*;
 import jumpingalien.programs.expressions.*;
@@ -79,5 +81,16 @@ public class Program {
 	public boolean isWellFormed() {
 		return true;
 	}
+	
+	public void setGameObject(GameObject gameObject){
+		this.gameObject = gameObject;
+	}
+	
+	public GameObject getGameObject(){
+		return this.gameObject;
+	}
+	
+	private GameObject gameObject;
+
 
 }
