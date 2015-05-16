@@ -82,7 +82,7 @@ public class ProgramFactory implements IProgramFactory<Expression, Statement, Ty
 	@Override
 	public Expression createRandom(Expression maxValue,
 			SourceLocation sourceLocation) {
-		return new Random(maxValue, sourceLocation);
+		return new RandomDouble(maxValue, sourceLocation);
 	}
 
 	@Override

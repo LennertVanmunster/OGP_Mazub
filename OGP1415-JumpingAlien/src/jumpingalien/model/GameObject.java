@@ -923,6 +923,22 @@ public abstract class GameObject {
 		return gameObjects;		
 	}
 	
+	public GameObject getGameObjectAtPixelPosition(int pixelX, int pixelY){
+		int [][] tile = {world.getTilePositionAtPixelLocation(pixelX, pixelY)};
+		List<GameObject> gameObjects = this.getGameObjectsAtTiles(tile);
+		for(int index = 0; index < gameObjects.size(); index++){
+			GameObject foundGameObject = gameObjects.get(index);
+			int pixelX2 = foundGameObject.getEffectiveHorizontalLocation();
+			int pixelY2 = foundGameObject.getEffectiveVerticalLocation();
+			int width2 = foundGameObject.getWidth();
+			int height2 = foundGameObject.getHeight();
+			if(!(pixelX < pixelX2 || pixelX2 + (width2 -1) < pixelX || pixelY < pixelY2 || pixelY2 + (height2 - 1) < pixelY)){
+				return foundGameObject;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Return a matrix with at each row a coordinate of the top perimeter of this game object.
 	 * 
@@ -951,8 +967,8 @@ public abstract class GameObject {
 				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
 					throw new IllegalArgumentException();
 				int Y = pixelY + height - 1;
-				int [][] topPerimeter = new int [width - 1][2];
-				for (int X = 0; X < width - 1; X++ ){
+				int [][] topPerimeter = new int [width][2];
+				for (int X = 0; X < width; X++ ){
 					topPerimeter [X][0] = pixelX + X;
 					topPerimeter [X][1] = Y;
 				}
@@ -984,8 +1000,8 @@ public abstract class GameObject {
 			throws IllegalArgumentException{
 				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
 					throw new IllegalArgumentException();
-				int [][] bottomPerimeter = new int [width - 1][2];
-				for (int X = 0; X < width - 1; X++ ){
+				int [][] bottomPerimeter = new int [width][2];
+				for (int X = 0; X < width ; X++ ){
 					bottomPerimeter [X][0] = pixelX + X;
 					bottomPerimeter [X][1] = pixelY;
 				}
@@ -1148,15 +1164,15 @@ public abstract class GameObject {
 		for(int index = 0; index < gameObjects.size(); index++){
 			GameObject gameObject = gameObjects.get(index);
 			if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject)){
-				int [][] leftPerimeter2 = gameObject.getLeftPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getHeight());
-				int [][] rightPerimeter2 = gameObject.getRightPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
-				overlap = checkLeftOrRightSideOverlap(gameObject, leftPerimeter1, rightPerimeter1, leftPerimeter2, rightPerimeter2);
-				if(overlap [0] == 1){
-					return overlap;
-				}
 				int [][] topPerimeter2 = gameObject.getTopPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
 				int [][] bottomPerimeter2 = gameObject.getBottomPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth());
 				overlap = checkTopOrBottomSideOverlap(gameObject, topPerimeter1, bottomPerimeter1, topPerimeter2, bottomPerimeter2);
+				if(overlap [0] == 1){
+					return overlap;
+				}
+				int [][] leftPerimeter2 = gameObject.getLeftPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getHeight());
+				int [][] rightPerimeter2 = gameObject.getRightPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
+				overlap = checkLeftOrRightSideOverlap(gameObject, leftPerimeter1, rightPerimeter1, leftPerimeter2, rightPerimeter2);
 				if(overlap [0] == 1){
 					return overlap;
 				}
@@ -1200,8 +1216,8 @@ public abstract class GameObject {
 		int [] overlap = {0,0,0,0};
 		World world = this.getWorld();		
 		outerloop:
-		for (int Y = 0; Y < this.getWidth()-1-2; Y++ ){
-			for (int Y2 = 0; Y2 < gameObject.getWidth()-1-2; Y2++ ){
+		for (int Y = 0; Y < this.getWidth(); Y++ ){
+			for (int Y2 = 0; Y2 < gameObject.getWidth(); Y2++ ){
 				if(Arrays.equals(topPerimeter1[Y],bottomPerimeter2[Y2])){
 					overlap [0] = 1 ;
 					overlap [1] = world.getIndexOfGameObject(gameObject);
@@ -1241,8 +1257,8 @@ public abstract class GameObject {
 		int [] overlap = {0,0,0,0};
 		World world = this.getWorld();
 		outerloop:
-		for (int Y = 0; Y < this.getHeight()-2-2; Y++ ){
-			for (int Y2 = 0; Y2 < gameObject.getHeight()-2-2; Y2++ ){
+		for (int Y = 0; Y < this.getHeight()-2; Y++ ){
+			for (int Y2 = 0; Y2 < gameObject.getHeight()-2; Y2++ ){
 				if(Arrays.equals(leftPerimeter1[Y],rightPerimeter2[Y2]) ||
 						Arrays.equals(leftPerimeter2[Y2],rightPerimeter1[Y])){
 					overlap [0] = 1 ;

@@ -3,7 +3,10 @@
  */
 package jumpingalien.programs.expressions;
 
+import jumpingalien.model.Mazub;
+import jumpingalien.model.Plant;
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.Type;
 
 /**
@@ -26,6 +29,11 @@ public class IsPlant extends Expression {
 	@Override
 	public Type getType() {
 		return new BoolType();
+	}
+
+	@Override
+	public Object evaluate(Program program) {
+		return this.getExpression().evaluate(program) instanceof Plant;
 	}
 
 }

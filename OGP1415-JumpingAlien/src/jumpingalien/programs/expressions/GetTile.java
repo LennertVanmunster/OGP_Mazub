@@ -4,6 +4,7 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.Type;
 
 /**
@@ -61,6 +62,12 @@ public class GetTile extends Expression {
 	@Override
 	public Type getType() {
 		return null;
+	}
+
+	@Override
+	public Object evaluate(Program program) {
+		return program.getWorld().getTilePositionAtPixelLocation((int)(this.getX().evaluate(program)),
+				(int)(this.getY().evaluate(program)));
 	}
 
 }

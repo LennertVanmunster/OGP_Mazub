@@ -13,7 +13,7 @@ public class False extends Expression {
 		this(new SourceLocation(0,0));
 	}
 	
-	public boolean evaluate(){
+	public Object evaluate(){
 		return false;
 	}
 	

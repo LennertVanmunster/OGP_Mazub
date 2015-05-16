@@ -32,7 +32,7 @@ public class DoubleConstant extends Expression {
 
 	private double value;
 	
-	public double evaluate(){
+	public Object evaluate(){
 		return this.getValue();
 	}
 	

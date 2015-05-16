@@ -3,7 +3,9 @@
  */
 package jumpingalien.programs.expressions;
 
+import jumpingalien.model.Mazub;
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.Type;
 
 /**
@@ -27,6 +29,11 @@ public class IsMazub extends Expression {
 	@Override
 	public Type getType() {
 		return BoolType();
+	}
+
+	@Override
+	public Object evaluate(Program program) {
+		return this.getExpression().evaluate(program) instanceof Mazub;
 	}
 
 }

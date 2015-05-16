@@ -33,7 +33,36 @@ public enum Direction {
 		public int getNumberForCalculations() {
 			return 1;
 		}
+	},
+	
+	UP {
+		
+		/**
+		 * Return the number representing the positive vertical direction for usage in calculations.
+	     *
+		 * @return 1
+		 *       | result == 1
+		 */
+		public int getNumberForCalculations() {
+			return 1;
+		}
+		
+	},
+	
+	DOWN {
+		
+		/**
+		 * Return the number representing the negative vertical direction for usage in calculations.
+	     *
+		 * @return -1
+		 *       | result == -1
+		 */
+		public int getNumberForCalculations() {
+			return -1;
+		}
+		
 	};
+	
 	
 	/**
 	 * Return the number for this direction for usage in calculations.

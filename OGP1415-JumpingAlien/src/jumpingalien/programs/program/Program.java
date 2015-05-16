@@ -3,6 +3,7 @@ package jumpingalien.programs.program;
 import java.util.Map;
 
 import jumpingalien.model.GameObject;
+import jumpingalien.model.World;
 import jumpingalien.programs.types.*;
 import jumpingalien.programs.statements.*;
 import jumpingalien.programs.expressions.*;
@@ -90,7 +91,15 @@ public class Program {
 		return this.gameObject;
 	}
 	
-	private GameObject gameObject;
+	private GameObject gameObject = null;
+	
+	public World getWorld(){
+		GameObject gameObject = this.getGameObject();
+		if(gameObject != null)
+			return gameObject.getWorld();
+		else
+			return null;
+	}
 
 
 }

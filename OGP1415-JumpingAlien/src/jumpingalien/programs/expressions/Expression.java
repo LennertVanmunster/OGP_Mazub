@@ -1,6 +1,7 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.*;
 
 public abstract class Expression {
@@ -48,4 +49,5 @@ public abstract class Expression {
 	
 	public abstract Type getType();
 
+	public abstract Object evaluate(Program program);
 }
