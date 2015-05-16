@@ -5,9 +5,10 @@ import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.expressions.Expression;
 import jumpingalien.programs.program.Program;
 
-public class StopRun {
+public class StopRun extends Statement {
 
 	public StopRun(Expression direction, SourceLocation sourceLocation){
+		super(sourceLocation);
 		setDirection(direction);
 	}
 	

@@ -1,11 +1,13 @@
 package jumpingalien.programs.statements;
 
+import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.expressions.Expression;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.Type;
 
-public class Assignment {
-	public Assignment(String variableName, Type variableType, Expression value){
+public class Assignment extends Statement {
+	public Assignment(String variableName, Type variableType, Expression value, SourceLocation sourceLocation){
+		super(sourceLocation);
 		this.variableName=variableName;
 		this.variableType=variableType;
 		this.value=value;
