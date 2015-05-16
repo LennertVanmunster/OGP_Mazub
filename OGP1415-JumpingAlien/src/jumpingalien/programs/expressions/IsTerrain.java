@@ -3,9 +3,9 @@
  */
 package jumpingalien.programs.expressions;
 
-import jumpingalien.model.Mazub;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
+import jumpingalien.programs.types.BoolType;
 import jumpingalien.programs.types.Type;
 
 /**

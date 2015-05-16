@@ -7,6 +7,10 @@ import jumpingalien.part3.programs.IProgramFactory;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.expressions.*;
 import jumpingalien.programs.statements.Statement;
+import jumpingalien.programs.types.BoolType;
+import jumpingalien.programs.types.DirectionType;
+import jumpingalien.programs.types.DoubleType;
+import jumpingalien.programs.types.GameObjectType;
 import jumpingalien.programs.types.Type;
 
 public class ProgramFactory implements IProgramFactory<Expression, Statement, Type, Program> {
@@ -360,33 +364,28 @@ public class ProgramFactory implements IProgramFactory<Expression, Statement, Ty
 
 	@Override
 	public Type getDoubleType() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DoubleType();
 	}
 
 	@Override
 	public Type getBoolType() {
-		// TODO Auto-generated method stub
-		return null;
+		return new BoolType();
 	}
 
 	@Override
 	public Type getGameObjectType() {
-		// TODO Auto-generated method stub
-		return null;
+		return new GameObjectType();
 	}
 
 	@Override
 	public Type getDirectionType() {
-		// TODO Auto-generated method stub
-		return null;
+		return new DirectionType();
 	}
 
 	@Override
 	public Program createProgram(Statement mainStatement,
 			Map<String, Type> globalVariables) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Program(mainStatement, globalVariables);
 	}
 
 

@@ -3,13 +3,12 @@
  */
 package jumpingalien.programs.expressions;
 
-import java.util.List;
-
 import jumpingalien.model.Direction;
 import jumpingalien.model.GameObject;
 import jumpingalien.model.World;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
+import jumpingalien.programs.types.GameObjectType;
 import jumpingalien.programs.types.Type;
 
 /**
@@ -32,7 +31,7 @@ public class SearchObject extends Expression {
 	 */
 	@Override
 	public Type getType() {
-		return new ObjectType();
+		return new GameObjectType();
 	}
 
 

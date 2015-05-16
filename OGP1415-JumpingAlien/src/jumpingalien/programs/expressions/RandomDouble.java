@@ -21,7 +21,6 @@ public class RandomDouble extends Expression {
 	 */
 	public RandomDouble(Expression maxvalue, SourceLocation sourceLocation) {
 		super(maxvalue, sourceLocation);
-		// TODO Auto-generated constructor stub
 	}
 
 	public Type getType(){
