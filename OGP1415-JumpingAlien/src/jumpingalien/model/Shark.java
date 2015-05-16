@@ -285,19 +285,41 @@ public class Shark extends GameObject{
 		Random r = new Random();
 		this.setCurrentActionDuration(getMinimumActionDuration()+(getMaximumActionDuration()-getMinimumActionDuration())*r.nextDouble());
 		this.setDirection(r.nextBoolean() ? Direction.LEFT : Direction.RIGHT);
-		this.setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*this.getDirection().getNumberForCalculations());
-		this.setMovingHorizontally(true);
+		this.startMove(getDirection());
 		this.setTimeSinceStartAction(0);
-		if(this.getNbMovementsSinceLastJump() >= 4 && !isJumping() && (r.nextDouble()>getRandomMovementChance())){
-			this.setVerticalVelocity(getInitialVerticalVelocity());
-			this.setJumping(true);
-			this.setNbMovementsSinceLastJump(0);
+		if(this.getNbMovementsSinceLastJump() >= 4 && (r.nextDouble()>getRandomMovementChance())){
+			this.startJump();
 		}
 		else{
 			this.setNbMovementsSinceLastJump(this.getNbMovementsSinceLastJump() + 1);
 			this.setRandomDivingMultiplier(2.0 *r.nextDouble() - 1.0);
 			this.setJumping(false);
 		}
+	}
+	
+	public void startMove(Direction direction){
+		setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*direction.getNumberForCalculations());
+		setMovingHorizontally(true);
+	}
+	
+	public void endMove(Direction direction){
+		if(direction==this.getDirection()){
+			setHorizontalVelocity(0);
+			setMovingHorizontally(false);
+		}
+	}
+	
+	public void startJump(){
+		if (!isJumping()){
+			setJumping(true);
+			setVerticalVelocity(getInitialVerticalVelocity());
+			this.setNbMovementsSinceLastJump(0);
+		}
+	}
+	
+	public void endJump(){
+		setJumping(false);
+		setVerticalVelocity(0);
 	}
 	
 	/**
@@ -627,12 +649,10 @@ public class Shark extends GameObject{
 	 */
 	private void updateJumping(){
 		if(this.checkWaterAndNoAirContact() && this.getVerticalVelocity()<0 && this.isJumping()){
-			this.setJumping(false);
-			this.setVerticalVelocity(0);
+			this.endJump();
 		}
 		else if(!this.canHaveAsLocation(this.getHorizontalLocation(), this.getVerticalLocation()-1) && !this.checkWaterAndNoAirContact()){
-			this.setJumping(false);
-			this.setVerticalVelocity(0);
+			this.endJump();
 		}
 		else if(this.canHaveAsLocation(this.getHorizontalLocation(), this.getVerticalLocation()-1) && !this.checkWaterAndNoAirContact()){
 			this.setJumping(true);

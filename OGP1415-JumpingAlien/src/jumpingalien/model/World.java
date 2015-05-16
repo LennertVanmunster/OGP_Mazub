@@ -1066,6 +1066,42 @@ public class World {
 		return (Mazub) gameObjects.get(0);
 	}
 	
+	public boolean canHaveAsBuzam(Buzam buzam){
+		if (!this.getGameHasStarted()){
+			if(buzam==null){
+				return true;
+			}
+			else{
+				return buzam.canHaveAsLocation(buzam.getHorizontalLocation(),buzam.getVerticalLocation());
+			}
+		}
+		else{
+			if(buzam==null){
+				return false;
+			}
+			if(this.isTerminated() && !buzam.isTerminated()){
+				return false;
+			}
+			else{
+				return buzam.canHaveAsLocation(buzam.getHorizontalLocation(),buzam.getVerticalLocation());
+			}
+		}
+	}
+	
+	public void setBuzam(Buzam buzam) throws IllegalArgumentException{
+		if(!canHaveAsBuzam(buzam)){
+			throw new IllegalArgumentException("Not a valid Buzam!");
+		}
+		if(this.getGameHasStarted()){
+			throw new IllegalArgumentException("Cannot set a Bazum in a started game!");
+		}
+		gameObjects.add(1,buzam);
+	}
+	
+	public Buzam getBuzam(){
+		return (Buzam) gameObjects.get(1);
+	}
+	
 	/**
 	 * Return the number of game objects in this world.
 	 * 
@@ -1085,6 +1121,11 @@ public class World {
 	@Raw
 	public static boolean isValidNbGameObjects(int nbGameObjects){
 		return nbGameObjects<=100 && nbGameObjects>=0;
+	}
+	
+	public List<GameObject> getAllGameObjects(){
+		List<GameObject> allGameObjects=new ArrayList<GameObject>(gameObjects);
+		return allGameObjects;
 	}
 
 	/**

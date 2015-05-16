@@ -147,9 +147,7 @@ public class Facade implements IFacadePart3 {
 	 *            The alien that has to stop moving left.
 	 */
 	public void endMoveLeft(Mazub alien){
-		if(alien.getDirection()==Direction.LEFT){
-			alien.endMove();
-		}
+		alien.endMove(Direction.LEFT);
 	}
 
 	/**
@@ -169,9 +167,7 @@ public class Facade implements IFacadePart3 {
 	 *            The alien that has to stop moving right.
 	 */
 	public void endMoveRight(Mazub alien){
-		if(alien.getDirection()==Direction.RIGHT){
-			alien.endMove();
-		}
+		alien.endMove(Direction.RIGHT);
 	}
 
 	/**

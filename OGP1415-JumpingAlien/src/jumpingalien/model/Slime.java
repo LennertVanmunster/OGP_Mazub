@@ -233,9 +233,33 @@ public class Slime extends GameObject {
 		Random r = new Random();
 		this.setCurrentActionDuration(getMinimumActionDuration()+(getMaximumActionDuration()-getMinimumActionDuration())*r.nextDouble());
 		this.setDirection(r.nextBoolean() ? Direction.LEFT : Direction.RIGHT);
-		this.setMovingHorizontally(true);
 		this.setTimeSinceStartAction(0);
-		this.setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*this.getDirection().getNumberForCalculations());
+		this.startMove(getDirection());
+	}
+	
+	public void startMove(Direction direction){
+		setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*direction.getNumberForCalculations());
+		setMovingHorizontally(true);
+	}
+	
+	public void endMove(Direction direction){
+		if(direction==this.getDirection()){
+			setHorizontalVelocity(0);
+			setMovingHorizontally(false);
+		}
+	}
+	
+	public void startJump(){
+		if (!isJumping()){
+			setJumping(true);
+			setVerticalVelocity(getInitialVerticalVelocity());
+		}
+	}
+	
+	public void endJump(){
+		if (getVerticalVelocity()>0){
+			setVerticalVelocity(0);
+		}
 	}
 	
 	/**

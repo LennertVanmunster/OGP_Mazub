@@ -371,7 +371,7 @@ public abstract class GameObject {
 	 */
 	@Basic
 	@Raw
-	protected double getMaximumHorizontalVelocity(){
+	public double getMaximumHorizontalVelocity(){
 		return this.maximumHorizontalVelocity;
 	}
 	
@@ -380,7 +380,7 @@ public abstract class GameObject {
 	 */
 	@Basic
 	@Raw
-	protected double getInitialHorizontalVelocity(){
+	public double getInitialHorizontalVelocity(){
 		return this.initialHorizontalVelocity;
 	}
 	
@@ -856,6 +856,14 @@ public abstract class GameObject {
 	 * Variable registering the current horizontal moving state of this game object.
 	 */
 	private boolean isMovingHorizontally=false;
+	
+	public abstract void startMove(Direction direction);
+	
+	public abstract void endMove(Direction direcation);
+	
+	public abstract void startJump();
+	
+	public abstract void endJump();
 	
 	/**
 	 * Check whether the given game object overlaps with the given tiles.

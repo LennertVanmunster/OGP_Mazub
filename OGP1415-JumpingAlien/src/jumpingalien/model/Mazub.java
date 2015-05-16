@@ -268,6 +268,12 @@ public class Mazub extends GameObject {
 		setTimeSinceStartMove(0);
 	}
 	
+	public void endMove(Direction direction){
+		if(direction==this.getDirection()){
+			endMove();
+		}
+	}
+	
 	/**
 	 * Make this Mazub jump if this Mazub isn't jumping already.
 	 * 

@@ -274,6 +274,12 @@ public class Buzam extends GameObject {
 		setTimeSinceStartMove(0);
 	}
 	
+	public void endMove(Direction direction){
+		if(direction==this.getDirection()){
+			endMove();
+		}
+	}
+	
 	/**
 	 * Make this Buzam jump if this Buzam isn't jumping already.
 	 * 

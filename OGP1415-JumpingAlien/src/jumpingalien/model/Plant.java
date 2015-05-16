@@ -303,7 +303,27 @@ public class Plant extends GameObject {
 	private void startNewAction(){
 		this.setTimeSinceStartAction(0);
 		this.setNewDirection();
-		this.setHorizontalVelocity(this.getDirection().getNumberForCalculations() * getVelocityConstant());
+		startMove(getDirection());
+	}
+	
+	public void startMove(Direction direction){
+		setHorizontalVelocity(direction.getNumberForCalculations()*getVelocityConstant());
+		setMovingHorizontally(true);
+	}
+	
+	public void endMove(Direction direction){
+		if(direction==this.getDirection()){
+			setHorizontalVelocity(0);
+			setMovingHorizontally(false);
+		}
+	}
+	
+	public void startJump(){
+		
+	}
+	
+	public void endJump(){
+		
 	}
 	
 	/**
