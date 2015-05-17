@@ -24,8 +24,8 @@ public class Addition extends BinaryOperation {
 	}
 
 	public Object evaluate(Program program) {
-		return (double)this.getExpressionLeft().evaluate(program) + 
-				(double)this.getExpressionRight().evaluate(program);
+		return (double) this.getExpressionLeft().evaluate(program) + 
+				(double) this.getExpressionRight().evaluate(program);
 	}
 
 }

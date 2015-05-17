@@ -15,7 +15,13 @@ public class Skip extends Statement{
 	@Override
 	public void execute(Program program) {
 		if(this.isToBeExecuted()){
-			
+			if( program.hasTimeForStatement()){
+				program.decreaseTimerOneUnit();
+				this.setToBeExecuted(false);
+			}
+			else{
+				program.setTimeDepleted(true);
+			}
 		}
 	}
 }

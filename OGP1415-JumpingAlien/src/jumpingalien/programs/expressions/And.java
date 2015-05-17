@@ -28,8 +28,8 @@ public class And extends BinaryOperation {
 
 	@Override
 	public Object evaluate(Program program) {
-		return (boolean)this.getExpressionLeft().evaluate(program) &&
-				(boolean)this.getExpressionRight().evaluate(program);
+		return (boolean) this.getExpressionLeft().evaluate(program) &&
+				(boolean) this.getExpressionRight().evaluate(program);
 	}
 
 }

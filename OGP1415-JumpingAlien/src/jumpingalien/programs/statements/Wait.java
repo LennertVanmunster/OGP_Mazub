@@ -23,15 +23,21 @@ public class Wait extends Statement{
 	}
 
 	private Expression duration;
- 
-//	public Wait(){
-//		this(new SourceLocation(0,0));
-//	}
 
+	public double getTimer() {
+		return this.timer;
+	}
+
+	public void setTimer(double timer) {
+		this.timer = timer;
+	}
+
+	private double timer;
+	
 	@Override
 	public void execute(Program program) {
-		if(this.isToBeExecuted()){
-			
+		if(this.isToBeExecuted() && program.hasTimeForStatement()){
+			program.setTimer(program.getTimer()- (double) this.getDuration().evaluate(program));
 		}
 	}
 }

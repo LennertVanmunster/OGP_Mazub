@@ -30,10 +30,42 @@ public class While extends Statement{
 	
 	private Statement body;
 	
+	public boolean getCallSecondTime() {
+		return this.callSecondTime;
+	}
+
+
+	public void setCallSecondTime(boolean callSecondTime) {
+		this.callSecondTime = callSecondTime;
+	}
+
+	private boolean callSecondTime=false;
+	
 	public void execute(Program program){
 		if(this.isToBeExecuted()){
-			while((boolean) condition.evaluate(program)){
-				body.execute(program);
+			if (program.hasTimeForStatement()){
+				while(((boolean) condition.evaluate(program) && program.hasTimeForStatement()) || this.getCallSecondTime()){
+					if(this.getCallSecondTime()){
+						this.setCallSecondTime(false);
+					}
+					else{
+						program.decreaseTimerOneUnit();
+						getBody().setToBeExecuted(true);
+					}
+					getBody().execute(program);
+				}
+				if (program.hasTimeForStatement()){
+					program.decreaseTimerOneUnit();
+					this.setToBeExecuted(false);
+				}
+				else{
+					if(program.isTimeDepleted()){
+						this.setCallSecondTime(true);
+					}
+				}
+			}
+			else{
+				program.setTimeDepleted(true);
 			}
 		}	
 	}

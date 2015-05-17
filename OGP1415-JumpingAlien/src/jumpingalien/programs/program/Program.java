@@ -65,7 +65,14 @@ public class Program {
 	
 	public void execute(double deltaTime){
 		if(!this.hasStopped()){
+			setTimer(deltaTime);
 			getMainStatement().execute(this);
+			if(!this.isTimeDepleted()){
+				getMainStatement().setToBeExecuted(true);
+			}
+			else{
+				setTimeDepleted(false);
+			}
 		}
 	}
 	
@@ -82,6 +89,36 @@ public class Program {
 	public boolean isWellFormed() {
 		return true;
 	}
+	
+	public double getTimer() {
+		return this.timer;
+	}
+
+	public void setTimer(double timer) {
+		this.timer = timer;
+	}
+	
+	public void decreaseTimerOneUnit(){
+		setTimer(getTimer()-TIME_UNIT);
+	}
+	
+	public boolean hasTimeForStatement(){
+		return getTimer()>0;
+	}
+
+	public boolean isTimeDepleted() {
+		return this.timeDepleted;
+	}
+
+	public void setTimeDepleted(boolean timeDepleted) {
+		this.timeDepleted = timeDepleted;
+	}
+
+	private double timer=Integer.MAX_VALUE;
+	
+	private boolean timeDepleted=false;
+	
+	private double TIME_UNIT=0.001;
 	
 	public void setGameObject(GameObject gameObject){
 		this.gameObject = gameObject;

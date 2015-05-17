@@ -49,11 +49,18 @@ public class If extends Statement{
 	
 	public void execute(Program program){
 		if(this.isToBeExecuted()){
-			if((boolean) condition.evaluate(program)){
-				getIfBody().execute(program);
+			if (program.hasTimeForStatement()){
+				program.decreaseTimerOneUnit();
+				if((boolean) condition.evaluate(program)){
+					getIfBody().execute(program);
+				}
+				else{
+					getElseBody().execute(program);
+				}
+				this.setToBeExecuted(false);
 			}
 			else{
-				getElseBody().execute(program);
+				program.setTimeDepleted(true);
 			}
 		}
 	}

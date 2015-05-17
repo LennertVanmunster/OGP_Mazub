@@ -86,20 +86,68 @@ public class ForEach extends Statement{
 
 	private Statement body;
 	
+	public int getLoopIndex() {
+		return this.loopIndex;
+	}
+
+	public void setLoopIndex(int loopIndex) {
+		this.loopIndex = loopIndex;
+	}
+
+	private int loopIndex=0;
+	
+	public boolean getCallSecondTime() {
+		return this.callSecondTime;
+	}
+
+
+	public void setCallSecondTime(boolean callSecondTime) {
+		this.callSecondTime = callSecondTime;
+	}
+
+	private boolean callSecondTime=false;
+	
 	public void execute(Program program){
-		if(this.isToBeExecuted()){
-			if(!canHaveAsVariableName(getVariableName(),program)){
-				program.stop();
-			}
-			else{
-				for(GameObject gameObject: createGameObjectList(program)){
-					program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
-					if(getWhere()!=null){
-						if((boolean) getWhere().evaluate(program)){
+		if(this.isToBeExecuted()){	
+			if(program.hasTimeForStatement()){
+				program.decreaseTimerOneUnit();
+				if(!canHaveAsVariableName(getVariableName(),program)){
+					program.stop();
+				}
+				else{
+					List<GameObject> gameObjectList=this.createGameObjectList(program);
+					int index= this.getLoopIndex();
+					while(index<gameObjectList.size() && !program.isTimeDepleted()){
+						GameObject gameObject= gameObjectList.get(index);
+						program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
+						if(!getCallSecondTime()){
+							getBody().setToBeExecuted(true);
+						}
+						else{
+							setCallSecondTime(false);
+						}
+						if(getWhere()!=null){
+							if((boolean) getWhere().evaluate(program)){
+								getBody().execute(program);
+							}
+						}
+						else{
 							getBody().execute(program);
 						}
+						this.setLoopIndex(this.getLoopIndex()+1);
+					}
+					if(program.isTimeDepleted()){
+						this.setLoopIndex(this.getLoopIndex()-1);
+						this.setCallSecondTime(true);
+					}
+					else{
+						this.setLoopIndex(0);
+						this.setToBeExecuted(false);
 					}
 				}
+			}
+			else{
+				program.setTimeDepleted(true);
 			}
 		}
 	}

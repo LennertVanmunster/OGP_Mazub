@@ -24,7 +24,13 @@ public class Break extends Statement {
 	@Override
 	public void execute(Program program) {
 		if(this.isToBeExecuted()){
-			this.getLoopStatement().setToBeExecuted(false);
+			if(program.hasTimeForStatement()){
+				program.decreaseTimerOneUnit();
+				this.getLoopStatement().setToBeExecuted(false);
+			}
+			else{
+				program.setTimeDepleted(true);
+			}
 		}
 	}
 	

@@ -15,7 +15,14 @@ public class StartJump extends Statement{
 	@Override
 	public void execute(Program program) {
 		if(this.isToBeExecuted()){
-			program.getGameObject().startJump();
+			if(program.hasTimeForStatement()){
+				program.decreaseTimerOneUnit();
+				program.getGameObject().startJump();
+				this.setToBeExecuted(false);
+			}
+			else{
+				program.setTimeDepleted(true);
+			}
 		}
 	}
 }

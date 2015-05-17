@@ -33,7 +33,14 @@ public class Assignment extends Statement {
 	
 	public void execute(Program program){
 		if(this.isToBeExecuted()){
-			program.putGlobalVariable(this.getVariableName(), this.getVariableType(), this.getValue());
+			if (program.hasTimeForStatement()){
+				program.decreaseTimerOneUnit();
+				program.putGlobalVariable(this.getVariableName(), this.getVariableType(), this.getValue());
+				this.setToBeExecuted(false);
+			}
+			else{
+				program.setTimeDepleted(true);
+			}
 		}
 	}
 }

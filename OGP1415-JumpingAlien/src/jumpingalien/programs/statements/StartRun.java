@@ -22,8 +22,15 @@ public class StartRun extends Statement {
 	
 	public void execute(Program program){
 		if(this.isToBeExecuted()){
-			GameObject gameObject = program.getGameObject();
-			gameObject.startMove((Direction) getDirection().evaluate(program));
+			if(program.hasTimeForStatement()){
+				program.decreaseTimerOneUnit();
+				GameObject gameObject = program.getGameObject();
+				gameObject.startMove((Direction) getDirection().evaluate(program));
+				this.setToBeExecuted(false);
+			}
+			else{
+				program.setTimeDepleted(true);
+			}
 		}
 	}
 }

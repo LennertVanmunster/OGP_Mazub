@@ -26,7 +26,14 @@ public class Print extends Statement{
 	@Override
 	public void execute(Program program) {
 		if(this.isToBeExecuted()){
-			System.out.println(value.evaluate(program));
+			if (program.hasTimeForStatement()){
+				program.decreaseTimerOneUnit();
+				System.out.println(value.evaluate(program));
+				this.setToBeExecuted(false);
+			}
+			else{
+				program.setTimeDepleted(true);
+			}
 		}
 	}
 }
