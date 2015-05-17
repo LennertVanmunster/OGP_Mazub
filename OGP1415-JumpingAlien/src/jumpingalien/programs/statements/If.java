@@ -9,7 +9,9 @@ public class If extends Statement{
 		super(sourceLocation);
 		setCondition(condition);
 		setIfBody(ifBody);
-		setElseBody(elseBody);
+		if(elseBody != null){
+			setElseBody(elseBody);
+		}
 	}
 	
 	public If(Expression condition, Statement ifBody, Statement elseBody){
@@ -54,7 +56,7 @@ public class If extends Statement{
 				if((boolean) condition.evaluate(program)){
 					getIfBody().execute(program);
 				}
-				else{
+				else if(getElseBody() != null){
 					getElseBody().execute(program);
 				}
 				this.setToBeExecuted(false);
