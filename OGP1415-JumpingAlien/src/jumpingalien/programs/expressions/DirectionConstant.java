@@ -3,9 +3,11 @@
  */
 package jumpingalien.programs.expressions;
 
-import jumpingalien.part3.programs.IProgramFactory.Direction;
+
+import jumpingalien.model.Orientation;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.*;
+import jumpingalien.part3.programs.IProgramFactory.Direction;
 import jumpingalien.part3.programs.SourceLocation;
 
 /**
@@ -20,7 +22,9 @@ public class DirectionConstant extends Expression {
 	}
 	
 	public DirectionConstant(Direction value) {
-		super(new SourceLocation(0,0));
+//		super(new SourceLocation(0,0));
+//		this.setDirection(value);
+		super(null);
 		this.setDirection(value);
 	}
 	
@@ -46,7 +50,7 @@ public class DirectionConstant extends Expression {
 
 	@Override
 	public Object evaluate(Program program) {
-		return this.getDirection();
+		return Orientation.DUMMY.convertDirectionIProgramFactory(this.getDirection());
 	}
 
 }

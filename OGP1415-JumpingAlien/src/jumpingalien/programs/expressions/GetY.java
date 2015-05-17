@@ -21,7 +21,6 @@ public class GetY extends Expression {
 	 */
 	public GetY(Expression expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)

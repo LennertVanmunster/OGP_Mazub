@@ -11,9 +11,11 @@ public class False extends Expression {
 	}
 	
 	public False(){
-		this(new SourceLocation(0,0));
+//		this(new SourceLocation(0,0));
+		this(null);
 	}
 	
+	@Override
 	public Object evaluate(Program program){
 		return false;
 	}

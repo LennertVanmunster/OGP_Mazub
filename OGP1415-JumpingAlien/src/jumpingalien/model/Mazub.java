@@ -59,7 +59,7 @@ public class Mazub extends GameObject {
 		if(isDucking())
 			startDuck();
 	}
-	
+
 	/**
 	 * Initialize this new Mazub to a Mazub with a horizontal and vertical velocity of 0m/s, 
 	 * an initial horizontal velocity of 1m/s, a maximum horizontal velocity of 3m/s and a false ducking state
@@ -237,7 +237,7 @@ public class Mazub extends GameObject {
 	 * @note	The precondition is asserted in setDirection()
 	 */
 	@Raw
-	public void startMove(Direction direction){
+	public void startMove(Orientation direction){
 		
 		if (isMovingHorizontally()==false){
 			setMovingHorizontally(true);
@@ -268,7 +268,7 @@ public class Mazub extends GameObject {
 		setTimeSinceStartMove(0);
 	}
 	
-	public void endMove(Direction direction){
+	public void endMove(Orientation direction){
 		if(direction==this.getDirection()){
 			endMove();
 		}
@@ -731,24 +731,24 @@ public class Mazub extends GameObject {
 			newSpriteIndex=0;
 		else if (!this.isMovingHorizontally() && this.isDucking() && this.getTimeSinceEndMove()>1)
 			newSpriteIndex=1;
-		else if (!this.isMovingHorizontally() && !this.isDucking() && this.getTimeSinceEndMove()<=1 && this.getDirection()==Direction.RIGHT)
+		else if (!this.isMovingHorizontally() && !this.isDucking() && this.getTimeSinceEndMove()<=1 && this.getDirection()==Orientation.RIGHT)
 			newSpriteIndex=2;
-		else if (!this.isMovingHorizontally() && !this.isDucking() && this.getTimeSinceEndMove()<=1 && this.getDirection()==Direction.LEFT)
+		else if (!this.isMovingHorizontally() && !this.isDucking() && this.getTimeSinceEndMove()<=1 && this.getDirection()==Orientation.LEFT)
 			newSpriteIndex=3;
-		else if (this.isMovingHorizontally() && this.getDirection()==Direction.RIGHT && this.isJumping() && !this.isDucking())
+		else if (this.isMovingHorizontally() && this.getDirection()==Orientation.RIGHT && this.isJumping() && !this.isDucking())
 			newSpriteIndex=4;
-		else if (this.isMovingHorizontally() && this.getDirection()==Direction.LEFT && this.isJumping() && !this.isDucking())
+		else if (this.isMovingHorizontally() && this.getDirection()==Orientation.LEFT && this.isJumping() && !this.isDucking())
 			newSpriteIndex=5;
-		else if ((this.isDucking() && this.getDirection()==Direction.RIGHT && this.getTimeSinceEndMove()<=1) || 
-				(this.isDucking() && this.getDirection()==Direction.RIGHT && this.getTimeSinceEndMove()>1 && this.isMovingHorizontally()))
+		else if ((this.isDucking() && this.getDirection()==Orientation.RIGHT && this.getTimeSinceEndMove()<=1) || 
+				(this.isDucking() && this.getDirection()==Orientation.RIGHT && this.getTimeSinceEndMove()>1 && this.isMovingHorizontally()))
 			newSpriteIndex=6;
-		else if ((this.isDucking() && this.getDirection()==Direction.LEFT && this.getTimeSinceEndMove()<=1) ||
-				(this.isDucking() && this.getDirection()==Direction.LEFT && this.getTimeSinceEndMove()>1 && this.isMovingHorizontally()))
+		else if ((this.isDucking() && this.getDirection()==Orientation.LEFT && this.getTimeSinceEndMove()<=1) ||
+				(this.isDucking() && this.getDirection()==Orientation.LEFT && this.getTimeSinceEndMove()>1 && this.isMovingHorizontally()))
 			newSpriteIndex=7;
 		else if(!this.isJumping() && !this.isDucking()){
 			int i = (int) Math.floor(this.getTimeSinceStartMove()/0.075);
 			int m=(this.getNbImages()-8)/2;
-			if (this.getDirection()==Direction.RIGHT){
+			if (this.getDirection()==Orientation.RIGHT){
 			newSpriteIndex=i%m+8;
 			}
 			else{

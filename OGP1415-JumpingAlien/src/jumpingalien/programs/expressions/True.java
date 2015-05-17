@@ -10,7 +10,8 @@ public class True extends Expression {
 		super(sourceLocation);
 	}
 	
-	public Boolean evaluate(Program program){
+	@Override
+	public Object evaluate(Program program){
 		return true;
 	}
 	public Type getType(){

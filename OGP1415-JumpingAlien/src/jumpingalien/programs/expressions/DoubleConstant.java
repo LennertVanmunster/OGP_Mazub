@@ -18,7 +18,9 @@ public class DoubleConstant extends Expression {
 	}
 	
 	public DoubleConstant(double value) {
-		this(value, new SourceLocation(0,0));
+//		this(value, new SourceLocation(0,0));
+		this(value, null);
+
 	}
 	
 	

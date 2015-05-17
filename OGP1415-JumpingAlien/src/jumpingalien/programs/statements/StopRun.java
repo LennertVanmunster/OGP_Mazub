@@ -1,6 +1,7 @@
 package jumpingalien.programs.statements;
 
 import jumpingalien.model.*;
+import jumpingalien.part3.programs.IProgramFactory.Direction;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.expressions.Expression;
 import jumpingalien.programs.program.Program;
@@ -27,7 +28,7 @@ public class StopRun extends Statement {
 			if(program.hasTimeForStatement()){
 				program.decreaseTimerOneUnit();
 				GameObject gameObject = program.getGameObject();
-				gameObject.endMove((Direction) getDirection().evaluate(program));
+				gameObject.endMove((Orientation) getDirection().evaluate(program));
 				this.setToBeExecuted(false);
 			}
 			else{

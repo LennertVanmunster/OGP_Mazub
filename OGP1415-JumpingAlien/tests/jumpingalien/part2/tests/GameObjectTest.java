@@ -2,7 +2,7 @@ package jumpingalien.part2.tests;
 
 import static jumpingalien.tests.util.TestUtils.spriteArrayForSize;
 import static org.junit.Assert.*;
-import jumpingalien.model.Direction;
+import jumpingalien.model.Orientation;
 import jumpingalien.model.IllegalLocationException;
 import jumpingalien.model.GameObject;
 import jumpingalien.model.Mazub;
@@ -267,8 +267,8 @@ public class GameObjectTest {
 	 */
 	@Test
 	public void testSetDirection_TrueCase() {
-		testGameObject.setDirection(Direction.LEFT);
-		assertEquals(testGameObject.getDirection(),Direction.LEFT);
+		testGameObject.setDirection(Orientation.LEFT);
+		assertEquals(testGameObject.getDirection(),Orientation.LEFT);
 	}
 	
 	/**
@@ -276,14 +276,14 @@ public class GameObjectTest {
 	 */
 	@Test
 	public void testSetDirection_FalseCase() {
-		testGameObject.setDirection(Direction.RIGHT);
-		assertNotEquals(testGameObject.getDirection(),Direction.LEFT);
+		testGameObject.setDirection(Orientation.RIGHT);
+		assertNotEquals(testGameObject.getDirection(),Orientation.LEFT);
 	}
 	
 	@Test
 	public void testIsValidDirection_TrueCases() {
-		assertTrue(Mazub.isValidDirection(Direction.RIGHT));
-		assertTrue(Mazub.isValidDirection(Direction.LEFT));
+		assertTrue(Mazub.isValidDirection(Orientation.RIGHT));
+		assertTrue(Mazub.isValidDirection(Orientation.LEFT));
 	}
 	
 	@Test

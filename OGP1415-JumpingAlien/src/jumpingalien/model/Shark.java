@@ -284,7 +284,7 @@ public class Shark extends GameObject{
 	private void startNewAction(){
 		Random r = new Random();
 		this.setCurrentActionDuration(getMinimumActionDuration()+(getMaximumActionDuration()-getMinimumActionDuration())*r.nextDouble());
-		this.setDirection(r.nextBoolean() ? Direction.LEFT : Direction.RIGHT);
+		this.setDirection(r.nextBoolean() ? Orientation.LEFT : Orientation.RIGHT);
 		this.startMove(getDirection());
 		this.setTimeSinceStartAction(0);
 		if(this.getNbMovementsSinceLastJump() >= 4 && (r.nextDouble()>getRandomMovementChance())){
@@ -297,12 +297,12 @@ public class Shark extends GameObject{
 		}
 	}
 	
-	public void startMove(Direction direction){
+	public void startMove(Orientation direction){
 		setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*direction.getNumberForCalculations());
 		setMovingHorizontally(true);
 	}
 	
-	public void endMove(Direction direction){
+	public void endMove(Orientation direction){
 		if(direction==this.getDirection()){
 			setHorizontalVelocity(0);
 			setMovingHorizontally(false);

@@ -171,9 +171,9 @@ public abstract class GameObject {
 				this.setMovingHorizontally(true);
 			}
 			if (Util.fuzzyGreaterThanOrEqualTo(horizontalVelocity, 0))
-				setDirection(Direction.RIGHT);
+				setDirection(Orientation.RIGHT);
 			else
-				setDirection(Direction.LEFT);
+				setDirection(Orientation.LEFT);
 			if(!isValidMaxHitPoints(maxHitPoints)){
 				throw new IllegalArgumentException("Not a valid number of maximum hit points!");
 			}
@@ -673,7 +673,7 @@ public abstract class GameObject {
 	 */
 	@Basic
 	@Raw
-	public Direction getDirection(){
+	public Orientation getDirection(){
 		return this.direction;
 	}
 	
@@ -686,8 +686,8 @@ public abstract class GameObject {
 	 * 			| (direction == Direction.LEFT) || (direction == Direction.RIGHT)
 	 */
 	@Raw
-	public void setDirection(Direction direction){
-		assert (direction==Direction.LEFT || direction==Direction.RIGHT);
+	public void setDirection(Orientation direction){
+		assert (direction==Orientation.LEFT || direction==Orientation.RIGHT);
 		this.direction = direction;
 	}
 	
@@ -699,14 +699,14 @@ public abstract class GameObject {
 	 * @return	True if and only if the given direction is either LEFT or RIGHT.
 	 * 			|result == ((direction == Direction.LEFT) || (direction == Direction.RIGHT))
 	 */
-	public static boolean isValidDirection(Direction direction){
-		return ((direction == Direction.LEFT) || (direction == Direction.RIGHT));
+	public static boolean isValidDirection(Orientation direction){
+		return ((direction == Orientation.LEFT) || (direction == Orientation.RIGHT));
 	}
 	
 	/**
 	 * Variable registering the direction game object is facing.
 	 */
-	private Direction direction = Direction.LEFT;
+	private Orientation direction = Orientation.LEFT;
 	/**
 	 * Return the ducking state of this game object.
 	 */
@@ -857,9 +857,9 @@ public abstract class GameObject {
 	 */
 	private boolean isMovingHorizontally=false;
 	
-	public abstract void startMove(Direction direction);
+	public abstract void startMove(Orientation direction);
 	
-	public abstract void endMove(Direction direction);
+	public abstract void endMove(Orientation direction);
 	
 	public abstract void startJump();
 	
@@ -1545,7 +1545,7 @@ public abstract class GameObject {
 	 * Return the current Sprite of this game object.
 	 */
 	public Sprite getCurrentSprite(){
-		if(this.getDirection() == Direction.LEFT)
+		if(this.getDirection() == Orientation.LEFT)
 			return getImageAt(0);
 		else 
 			return getImageAt(1);

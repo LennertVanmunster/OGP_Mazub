@@ -36,8 +36,13 @@ public class Wait extends Statement{
 	
 	@Override
 	public void execute(Program program) {
-		if(this.isToBeExecuted() && program.hasTimeForStatement()){
-			program.setTimer(program.getTimer()- (double) this.getDuration().evaluate(program));
+		if(this.isToBeExecuted()){
+			if(program.hasTimeForStatement()){
+				program.setTimer( program.getTimer()- (double) this.getDuration().evaluate(program));
+			}
+			else{
+				program.setTimeDepleted(true);
+			}
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package jumpingalien.programs.program;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import jumpingalien.model.GameObject;
@@ -59,9 +60,9 @@ public class Program {
 		return expression.getType().getClass().equals(type.getClass());
 	}
 	
-	private Map<String,Type> globalVariables;
+	private Map<String,Type> globalVariables = new HashMap<String, Type>();
 	
-	private Map<String,Expression> globalVariableValues;
+	private Map<String,Expression> globalVariableValues = new HashMap<String, Expression>();
 	
 	public void execute(double deltaTime){
 		if(!this.hasStopped()){
