@@ -21,7 +21,6 @@ public class IsMazub extends Expression {
 	 */
 	public IsMazub(Expression expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)

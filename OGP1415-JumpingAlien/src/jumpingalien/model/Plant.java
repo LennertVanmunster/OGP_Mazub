@@ -306,12 +306,12 @@ public class Plant extends GameObject {
 		startMove(getDirection());
 	}
 	
-	public void startMove(Direction direction){
+	public void startMove(Orientation direction){
 		setHorizontalVelocity(direction.getNumberForCalculations()*getVelocityConstant());
 		setMovingHorizontally(true);
 	}
 	
-	public void endMove(Direction direction){
+	public void endMove(Orientation direction){
 		if(direction==this.getDirection()){
 			setHorizontalVelocity(0);
 			setMovingHorizontally(false);
@@ -336,10 +336,10 @@ public class Plant extends GameObject {
 	 *			|	new.getDirection == Direction.LEFT;
 	 */
 	private void setNewDirection(){
-		if(this.getDirection() == Direction.LEFT)
-			this.setDirection(Direction.RIGHT);
-		else if(this.getDirection() == Direction.RIGHT)
-			this.setDirection(Direction.LEFT);
+		if(this.getDirection() == Orientation.LEFT)
+			this.setDirection(Orientation.RIGHT);
+		else if(this.getDirection() == Orientation.RIGHT)
+			this.setDirection(Orientation.LEFT);
 	}
 	
 	

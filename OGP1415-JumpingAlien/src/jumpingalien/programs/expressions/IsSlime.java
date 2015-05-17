@@ -21,7 +21,6 @@ public class IsSlime extends Expression {
 	 */
 	public IsSlime(Expression expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
-		// TODO Auto-generated constructor stub
 	}
 
 

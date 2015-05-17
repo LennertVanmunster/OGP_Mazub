@@ -3,7 +3,7 @@ package jumpingalien.part2.tests;
 
 import static jumpingalien.tests.util.TestUtils.spriteArrayForSize;
 import static org.junit.Assert.*;
-import jumpingalien.model.Direction;
+import jumpingalien.model.Orientation;
 import jumpingalien.model.Mazub;
 import jumpingalien.model.World;
 import jumpingalien.util.Util;
@@ -154,7 +154,7 @@ public class MazubTest {
 	
 	@Test
 	public void testStartMove() {
-		testMazub.startMove(Direction.RIGHT);
+		testMazub.startMove(Orientation.RIGHT);
 		//1 is the initial horizontal velocity
 		assertTrue(Util.fuzzyEquals(testMazub.getHorizontalVelocity(),1));
 		assertTrue(Util.fuzzyEquals(testMazub.getTimeSinceStartMove(),0));
@@ -164,7 +164,7 @@ public class MazubTest {
 	
 	@Test
 	public void testEndMove() {
-		testMazub.startMove(Direction.RIGHT);
+		testMazub.startMove(Orientation.RIGHT);
 		testMazub.advanceTime(0.19);
 		testMazub.endMove();
 		assertTrue(Util.fuzzyEquals(testMazub.getHorizontalVelocity(),0));
@@ -196,7 +196,7 @@ public class MazubTest {
 	public void testStartDuck() {
 		notDuckingTestMazub.startDuck();
 		assertTrue(notDuckingTestMazub.isDucking());
-		notDuckingTestMazub.startMove(Direction.RIGHT);
+		notDuckingTestMazub.startMove(Orientation.RIGHT);
 		assertTrue(Util.fuzzyEquals(notDuckingTestMazub.getHorizontalVelocity(),notDuckingTestMazub.getInitialHorizontalVelocityForUpdate()));
 	}
 

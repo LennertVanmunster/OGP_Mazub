@@ -7,6 +7,8 @@ import jumpingalien.programs.program.Program;
 public class While extends Statement{
 	public While(Expression condition, Statement body, SourceLocation sourceLocation){
 		super(sourceLocation);
+		this.setCondition(condition);
+		this.setBody(body);
 	}
 	
 	
@@ -32,8 +34,8 @@ public class While extends Statement{
 	
 	public void execute(Program program){
 		if(this.isToBeExecuted()){
-			while((boolean) condition.evaluate(program)){
-				body.execute(program);
+			while((boolean) this.getCondition().evaluate(program)){
+				this.getBody().execute(program);
 			}
 		}	
 	}

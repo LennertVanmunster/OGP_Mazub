@@ -27,7 +27,7 @@ public class Not extends Expression {
 
 	@Override
 	public Object evaluate(Program program) {
-		return this.getExpression().evaluate(program);
+		return !(boolean)this.getExpression().evaluate(program);
 	}
 
 }

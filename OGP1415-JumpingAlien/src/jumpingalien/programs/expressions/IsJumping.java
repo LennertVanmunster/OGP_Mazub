@@ -34,7 +34,7 @@ public class IsJumping extends Expression {
 	@Override
 	public Object evaluate(Program program) {
 		GameObject gameObject = ((GameObject)this.getExpression().evaluate(program));
-		return gameObject.isDucking();
+		return gameObject.isJumping();
 	}
 
 }

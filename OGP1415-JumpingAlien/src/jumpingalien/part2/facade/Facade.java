@@ -124,7 +124,7 @@ public class Facade implements IFacadePart2 {
 	 *            The alien that has to start moving left.
 	 */
 	public void startMoveLeft(Mazub alien){
-		alien.startMove(Direction.LEFT);
+		alien.startMove(Orientation.LEFT);
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class Facade implements IFacadePart2 {
 	 *            The alien that has to stop moving left.
 	 */
 	public void endMoveLeft(Mazub alien){
-		if(alien.getDirection()==Direction.LEFT){
+		if(alien.getDirection()==Orientation.LEFT){
 			alien.endMove();
 		}
 	}
@@ -146,7 +146,7 @@ public class Facade implements IFacadePart2 {
 	 *            The alien that has to start moving right.
 	 */
 	public void startMoveRight(Mazub alien){
-		alien.startMove(Direction.RIGHT);
+		alien.startMove(Orientation.RIGHT);
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class Facade implements IFacadePart2 {
 	 *            The alien that has to stop moving right.
 	 */
 	public void endMoveRight(Mazub alien){
-		if(alien.getDirection()==Direction.RIGHT){
+		if(alien.getDirection()==Orientation.RIGHT){
 			alien.endMove();
 		}
 	}

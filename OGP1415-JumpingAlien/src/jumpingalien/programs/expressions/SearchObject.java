@@ -3,7 +3,7 @@
  */
 package jumpingalien.programs.expressions;
 
-import jumpingalien.model.Direction;
+import jumpingalien.model.Orientation;
 import jumpingalien.model.GameObject;
 import jumpingalien.model.World;
 import jumpingalien.part3.programs.SourceLocation;
@@ -38,14 +38,14 @@ public class SearchObject extends Expression {
 	@Override
 	public Object evaluate(Program program) {
 		Object object = null;
-		Direction direction = (Direction) this.getExpression().evaluate(program);
+		Orientation direction = (Orientation) this.getExpression().evaluate(program);
 		GameObject gameObject = program.getGameObject();
 		int[] position = {(int) gameObject.getHorizontalLocation(), (int) gameObject.getVerticalLocation()};
 		World world = program.getWorld();
-		if(direction == Direction.RIGHT || direction == Direction.LEFT){
+		if(direction == Orientation.RIGHT || direction == Orientation.LEFT){
 			while(gameObject.canHaveAsLocation(position[0], position[1])){
 				object = gameObject.getGameObjectAtPixelPosition(position[0], position[1]);
-				if(object != null){
+				if(object != null && object != gameObject){
 					return object;
 				}
 				position[0] = position[0] + direction.getNumberForCalculations();
@@ -55,10 +55,10 @@ public class SearchObject extends Expression {
 					object = null;
 				}
 			}
-		}else if(direction == Direction.UP || direction == Direction.DOWN){
+		}else if(direction == Orientation.UP || direction == Orientation.DOWN){
 			while(gameObject.canHaveAsLocation(position[0], position[1])){
 				object = gameObject.getGameObjectAtPixelPosition(position[0], position[1]);
-				if(object != null){
+				if(object != null && object != gameObject){
 					return object;
 				}
 				position[1] = position[1] + direction.getNumberForCalculations();
