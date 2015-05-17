@@ -595,7 +595,10 @@ public class Buzam extends GameObject {
 		}
 		else if(gameObject instanceof Mazub && gameObject.getHitPoints() != 0){
 			if(!isUntouchable() && !gameObject.isUntouchable()){
-				((Mazub) gameObject).removeHitPoints(50);
+				if(index3 == 0){
+					((Mazub) gameObject).removeHitPoints(50);
+					((Mazub) gameObject).setTimeSinceLastHitpointsLoss(0);
+				}
 				if(index2 == 0){
 					this.removeHitPoints(50);
 					this.setTimeSinceLastHitpointsLoss(0);

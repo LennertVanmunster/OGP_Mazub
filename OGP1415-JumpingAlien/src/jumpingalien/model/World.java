@@ -1096,6 +1096,7 @@ public class World {
 			throw new IllegalArgumentException("Cannot set a Bazum in a started game!");
 		}
 		gameObjects.add(1,buzam);
+		buzam.setWorld(this);
 	}
 	
 	public Buzam getBuzam(){

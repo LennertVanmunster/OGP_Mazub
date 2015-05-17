@@ -916,7 +916,7 @@ public class Facade implements IFacadePart3 {
 	 */
 	public void addBuzam(World world, Buzam buzam)throws ModelException{
 		try{
-			world.addAsGameObject(buzam);
+			world.setBuzam(buzam);
 		}catch (IllegalArgumentException exc){
 			throw new ModelException("This buzam cannot be added to this world!");
 		}

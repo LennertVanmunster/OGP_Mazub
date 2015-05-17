@@ -6,9 +6,10 @@ import java.util.List;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
 
-public class Sequence extends Statement{
+public class Sequence extends Statement {
 	public Sequence(List<Statement> statements, SourceLocation sourceLocation){
-		setStatements(statements);
+		super(sourceLocation);
+		this.setStatements(statements);
 	}
 	
 	public void setStatements(List<Statement> statements){

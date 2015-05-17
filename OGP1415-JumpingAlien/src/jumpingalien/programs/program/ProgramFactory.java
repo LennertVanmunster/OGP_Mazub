@@ -3,15 +3,12 @@ package jumpingalien.programs.program;
 import java.util.List;
 import java.util.Map;
 
+
 import jumpingalien.part3.programs.IProgramFactory;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.expressions.*;
-import jumpingalien.programs.statements.Statement;
-import jumpingalien.programs.types.BoolType;
-import jumpingalien.programs.types.DirectionType;
-import jumpingalien.programs.types.DoubleType;
-import jumpingalien.programs.types.GameObjectType;
-import jumpingalien.programs.types.Type;
+import jumpingalien.programs.statements.*;
+import jumpingalien.programs.types.*;
 
 public class ProgramFactory implements IProgramFactory<Expression, Statement, Type, Program> {
 
@@ -262,15 +259,13 @@ public class ProgramFactory implements IProgramFactory<Expression, Statement, Ty
 	@Override
 	public Statement createAssignment(String variableName, Type variableType,
 			Expression value, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Assignment(variableName, variableType, value, sourceLocation);
 	}
 
 	@Override
 	public Statement createWhile(Expression condition, Statement body,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new While(condition, body, sourceLocation);
 	}
 
 	@Override
@@ -281,85 +276,72 @@ public class ProgramFactory implements IProgramFactory<Expression, Statement, Ty
 			Expression sort,
 			jumpingalien.part3.programs.IProgramFactory.SortDirection sortDirection,
 			Statement body, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ForEach(variableName, variableKind, where, sort, sortDirection, body, sourceLocation);
 	}
 
 	@Override
 	public Statement createBreak(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Break(sourceLocation);
 	}
 
 	@Override
 	public Statement createIf(Expression condition, Statement ifBody,
 			Statement elseBody, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new If(condition, ifBody, elseBody, sourceLocation);
 	}
 
 	@Override
 	public Statement createPrint(Expression value, SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Print(value, sourceLocation);
 	}
 
 	@Override
 	public Statement createStartRun(Expression direction,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new StartRun(direction, sourceLocation);
 	}
 
 	@Override
 	public Statement createStopRun(Expression direction,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new StopRun(direction, sourceLocation);
 	}
 
 	@Override
 	public Statement createStartJump(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new StartJump(sourceLocation);
 	}
 
 	@Override
 	public Statement createStopJump(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new StopJump(sourceLocation);
 	}
 
 	@Override
 	public Statement createStartDuck(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new StartDuck(sourceLocation);
 	}
 
 	@Override
 	public Statement createStopDuck(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new StopDuck(sourceLocation);
 	}
 
 	@Override
 	public Statement createWait(Expression duration,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Wait(duration, sourceLocation);
 	}
 
 	@Override
 	public Statement createSkip(SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Skip(sourceLocation);
 	}
 
 	@Override
 	public Statement createSequence(List<Statement> statements,
 			SourceLocation sourceLocation) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Sequence(statements, sourceLocation);
 	}
 
 	@Override
