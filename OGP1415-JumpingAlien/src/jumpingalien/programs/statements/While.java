@@ -25,13 +25,16 @@ public class While extends Statement{
 
 	public void setBody(Statement body) {
 		this.body = body;
+		body.setNestingStatement(this);
 	}
 	
 	private Statement body;
 	
 	public void execute(Program program){
-		while((boolean) condition.evaluate(program)){
-			body.execute(program);
-		}
+		if(this.isToBeExecuted()){
+			while((boolean) condition.evaluate(program)){
+				body.execute(program);
+			}
+		}	
 	}
 }

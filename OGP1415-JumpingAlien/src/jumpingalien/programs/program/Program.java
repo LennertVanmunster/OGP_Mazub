@@ -65,7 +65,7 @@ public class Program {
 	
 	public void execute(double deltaTime){
 		if(!this.hasStopped()){
-			
+			getMainStatement().execute(this);
 		}
 	}
 	

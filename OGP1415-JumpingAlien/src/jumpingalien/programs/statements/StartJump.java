@@ -14,6 +14,8 @@ public class StartJump extends Statement{
 
 	@Override
 	public void execute(Program program) {
-		program.getGameObject().startJump();
+		if(this.isToBeExecuted()){
+			program.getGameObject().startJump();
+		}
 	}
 }

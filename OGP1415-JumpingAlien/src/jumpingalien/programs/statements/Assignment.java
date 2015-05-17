@@ -4,7 +4,7 @@ import jumpingalien.programs.expressions.Expression;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.Type;
 
-public class Assignment {
+public class Assignment extends Statement{
 	public Assignment(String variableName, Type variableType, Expression value){
 		this.variableName=variableName;
 		this.variableType=variableType;
@@ -30,6 +30,8 @@ public class Assignment {
 	Expression value;
 	
 	public void execute(Program program){
-		program.putGlobalVariable(this.getVariableName(), this.getVariableType(), this.getValue());
+		if(this.isToBeExecuted()){
+			program.putGlobalVariable(this.getVariableName(), this.getVariableType(), this.getValue());
+		}
 	}
 }

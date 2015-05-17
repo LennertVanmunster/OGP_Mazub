@@ -14,5 +14,8 @@ public class Wait extends Statement{
 
 	@Override
 	public void execute(Program program) {
+		if(this.isToBeExecuted()){
+			
+		}
 	}
 }

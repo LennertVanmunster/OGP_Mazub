@@ -21,7 +21,9 @@ public class StartRun extends Statement {
 	private Expression direction;
 	
 	public void execute(Program program){
-		GameObject gameObject = program.getGameObject();
-		gameObject.startMove((Direction) getDirection().evaluate(program));
+		if(this.isToBeExecuted()){
+			GameObject gameObject = program.getGameObject();
+			gameObject.startMove((Direction) getDirection().evaluate(program));
+		}
 	}
 }

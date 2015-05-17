@@ -5,7 +5,7 @@ import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.expressions.Expression;
 import jumpingalien.programs.program.Program;
 
-public class StopRun {
+public class StopRun extends Statement{
 
 	public StopRun(Expression direction, SourceLocation sourceLocation){
 		setDirection(direction);
@@ -22,7 +22,9 @@ public class StopRun {
 	private Expression direction;
 	
 	public void execute(Program program){
-		GameObject gameObject = program.getGameObject();
-		gameObject.endMove((Direction) getDirection().evaluate(program));
+		if(this.isToBeExecuted()){
+			GameObject gameObject = program.getGameObject();
+			gameObject.endMove((Direction) getDirection().evaluate(program));
+		}
 	}
 }

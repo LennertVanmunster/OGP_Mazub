@@ -14,6 +14,8 @@ public class StopJump extends Statement{
 
 	@Override
 	public void execute(Program program) {
-		program.getGameObject().endJump();
+		if(this.isToBeExecuted()){
+			program.getGameObject().endJump();
+		}
 	}
 }

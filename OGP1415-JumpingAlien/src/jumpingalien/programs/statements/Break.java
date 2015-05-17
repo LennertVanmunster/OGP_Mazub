@@ -11,11 +11,21 @@ public class Break extends Statement {
 	public Break(){
 		this(new SourceLocation(0,0));
 	}
+	
+	
+	public Statement getLoopStatement(){
+		Statement nestingStatement=this.getNestingStatement();
+		while (!(nestingStatement instanceof While) && !(nestingStatement instanceof ForEach)){
+			nestingStatement=nestingStatement.getNestingStatement();
+		}
+		return nestingStatement;
+	}
 
 	@Override
 	public void execute(Program program) {
-		
-		
+		if(this.isToBeExecuted()){
+			this.getLoopStatement().setToBeExecuted(false);
+		}
 	}
 	
 	

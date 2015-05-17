@@ -81,23 +81,27 @@ public class ForEach extends Statement{
 
 	public void setBody(Statement body) {
 		this.body = body;
+		body.setNestingStatement(this);
 	}
 
 	private Statement body;
 	
 	public void execute(Program program){
-		if(!canHaveAsVariableName(getVariableName(),program)){
-			program.stop();
-		}
-		for(GameObject gameObject: createGameObjectList(program)){
-			program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
-			if(getWhere()!=null){
-				if(true/*getWhere().evaluate()*/){
-					getBody().execute(program);
+		if(this.isToBeExecuted()){
+			if(!canHaveAsVariableName(getVariableName(),program)){
+				program.stop();
+			}
+			else{
+				for(GameObject gameObject: createGameObjectList(program)){
+					program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
+					if(getWhere()!=null){
+						if((boolean) getWhere().evaluate(program)){
+							getBody().execute(program);
+						}
+					}
 				}
 			}
 		}
-		
 	}
 	
 	public List<GameObject> createGameObjectList(Program program){

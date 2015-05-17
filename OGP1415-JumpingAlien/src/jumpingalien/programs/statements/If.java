@@ -31,6 +31,7 @@ public class If extends Statement{
 
 	public void setIfBody(Statement ifBody) {
 		this.ifBody = ifBody;
+		ifBody.setNestingStatement(this);
 	}
 
 	private Statement ifBody;
@@ -41,16 +42,19 @@ public class If extends Statement{
 
 	public void setElseBody(Statement elseBody) {
 		this.elseBody = elseBody;
+		elseBody.setNestingStatement(this);
 	}
 
 	private Statement elseBody;
 	
 	public void execute(Program program){
-		if((boolean) condition.evaluate(program)){
-			getIfBody().execute(program);
-		}
-		else{
-			getElseBody().execute(program);
+		if(this.isToBeExecuted()){
+			if((boolean) condition.evaluate(program)){
+				getIfBody().execute(program);
+			}
+			else{
+				getElseBody().execute(program);
+			}
 		}
 	}
 	

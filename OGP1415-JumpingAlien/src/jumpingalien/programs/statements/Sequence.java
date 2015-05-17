@@ -6,13 +6,16 @@ import java.util.List;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
 
-public class Sequence {
+public class Sequence extends Statement{
 	public Sequence(List<Statement> statements, SourceLocation sourceLocation){
-		
+		setStatements(statements);
 	}
 	
 	public void setStatements(List<Statement> statements){
 		this.statements=statements;
+		for(Statement statement: statements){
+			statement.setNestingStatement(this);
+		}
 	}
 	
 	public List<Statement> getStatements(){
@@ -23,8 +26,10 @@ public class Sequence {
 	List<Statement> statements = new ArrayList<Statement>();
 	
 	public void execute(Program program){
-		for(Statement statement: getStatements()){
-			statement.execute(program);
+		if(this.isToBeExecuted()){
+			for(Statement statement: getStatements()){
+				statement.execute(program);
+			}
 		}
 	}
 }

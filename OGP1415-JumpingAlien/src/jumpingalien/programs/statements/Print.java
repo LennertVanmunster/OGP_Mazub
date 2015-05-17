@@ -25,6 +25,8 @@ public class Print extends Statement{
 
 	@Override
 	public void execute(Program program) {
-		System.out.println(value.evaluate(program));
+		if(this.isToBeExecuted()){
+			System.out.println(value.evaluate(program));
+		}
 	}
 }

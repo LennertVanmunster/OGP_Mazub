@@ -22,5 +22,40 @@ public abstract class Statement {
 	
 	private SourceLocation sourceLocation = new SourceLocation(0,0);
 	
+	public Statement getNestingStatement() {
+		return this.nestingStatement;
+	}
+
+	public void setNestingStatement(Statement nestingStatement) {
+		this.nestingStatement = nestingStatement;
+	}
+
+	private Statement nestingStatement=null;
+	
+	public boolean isToBeExecuted() {
+		return this.toBeExecuted;
+	}
+
+	public void setToBeExecuted(boolean toBeExecuted) {
+		this.toBeExecuted = toBeExecuted;
+		if(this instanceof While){
+			((While) this).getBody().setToBeExecuted(toBeExecuted);
+		}
+		else if(this instanceof ForEach){
+			((ForEach) this).getBody().setToBeExecuted(toBeExecuted);
+		}
+		else if(this instanceof If){
+			((If) this).getIfBody().setToBeExecuted(toBeExecuted);
+			((If) this).getElseBody().setToBeExecuted(toBeExecuted);
+		}
+		else if(this instanceof Sequence){
+			for(Statement statement: ((Sequence) this).getStatements()){
+				statement.setToBeExecuted(toBeExecuted);
+			}
+		}
+	}
+
+	private boolean toBeExecuted=true;
+	
 	public abstract void execute(Program program);
 }
