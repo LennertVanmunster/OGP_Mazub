@@ -66,7 +66,8 @@ public class Program {
 	
 	public void execute(double deltaTime){
 		if(!this.hasStopped()){
-			setTimer(deltaTime);
+			this.setDeltaTime(deltaTime);
+			setTimer(this.getDeltaTime());
 			getMainStatement().execute(this);
 			if(!this.isTimeDepleted()){
 				getMainStatement().setToBeExecuted(true);
@@ -115,11 +116,21 @@ public class Program {
 		this.timeDepleted = timeDepleted;
 	}
 
+	public double getDeltaTime() {
+		return this.deltaTime;
+	}
+
+	public void setDeltaTime(double deltaTime) {
+		this.deltaTime = deltaTime;
+	}
+
 	private double timer=Integer.MAX_VALUE;
 	
 	private boolean timeDepleted=false;
 	
 	private double TIME_UNIT=0.001;
+	
+	private double deltaTime=Double.MAX_VALUE;
 	
 	public void setGameObject(GameObject gameObject){
 		this.gameObject = gameObject;

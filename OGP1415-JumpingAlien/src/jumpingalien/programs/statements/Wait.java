@@ -32,13 +32,19 @@ public class Wait extends Statement{
 		this.timer = timer;
 	}
 
-	private double timer;
+	private double timer=Double.MAX_VALUE;
 	
 	@Override
 	public void execute(Program program) {
 		if(this.isToBeExecuted()){
 			if(program.hasTimeForStatement()){
-				program.setTimer( program.getTimer()- (double) this.getDuration().evaluate(program));
+				if(this.getTimer()>0){
+					this.setTimer(program.getTimer() - (double) this.getDuration().evaluate(program));
+				}
+				else{
+					this.setTimer(this.getTimer()+program.getDeltaTime());
+				}
+				program.setTimer(this.getTimer());
 			}
 			else{
 				program.setTimeDepleted(true);
