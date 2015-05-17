@@ -109,7 +109,8 @@ public class Program {
 			return isWellFormedActionStatements(((While) statement).getBody());
 		}
 		else if ((statement instanceof StartDuck) || (statement instanceof StopDuck) || (statement instanceof StartRun)
-				|| (statement instanceof StopRun) || (statement instanceof StartJump) || (statement instanceof StopJump)){
+				|| (statement instanceof StopRun) || (statement instanceof StartJump) || (statement instanceof StopJump)
+				 || (statement instanceof Wait)  || (statement instanceof Skip)){
 			if(statement.getLoopStatement()==null){
 				return true;
 			}
