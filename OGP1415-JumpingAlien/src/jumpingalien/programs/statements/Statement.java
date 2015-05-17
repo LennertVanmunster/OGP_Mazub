@@ -32,6 +32,20 @@ public abstract class Statement {
 
 	private Statement nestingStatement=null;
 	
+	public Statement getLoopStatement(){
+		Statement nestingStatement=this.getNestingStatement();
+		if(nestingStatement==null){
+			return null;
+		}
+		while (!(nestingStatement instanceof While) && !(nestingStatement instanceof ForEach)){
+			nestingStatement=nestingStatement.getNestingStatement();
+			if(nestingStatement==null){
+				return null;
+			}
+		}
+		return nestingStatement;
+	}
+	
 	public boolean isToBeExecuted() {
 		return this.toBeExecuted;
 	}

@@ -88,8 +88,80 @@ public class Program {
 	
 	private boolean hasStopped=false;
 	
-	public boolean isWellFormed() {
-		return true;
+	
+	public boolean isWellFormedActionStatements(Statement statement) {
+		if(statement instanceof Sequence){
+			boolean isWellFormedSequence=true;
+			for(Statement subStatement: ((Sequence) statement).getStatements() ){
+				if(!isWellFormedActionStatements(subStatement)){
+					isWellFormedSequence=false;
+				}
+			}
+			return isWellFormedSequence;
+		}
+		else if(statement instanceof If){
+			return (isWellFormedActionStatements(((If) statement).getIfBody()) && isWellFormedActionStatements(((If) statement).getElseBody()));
+		}
+		else if(statement instanceof ForEach){
+			return ( isWellFormedActionStatements(((ForEach) statement).getBody()));
+		}
+		else if (statement instanceof While){
+			return isWellFormedActionStatements(((While) statement).getBody());
+		}
+		else if ((statement instanceof StartDuck) || (statement instanceof StopDuck) || (statement instanceof StartRun)
+				|| (statement instanceof StopRun) || (statement instanceof StartJump) || (statement instanceof StopJump)){
+			if(statement.getLoopStatement()==null){
+				return true;
+			}
+			else if(statement.getLoopStatement() instanceof ForEach){
+				return false;
+			}
+			else{
+				return true;
+			}
+		}
+		else{
+			return true;
+		}
+	}
+	
+	public boolean isWellFormedBreakStatements(Statement statement){
+		if(statement instanceof Sequence){
+			boolean isWellFormedSequence=true;
+			for(Statement subStatement: ((Sequence) statement).getStatements() ){
+				if(!isWellFormedBreakStatements(subStatement)){
+					isWellFormedSequence=false;
+				}
+			}
+			return isWellFormedSequence;
+		}
+		else if(statement instanceof If){
+			return (isWellFormedBreakStatements(((If) statement).getIfBody()) && isWellFormedBreakStatements(((If) statement).getElseBody()));
+		}
+		else if(statement instanceof ForEach){
+			return ( isWellFormedBreakStatements(((ForEach) statement).getBody()));
+		}
+		else if (statement instanceof While){
+			return isWellFormedBreakStatements(((While) statement).getBody());
+		}
+		else if (statement instanceof Break){
+			if(statement.getLoopStatement()==null){
+				return false;
+			}
+			else if((statement.getLoopStatement() instanceof ForEach) || (statement.getLoopStatement() instanceof While)){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else{
+			return true;
+		}
+	}
+	
+	public boolean isWellFormed(){
+		return isWellFormedActionStatements(this.getMainStatement()) && isWellFormedBreakStatements(this.getMainStatement());
 	}
 	
 	public double getTimer() {
