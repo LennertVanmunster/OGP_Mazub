@@ -66,8 +66,8 @@ public class GetTile extends Expression {
 
 	@Override
 	public Object evaluate(Program program) {
-		return program.getWorld().getTilePositionAtPixelLocation((int)(this.getX().evaluate(program)),
-				(int)(this.getY().evaluate(program)));
+		return program.getWorld().getTilePositionAtPixelLocation((int) Math.floor((double) (this.getX().evaluate(program))),
+				(int)Math.floor((double) (this.getY().evaluate(program))));
 	}
 
 }

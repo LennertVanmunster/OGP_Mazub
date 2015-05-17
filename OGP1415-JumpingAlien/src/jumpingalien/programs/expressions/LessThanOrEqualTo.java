@@ -35,8 +35,14 @@ public class LessThanOrEqualTo extends BinaryOperation {
 
 	@Override
 	public Object evaluate(Program program) {
-		return Util.fuzzyLessThanOrEqualTo((double)this.getExpressionLeft().evaluate(program), 
-		(double)this.getExpressionRight().evaluate(program));
+		System.out.print("Expressie links: " + this.getExpressionLeft().evaluate(program)
+				+ " Expressie rechts: " + this.getExpressionRight().evaluate(program));
+		if(this.getExpressionLeft().evaluate(program) != null && this.getExpressionRight().evaluate(program) != null){
+		return Util.fuzzyLessThanOrEqualTo(((double)this.getExpressionLeft().evaluate(program)), 
+				(double)this.getExpressionRight().evaluate(program));
+		}
+		else
+			return false;
 	}
 
 }

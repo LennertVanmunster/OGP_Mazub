@@ -35,7 +35,7 @@ public class GetHeigth extends Expression {
 
 	@Override
 	public Object evaluate(Program program) {
-		return ((GameObject)this.getExpression().evaluate(program)).getHeight();
+		return (double)((GameObject)this.getExpression().evaluate(program)).getHeight();
 	}
 
 }

@@ -33,7 +33,7 @@ public class GetHitPoints extends Expression {
 
 	@Override
 	public Object evaluate(Program program) {
-		return ((GameObject)this.getExpression().evaluate(program)).getHitPoints();
+		return (double)((GameObject)this.getExpression().evaluate(program)).getHitPoints();
 	}
 
 }

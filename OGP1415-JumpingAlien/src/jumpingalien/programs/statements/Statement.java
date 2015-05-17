@@ -55,12 +55,14 @@ public abstract class Statement {
 		if(this instanceof While){
 			((While) this).getBody().setToBeExecuted(toBeExecuted);
 		}
-		else if(this instanceof ForEach){
+		else if(this instanceof ForEach && ((ForEach) this).getBody() != null){
 			((ForEach) this).getBody().setToBeExecuted(toBeExecuted);
 		}
 		else if(this instanceof If){
 			((If) this).getIfBody().setToBeExecuted(toBeExecuted);
-			((If) this).getElseBody().setToBeExecuted(toBeExecuted);
+			if(((If) this).getElseBody() != null){
+				((If) this).getElseBody().setToBeExecuted(toBeExecuted);
+			}
 		}
 		else if(this instanceof Sequence){
 			for(Statement statement: ((Sequence) this).getStatements()){

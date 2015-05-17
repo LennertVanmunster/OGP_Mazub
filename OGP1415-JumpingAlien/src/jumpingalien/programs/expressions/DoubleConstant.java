@@ -36,7 +36,7 @@ public class DoubleConstant extends Expression {
 	private double value;
 	
 	public Object evaluate(Program program){
-		return this.getValue();
+		return (double)this.getValue();
 	}
 	
 	public Type getType(){

@@ -33,7 +33,7 @@ public class GetY extends Expression {
 
 	@Override
 	public Object evaluate(Program program) {
-		return ((GameObject)this.getExpression().evaluate(program)).getVerticalLocation();
+		return (double)((GameObject)this.getExpression().evaluate(program)).getVerticalLocation();
 	}
 
 }

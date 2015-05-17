@@ -37,8 +37,9 @@ public class ReadVariable extends Expression {
 
 	private Type variableType;
 	
-	public Expression evaluate(Program program){
-		return program.getGlobalVariableValues().get(getVariableName());
+	@Override
+	public Object evaluate(Program program){
+		return  program.getGlobalVariableValues().get(getVariableName()).evaluate(program);
 	}
 
 	@Override

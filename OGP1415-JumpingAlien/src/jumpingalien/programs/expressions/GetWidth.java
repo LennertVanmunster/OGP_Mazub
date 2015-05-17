@@ -35,7 +35,7 @@ public class GetWidth extends Expression {
 
 	@Override
 	public Object evaluate(Program program) {
-		return ((GameObject)this.getExpression().evaluate(program)).getWidth();
+		return (double)((GameObject)this.getExpression().evaluate(program)).getWidth();
 	}
 
 }

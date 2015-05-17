@@ -19,6 +19,11 @@ public class ForEach extends Statement{
 			SortDirection sortDirection, Statement body, SourceLocation sourceLocation){
 		super(sourceLocation);
 		setVariableName(variableName);
+		setVariableKind(variableKind);
+		setWhere(where);
+		setSort(sort);
+		setSortDirection(sortDirection);
+		setBody(body);
 	}
 	
 	public String getVariableName() {
@@ -181,16 +186,20 @@ public class ForEach extends Statement{
 		for(GameObject gameObject: gameObjectList){
 			program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
 			Expression sortExpression = getSort();
-			double sortDouble= (double) sortExpression.evaluate(program);
-			Double sortDoubleObject = new Double(sortDouble);
-			sortMap.put(gameObject, sortDoubleObject);
+			if(sortExpression != null){
+				double sortDouble= (double) sortExpression.evaluate(program);
+				Double sortDoubleObject = new Double(sortDouble);
+				sortMap.put(gameObject, sortDoubleObject);
+			}
 		}
-		switch(getSortDirection()){
-		case ASCENDING:
-			Collections.sort(gameObjectList, (GameObject g1, GameObject g2) -> sortMap.get(g1).compareTo(sortMap.get(g2)));
-			break;
-		case DESCENDING:
-			Collections.sort(gameObjectList, (GameObject g1, GameObject g2) -> sortMap.get(g2).compareTo(sortMap.get(g1)));
+		if(getSortDirection() != null){
+			switch(getSortDirection()){
+			case ASCENDING:
+				Collections.sort(gameObjectList, (GameObject g1, GameObject g2) -> sortMap.get(g1).compareTo(sortMap.get(g2)));
+				break;
+			case DESCENDING:
+				Collections.sort(gameObjectList, (GameObject g1, GameObject g2) -> sortMap.get(g2).compareTo(sortMap.get(g1)));
+			}
 		}
 		return gameObjectList;
 	}
