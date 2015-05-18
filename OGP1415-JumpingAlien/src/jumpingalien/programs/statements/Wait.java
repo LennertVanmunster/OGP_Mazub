@@ -42,9 +42,13 @@ public class Wait extends Statement{
 					this.setTimer(program.getTimer() - (double) this.getDuration().evaluate(program));
 				}
 				else{
-					this.setTimer(this.getTimer()+program.getDeltaTime());
+					this.setTimer(this.getTimer()+program.getTimer());
 				}
 				program.setTimer(this.getTimer());
+				if(program.getTimer()>0){
+					this.setTimer(Double.MAX_VALUE);
+					this.setToBeExecuted(false);;
+				}
 			}
 			else{
 				program.setTimeDepleted(true);

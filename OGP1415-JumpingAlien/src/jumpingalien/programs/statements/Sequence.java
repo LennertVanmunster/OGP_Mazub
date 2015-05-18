@@ -32,7 +32,6 @@ public class Sequence extends Statement {
 				for(Statement statement: getStatements()){
 					statement.execute(program);
 				}
-				this.setToBeExecuted(false);
 			}
 			else{
 				program.setTimeDepleted(true);

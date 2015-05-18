@@ -12,7 +12,7 @@ public class ExamplePrinter {
 		ProgramParser<PrintingObject, PrintingObject, PrintingObject, PrintingProgram> parser = new ProgramParser<>(
 				factory);
 
-		Optional<PrintingProgram> program = parser.parseFile("resources/programs/buzam.txt");
+		Optional<PrintingProgram> program = parser.parseFile("resources/programs/plant.txt");
 		//Optional<PrintingProgram> program = parser.parseString("double d := 1.0; while d < 3 do d := d + 1; print d; done");		
 		
 		if (program.isPresent()) {

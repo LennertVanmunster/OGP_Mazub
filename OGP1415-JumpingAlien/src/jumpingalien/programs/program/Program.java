@@ -66,8 +66,7 @@ public class Program {
 	
 	public void execute(double deltaTime){
 		if(!this.hasStopped()){
-			this.setDeltaTime(deltaTime);
-			setTimer(this.getDeltaTime());
+			setTimer(deltaTime);
 			getMainStatement().execute(this);
 			if(!this.isTimeDepleted()){
 				getMainStatement().setToBeExecuted(true);
