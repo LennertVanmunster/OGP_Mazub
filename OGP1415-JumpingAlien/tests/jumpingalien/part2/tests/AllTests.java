@@ -1,6 +1,9 @@
 package jumpingalien.part2.tests;
 
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { GameObjectTest.class, MazubTest.class,
@@ -8,4 +11,3 @@ package jumpingalien.part2.tests;
     SharkTest.class, SlimeTest.class, WorldTest.class})
 public class AllTests {
 }
-

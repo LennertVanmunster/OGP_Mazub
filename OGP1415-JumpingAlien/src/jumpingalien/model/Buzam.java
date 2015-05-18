@@ -243,6 +243,7 @@ public class Buzam extends GameObject {
 	 * @note	The precondition is asserted in setDirection()
 	 */
 	@Raw
+	@Override
 	public void startMove(Orientation direction){
 		
 		if (isMovingHorizontally()==false){
@@ -274,6 +275,17 @@ public class Buzam extends GameObject {
 		setTimeSinceStartMove(0);
 	}
 	
+	/**
+	 * Stop movement of this Buzam in the given direction.
+	 * 
+	 * @param	direction
+	 * 			The given direction.
+	 * @effect	If the given direction is equal to the direction of this buzam
+	 * 			then endMove()
+	 * 			|if(direction==this.getDirection()){
+	 * 			|then endMove();
+	 */
+	@Override
 	public void endMove(Orientation direction){
 		if(direction==this.getDirection()){
 			endMove();
@@ -292,6 +304,7 @@ public class Buzam extends GameObject {
 	 * 			There is no need to add a try catch statement.
 	 */
 	@Raw
+	@Override
 	public void startJump(){
 		if (!isJumping()){
 			setJumping(true);

@@ -306,12 +306,40 @@ public class Plant extends GameObject {
 		startMove(getDirection());
 	}
 	
+	/**
+	 * Start the horizontal movement of this Plant in the given direction.
+	 * 
+	 * @param 	direction
+	 * 			The desired direction in which this Plant will move.
+	 * @pre		The given direction must be a valid direction.
+	 * 			|isValidDirection(direction)
+	 * @effect	Set the horizontal velocity in the given direction.
+	 * 			|setHorizontalVelocity(direction.getNumberForCalculations()*getVelocityConstant())
+	 * @effect	Set the direction in the given direction.	
+	 * 			|setDirection(direction);
+	 * @effect	Set isMovingHorizontally to true.
+	 * 			|setMovingHorizontally(true);
+	 * @note	The precondition is asserted in setDirection()
+	 */
+	@Override
 	public void startMove(Orientation direction){
 		setHorizontalVelocity(direction.getNumberForCalculations()*getVelocityConstant());
 		setDirection(direction);
 		setMovingHorizontally(true);
 	}
 	
+	/**
+	 * Stop movement of this Plant in the given direction.
+	 * 
+	 * @param	direction
+	 * 			The given direction.
+	 * @effect	If the given direction is equal to the direction of this Plant
+	 * 			then set the horizontal velocity to zero en isMovingHorizontally to false.
+	 * 			|if(direction==this.getDirection()){
+	 * 			|	then setHorizontalVelocity(0)
+	 * 			|		 setMovingHorizontally(false)
+	 */
+	@Override
 	public void endMove(Orientation direction){
 		if(direction==this.getDirection()){
 			setHorizontalVelocity(0);
@@ -319,10 +347,18 @@ public class Plant extends GameObject {
 		}
 	}
 	
+	/**
+	 * Dummy implementation. A plant cannot jump.
+	 */
+	@Override
 	public void startJump(){
 		
 	}
 	
+	/**
+	 * Dummy implementation. A plant cannot jump.
+	 */
+	@Override
 	public void endJump(){
 		
 	}
