@@ -3,6 +3,7 @@
  */
 package jumpingalien.programs.expressions;
 
+import jumpingalien.model.Shark;
 import jumpingalien.model.Slime;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;

@@ -1,6 +1,7 @@
 package jumpingalien.programs.statements;
 
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.expressions.DoubleConstant;
 import jumpingalien.programs.expressions.Expression;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.Type;
@@ -35,7 +36,7 @@ public class Assignment extends Statement {
 		if(this.isToBeExecuted()){
 			if (program.hasTimeForStatement()){
 				program.decreaseTimerOneUnit();
-				program.putGlobalVariable(this.getVariableName(), this.getVariableType(), this.getValue());
+				program.putGlobalVariable(this.getVariableName(), this.getVariableType(), this.getVariableType().createExpression(this.getValue(), program));
 				this.setToBeExecuted(false);
 			}
 			else{

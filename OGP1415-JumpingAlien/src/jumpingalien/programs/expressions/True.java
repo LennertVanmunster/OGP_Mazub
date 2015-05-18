@@ -10,6 +10,12 @@ public class True extends Expression {
 		super(sourceLocation);
 	}
 	
+	public True(){
+		this(null);
+	}
+	
+	
+	
 	@Override
 	public Object evaluate(Program program){
 		return true;

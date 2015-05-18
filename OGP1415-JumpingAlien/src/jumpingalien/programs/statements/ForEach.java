@@ -121,9 +121,8 @@ public class ForEach extends Statement{
 				}
 				else{
 					List<GameObject> gameObjectList=this.createGameObjectList(program);
-					int index= this.getLoopIndex();
-					while(index<gameObjectList.size() && !program.isTimeDepleted()){
-						GameObject gameObject= gameObjectList.get(index);
+					while(this.getLoopIndex()<gameObjectList.size() && !program.isTimeDepleted()){
+						GameObject gameObject= gameObjectList.get(this.getLoopIndex());
 						program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
 						if(!getCallSecondTime()){
 							getBody().setToBeExecuted(true);
@@ -182,25 +181,25 @@ public class ForEach extends Statement{
 			//gameObjectList.addAll(program.getGameObject().getWorld().getTiles());
 			break;
 		}
-		HashMap<GameObject, Double> sortMap= new HashMap<GameObject, Double>();
-		for(GameObject gameObject: gameObjectList){
-			program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
-			Expression sortExpression = getSort();
-			if(sortExpression != null){
-				double sortDouble= (double) sortExpression.evaluate(program);
-				Double sortDoubleObject = new Double(sortDouble);
-				sortMap.put(gameObject, sortDoubleObject);
-			}
-		}
-		if(getSortDirection() != null){
-			switch(getSortDirection()){
-			case ASCENDING:
-				Collections.sort(gameObjectList, (GameObject g1, GameObject g2) -> sortMap.get(g1).compareTo(sortMap.get(g2)));
-				break;
-			case DESCENDING:
-				Collections.sort(gameObjectList, (GameObject g1, GameObject g2) -> sortMap.get(g2).compareTo(sortMap.get(g1)));
-			}
-		}
+//		HashMap<GameObject, Double> sortMap= new HashMap<GameObject, Double>();
+//		for(GameObject gameObject: gameObjectList){
+//			program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
+//			Expression sortExpression = getSort();
+//			if(sortExpression != null){
+//				double sortDouble= (double) sortExpression.evaluate(program);
+//				Double sortDoubleObject = new Double(sortDouble);
+//				sortMap.put(gameObject, sortDoubleObject);
+//			}
+//		}
+//		if(getSortDirection() != null){
+//			switch(getSortDirection()){
+//			case ASCENDING:
+//				Collections.sort(gameObjectList, (GameObject g1, GameObject g2) -> sortMap.get(g1).compareTo(sortMap.get(g2)));
+//				break;
+//			case DESCENDING:
+//				Collections.sort(gameObjectList, (GameObject g1, GameObject g2) -> sortMap.get(g2).compareTo(sortMap.get(g1)));
+//			}
+//		}
 		return gameObjectList;
 	}
 }

@@ -102,4 +102,20 @@ public enum Orientation {
 		}
 		return Orientation.RIGHT;
 	}
+	
+	public Direction convertOrientation(Orientation orientation){
+		switch(orientation){
+		case LEFT:
+			return Direction.LEFT;
+		case RIGHT:
+			return Direction.RIGHT;
+		case UP:
+			return Direction.UP;
+		case DOWN:
+			return Direction.DOWN;
+		case DUMMY:
+			return Direction.RIGHT;
+		}
+		return Direction.RIGHT;
+	}
 }

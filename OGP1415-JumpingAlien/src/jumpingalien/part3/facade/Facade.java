@@ -780,7 +780,7 @@ public class Facade implements IFacadePart3 {
 	public Buzam createBuzamWithProgram(int pixelLeftX, int pixelBottomY,
 			Sprite[] sprites, Program program){
 		try{
-			return new Buzam(pixelLeftX, pixelBottomY,program, sprites);
+			return new Buzam(pixelLeftX, pixelBottomY, program, sprites);
 		} catch (IllegalArgumentException exc){
 			throw new ModelException("Cannot create a Buzam with the given arguments!");
 		}
