@@ -932,7 +932,7 @@ public abstract class GameObject {
 	}
 	
 	public GameObject getGameObjectAtPixelPosition(int pixelX, int pixelY){
-		int [][] tile = {world.getTilePositionAtPixelLocation(pixelX, pixelY)};
+		int [][] tile = {this.getWorld().getTilePositionAtPixelLocation(pixelX, pixelY)};
 		List<GameObject> gameObjects = this.getGameObjectsAtTiles(tile);
 		for(int index = 0; index < gameObjects.size(); index++){
 			GameObject foundGameObject = gameObjects.get(index);

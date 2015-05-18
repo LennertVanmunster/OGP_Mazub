@@ -1,12 +1,23 @@
-package jumpingalien.part2.tests;
+package jumpingalien.part3.tests;
 
 import static jumpingalien.tests.util.TestUtils.spriteArrayForSize;
 import static org.junit.Assert.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import jumpingalien.model.Buzam;
 import jumpingalien.model.Orientation;
 import jumpingalien.model.IllegalLocationException;
 import jumpingalien.model.GameObject;
 import jumpingalien.model.Mazub;
 import jumpingalien.model.World;
+import jumpingalien.programs.program.Program;
+import jumpingalien.programs.statements.Break;
+import jumpingalien.programs.statements.StartJump;
+import jumpingalien.programs.statements.Statement;
+import jumpingalien.programs.statements.Wait;
+import jumpingalien.programs.types.Type;
 import jumpingalien.util.Sprite;
 import jumpingalien.util.Util;
 
@@ -38,6 +49,7 @@ public class GameObjectTest {
 	}
 
 	private GameObject testGameObject;
+	private GameObject testGameObject2;
 	private GameObject notJumpingTestGameObject;
 	private GameObject jumpingTestGameObject;
 	private GameObject notDuckingTestGameObject;
@@ -50,7 +62,10 @@ public class GameObjectTest {
 		testWorld.setTileValueAtTilePosition( 1, 1, FEATURE_SOLID);
 		testGameObject = new Mazub(0, 499, spriteArrayForSize(3, 3));
 		testGameObject.setWorld(testWorld);
-		testWorld.setMazub((Mazub) testGameObject);		
+		testWorld.setMazub((Mazub) testGameObject);	
+		testGameObject2 = new Buzam(0, 499, spriteArrayForSize(3, 3));
+		testGameObject2.setWorld(testWorld);
+		testWorld.setBuzam((Buzam) testGameObject2);	
 		jumpingTestGameObject = new Mazub(25, 500, 1, 3, 1, 3, false, spriteArrayForSize(2, 2));
 		jumpingTestGameObject.setWorld(testWorld);
 		testWorld.setMazub((Mazub) jumpingTestGameObject);
@@ -621,8 +636,29 @@ public class GameObjectTest {
 		assertTrue(testGameObject.isTerminated());
 	}
 	
+	//New methods made for part 3:
 	
-	
+	@Test
+	public void testgetGameObjectAtPixelPosition_TrueCase(){
+		testGameObject.setHorizontalLocation(100);
+		testGameObject.setVerticalLocation(499);
+		Object object = testGameObject.getGameObjectAtPixelPosition(100, 499);
+		assertTrue( object != null && object instanceof Mazub );
+		object = testGameObject.getGameObjectAtPixelPosition(101, 500);
+		assertTrue( object != null && object instanceof Mazub );
+		object = testGameObject.getGameObjectAtPixelPosition(99, 502);
+		assertTrue( object == null );
+	}
+
+	@Test
+	public void testSetProgram_TrueCase(){
+		Map<String,Type> globalVariables = new HashMap<String, Type>();
+		Statement statement =  new StartJump(null);
+		Program program = new Program(statement, globalVariables);
+		assertTrue(testGameObject2.getProgram() == null);
+		testGameObject2.setProgram(program);
+		assertTrue(testGameObject2.getProgram() != null);
+	}
 	
 	
 }
