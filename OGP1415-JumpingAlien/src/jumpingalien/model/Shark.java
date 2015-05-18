@@ -299,6 +299,7 @@ public class Shark extends GameObject{
 	
 	public void startMove(Orientation direction){
 		setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*direction.getNumberForCalculations());
+		setDirection(direction);
 		setMovingHorizontally(true);
 	}
 	
