@@ -308,6 +308,7 @@ public class Plant extends GameObject {
 	
 	public void startMove(Orientation direction){
 		setHorizontalVelocity(direction.getNumberForCalculations()*getVelocityConstant());
+		setDirection(direction);
 		setMovingHorizontally(true);
 	}
 	
