@@ -1,6 +1,3 @@
-/**
- * 
- */
 package jumpingalien.programs.expressions;
 
 import jumpingalien.model.GameObject;
@@ -10,9 +7,9 @@ import jumpingalien.programs.types.BoolType;
 import jumpingalien.programs.types.Type;
 
 /**
- * @author Pieter
- *
- */
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
 public class IsMoving extends Expression {
 
 
@@ -41,16 +38,14 @@ public class IsMoving extends Expression {
 
 	private Expression direction;
 
-	/* (non-Javadoc)
-	 * @see jumpingalien.programs.expressions.Expression#getType()
-	 */
+	
 	@Override
 	public Type getType() {
 		return new BoolType();
 	}
 
 	@Override
-	public Object evaluate(Program program) {
+	public Boolean evaluate(Program program) {
 		GameObject gameObject = ((GameObject)this.getExpression().evaluate(program));
 		return gameObject.isMovingHorizontally() && gameObject.getDirection() == this.getDirection().evaluate(program);
 				

@@ -1,14 +1,11 @@
-/**
- * 
- */
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
 
 /**
- * @author Pieter
- *
- */
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
 public abstract class BinaryOperation extends Expression{
 
 

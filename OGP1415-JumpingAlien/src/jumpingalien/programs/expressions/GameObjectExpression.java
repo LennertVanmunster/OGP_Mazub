@@ -6,6 +6,10 @@ import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.GameObjectType;
 import jumpingalien.programs.types.Type;
 
+/**
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
 public class GameObjectExpression extends Expression{
 	public GameObjectExpression(GameObject gameObject, SourceLocation sourceLocation){
 		super(sourceLocation);
@@ -26,6 +30,7 @@ public class GameObjectExpression extends Expression{
 
 	GameObject gameObject=null;
 	
+	@Override
 	public GameObject evaluate(Program program){
 		return getGameObject();
 	}

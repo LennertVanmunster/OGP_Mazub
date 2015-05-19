@@ -2,9 +2,12 @@ package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
-import jumpingalien.programs.types.*;
 
-public class True extends Expression {
+/**
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
+public class True extends BoolExpression {
 	
 	public True(SourceLocation sourceLocation){
 		super(sourceLocation);
@@ -15,13 +18,9 @@ public class True extends Expression {
 	}
 	
 	
-	
 	@Override
-	public Object evaluate(Program program){
+	public Boolean evaluate(Program program){
 		return true;
-	}
-	public Type getType(){
-		return new BoolType();
 	}
 
 }

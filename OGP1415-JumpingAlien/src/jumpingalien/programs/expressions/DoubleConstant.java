@@ -5,6 +5,10 @@ import jumpingalien.programs.program.*;
 
 import jumpingalien.programs.types.*;
 
+/**
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
 public class DoubleConstant extends Expression {
 
 
@@ -18,12 +22,11 @@ public class DoubleConstant extends Expression {
 	}
 	
 	public DoubleConstant(double value) {
-//		this(value, new SourceLocation(0,0));
 		this(value, null);
 
 	}
 	
-	
+
 	public double getValue() {
 		return value;
 	}
@@ -35,10 +38,12 @@ public class DoubleConstant extends Expression {
 
 	private double value;
 	
-	public Object evaluate(Program program){
+	@Override
+	public Double evaluate(Program program){
 		return (double)this.getValue();
 	}
 	
+	@Override
 	public Type getType(){
 		return new DoubleType();
 	}

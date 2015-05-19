@@ -1,19 +1,14 @@
-/**
- * 
- */
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
-import jumpingalien.programs.types.BoolType;
-import jumpingalien.programs.types.Type;
 import jumpingalien.util.Util;
 
 /**
- * @author Pieter
- *
- */
-public class LessThanOrEqualTo extends BinaryOperation {
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
+public class LessThanOrEqualTo extends Comparison {
 
 	/**
 	 * @param left
@@ -25,16 +20,8 @@ public class LessThanOrEqualTo extends BinaryOperation {
 		super(left, right, sourceLocation);
 	}
 
-	/* (non-Javadoc)
-	 * @see jumpingalien.programs.expressions.Expression#getType()
-	 */
 	@Override
-	public Type getType() {
-		return new BoolType();
-	}
-
-	@Override
-	public Object evaluate(Program program) {
+	public Boolean evaluate(Program program) {
 		if(this.getExpressionLeft().evaluate(program) != null && this.getExpressionRight().evaluate(program) != null){
 		return Util.fuzzyLessThanOrEqualTo(((double)this.getExpressionLeft().evaluate(program)), 
 				(double)this.getExpressionRight().evaluate(program));

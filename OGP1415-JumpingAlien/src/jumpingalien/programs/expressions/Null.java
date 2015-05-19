@@ -4,6 +4,10 @@ import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.*;
 
+/**
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
 public class Null extends Expression {
 
 	public Null(SourceLocation sourceLocation){
@@ -19,7 +23,7 @@ public class Null extends Expression {
 	}
 
 	@Override
-	public Object evaluate(Program program) {
+	public Null evaluate(Program program) {
 		return null;
 	}
 }

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package jumpingalien.programs.expressions;
 
 import jumpingalien.model.Orientation;
@@ -12,9 +9,9 @@ import jumpingalien.programs.types.GameObjectType;
 import jumpingalien.programs.types.Type;
 
 /**
- * @author Pieter
- *
- */
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
 public class SearchObject extends Expression {
 
 	/**

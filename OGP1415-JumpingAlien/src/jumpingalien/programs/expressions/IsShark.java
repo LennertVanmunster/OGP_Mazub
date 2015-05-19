@@ -1,19 +1,15 @@
-/**
- * 
- */
 package jumpingalien.programs.expressions;
 
 import jumpingalien.model.Shark;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
-import jumpingalien.programs.types.BoolType;
-import jumpingalien.programs.types.Type;
+
 
 /**
- * @author Pieter
- *
- */
-public class IsShark extends Expression {
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
+public class IsShark extends CheckerExpression {
 
 	/**
 	 * @param expression
@@ -23,16 +19,8 @@ public class IsShark extends Expression {
 		super(expression, sourceLocation);
 	}
 
-	/* (non-Javadoc)
-	 * @see jumpingalien.programs.expressions.Expression#getType()
-	 */
 	@Override
-	public Type getType() {
-		return new BoolType();
-	}
-
-	@Override
-	public Object evaluate(Program program) {
+	public Boolean evaluate(Program program) {
 		return this.getExpression().evaluate(program) instanceof Shark;
 	}
 

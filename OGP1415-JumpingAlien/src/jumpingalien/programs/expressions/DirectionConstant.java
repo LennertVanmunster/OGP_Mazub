@@ -1,6 +1,3 @@
-/**
- * 
- */
 package jumpingalien.programs.expressions;
 
 
@@ -11,9 +8,9 @@ import jumpingalien.part3.programs.IProgramFactory.Direction;
 import jumpingalien.part3.programs.SourceLocation;
 
 /**
- * @author Pieter
- *
- */
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
 public class DirectionConstant extends Expression {
 
 	public DirectionConstant(Direction value, SourceLocation sourceLocation) {
@@ -22,8 +19,6 @@ public class DirectionConstant extends Expression {
 	}
 	
 	public DirectionConstant(Direction value) {
-//		super(new SourceLocation(0,0));
-//		this.setDirection(value);
 		super(null);
 		this.setDirection(value);
 	}
@@ -44,12 +39,13 @@ public class DirectionConstant extends Expression {
 
 	private Direction direction;
 
+	@Override
 	public Type getType(){
 		return new DirectionType();
 	}
 
 	@Override
-	public Object evaluate(Program program) {
+	public Orientation evaluate(Program program) {
 		return Orientation.DUMMY.convertDirectionIProgramFactory(this.getDirection());
 	}
 

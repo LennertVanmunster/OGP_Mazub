@@ -1,6 +1,3 @@
-/**
- * 
- */
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
@@ -8,9 +5,9 @@ import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.Type;
 
 /**
- * @author Pieter
- *
- */
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
 public class GetTile extends Expression {
 
 
@@ -56,9 +53,7 @@ public class GetTile extends Expression {
 	
 	private Expression y;
 	
-	/* (non-Javadoc)
-	 * @see jumpingalien.programs.expressions.Expression#getType()
-	 */
+
 	@Override
 	public Type getType() {
 		return null;

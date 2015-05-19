@@ -1,19 +1,15 @@
-/**
- * 
- */
 package jumpingalien.programs.expressions;
 
 import jumpingalien.model.GameObject;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
-import jumpingalien.programs.types.BoolType;
-import jumpingalien.programs.types.Type;
+
 
 /**
- * @author Pieter
- *
- */
-public class IsDead extends Expression {
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
+public class IsDead extends CheckerExpression {
 
 	/**
 	 * @param expression
@@ -24,17 +20,8 @@ public class IsDead extends Expression {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see jumpingalien.programs.expressions.Expression#getType()
-	 */
 	@Override
-	public Type getType() {
-		return new BoolType();
-	}
-
-
-	@Override
-	public Object evaluate(Program program) {
+	public Boolean evaluate(Program program) {
 		return ((GameObject) this.getExpression().evaluate(program)).isTerminated();
 	}
 

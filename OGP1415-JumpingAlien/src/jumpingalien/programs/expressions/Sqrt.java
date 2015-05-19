@@ -1,17 +1,13 @@
-/**
- * 
- */
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
-import jumpingalien.programs.types.*;
 
 /**
- * @author Pieter
- *
- */
-public class Sqrt extends Expression {
+* @version 1.0
+* @authors Pieter Van Damme and Lennert Vanmunster
+*/
+public class Sqrt extends GetDoubleValueOf {
 
 	/**
 	 * @param expression
@@ -20,13 +16,9 @@ public class Sqrt extends Expression {
 	public Sqrt(Expression expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
-	
-	public Type getType(){
-		return new DoubleType();
-	}
 
 	@Override
-	public Object evaluate(Program program) {
+	public Double evaluate(Program program) {
 		return Math.sqrt((double) this.getExpression().evaluate(program));
 	}
 
