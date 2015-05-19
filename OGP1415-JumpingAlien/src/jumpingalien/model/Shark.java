@@ -17,11 +17,32 @@ import be.kuleuven.cs.som.annotate.*;
  * 			|isValidChance(getRandomMovementChance)
  * @invar	Each shark can have its current random diving multiplier as its random diving multiplier.
  * 			|isValidRandomDivingMultiplier(getRandomDivingMultiplier()) 
- * @version	1.0
+ * @version	2.0
  * @authors Pieter Van Damme and Lennert Vanmunster
  *
  */
 public class Shark extends GameObject{
+	
+	/**
+	 * Initialize a new shark as with given horizontal and vertical location, an array of sprites and all of its parameter constants. 
+	 * @param 	horizontalLocation
+	 * 			The horizontal location for this new shark.
+	 * @param 	verticalLocation
+	 * 			The vertical location for this new shark.
+	 * @param 	program
+	 * 			The program for this new shark.
+	 * @param 	images
+	 * 			An array of sprites.
+	 * @effect 	This new shark is initialized as a game object with the given horizontal location, vertical location, a horizontal velocity of zero, a vertical velocity of zero,
+	 * 			the initial horizontal velocity at spawn of sharks, the maximum horizontal velocity at spawn of sharks, 
+	 * 			the initial vertical velocity for all sharks, the horizontal acceleration at spawn for sharks, a false ducking state, 
+	 * 			a number of hit points equal to the shark hit point constant, a maximum number of hit points equal to the shark hit point constant, a program and an image array containing its sprites.
+	 * 			| super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, initialVerticalVelocity, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, program, images)
+	 */
+	@Raw
+	public Shark(int horizontalLocation, int verticalLocation, Program program, Sprite... images){
+		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, initialVerticalVelocity, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, program, images);
+	}
 	
 	/**
 	 * Initialize a new shark as with given horizontal and vertical location, an array of sprites and all of its parameter constants. 
@@ -34,14 +55,10 @@ public class Shark extends GameObject{
 	 * @effect 	This new shark is initialized as a game object with the given horizontal location, vertical location, a horizontal velocity of zero, a vertical velocity of zero,
 	 * 			the initial horizontal velocity at spawn of sharks, the maximum horizontal velocity at spawn of sharks, 
 	 * 			the initial vertical velocity for all sharks, the horizontal acceleration at spawn for sharks, a false ducking state, 
-	 * 			a number of hit points equal to the shark hit point constant, a maximum number of hit points equal to the shark hit point constant and an image array containing its sprites.
-	 * 			| super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, initialVerticalVelocity, horizontalAccelerationAtSpawn, false, 100, MAX_HIT_POINTS, images)
+	 * 			a number of hit points equal to the shark hit point constant, a maximum number of hit points equal to the shark hit point constant, a program equal to null and an image array containing its sprites.
+	 * 			| super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, initialVerticalVelocity, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, null, images)
 	 */
 	@Raw
-	public Shark(int horizontalLocation, int verticalLocation, Program program, Sprite... images){
-		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, initialVerticalVelocity, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, program, images);
-	}
-	
 	public Shark(int horizontalLocation, int verticalLocation, Sprite... images){
 		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, initialVerticalVelocity, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, null, images);
 	}
@@ -297,12 +314,40 @@ public class Shark extends GameObject{
 		}
 	}
 	
+	/**
+	 * Start the horizontal movement of this shark in the given direction.
+	 * 
+	 * @param 	direction
+	 * 			The desired direction in which this shark will move.
+	 * @pre		The given direction must be a valid direction.
+	 * 			|isValidDirection(direction)
+	 * @effect	Set the horizontal velocity in the given direction.
+	 * 			|setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*direction.getNumberForCalculations())
+	 * @effect	Set the direction in the given direction.	
+	 * 			|setDirection(direction);
+	 * @effect	Set isMovingHorizontally to true.
+	 * 			|setMovingHorizontally(true);
+	 * @note	The precondition is asserted in setDirection()
+	 */
+	@Override
 	public void startMove(Orientation direction){
 		setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*direction.getNumberForCalculations());
 		setDirection(direction);
 		setMovingHorizontally(true);
 	}
 	
+	/**
+	 * Stop movement of this shark in the given direction.
+	 * 
+	 * @param	direction
+	 * 			The given direction.
+	 * @effect	If the given direction is equal to the direction of this shark
+	 * 			then set the horizontal velocity to zero and isMovingHorizontally to false.
+	 * 			|if(direction==this.getDirection()){
+	 * 			|	then setHorizontalVelocity(0)
+	 * 			|		 setMovingHorizontally(false)
+	 */
+	@Override
 	public void endMove(Orientation direction){
 		if(direction==this.getDirection()){
 			setHorizontalVelocity(0);
@@ -310,6 +355,20 @@ public class Shark extends GameObject{
 		}
 	}
 	
+	/**
+	 * Make this shark jump if this shark isn't jumping already.
+	 * 
+	 * @effect	If this shark isn't jumping, the vertical velocity of this shark is set to the initial vertical velocity and its jumping state is set to true.
+	 * 			The number of movements since the last jump is set to zero.
+	 * 			| if (!isJumping())
+	 * 			|	setJumping(true)
+	 * 			| 	setVerticalVelocity(getInitialverticalVelocity())
+	 * 			|	this.setNbMovementsSinceLastJump(0);
+	 * @note	The method setVerticalVelocity will never throw an exception in 
+	 * 			its current implementation because this.getInitialVerticalVelocity() always returns a valid vertical velocity.
+	 * 			There is no need to add a try catch statement.
+	 */
+	@Override
 	public void startJump(){
 		if (!isJumping()){
 			setJumping(true);
@@ -318,6 +377,17 @@ public class Shark extends GameObject{
 		}
 	}
 	
+	/**
+	 * End the jump of this shark.
+	 * 
+	 * @effect	This shark's vertical velocity is set to zero and the jumping state is set to false.
+	 * 			| setJumping(false)
+	 * 			| setVerticalVelocity(0)
+	 * @note	The method setVerticalVelocity will never throw an exception in 
+	 * 			its current implementation because 0 is a valid vertical velocity.
+	 * 			There is no need to add a try catch statement.
+	 */
+	@Override
 	public void endJump(){
 		setJumping(false);
 		setVerticalVelocity(0);

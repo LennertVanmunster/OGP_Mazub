@@ -48,7 +48,7 @@ import java.util.List;
  * 			| canHaveAsHitPoints(getHitPoints())
  * @invar	Each game object has a proper world to which it is attached.
  * 			| hasProperWorld()
- * @version	1.0
+ * @version	2.0
  * @authors Pieter Van Damme and Lennert Vanmunster
  *
  */
@@ -76,6 +76,8 @@ public abstract class GameObject {
 	 * 			The hit points of the new game object.
 	 * @param maxHitPoints
 	 * 			The maximum number of hit points of the new game object.
+	 * @param program
+	 * 			The program for the new game object
 	 * @param images
 	 * 			An array of images.
 	 * @post	The horizontal location of this new game object is equal to the 
@@ -119,6 +121,12 @@ public abstract class GameObject {
 	 * 			| new.getMaxHitPoints(maxHitPoints);
 	 * @effect	The given number of hit points is set as the number of hit points for this game object.
 	 * 			| this.setHitPoints(hitPoints)
+	 * @effect	The given program is set as the program of this new game object.
+	 * 			|this.setProgram(program)
+	 * @effect	If the given program is not null then the game object of this program is
+	 * 			set to this new game object
+	 * 			|if(program != null)
+	 * 			|then program.setGameObject(this)
 	 * @throws	IllegalLocationException
 	 * 			Not a valid horizontal location.
 	 * 			|!canHaveAsHorizontalLocation(horizontalLocation)	

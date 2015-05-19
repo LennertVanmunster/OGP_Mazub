@@ -15,7 +15,7 @@ import java.util.List;
  * 			| isValidTimeSinceAction(getTimeSinceStartMove())
  * @invar	The time since Buzam last ended moving must be a valid time for each Buzam.
  * 			| isValidTimeSinceAction(getTimeSinceEndMove())
- * @version 2.0
+ * @version 1.0
  * @authors Pieter Van Damme and Lennert Vanmunster
  *
  */
@@ -64,6 +64,30 @@ public class Buzam extends GameObject {
 	/**
 	 * Initialize this new Buzam to a Buzam with a horizontal and vertical velocity of 0m/s, 
 	 * an initial horizontal velocity of 1m/s, a maximum horizontal velocity of 3m/s and a false ducking state
+	 * with the given horizontal location, vertical location, program and array of sprites.
+	 * 
+	 * @param 	horizontalLocation
+	 * 			The horizontal location for this new Buzam.
+	 * @param 	verticalLocation
+	 * 			The vertical location for this new Buzam.
+	 * @param	program
+	 * 			The program for this new Buzam.
+	 * @param	images
+	 * 			An array of sprites for this new Buzam.
+	 * @effect	This new Buzam is initialized with the given horizontal location as its horizontal location,
+	 * 			the given vertical location as its vertical location, the given array of sprites as its sprites.
+	 * 			This new Buzam's initial horizontal velocity is set to 0, its maximum horizontal velocity is set to 3
+	 * 			and its ducking state is set to false.
+	 * 			|this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, program, images)
+	 */
+	@Raw
+	public Buzam(int horizontalLocation, int verticalLocation, Program program, Sprite... images){
+		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, program, images);
+	}
+	
+	/**
+	 * Initialize this new Buzam to a Buzam with a horizontal and vertical velocity of 0m/s, 
+	 * an initial horizontal velocity of 1m/s, a maximum horizontal velocity of 3m/s and a false ducking state
 	 * with the given horizontal location, vertical location and array of sprites.
 	 * 
 	 * @param 	horizontalLocation
@@ -74,15 +98,10 @@ public class Buzam extends GameObject {
 	 * 			An array of sprites for this new Buzam.
 	 * @effect	This new Buzam is initialized with the given horizontal location as its horizontal location,
 	 * 			the given vertical location as its vertical location, the given array of sprites as its sprites.
-	 * 			This new Buzam's initial horizontal velocity is set to 0, its maximum horizontal velocity is set to 3
-	 * 			and its ducking state is set to false.
-	 * 			|this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, images)
+	 * 			This new Buzam's initial horizontal velocity is set to 0, its maximum horizontal velocity is set to 3,
+	 * 			its ducking state is set to false and its program is set to null.
+	 * 			|this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, null, images)
 	 */
-	@Raw
-	public Buzam(int horizontalLocation, int verticalLocation, Program program, Sprite... images){
-		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, program, images);
-	}
-	
 	@Raw
 	public Buzam(int horizontalLocation, int verticalLocation, Sprite... images){
 		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, null, images);

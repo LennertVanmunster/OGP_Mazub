@@ -19,6 +19,35 @@ import java.util.Random;
  *
  */
 public class Slime extends GameObject {
+	
+	/**
+	 * Initialize a new Slime with given horizontal and vertical location,
+	 * ducking state, school and an array of sprites. 
+	 * @param	horizontalLocation
+	 * 			The horizontal location for this new slime.
+	 * @param	verticalLocation
+	 * 			The vertical location for this new slime.
+	 * @param	program
+	 * 			The program for this new slime.
+	 * @param 	images
+	 * 			An array of sprites for this new slime.
+	 * @param	school
+	 * 			The school of slimes to which this new slime belongs.
+	 * @effect	This new slime is initialized as a game object with the given horizontal location, vertical location, a horizontal velocity of zero, a vertical velocity of zero,
+	 * 			an initial horizontal velocity when not ducking of zero, a maximum horizontal velocity when not ducking equal to the maximum horizontal velocity constant, 
+	 * 			an initial vertical velocity of zero, the constant horizontal acceleration
+	 * 			for all slimes, a false ducking state, a number of hit points of 100, a maximum number of hit points of 100, a program and an image array containing its sprites.
+	 * 			| super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, 0, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, program, images)
+	 * @effect	A binary relationship is established between this slime and the given school.
+	 * 			| school.addAsSlime(this)
+	 */
+	@Raw
+	public Slime(int horizontalLocation, int verticalLocation, Sprite[] images, School school, Program program)
+		throws IllegalArgumentException, IllegalLocationException {
+		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, 0, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, program, images);
+		school.addAsSlime(this);
+	}
+	
 	/**
 	 * Initialize a new Slime with given horizontal and vertical location,
 	 * ducking state, school and an array of sprites. 
@@ -33,18 +62,11 @@ public class Slime extends GameObject {
 	 * @effect	This new slime is initialized as a game object with the given horizontal location, vertical location, a horizontal velocity of zero, a vertical velocity of zero,
 	 * 			an initial horizontal velocity when not ducking of zero, a maximum horizontal velocity when not ducking equal to the maximum horizontal velocity constant, 
 	 * 			an initial vertical velocity of zero, the constant horizontal acceleration
-	 * 			for all slimes, a false ducking state, a number of hit points of 100, a maximum number of hit points of 100 and an image array containing its sprites.
-	 * 			| super(horizontalLocation, verticalLocation, 0, 0, 0, maximumHorizontalVelocity, 0, horizontalAcceleration, false, 100, 100, images)
+	 * 			for all slimes, a false ducking state, a number of hit points of 100, a maximum number of hit points of 100, a program equal to null and an image array containing its sprites.
+	 * 			| 		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, 0, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, null, images);
 	 * @effect	A binary relationship is established between this slime and the given school.
 	 * 			| school.addAsSlime(this)
 	 */
-	@Raw
-	public Slime(int horizontalLocation, int verticalLocation, Sprite[] images, School school, Program program)
-		throws IllegalArgumentException, IllegalLocationException {
-		super(horizontalLocation, verticalLocation, 0, 0, initialHorizontalVelocityAtSpawn, maximumHorizontalVelocityAtSpawn, 0, horizontalAccelerationAtSpawn, false, HIT_POINTS, HIT_POINTS, program, images);
-		school.addAsSlime(this);
-	}
-	
 	@Raw
 	public Slime(int horizontalLocation, int verticalLocation, Sprite[] images, School school)
 		throws IllegalArgumentException, IllegalLocationException {
@@ -237,12 +259,41 @@ public class Slime extends GameObject {
 		this.startMove(getDirection());
 	}
 	
+	/**
+	 * Start the horizontal movement of this slime in the given direction.
+	 * 
+	 * @param 	direction
+	 * 			The desired direction in which this slime will move.
+	 * @pre		The given direction must be a valid direction.
+	 * 			|isValidDirection(direction)
+	 * @effect	Set the horizontal velocity in the given direction.
+	 * 			|setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*direction.getNumberForCalculations())
+	 * @effect	Set the direction in the given direction.	
+	 * 			|setDirection(direction);
+	 * @effect	Set isMovingHorizontally to true.
+	 * 			|setMovingHorizontally(true);
+	 * @note	The precondition is asserted in setDirection()
+	 */
+	@Override
 	public void startMove(Orientation direction){
 		setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*direction.getNumberForCalculations());
 		setDirection(direction);
 		setMovingHorizontally(true);
 	}
 	
+	
+	/**
+	 * Stop movement of this slime in the given direction.
+	 * 
+	 * @param	direction
+	 * 			The given direction.
+	 * @effect	If the given direction is equal to the direction of this slime
+	 * 			then set the horizontal velocity to zero and isMovingHorizontally to false.
+	 * 			|if(direction==this.getDirection()){
+	 * 			|	then setHorizontalVelocity(0)
+	 * 			|		 setMovingHorizontally(false)
+	 */
+	@Override
 	public void endMove(Orientation direction){
 		if(direction==this.getDirection()){
 			setHorizontalVelocity(0);
@@ -250,6 +301,19 @@ public class Slime extends GameObject {
 		}
 	}
 	
+	/**
+	 * Make this slime jump if this slime isn't jumping already.
+	 * 
+	 * @effect	If this slime isn't jumping, the vertical velocity of this slime is set 
+	 * 			to the initial vertical velocity and its jumping state is set to true.
+	 * 			| if (!isJumping())
+	 * 			|	setJumping(true)
+	 * 			| 	setVerticalVelocity(getInitialverticalVelocity())
+	 * @note	The method setVerticalVelocity will never throw an exception in 
+	 * 			its current implementation because this.getInitialVerticalVelocity() always returns a valid vertical velocity.
+	 * 			There is no need to add a try catch statement.
+	 */
+	@Override
 	public void startJump(){
 		if (!isJumping()){
 			setJumping(true);
@@ -257,6 +321,17 @@ public class Slime extends GameObject {
 		}
 	}
 	
+	/**
+	 * End the jump of this slime if the slime was jumping.
+	 * 
+	 * @effect	This slime's vertical velocity is set to zero.
+	 * 			| if (getVerticalVelocity()>0)
+	 * 			| then setVerticalVelocity(0)
+	 * @note	The method setVerticalVelocity will never throw an exception in 
+	 * 			its current implementation because 0 is a valid vertical velocity.
+	 * 			There is no need to add a try catch statement.
+	 */
+	@Override
 	public void endJump(){
 		if (getVerticalVelocity()>0){
 			setVerticalVelocity(0);

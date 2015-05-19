@@ -10,13 +10,34 @@ import be.kuleuven.cs.som.annotate.*;
 /**
  * A class of Plants. A plant is a non player object which is friendly to Mazub and restores Mazub's hit points upon contact.
  * 
- * @version	1.0
+ * @version	2.0
  * @authors Pieter Van Damme and Lennert Vanmunster
  *
  *
  */
 public class Plant extends GameObject {
 	
+	/**
+	 * Initialize a new plant with given horizontal and vertical location, the given program and the given array of sprites. 
+	 * @param 	horizontalLocation
+	 * 			The horizontal location for this new plant.
+	 * @param 	verticalLocation
+	 * 			The vertical location for this new plant.
+	 * @param 	program
+	 * 			The program for this new plant.
+	 * @param 	images
+	 * 			An array of sprites.
+	 * @effect	This new plant is initialized as a game object with the given horizontal location, vertical location, a horizontal velocity of equal to the velocity constant of all plants, 
+	 * 			a vertical velocity of zero, an initial horizontal velocity equal to the velocity constant of all plants, a maximum horizontal velocity equal to the velocity constant of all plants, 
+	 * 			an initial vertical velocity of zero, a horizontal acceleration of zero, a false ducking state, 
+	 * 			a number of hit points of 1, the maximum number of hit points for all plants, a program and an image array containing its sprites.
+	 */
+	@Raw
+	public Plant(int horizontalLocation, int verticalLocation, Program program, Sprite... images) throws IllegalArgumentException{
+		super(horizontalLocation, verticalLocation, velocityConstant, 0, velocityConstant, velocityConstant, 0, 0, false, HIT_POINTS, HIT_POINTS, program, images);
+	}
+	
+
 	/**
 	 * Initialize a new plant with given horizontal and vertical location and the given array of sprites. 
 	 * @param 	horizontalLocation
@@ -28,13 +49,9 @@ public class Plant extends GameObject {
 	 * @effect	This new plant is initialized as a game object with the given horizontal location, vertical location, a horizontal velocity of equal to the velocity constant of all plants, 
 	 * 			a vertical velocity of zero, an initial horizontal velocity equal to the velocity constant of all plants, a maximum horizontal velocity equal to the velocity constant of all plants, 
 	 * 			an initial vertical velocity of zero, a horizontal acceleration of zero, a false ducking state, 
-	 * 			a number of hit points of 1, the maximum number of hit points for all plants and an image array containing its sprites.
+	 * 			a number of hit points of 1, the maximum number of hit points for all plants, a program equal to null and an image array containing its sprites.
 	 */
 	@Raw
-	public Plant(int horizontalLocation, int verticalLocation, Program program, Sprite... images) throws IllegalArgumentException{
-		super(horizontalLocation, verticalLocation, velocityConstant, 0, velocityConstant, velocityConstant, 0, 0, false, HIT_POINTS, HIT_POINTS, program, images);
-	}
-	
 	public Plant(int horizontalLocation, int verticalLocation, Sprite... images) throws IllegalArgumentException{
 		super(horizontalLocation, verticalLocation, velocityConstant, 0, velocityConstant, velocityConstant, 0, 0, false, HIT_POINTS, HIT_POINTS, null, images);
 	}
@@ -334,7 +351,7 @@ public class Plant extends GameObject {
 	 * @param	direction
 	 * 			The given direction.
 	 * @effect	If the given direction is equal to the direction of this Plant
-	 * 			then set the horizontal velocity to zero en isMovingHorizontally to false.
+	 * 			then set the horizontal velocity to zero and isMovingHorizontally to false.
 	 * 			|if(direction==this.getDirection()){
 	 * 			|	then setHorizontalVelocity(0)
 	 * 			|		 setMovingHorizontally(false)

@@ -1,13 +1,15 @@
 package jumpingalien.model;
 
+import be.kuleuven.cs.som.annotate.Value;
 import jumpingalien.part3.programs.IProgramFactory.Direction;
 
 /**
  * An enumeration of horizontal directions.
  * 
  * @version  2.0
- * @author   Eric Steegmans
+ * @author   Pieter Van Damme and Lennert Vanmunster
  */
+@Value
 public enum Orientation {
 
 	LEFT {
@@ -89,6 +91,17 @@ public enum Orientation {
 	 */
 	public abstract int getNumberForCalculations();
 	
+	/**
+	 * Convert an enumeration value from the value class Direction from IProgramFactory
+	 * to a value of the class Orientation.
+	 * 
+	 * @param 	direction
+	 * 			The given value from the class Direction. 
+	 * @return	|Direction.LEFT = Orientation.LEFT
+	 * 			|Direction.RIGHT = Orientation.RIGHT
+	 * 			|Direction.UP = Orientation.UP
+	 * 			|Direction.DOWN = Orientation.DOWN
+	 */
 	public Orientation convertDirectionIProgramFactory(Direction direction){
 		switch(direction){
 		case LEFT:
@@ -103,6 +116,18 @@ public enum Orientation {
 		return Orientation.RIGHT;
 	}
 	
+	/**
+	 * Convert an enumeration value from the value class Orientation 
+	 * to a value of the class Direction from IProgramFactory.
+	 * 
+	 * @param 	direction
+	 * 			The given value from the class Orientation. 
+	 * @return	|Orientation.LEFT = Direction.LEFT
+	 * 			|Orientation.RIGHT = Direction.RIGHT
+	 * 			|Orientation.UP = Direction.UP
+	 * 			|Orientation.DOWN = Direction.DOWN
+	 * 			|Orientation.DUMMY = Direction.RIGHT
+	 */
 	public Direction convertOrientation(Orientation orientation){
 		switch(orientation){
 		case LEFT:

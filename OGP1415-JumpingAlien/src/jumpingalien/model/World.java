@@ -30,7 +30,7 @@ import jumpingalien.util.Util;
  * @invar	Each world must have proper game objects.
  * 			| hasProperGameObjects()
  *
- * @version	1.0
+ * @version	2.0
  * @author 	Pieter Van Damme and Lennert Vanmunster
  *
  */
