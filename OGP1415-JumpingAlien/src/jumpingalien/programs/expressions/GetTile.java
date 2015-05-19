@@ -17,21 +17,21 @@ public class GetTile extends Expression {
 	 */
 	public GetTile(Expression x, Expression y, SourceLocation sourceLocation) {
 		super(sourceLocation);
-		this.x = x;
-		this.y = y;
+		this.setX(x);
+		this.setY(y);
 	}
 
 	/**
 	 * @return the x
 	 */
-	public Expression getX() {
+	private Expression getX() {
 		return x;
 	}
 
 	/**
 	 * @param x the x to set
 	 */
-	public void setX(Expression x) {
+	private void setX(Expression x) {
 		this.x = x;
 	}
 
@@ -45,7 +45,7 @@ public class GetTile extends Expression {
 	/**
 	 * @param y the y to set
 	 */
-	public void setY(Expression y) {
+	private void setY(Expression y) {
 		this.y = y;
 	}
 

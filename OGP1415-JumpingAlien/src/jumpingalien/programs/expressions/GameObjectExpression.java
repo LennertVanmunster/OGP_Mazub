@@ -24,7 +24,7 @@ public class GameObjectExpression extends Expression{
 		return this.gameObject;
 	}
 
-	public void setGameObject(GameObject gameObject) {
+	private void setGameObject(GameObject gameObject) {
 		this.gameObject = gameObject;
 	}
 

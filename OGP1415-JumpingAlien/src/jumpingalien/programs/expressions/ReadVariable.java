@@ -25,7 +25,7 @@ public class ReadVariable extends Expression {
 		return this.variableName;
 	}
 	
-	public void setVariableName(String variableName) {
+	private void setVariableName(String variableName) {
 		this.variableName = variableName;
 	}
 	
@@ -35,7 +35,7 @@ public class ReadVariable extends Expression {
 		return variableType;
 	}
 	
-	public void setVariableType(Type variableType) {
+	private void setVariableType(Type variableType) {
 		this.variableType = variableType;
 	}
 

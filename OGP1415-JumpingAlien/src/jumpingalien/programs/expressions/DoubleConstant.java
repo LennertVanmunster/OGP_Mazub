@@ -18,7 +18,7 @@ public class DoubleConstant extends Expression {
 	 */
 	public DoubleConstant(double value, SourceLocation sourceLocation) {
 		super(sourceLocation);
-		this.value = value;
+		this.setValue(value);
 	}
 	
 	public DoubleConstant(double value) {
@@ -32,7 +32,7 @@ public class DoubleConstant extends Expression {
 	}
 
 
-	public void setValue(double value) {
+	private void setValue(double value) {
 		this.value = value;
 	}
 

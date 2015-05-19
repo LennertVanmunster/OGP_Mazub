@@ -31,7 +31,7 @@ public abstract class Expression {
 	/**
 	 * @param sourceLocation the sourceLocation to set
 	 */
-	public void setSourceLocation(SourceLocation sourceLocation) {
+	private void setSourceLocation(SourceLocation sourceLocation) {
 		this.sourceLocation = sourceLocation;
 	}
 
@@ -45,7 +45,7 @@ public abstract class Expression {
 	/**
 	 * @param expression the expression to set
 	 */
-	public void setExpression(Expression expression) {
+	private void setExpression(Expression expression) {
 		this.expression = expression;
 	}
 

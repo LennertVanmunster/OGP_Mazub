@@ -32,7 +32,7 @@ public class IsMoving extends Expression {
 	/**
 	 * @param direction the direction to set
 	 */
-	public void setDirection(Expression direction) {
+	private void setDirection(Expression direction) {
 		this.direction = direction;
 	}
 

@@ -33,7 +33,7 @@ public class DirectionConstant extends Expression {
 	/**
 	 * @param direction the direction to set
 	 */
-	public void setDirection(Direction direction) {
+	private void setDirection(Direction direction) {
 		this.direction = direction;
 	}
 

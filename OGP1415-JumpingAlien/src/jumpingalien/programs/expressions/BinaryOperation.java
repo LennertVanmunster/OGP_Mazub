@@ -25,7 +25,7 @@ public abstract class BinaryOperation extends Expression{
 	/**
 	 * @param expressionLeft the expressionLeft to set
 	 */
-	public void setExpressionLeft(Expression expressionLeft) {
+	private void setExpressionLeft(Expression expressionLeft) {
 		this.expressionLeft = expressionLeft;
 	}
 
@@ -39,7 +39,7 @@ public abstract class BinaryOperation extends Expression{
 	/**
 	 * @param expressionRight the expressionRight to set
 	 */
-	public void setExpressionRight(Expression expressionRight) {
+	private void setExpressionRight(Expression expressionRight) {
 		this.expressionRight = expressionRight;
 	}
 

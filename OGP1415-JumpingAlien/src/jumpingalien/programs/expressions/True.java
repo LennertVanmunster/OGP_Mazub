@@ -17,7 +17,6 @@ public class True extends BoolExpression {
 		this(null);
 	}
 	
-	
 	@Override
 	public Boolean evaluate(Program program){
 		return true;
