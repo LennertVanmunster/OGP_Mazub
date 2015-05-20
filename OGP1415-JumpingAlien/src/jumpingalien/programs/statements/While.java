@@ -3,23 +3,24 @@ package jumpingalien.programs.statements;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.expressions.Expression;
 import jumpingalien.programs.program.Program;
+import jumpingalien.programs.types.BoolType;
 
 public class While extends Statement{
-	public While(Expression condition, Statement body, SourceLocation sourceLocation){
+	public While(Expression<BoolType> condition, Statement body, SourceLocation sourceLocation){
 		super(sourceLocation);
 		this.setCondition(condition);
 		this.setBody(body);
 	}
 	
 	
-	public Expression getCondition() {
+	public Expression<BoolType> getCondition() {
 		return this.condition;
 	}
-	public void setCondition(Expression condition) {
+	public void setCondition(Expression<BoolType> condition) {
 		this.condition = condition;
 	}
 	
-	private Expression condition;
+	private Expression<BoolType> condition;
 
 	public Statement getBody() {
 		return this.body;
@@ -44,9 +45,9 @@ public class While extends Statement{
 	private boolean callSecondTime=false;
 	
 	public void execute(Program program){
-		if(this.isToBeExecuted()){
+		if(this.isToBeExecuted() && !program.hasStopped()){
 			if (program.hasTimeForStatement()){
-				while(((boolean) getCondition().evaluate(program) && program.hasTimeForStatement()) || this.getCallSecondTime()){
+				while(((((BoolType) getCondition().evaluate(program)).getValue() && program.hasTimeForStatement()) || this.getCallSecondTime()) && !program.hasStopped()){
 					if(this.getCallSecondTime()){
 						this.setCallSecondTime(false);
 					}

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import jumpingalien.model.GameObject;
-import jumpingalien.part2.internal.tmxfile.data.Map;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.part3.programs.IProgramFactory.Kind;
 import jumpingalien.part3.programs.IProgramFactory.SortDirection;
@@ -16,7 +15,7 @@ import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.*;
 
 public class ForEach extends Statement{
-	public ForEach(String variableName, Kind variableKind, Expression where, Expression sort,
+	public ForEach(String variableName, Kind variableKind, Expression<BoolType> where, Expression<DoubleType> sort,
 			SortDirection sortDirection, Statement body, SourceLocation sourceLocation){
 		super(sourceLocation);
 		setVariableName(variableName);
@@ -51,25 +50,25 @@ public class ForEach extends Statement{
 
 	private Kind variableKind;
 	
-	public Expression getWhere() {
+	public Expression<BoolType> getWhere() {
 		return this.where;
 	}
 
-	public void setWhere(Expression where) {
+	public void setWhere(Expression<BoolType> where) {
 		this.where = where;
 	}
 
-	private Expression where;
+	private Expression<BoolType> where;
 	
-	public Expression getSort() {
+	public Expression<DoubleType> getSort() {
 		return this.sort;
 	}
 
-	public void setSort(Expression sort) {
+	public void setSort(Expression<DoubleType> sort) {
 		this.sort = sort;
 	}
 
-	private Expression sort;
+	private Expression<DoubleType> sort;
 	
 	public SortDirection getSortDirection() {
 		return this.sortDirection;
@@ -114,7 +113,7 @@ public class ForEach extends Statement{
 	private boolean callSecondTime=false;
 	
 	public void execute(Program program){
-		if(this.isToBeExecuted()){	
+		if(this.isToBeExecuted() && !program.hasStopped()){	
 			if(program.hasTimeForStatement()){
 				program.decreaseTimerOneUnit();
 				if(!canHaveAsVariableName(getVariableName(),program)){
@@ -123,15 +122,15 @@ public class ForEach extends Statement{
 				else{
 					List<GameObject> gameObjectList=this.createGameObjectList(program);
 					if(getWhere() != null){
-						gameObjectList = gameObjectList.stream().filter(gameObject -> {program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
-						return (boolean)(getWhere().evaluate(program));} ).collect(Collectors.toList());
+						gameObjectList = gameObjectList.stream().filter(gameObject -> {program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
+						return ((BoolType) getWhere().evaluate(program)).getValue();} ).collect(Collectors.toList());
 					}
 					if(getSort() != null){
 						gameObjectList = sortGameObjects(gameObjectList, program);
 					}
-					while(this.getLoopIndex()<gameObjectList.size() && !program.isTimeDepleted()){
+					while(((this.getLoopIndex()<gameObjectList.size() && !program.isTimeDepleted()) || getCallSecondTime()) && !program.hasStopped()){
 						GameObject gameObject= gameObjectList.get(this.getLoopIndex());
-						program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
+						program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
 						if(!getCallSecondTime()){
 							getBody().setToBeExecuted(true);
 						}
@@ -179,18 +178,18 @@ public class ForEach extends Statement{
 			gameObjectList.add(program.getGameObject().getWorld().getBuzam());
 			break;
 		case TERRAIN:
-//			gameObjectList.addAll(program.getGameObject().getWorld().getTiles());
+			//gameObjectList.addAll(program.getGameObject().getWorld().getTiles());
 			break;
 		}
 		return gameObjectList;
 	}
 		
 	private List<GameObject> sortGameObjects(List<GameObject> gameObjectList, Program program){
-		Expression sortExpression = getSort();
+		Expression<DoubleType> sortExpression = getSort();
 		HashMap<GameObject, Double> sortMap= new HashMap<GameObject, Double>();
 		for(GameObject gameObject: gameObjectList){
-			program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
-			double sortDouble= (double) sortExpression.evaluate(program);
+			program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
+			double sortDouble= ((DoubleType) sortExpression.evaluate(program)).getValue();
 			Double sortDoubleObject = new Double(sortDouble);
 			sortMap.put(gameObject, sortDoubleObject);
 		}

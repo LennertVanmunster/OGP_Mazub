@@ -12,7 +12,7 @@ import jumpingalien.programs.expressions.*;
 
 public class Program {
 	
-	public Program(Statement mainStatement, Map<String, Type> globalVariables){
+	public Program(Statement mainStatement, Map<String, Type<?>> globalVariables){
 		setGlobalVariables(globalVariables);
 		setMainStatement(mainStatement);
 	}
@@ -27,42 +27,24 @@ public class Program {
 	
 	private Statement mainStatement;
 	
-	public Map<String,Type> getGlobalVariables(){
-		return this.globalVariables;
+	public Map<String,Type<?>> getGlobalVariables(){
+		Map<String,Type<?>> globalVariables= new HashMap<String, Type<?>>(this.globalVariables);
+		return globalVariables;
 	}
 	
-	public void setGlobalVariables(Map<String,Type> globalVariables){
-		for(Map.Entry<String, Type> entry: globalVariables.entrySet()){
+	public void setGlobalVariables(Map<String,Type<?>> globalVariables){
+		for(Map.Entry<String, Type<?>> entry: globalVariables.entrySet()){
 			this.putGlobalVariable(entry.getKey(), entry.getValue());
 		}
 	}
 	
-	public void putGlobalVariable(String variableName, Type variableType, Expression value){
-		if(matchesExpressionType(variableType, value)){
-			this.globalVariables.put(variableName, variableType);
-			this.globalVariableValues.put(variableName, value);
-		}
-		else{
-			stop();
-		}
-	}
-	
-	public void putGlobalVariable(String variableName, Type variableType){
+	public void putGlobalVariable(String variableName, Type<?> variableType){
 		this.globalVariables.put(variableName, variableType);
-		this.globalVariableValues.put(variableName, variableType.getDefaultValue());
 	}
 	
-	public Map<String,Expression> getGlobalVariableValues(){
-		return this.globalVariableValues;
-	}
 	
-	public boolean matchesExpressionType(Type type, Expression expression){
-		return expression.getType().getClass().equals(type.getClass());
-	}
+	private Map<String,Type<?>> globalVariables = new HashMap<String, Type<?>>();
 	
-	private Map<String,Type> globalVariables = new HashMap<String, Type>();
-	
-	private Map<String,Expression> globalVariableValues = new HashMap<String, Expression>();
 	
 	public void execute(double deltaTime){
 		if(!this.hasStopped()){
@@ -74,6 +56,9 @@ public class Program {
 			else{
 				setTimeDepleted(false);
 			}
+		}
+		else{
+			System.out.println("The program has not been executed completely!");
 		}
 	}
 	

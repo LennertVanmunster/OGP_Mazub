@@ -1,13 +1,12 @@
 package jumpingalien.programs.statements;
 
 import jumpingalien.part3.programs.SourceLocation;
-import jumpingalien.programs.expressions.DoubleConstant;
 import jumpingalien.programs.expressions.Expression;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.Type;
 
 public class Assignment extends Statement {
-	public Assignment(String variableName, Type variableType, Expression value, SourceLocation sourceLocation){
+	public Assignment(String variableName, Type<?> variableType, Expression<Type<?>> value, SourceLocation sourceLocation){
 		super(sourceLocation);
 		this.variableName=variableName;
 		this.variableType=variableType;
@@ -20,23 +19,30 @@ public class Assignment extends Statement {
 	
 	String variableName;
 	
-	public Type getVariableType(){
+	public Type<?> getVariableType(){
 		return this.variableType;
 	}
 	
-	Type variableType;
+	private Type<?> variableType;
 	
-	public Expression getValue(){
+	public Expression<Type<?>> getValue(){
 		return this.value;
 	}
 	
-	Expression value;
+	private Expression<Type<?>> value;
+	
+	public boolean matchesValueType(Type<?> variableType, Expression<Type<?>> value){
+		return value.getType().getClass().equals(variableType.getClass());
+	}
 	
 	public void execute(Program program){
-		if(this.isToBeExecuted()){
+		if(this.isToBeExecuted() && !program.hasStopped()){
 			if (program.hasTimeForStatement()){
 				program.decreaseTimerOneUnit();
-				program.putGlobalVariable(this.getVariableName(), this.getVariableType(), this.getVariableType().createExpression(this.getValue(), program));
+				if(!matchesValueType(this.getVariableType(),this.getValue())){
+					program.stop();
+				}
+				program.putGlobalVariable(this.getVariableName(), this.getValue().evaluate(program));
 				this.setToBeExecuted(false);
 			}
 			else{

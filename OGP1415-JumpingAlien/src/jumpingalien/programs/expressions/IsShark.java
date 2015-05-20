@@ -3,6 +3,9 @@ package jumpingalien.programs.expressions;
 import jumpingalien.model.Shark;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
+import jumpingalien.programs.types.BoolType;
+import jumpingalien.programs.types.GameObjectType;
+import jumpingalien.programs.types.ObjectType;
 
 
 /**
@@ -15,13 +18,22 @@ public class IsShark extends CheckerExpression {
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public IsShark(Expression expression, SourceLocation sourceLocation) {
+	public IsShark(Expression<ObjectType<?>> expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
 
 	@Override
-	public Boolean evaluate(Program program) {
-		return this.getExpression().evaluate(program) instanceof Shark;
+	public BoolType evaluate(Program program) {
+		if(this.getStopProgram()){
+			program.stop();
+		}
+		return new BoolType(((GameObjectType) this.getExpression().evaluate(program)).getValue() instanceof Shark);
+	}
+
+
+	@Override
+	public boolean checkType(Expression<ObjectType<?>> expression) {
+		return expression.getType() instanceof GameObjectType;
 	}
 
 }

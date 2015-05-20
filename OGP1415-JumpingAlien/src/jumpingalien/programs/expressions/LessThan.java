@@ -2,28 +2,40 @@ package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
+import jumpingalien.programs.types.BoolType;
+import jumpingalien.programs.types.DoubleType;
 
 
 /**
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class LessThan extends Comparison {
+public class LessThan extends Comparison<DoubleType> {
 
 	/**
 	 * @param left
 	 * @param right
 	 * @param sourceLocation
 	 */
-	public LessThan(Expression left, Expression right,
+	public LessThan(Expression<DoubleType> left, Expression<DoubleType> right,
 			SourceLocation sourceLocation) {
 		super(left, right, sourceLocation);
 	}
 
 	@Override
-	public Boolean evaluate(Program program) {
-		return (double)this.getExpressionLeft().evaluate(program) < 
-		(double)this.getExpressionRight().evaluate(program);
+	public BoolType evaluate(Program program) {
+		if(this.getStopProgram()){
+			program.stop();
+		}
+		DoubleType left = (DoubleType) this.getExpressionLeft().evaluate(program);
+		DoubleType right = (DoubleType) this.getExpressionRight().evaluate(program);
+		return new BoolType(left.getValue() < right.getValue());
 	}
+	
+	@Override
+	public boolean checkType(Expression<DoubleType> expression) {
+		return expression.getType() instanceof DoubleType;
+	}
+
 
 }

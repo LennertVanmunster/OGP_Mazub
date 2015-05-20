@@ -9,7 +9,7 @@ import jumpingalien.programs.types.*;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class DoubleConstant extends Expression {
+public class DoubleConstant extends Expression<DoubleType> {
 
 
 	/**
@@ -39,12 +39,12 @@ public class DoubleConstant extends Expression {
 	private double value;
 	
 	@Override
-	public Double evaluate(Program program){
-		return (double)this.getValue();
+	public DoubleType evaluate(Program program){
+		return new DoubleType(this.getValue());
 	}
 	
 	@Override
-	public Type getType(){
+	public Type<?> getType(){
 		return new DoubleType();
 	}
 }

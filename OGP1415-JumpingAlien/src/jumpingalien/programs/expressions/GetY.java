@@ -1,8 +1,9 @@
 package jumpingalien.programs.expressions;
 
-import jumpingalien.model.GameObject;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
+import jumpingalien.programs.types.DoubleType;
+import jumpingalien.programs.types.GameObjectType;
 
 
 /**
@@ -15,13 +16,16 @@ public class GetY extends GetDoubleValueOf {
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public GetY(Expression expression, SourceLocation sourceLocation) {
+	public GetY(Expression<GameObjectType> expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
 
 	@Override
-	public Double evaluate(Program program) {
-		return (double)((GameObject)this.getExpression().evaluate(program)).getVerticalLocation();
+	public DoubleType evaluate(Program program) {
+		if(this.getStopProgram()){
+			program.stop();
+		}
+		return new DoubleType(((GameObjectType) this.getExpression().evaluate(program)).getValue().getVerticalLocation());
 	}
 
 }

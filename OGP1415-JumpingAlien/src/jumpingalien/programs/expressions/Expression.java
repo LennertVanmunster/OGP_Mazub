@@ -8,18 +8,15 @@ import jumpingalien.programs.types.*;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public abstract class Expression {
-	
-	public Expression(Expression expression, SourceLocation sourceLocation){
-		this.setSourceLocation(sourceLocation);
-		this.setExpression(expression);
-	}
+public abstract class Expression<T> {
 	
 	public Expression(SourceLocation sourceLocation){
-		this(null,sourceLocation);
+		this.setSourceLocation(sourceLocation);
 	}
 	
-	private Expression expression;
+	public Expression(){
+		this(null);
+	}
 	
 	/**
 	 * @return the sourceLocation
@@ -35,23 +32,22 @@ public abstract class Expression {
 		this.sourceLocation = sourceLocation;
 	}
 
-	/**
-	 * @return the expression
-	 */
-	public Expression getExpression() {
-		return expression;
-	}
-
-	/**
-	 * @param expression the expression to set
-	 */
-	private void setExpression(Expression expression) {
-		this.expression = expression;
-	}
 
 	private SourceLocation sourceLocation;
 	
-	public abstract Type getType();
+	public abstract Type<?> getType();
+	
+	
+	public void setStopProgram(boolean stop){
+		this.stopProgram=stop;
+	}
+	
+	public boolean getStopProgram(){
+		return this.stopProgram;
+	}
 
-	public abstract Object evaluate(Program program);
+	private boolean stopProgram=false;	
+	
+	
+	public abstract Type<?> evaluate(Program program);
 }

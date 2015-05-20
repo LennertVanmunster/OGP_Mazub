@@ -15,7 +15,7 @@ public class StartDuck extends Statement{
 
 	@Override
 	public void execute(Program program) {
-		if(this.isToBeExecuted()){
+		if(this.isToBeExecuted() && !program.hasStopped()){
 			if(program.hasTimeForStatement()){
 				program.decreaseTimerOneUnit();
 				if(program.getGameObject() instanceof Buzam){

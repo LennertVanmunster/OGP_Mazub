@@ -1,21 +1,21 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
-import jumpingalien.programs.types.BoolType;
-import jumpingalien.programs.types.Type;
+import jumpingalien.programs.types.*;
 
-/**
-* @version 1.0
-* @authors Pieter Van Damme and Lennert Vanmunster
-*/
-public abstract class Comparison extends BinaryOperation {
+public abstract class Comparison<T> extends BinaryOperation<BoolType, T>{
 
-	public Comparison(Expression left, Expression right,SourceLocation sourceLocation) {
+	public Comparison(Expression<T> left, Expression<T> right, SourceLocation sourceLocation){
 		super(left, right, sourceLocation);
+	}
+	
+	@Override
+	public boolean checkType(Expression<T> expression) {
+		return expression.getType() instanceof BoolType;
 	}
 
 	@Override
-	public Type getType() {
+	public Type<?> getType() {
 		return new BoolType();
 	}
 

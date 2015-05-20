@@ -880,8 +880,8 @@ public class Facade implements IFacadePart3 {
 	 *         ParseOutcome.Failure if parsing was not successful.
 	 */
 	public ParseOutcome<?> parse(String text){
-		 IProgramFactory<Expression, Statement, Type, Program> factory = new ProgramFactory();
-		 ProgramParser<Expression, Statement, Type, Program> parser = new ProgramParser<>(factory);
+		 IProgramFactory<Expression<?>, Statement, Type<?>, Program> factory = new ProgramFactory();
+		 ProgramParser<Expression<?>, Statement, Type<?>, Program> parser = new ProgramParser<>(factory);
 		 Optional<Program> parseResult = parser.parseString(text);
 		 if(parseResult.isPresent()){
 			 System.out.print("PARSING OK! ");

@@ -8,15 +8,20 @@ import jumpingalien.programs.types.Type;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public abstract class BooleanOperation extends BinaryOperation {
+public abstract class BooleanOperation extends BinaryOperation<BoolType, BoolType> {
 
-	public BooleanOperation(Expression left, Expression right,SourceLocation sourceLocation) {
+	public BooleanOperation(Expression<BoolType> left, Expression<BoolType> right,SourceLocation sourceLocation) {
 		super(left, right, sourceLocation);
 	}
 
 	@Override
-	public Type getType(){
+	public Type<?> getType(){
 		return new BoolType();
+	}
+	
+	@Override
+	public boolean checkType(Expression<BoolType> expression) {
+		return expression.getType() instanceof BoolType;
 	}
 
 

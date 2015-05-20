@@ -8,14 +8,14 @@ import jumpingalien.programs.types.Type;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class ReadVariable extends Expression {
+public class ReadVariable extends Expression<Type<?>> {
 
 	/**
 	 * @param variableName
 	 * @param variableType
 	 * @param sourceLocation 
 	 */
-	public ReadVariable(String variableName, Type variableType, SourceLocation sourceLocation) {
+	public ReadVariable(String variableName, Type<?> variableType, SourceLocation sourceLocation) {
 		super(sourceLocation);
 		setVariableName(variableName);
 		setVariableType(variableType);
@@ -31,23 +31,27 @@ public class ReadVariable extends Expression {
 	
 	private String variableName;
 	
-	public Type getVariableType() {
+	public Type<?> getVariableType() {
 		return variableType;
 	}
 	
-	private void setVariableType(Type variableType) {
+	private void setVariableType(Type<?> variableType) {
 		this.variableType = variableType;
 	}
 
-	private Type variableType;
+	private Type<?> variableType;
 	
 	@Override
-	public Object evaluate(Program program){
-		return  program.getGlobalVariableValues().get(getVariableName()).evaluate(program);
+	public Type<?> evaluate(Program program){
+		Type<?> variable=  program.getGlobalVariables().get(getVariableName());
+		if(!variable.getClass().equals(getVariableType().getClass())){
+			program.stop();
+		}
+		return variable;
 	}
 
 	@Override
-	public Type getType() {
+	public Type<?> getType() {
 		return getVariableType();
 	}
 

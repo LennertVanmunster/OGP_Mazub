@@ -8,7 +8,7 @@ import jumpingalien.programs.types.*;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class Null extends Expression {
+public class Null extends Expression<GameObjectType> {
 
 	public Null(SourceLocation sourceLocation){
 		super(sourceLocation);
@@ -18,12 +18,12 @@ public class Null extends Expression {
 		this(new SourceLocation(0,0));
 	}
 	
-	public Type getType(){
+	public Type<?> getType(){
 		return new GameObjectType();
 	}
 
 	@Override
-	public Null evaluate(Program program) {
-		return null;
+	public GameObjectType evaluate(Program program) {
+		return new GameObjectType();
 	}
 }

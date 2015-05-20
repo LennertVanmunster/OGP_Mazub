@@ -3,17 +3,42 @@ package jumpingalien.programs.types;
 import jumpingalien.programs.expressions.*;
 import jumpingalien.programs.program.Program;
 
-public class DoubleType extends Type {
-	public DoubleType(){
-		
+public class DoubleType extends Type<Double> {
+	public DoubleType(Double value){
+		super(value);
 	}
 	
-	public Expression getDefaultValue(){
-		return new DoubleConstant(0.0);
+	public DoubleType(int value){
+		this((double) value);
+	}
+	
+	public DoubleType(){
+		this(0.0);
+	}
+	
+	public Double getDefaultValue(){
+		return 0.0;
 	}
 
-	@Override
-	public Expression createExpression(Expression value, Program program) {
-		return new DoubleConstant((double) value.evaluate(program));
+
+	public void setValue(Double value) {
+		if(value==Math.floor(value) && !Double.isInfinite(value)){
+			this.setInteger(true);
+			double integer = (int) value.doubleValue();
+			this.value=integer;
+		}
+		else{
+			this.value=value;
+		}
+	}	
+
+	public boolean isInteger() {
+		return isInteger;
 	}
+
+	public void setInteger(boolean isInteger) {
+		this.isInteger = isInteger;
+	}
+	
+	private boolean isInteger=false;
 }

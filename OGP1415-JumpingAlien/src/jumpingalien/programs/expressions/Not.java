@@ -8,23 +8,31 @@ import jumpingalien.programs.types.*;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class Not extends Expression {
+public class Not extends UnaryOperation<BoolType, BoolType> {
 
 	/**
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public Not(Expression expression, SourceLocation sourceLocation) {
+	public Not(Expression<BoolType> expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
 	
-	public Type getType(){
+	public Type<?> getType(){
 		return new BoolType();
 	}
 
 	@Override
-	public Boolean evaluate(Program program) {
-		return !(boolean)this.getExpression().evaluate(program);
+	public BoolType evaluate(Program program) {
+		if(this.getStopProgram()){
+			program.stop();
+		}
+		return new BoolType(!((BoolType)this.getExpression().evaluate(program)).getValue());
+	}
+
+	@Override
+	public boolean checkType(Expression<BoolType> expression) {
+		return expression.getType() instanceof BoolType;
 	}
 
 }

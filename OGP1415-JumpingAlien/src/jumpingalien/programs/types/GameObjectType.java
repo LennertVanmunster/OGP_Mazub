@@ -1,21 +1,24 @@
 package jumpingalien.programs.types;
 
 import jumpingalien.model.GameObject;
-import jumpingalien.programs.expressions.*;
-import jumpingalien.programs.program.Program;
 
-public class GameObjectType extends Type {
+public class GameObjectType extends ObjectType<GameObject> {
+	public GameObjectType(GameObject value){
+		super(value);
+	}
+	
 	public GameObjectType(){
-		
+		this(null);
 	}
 	
-	public Expression getDefaultValue(){
-		return new Null();
+	public GameObject getDefaultValue(){
+		return null;
 	}
 
-	@Override
-	public Expression createExpression(Expression value, Program program) {
-		return new GameObjectExpression((GameObject) value.evaluate(program));
-	
-	}
+//	@Override
+//	public Expression createExpression(Expression value, Program program) {
+//		return new GameObjectExpression((GameObject) value.evaluate(program));
+//	
+//	}
+
 }

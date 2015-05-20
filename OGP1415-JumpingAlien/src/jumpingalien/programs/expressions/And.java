@@ -2,6 +2,7 @@ package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
+import jumpingalien.programs.types.BoolType;
 
 /**
 * @version 1.0
@@ -14,14 +15,17 @@ public class And extends BooleanOperation {
 	 * @param right
 	 * @param sourceLocation
 	 */
-	public And(Expression left, Expression right, SourceLocation sourceLocation) {
+	public And(Expression<BoolType> left, Expression<BoolType> right, SourceLocation sourceLocation) {
 		super(left, right, sourceLocation);
 	}
 	
 	@Override
-	public Boolean evaluate(Program program) {
-		return (boolean) this.getExpressionLeft().evaluate(program) &&
-				(boolean) this.getExpressionRight().evaluate(program);
+	public BoolType evaluate(Program program) {
+		if(this.getStopProgram()){
+			program.stop();
+		}
+		return new BoolType(((BoolType) this.getExpressionLeft().evaluate(program)).getValue() &&
+				((BoolType)this.getExpressionRight().evaluate(program)).getValue());
 	}
 
 }

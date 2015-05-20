@@ -10,25 +10,33 @@ import jumpingalien.programs.types.*;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class RandomDouble extends Expression {
+public class RandomDouble extends UnaryOperation<DoubleType, DoubleType> {
 
 	/**
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public RandomDouble(Expression maxvalue, SourceLocation sourceLocation) {
+	public RandomDouble(Expression<DoubleType> maxvalue, SourceLocation sourceLocation) {
 		super(maxvalue, sourceLocation);
 	}
 
 	@Override
-	public Type getType(){
+	public Type<?> getType(){
 		return new DoubleType();
 	}
 
 	@Override
-	public Double evaluate(Program program) {
+	public DoubleType evaluate(Program program) {
+		if(this.getStopProgram()){
+			program.stop();
+		}
 		Random r = new Random();
-		return (double)this.getExpression().evaluate(program) * r.nextDouble();
+		return new DoubleType(((DoubleType)this.getExpression().evaluate(program)).getValue() * r.nextDouble());
+	}
+
+	@Override
+	public boolean checkType(Expression<DoubleType> expression) {
+		return expression.getType() instanceof DoubleType;
 	}
 
 }

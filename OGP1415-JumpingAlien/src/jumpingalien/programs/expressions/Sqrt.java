@@ -2,24 +2,38 @@ package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
+import jumpingalien.programs.types.*;
 
 /**
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class Sqrt extends GetDoubleValueOf {
+public class Sqrt extends UnaryOperation<DoubleType, DoubleType> {
 
 	/**
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public Sqrt(Expression expression, SourceLocation sourceLocation) {
+	public Sqrt(Expression<DoubleType> expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
 
 	@Override
-	public Double evaluate(Program program) {
-		return Math.sqrt((double) this.getExpression().evaluate(program));
+	public DoubleType evaluate(Program program) {
+		if(this.getStopProgram()){
+			program.stop();
+		}
+		return new DoubleType(Math.sqrt(((DoubleType)this.getExpression().evaluate(program)).getValue()));
+	}
+
+	@Override
+	public boolean checkType(Expression<DoubleType> expression) {
+		return expression.getType() instanceof DoubleType;
+	}
+
+	@Override
+	public Type<?> getType() {
+		return new DoubleType();
 	}
 
 }

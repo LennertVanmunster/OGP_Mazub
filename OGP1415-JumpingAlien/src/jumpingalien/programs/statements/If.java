@@ -3,9 +3,10 @@ package jumpingalien.programs.statements;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.expressions.Expression;
 import jumpingalien.programs.program.Program;
+import jumpingalien.programs.types.BoolType;
 
 public class If extends Statement{
-	public If(Expression condition, Statement ifBody, Statement elseBody, SourceLocation sourceLocation){
+	public If(Expression<BoolType> condition, Statement ifBody, Statement elseBody, SourceLocation sourceLocation){
 		super(sourceLocation);
 		setCondition(condition);
 		setIfBody(ifBody);
@@ -14,18 +15,18 @@ public class If extends Statement{
 		}
 	}
 	
-	public If(Expression condition, Statement ifBody, Statement elseBody){
+	public If(Expression<BoolType> condition, Statement ifBody, Statement elseBody){
 		this(condition, ifBody, elseBody, new SourceLocation(0,0));
 	}
 	
-	public Expression getCondition() {
+	public Expression<BoolType> getCondition() {
 		return this.condition;
 	}
-	public void setCondition(Expression condition) {
+	public void setCondition(Expression<BoolType> condition) {
 		this.condition = condition;
 	}
 
-	private Expression condition;
+	private Expression<BoolType> condition;
 	
 	public Statement getIfBody() {
 		return this.ifBody;
@@ -50,10 +51,10 @@ public class If extends Statement{
 	private Statement elseBody;
 	
 	public void execute(Program program){
-		if(this.isToBeExecuted()){
+		if(this.isToBeExecuted() && !program.hasStopped()){
 			if (program.hasTimeForStatement()){
 				program.decreaseTimerOneUnit();
-				if((boolean) condition.evaluate(program)){
+				if(((BoolType) condition.evaluate(program)).getValue()){
 					getIfBody().execute(program);
 				}
 				else if(getElseBody() != null){

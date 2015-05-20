@@ -2,6 +2,7 @@ package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
+import jumpingalien.programs.types.DoubleType;
 
 /**
 * @version 1.0
@@ -14,16 +15,19 @@ public class Multiplication extends MathematicalExpression {
 	 * @param right
 	 * @param sourceLocation
 	 */
-	public Multiplication(Expression left, Expression right,
+	public Multiplication(Expression<DoubleType> left, Expression<DoubleType> right,
 			SourceLocation sourceLocation) {
 		super(left, right, sourceLocation);
 	}
 
 
 	@Override
-	public Double evaluate(Program program) {
-		return (double)this.getExpressionLeft().evaluate(program) * 
-		(double)this.getExpressionRight().evaluate(program);
+	public DoubleType evaluate(Program program) {
+		if(this.getStopProgram()){
+			program.stop();
+		}
+		return new DoubleType(((DoubleType) this.getExpressionLeft().evaluate(program)).getValue() * 
+				((DoubleType) this.getExpressionRight().evaluate(program)).getValue());
 	}
 
 }

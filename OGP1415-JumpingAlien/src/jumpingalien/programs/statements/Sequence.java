@@ -27,7 +27,7 @@ public class Sequence extends Statement {
 	List<Statement> statements = new ArrayList<Statement>();
 	
 	public void execute(Program program){
-		if(this.isToBeExecuted()){
+		if(this.isToBeExecuted() && !program.hasStopped()){
 			if (program.hasTimeForStatement()){
 				for(Statement statement: getStatements()){
 					statement.execute(program);

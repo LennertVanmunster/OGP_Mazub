@@ -1,6 +1,5 @@
 package jumpingalien.programs.expressions;
 
-import jumpingalien.model.GameObject;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.*;
@@ -9,7 +8,7 @@ import jumpingalien.programs.types.*;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class Self extends Expression {
+public class Self extends Expression<GameObjectType> {
 
 
 	public Self(SourceLocation sourceLocation){
@@ -17,12 +16,12 @@ public class Self extends Expression {
 	}
 	
 	@Override
-	public GameObject evaluate(Program program){
-		return program.getGameObject();
+	public GameObjectType evaluate(Program program){
+		return new GameObjectType(program.getGameObject());
 	}
 	
 	@Override
-	public Type getType(){
+	public Type<?> getType(){
 		return new GameObjectType();
 	}
 	

@@ -8,14 +8,14 @@ import jumpingalien.programs.types.Type;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public abstract class BoolExpression extends Expression {
+public abstract class BoolExpression extends Expression<BoolType> {
 
 	public BoolExpression(SourceLocation sourceLocation) {
 		super(sourceLocation);
 	}
 	
 	@Override
-	public Type getType(){
+	public Type<?> getType(){
 		return new BoolType();
 	}
 

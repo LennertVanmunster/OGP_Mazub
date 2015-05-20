@@ -2,6 +2,7 @@ package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
+import jumpingalien.programs.types.BoolType;
 
 /**
 * @version 1.0
@@ -18,8 +19,8 @@ public class False extends BoolExpression {
 	}
 	
 	@Override
-	public Boolean evaluate(Program program){
-		return false;
+	public BoolType evaluate(Program program){
+		return new BoolType(false);
 	}
 	
 	
