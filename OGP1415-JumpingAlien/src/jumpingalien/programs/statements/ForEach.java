@@ -122,6 +122,10 @@ public class ForEach extends Statement{
 				}
 				else{
 					List<GameObject> gameObjectList=this.createGameObjectList(program);
+					if(getWhere() != null){
+						gameObjectList = gameObjectList.stream().filter(gameObject -> {program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
+						return (boolean)(getWhere().evaluate(program));} ).collect(Collectors.toList());
+					}
 					while(this.getLoopIndex()<gameObjectList.size() && !program.isTimeDepleted()){
 						GameObject gameObject= gameObjectList.get(this.getLoopIndex());
 						program.putGlobalVariable(getVariableName(), new GameObjectType(), new GameObjectExpression(gameObject));
@@ -131,14 +135,7 @@ public class ForEach extends Statement{
 						else{
 							setCallSecondTime(false);
 						}
-						if(getWhere()!=null){
-							if((boolean) getWhere().evaluate(program)){
-								getBody().execute(program);
-							}
-						}
-						else{
-							getBody().execute(program);
-						}
+						getBody().execute(program);
 						this.setLoopIndex(this.getLoopIndex()+1);
 					}
 					if(program.isTimeDepleted()){
