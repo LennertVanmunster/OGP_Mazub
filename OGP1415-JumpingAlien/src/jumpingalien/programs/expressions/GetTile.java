@@ -33,7 +33,7 @@ public class GetTile extends BinaryOperation<TileType, DoubleType> {
 		List<Integer> tile= new ArrayList<Integer>();
 		tile.add(tileArray[0]);
 		tile.add(tileArray[1]);
-		return new TileType(tile);
+		return new TileType(tileArray);
 	}
 
 	@Override

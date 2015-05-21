@@ -50,10 +50,7 @@ public class SearchObject extends UnaryOperation<ObjectType<?>, DirectionType> {
 				position[0] = position[0] + direction.getNumberForCalculations();
 				try{
 					int[] tileArray= world.getTilePositionAtPixelLocation(position[0], position[1]);
-					List<Integer> tile= new ArrayList<Integer>();
-					tile.add(tileArray[0]);
-					tile.add(tileArray[1]);
-					object = new TileType(tile);
+					object = new TileType(tileArray);
 				}catch(IllegalArgumentException exc){
 					object = null;
 				}
@@ -67,10 +64,7 @@ public class SearchObject extends UnaryOperation<ObjectType<?>, DirectionType> {
 				position[1] = position[1] + direction.getNumberForCalculations();
 				try{
 					int[] tileArray= world.getTilePositionAtPixelLocation(position[0], position[1]);
-					List<Integer> tile= new ArrayList<Integer>();
-					tile.add(tileArray[0]);
-					tile.add(tileArray[1]);
-					object = new TileType(tile);
+					object = new TileType(tileArray);
 				}catch(IllegalArgumentException exc){
 					object = null;
 				}

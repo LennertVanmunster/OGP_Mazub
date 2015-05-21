@@ -24,8 +24,10 @@ public class IsPassable extends CheckerExpression {
 
 	@Override
 	public BoolType evaluateLegalCase(Program program) {
-		int x=((TileType) this.getExpression().evaluateLegalCase(program)).getValue().get(0);
-		int y=((TileType) this.getExpression().evaluateLegalCase(program)).getValue().get(1);
+//		int x=((TileType) this.getExpression().evaluateLegalCase(program)).getValue().get(0);
+//		int y=((TileType) this.getExpression().evaluateLegalCase(program)).getValue().get(1);
+		int x=((TileType) this.getExpression().evaluateLegalCase(program)).getValue()[0];
+		int y=((TileType) this.getExpression().evaluateLegalCase(program)).getValue()[1];
 		return new BoolType(program.getGameObject().getWorld().getTileValueAtTilePosition(x, y)!=1);
 	}
 

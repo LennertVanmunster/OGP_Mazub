@@ -652,7 +652,7 @@ public class GameObjectTest {
 
 	@Test
 	public void testSetProgram_TrueCase(){
-		Map<String,Type> globalVariables = new HashMap<String, Type>();
+		Map<String,Type<?>> globalVariables = new HashMap<String, Type<?>>();
 		Statement statement =  new StartJump(null);
 		Program program = new Program(statement, globalVariables);
 		assertTrue(testGameObject2.getProgram() == null);

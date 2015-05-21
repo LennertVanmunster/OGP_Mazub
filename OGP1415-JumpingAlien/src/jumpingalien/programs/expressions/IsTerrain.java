@@ -24,9 +24,8 @@ public class IsTerrain extends CheckerExpression {
 
 	@Override
 	public BoolType evaluateLegalCase(Program program) {
-		int x=((TileType) this.getExpression().evaluateLegalCase(program)).getValue().get(0);
-		int y=((TileType) this.getExpression().evaluateLegalCase(program)).getValue().get(1);
-		return new BoolType(program.getWorld().canHaveAsTilePosition(x, y));
+		int [] tile = (int[]) this.getExpression().evaluateLegalCase(program).getValue();
+		return new BoolType(program.getWorld().canHaveAsTilePosition(tile[0], tile[1]));
 	}
 
 

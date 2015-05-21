@@ -23,9 +23,8 @@ public class IsAir extends CheckerExpression {
 
 	@Override
 	public BoolType evaluateLegalCase(Program program) {
-		int x=((TileType) this.getExpression().evaluateLegalCase(program)).getValue().get(0);
-		int y=((TileType) this.getExpression().evaluateLegalCase(program)).getValue().get(1);
-		return new BoolType(program.getGameObject().getWorld().getTileValueAtTilePosition(x, y)==0);
+		int [] tile = (int[]) this.getExpression().evaluateLegalCase(program).getValue();
+		return new BoolType(program.getGameObject().getWorld().getTileValueAtTilePosition(tile[0], tile[1])==0);
 	}
 
 	@Override

@@ -4,16 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class TileType extends ObjectType<List<Integer>>{
+public class TileType extends ObjectType<int[]>{
 
-	public TileType(List<Integer> tilePosition) {
-		super(tilePosition);
+	public TileType(int[] tileArray) {
+		super(tileArray);
 	}
 	
-	public List<Integer> getDefaultValue(){
-		List<Integer> defaultValue= new ArrayList<Integer>();
-		defaultValue.add(0);
-		defaultValue.add(0);
+	public int [] getDefaultValue(){
+//		List<Integer> defaultValue= new ArrayList<Integer>();
+//		defaultValue.add(0);
+//		defaultValue.add(0);
+		int []defaultValue = {0,0};
 		return defaultValue;
 	}
 

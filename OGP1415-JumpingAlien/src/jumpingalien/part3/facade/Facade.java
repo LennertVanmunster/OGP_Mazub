@@ -972,7 +972,9 @@ public class Facade implements IFacadePart3 {
 	 *         current width and height of the given alien, in number of pixels.
 	 */
 	public int[] getSize(Buzam alien){
-		return new int[]{alien.getWidth(),alien.getHeight()};
+		if(!alien.isTerminated())
+			return new int[]{alien.getWidth(),alien.getHeight()};
+		else return null;
 	}
 
 	/**
@@ -986,7 +988,10 @@ public class Facade implements IFacadePart3 {
 	 *         its sprites.
 	 */
 	public Sprite getCurrentSprite(Buzam alien){
-		return alien.getCurrentSprite();
+		if(!alien.isTerminated())
+			return alien.getCurrentSprite();
+		else
+			return null;
 	}
 
 	/**
