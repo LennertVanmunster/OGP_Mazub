@@ -23,13 +23,9 @@ public class NotEquals<T> extends Comparison<T> {
 	}
 
 	@Override
-	public BoolType evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
-		Type<?> left = this.getExpressionLeft().evaluate(program);
-		Type<?> right = this.getExpressionRight().evaluate(program);
+	public BoolType evaluateLegalCase(Program program) {
+		Type<?> left = this.getExpressionLeft().evaluateLegalCase(program);
+		Type<?> right = this.getExpressionRight().evaluateLegalCase(program);
 		return new BoolType(left.getValue() != right.getValue());
 	}
 

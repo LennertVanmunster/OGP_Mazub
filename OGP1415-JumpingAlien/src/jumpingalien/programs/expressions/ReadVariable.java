@@ -42,14 +42,11 @@ public class ReadVariable extends Expression<Type<?>> {
 	private Type<?> variableType;
 	
 	@Override
-	public Type<?> evaluate(Program program){
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
+	public Type<?> evaluateLegalCase(Program program){
 		Type<?> variable=  program.getGlobalVariables().get(getVariableName());
 		if(!variable.getClass().equals(getVariableType().getClass())){
 			program.stop();
+			return null;
 		}
 		return variable;
 	}

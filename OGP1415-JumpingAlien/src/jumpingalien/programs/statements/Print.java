@@ -10,10 +10,6 @@ public class Print extends Statement{
 		setValue(value);
 	}
 	
-	public Print(Expression<Type<?>> value){
-		this(value, new SourceLocation(0,0));
-	}
-	
 	public Expression<Type<?>> getValue() {
 		return this.value;
 	}
@@ -29,7 +25,7 @@ public class Print extends Statement{
 		if(this.isToBeExecuted() && !program.hasStopped()){
 			if (program.hasTimeForStatement()){
 				program.decreaseTimerOneUnit();
-				System.out.println(value.evaluate(program));
+				System.out.println(value.evaluateLegalCase(program));
 				this.setToBeExecuted(false);
 			}
 			else{

@@ -17,10 +17,6 @@ public class DirectionConstant extends Expression<DirectionType> {
 		this.setDirection(value);
 	}
 	
-	public DirectionConstant(Direction value) {
-		this(value, null);
-	}
-	
 	/**
 	 * @return the direction
 	 */
@@ -43,11 +39,7 @@ public class DirectionConstant extends Expression<DirectionType> {
 	}
 
 	@Override
-	public DirectionType evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
+	public DirectionType evaluateLegalCase(Program program) {
 		return new DirectionType(this.getDirection());
 	}
 

@@ -49,5 +49,15 @@ public abstract class Expression<T> {
 	private boolean stopProgram=false;	
 	
 	
-	public abstract Type<?> evaluate(Program program);
+	public abstract Type<?> evaluateLegalCase(Program program);
+	
+	public Type<?> evaluate(Program program){
+		if(this.getStopProgram() || program.hasStopped()){
+			program.stop();
+			return null;
+		}
+		else{
+			return evaluateLegalCase(program);
+		}
+	}
 }

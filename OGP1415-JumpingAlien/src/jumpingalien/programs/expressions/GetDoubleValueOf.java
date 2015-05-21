@@ -14,11 +14,7 @@ public abstract class GetDoubleValueOf extends UnaryOperation<DoubleType, GameOb
 	public GetDoubleValueOf(Expression<GameObjectType> expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
-
-	public GetDoubleValueOf(SourceLocation sourceLocation) {
-		this(null,sourceLocation);
-	}
-
+	
 	@Override
 	public Type<?> getType() {
 		return new DoubleType();

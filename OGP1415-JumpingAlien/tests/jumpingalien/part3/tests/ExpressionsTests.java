@@ -46,9 +46,9 @@ public class ExpressionsTests {
 	@Test
 	public void testAddition_TrueCases() {
 		Addition addition = new Addition(new DoubleConstant(3.1), new DoubleConstant(2.5), null);
-		assertTrue(Util.fuzzyEquals(addition.evaluate(program), 5.6));
+		assertTrue(Util.fuzzyEquals(addition.evaluateLegalCase(program), 5.6));
 		addition = new Addition(new DoubleConstant(-3.1), new DoubleConstant(2.5), null);
-		assertTrue(Util.fuzzyEquals(addition.evaluate(program), -0.6));
+		assertTrue(Util.fuzzyEquals(addition.evaluateLegalCase(program), -0.6));
 	}
 	
 
@@ -56,9 +56,9 @@ public class ExpressionsTests {
 	@Test
 	public void testAnd_TrueCases() {
 		And and = new And(new False(), new True(), null);
-		assertTrue(and.evaluate(program) == false);
+		assertTrue(and.evaluateLegalCase(program) == false);
 		and = new And(new True(), new True(), null);
-		assertTrue(and.evaluate(program));
+		assertTrue(and.evaluateLegalCase(program));
 	}
 	
 	
@@ -66,52 +66,52 @@ public class ExpressionsTests {
 	@Test
 	public void testDirectionConstant_TrueCases() {
 		DirectionConstant directionConstant = new DirectionConstant(Direction.LEFT, null);
-		assertTrue(directionConstant.evaluate(program) == Orientation.LEFT);
+		assertTrue(directionConstant.evaluateLegalCase(program) == Orientation.LEFT);
 		directionConstant = new DirectionConstant(Direction.RIGHT, null);
-		assertTrue(directionConstant.evaluate(program) == Orientation.RIGHT);
+		assertTrue(directionConstant.evaluateLegalCase(program) == Orientation.RIGHT);
 		directionConstant = new DirectionConstant(Direction.DOWN, null);
-		assertTrue(directionConstant.evaluate(program) == Orientation.DOWN);
+		assertTrue(directionConstant.evaluateLegalCase(program) == Orientation.DOWN);
 		directionConstant = new DirectionConstant(Direction.UP, null);
-		assertTrue(directionConstant.evaluate(program) == Orientation.UP);
+		assertTrue(directionConstant.evaluateLegalCase(program) == Orientation.UP);
 	}
 	
 	//Division
 	@Test
 	public void testDivision_TrueCases() {
 		Division division = new Division(new DoubleConstant(8.0), new DoubleConstant(2.0), null);
-		assertTrue(division.evaluate(program) == 4.0);
+		assertTrue(division.evaluateLegalCase(program) == 4.0);
 		division = new Division(new DoubleConstant(-10.0), new DoubleConstant(2.5), null);
-		assertTrue(division.evaluate(program) == -4.0);
+		assertTrue(division.evaluateLegalCase(program) == -4.0);
 	}
 	
 	//DoubleConstant
 	@Test
 	public void testDoubleConstant_TrueCases() {
 		DoubleConstant doubleConstant = new DoubleConstant(1.29);
-		assertTrue(doubleConstant.evaluate(program) == 1.29);
+		assertTrue(doubleConstant.evaluateLegalCase(program) == 1.29);
 		doubleConstant = new DoubleConstant(-34.5645);
-		assertTrue(doubleConstant.evaluate(program) == -34.5645);
+		assertTrue(doubleConstant.evaluateLegalCase(program) == -34.5645);
 		doubleConstant = new DoubleConstant(0);
-		assertTrue(doubleConstant.evaluate(program) == 0);	
+		assertTrue(doubleConstant.evaluateLegalCase(program) == 0);	
 	}
 	
 	//Equals
 	@Test
 	public void testEquals_TrueCases() {
 		Equals equals = new Equals(new DoubleConstant(8.0), new DoubleConstant(8.0), null);
-		assertTrue(equals.evaluate(program));
+		assertTrue(equals.evaluateLegalCase(program));
 		equals = new Equals(new False(), new True(), null);
-		assertFalse(equals.evaluate(program));
+		assertFalse(equals.evaluateLegalCase(program));
 		equals = new Equals(new DirectionConstant(Direction.LEFT), new DirectionConstant(Direction.LEFT), null);
-		assertTrue(equals.evaluate(program));
+		assertTrue(equals.evaluateLegalCase(program));
 		equals = new Equals(new DirectionConstant(Direction.LEFT), new DirectionConstant(Direction.LEFT), null);
-		assertTrue(equals.evaluate(program));
+		assertTrue(equals.evaluateLegalCase(program));
 	}
 	
 	//False
 	@Test
 	public void testFalse_TrueCases() {
 		False false1 = new False();
-		assertFalse(false1.evaluate(program));
+		assertFalse(false1.evaluateLegalCase(program));
 	}
 }

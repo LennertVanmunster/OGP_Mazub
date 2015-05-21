@@ -193,7 +193,7 @@ public class ForEach extends Statement{
 			program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
 			double sortDouble;
 			try{
-				sortDouble= ((DoubleType) sortExpression.evaluate(program)).getValue();
+				sortDouble= ((DoubleType) sortExpression.evaluateLegalCase(program)).getValue();
 			} catch (NullPointerException exc){
 				return null;
 			}
@@ -215,7 +215,7 @@ public class ForEach extends Statement{
 	private List<GameObject> filterGameObjectList(List<GameObject> gameObjectList, Program program){
 		boolean where;
 		try{
-			where=((BoolType) getWhere().evaluate(program)).getValue();
+			where=((BoolType) getWhere().evaluateLegalCase(program)).getValue();
 		}catch(NullPointerException exc){
 			return null;
 		}
@@ -233,4 +233,12 @@ public class ForEach extends Statement{
 	}
 
 	List<GameObject> gameObjectList =new ArrayList<GameObject>();
+	
+	@Override
+	public void setToBeExecuted(boolean toBeExecuted) {
+		super.setToBeExecuted(toBeExecuted);
+		if(getBody()!=null){
+			getBody().setToBeExecuted(toBeExecuted);
+		}
+	}
 }

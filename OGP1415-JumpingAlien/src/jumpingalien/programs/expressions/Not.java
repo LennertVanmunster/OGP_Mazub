@@ -23,12 +23,8 @@ public class Not extends UnaryOperation<BoolType, BoolType> {
 	}
 
 	@Override
-	public BoolType evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
-		return new BoolType(!((BoolType)this.getExpression().evaluate(program)).getValue());
+	public BoolType evaluateLegalCase(Program program) {
+		return new BoolType(!((BoolType)this.getExpression().evaluateLegalCase(program)).getValue());
 	}
 
 	@Override

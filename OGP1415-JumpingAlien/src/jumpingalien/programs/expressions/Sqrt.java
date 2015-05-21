@@ -19,12 +19,8 @@ public class Sqrt extends UnaryOperation<DoubleType, DoubleType> {
 	}
 
 	@Override
-	public DoubleType evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
-		return new DoubleType(Math.sqrt(((DoubleType)this.getExpression().evaluate(program)).getValue()));
+	public DoubleType evaluateLegalCase(Program program) {
+		return new DoubleType(Math.sqrt(((DoubleType)this.getExpression().evaluateLegalCase(program)).getValue()));
 	}
 
 	@Override

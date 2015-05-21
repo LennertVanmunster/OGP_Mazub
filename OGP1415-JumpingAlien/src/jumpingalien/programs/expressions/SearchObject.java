@@ -35,13 +35,9 @@ public class SearchObject extends UnaryOperation<ObjectType<?>, DirectionType> {
 
 
 	@Override
-	public Type<?> evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
+	public Type<?> evaluateLegalCase(Program program) {
 		Type<?> object = null;
-		Orientation direction = Orientation.DUMMY.convertDirectionIProgramFactory(((DirectionType) this.getExpression().evaluate(program)).getValue());
+		Orientation direction = Orientation.DUMMY.convertDirectionIProgramFactory(((DirectionType) this.getExpression().evaluateLegalCase(program)).getValue());
 		GameObject gameObject = program.getGameObject();
 		int[] position = {(int) gameObject.getHorizontalLocation(), (int) gameObject.getVerticalLocation()};
 		World world = program.getWorld();

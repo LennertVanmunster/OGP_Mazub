@@ -10,6 +10,7 @@ public abstract class Statement {
 	}
 	
 	public Statement(){
+		this(null);
 	}
 	
 	public void setSourceLocation(SourceLocation sourceLocation){
@@ -20,7 +21,7 @@ public abstract class Statement {
 		return this.sourceLocation;
 	}
 	
-	private SourceLocation sourceLocation = new SourceLocation(0,0);
+	private SourceLocation sourceLocation = null;
 	
 	public Statement getNestingStatement() {
 		return this.nestingStatement;
@@ -30,7 +31,7 @@ public abstract class Statement {
 		this.nestingStatement = nestingStatement;
 	}
 
-	private Statement nestingStatement=null;
+	private Statement nestingStatement = null;
 	
 	public Statement getLoopStatement(){
 		Statement nestingStatement=this.getNestingStatement();
@@ -52,26 +53,9 @@ public abstract class Statement {
 
 	public void setToBeExecuted(boolean toBeExecuted) {
 		this.toBeExecuted = toBeExecuted;
-		if(this instanceof While){
-			((While) this).getBody().setToBeExecuted(toBeExecuted);
-		}
-		else if(this instanceof ForEach && ((ForEach) this).getBody() != null){
-			((ForEach) this).getBody().setToBeExecuted(toBeExecuted);
-		}
-		else if(this instanceof If){
-			((If) this).getIfBody().setToBeExecuted(toBeExecuted);
-			if(((If) this).getElseBody() != null){
-				((If) this).getElseBody().setToBeExecuted(toBeExecuted);
-			}
-		}
-		else if(this instanceof Sequence){
-			for(Statement statement: ((Sequence) this).getStatements()){
-				statement.setToBeExecuted(toBeExecuted);
-			}
-		}
 	}
 
-	private boolean toBeExecuted=true;
+	protected boolean toBeExecuted=true;
 	
 	public abstract void execute(Program program);
 }

@@ -1,7 +1,6 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
-import jumpingalien.programs.types.*;
 
 /**
 * @version 1.0

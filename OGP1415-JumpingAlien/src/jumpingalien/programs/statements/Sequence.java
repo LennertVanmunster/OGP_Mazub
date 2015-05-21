@@ -38,4 +38,14 @@ public class Sequence extends Statement {
 			}
 		}
 	}
+	
+	@Override
+	public void setToBeExecuted(boolean toBeExecuted) {
+		super.setToBeExecuted(toBeExecuted);
+		for(Statement statement: ((Sequence) this).getStatements()){
+			if(statement!=null){
+				statement.setToBeExecuted(toBeExecuted);
+			}
+		}
+	}
 }

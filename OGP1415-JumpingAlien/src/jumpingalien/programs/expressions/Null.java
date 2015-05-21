@@ -14,20 +14,12 @@ public class Null extends Expression<GameObjectType> {
 		super(sourceLocation);
 	}
 	
-	public Null(){
-		this(new SourceLocation(0,0));
-	}
-	
 	public Type<?> getType(){
 		return new GameObjectType();
 	}
 
 	@Override
-	public GameObjectType evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
+	public GameObjectType evaluateLegalCase(Program program) {
 		return new GameObjectType();
 	}
 }

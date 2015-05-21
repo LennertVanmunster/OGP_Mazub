@@ -14,16 +14,8 @@ public class False extends BoolExpression {
 		super(sourceLocation);
 	}
 	
-	public False(){
-		this(null);
-	}
-	
 	@Override
-	public BoolType evaluate(Program program){
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
+	public BoolType evaluateLegalCase(Program program){
 		return new BoolType(false);
 	}
 	

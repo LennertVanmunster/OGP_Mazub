@@ -16,13 +16,9 @@ public class Addition extends MathematicalExpression {
 	}
 	
 	@Override
-	public DoubleType evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
-		return new DoubleType(((DoubleType) this.getExpressionLeft().evaluate(program)).getValue() + 
-				((DoubleType) this.getExpressionRight().evaluate(program)).getValue());
+	public DoubleType evaluateLegalCase(Program program) {
+		return new DoubleType(((DoubleType) this.getExpressionLeft().evaluateLegalCase(program)).getValue() + 
+				((DoubleType) this.getExpressionRight().evaluateLegalCase(program)).getValue());
 	}
 
 

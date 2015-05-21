@@ -4,13 +4,9 @@ import jumpingalien.model.Buzam;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
 
-public class StartDuck extends Statement{
+public class StartDuck extends ActionStatement{
 	public StartDuck(SourceLocation sourceLocation){
 		super(sourceLocation);
-	}
-	
-	public StartDuck(){
-		this(new SourceLocation(0,0));
 	}
 
 	@Override

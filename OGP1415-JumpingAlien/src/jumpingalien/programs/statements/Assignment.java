@@ -44,7 +44,7 @@ public class Assignment extends Statement {
 				}
 				Type<?> valueToSet;
 				try{
-					valueToSet=this.getValue().evaluate(program);
+					valueToSet=this.getValue().evaluateLegalCase(program);
 				} catch (NullPointerException exc){
 					program.stop();
 					return;

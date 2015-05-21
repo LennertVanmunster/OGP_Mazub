@@ -28,12 +28,8 @@ public class GetTile extends BinaryOperation<TileType, DoubleType> {
 	}
 
 	@Override
-	public TileType evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
-		int[] tileArray= program.getWorld().getTilePositionAtPixelLocation(((DoubleType) getExpressionLeft().evaluate(program)).getValue().intValue(), ((DoubleType) getExpressionRight().evaluate(program)).getValue().intValue());
+	public TileType evaluateLegalCase(Program program) {
+		int[] tileArray= program.getWorld().getTilePositionAtPixelLocation(((DoubleType) getExpressionLeft().evaluateLegalCase(program)).getValue().intValue(), ((DoubleType) getExpressionRight().evaluateLegalCase(program)).getValue().intValue());
 		List<Integer> tile= new ArrayList<Integer>();
 		tile.add(tileArray[0]);
 		tile.add(tileArray[1]);

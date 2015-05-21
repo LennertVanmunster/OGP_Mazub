@@ -26,13 +26,9 @@ public class RandomDouble extends UnaryOperation<DoubleType, DoubleType> {
 	}
 
 	@Override
-	public DoubleType evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
+	public DoubleType evaluateLegalCase(Program program) {
 		Random r = new Random();
-		return new DoubleType(((DoubleType)this.getExpression().evaluate(program)).getValue() * r.nextDouble());
+		return new DoubleType(((DoubleType)this.getExpression().evaluateLegalCase(program)).getValue() * r.nextDouble());
 	}
 
 	@Override

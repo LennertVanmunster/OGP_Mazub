@@ -49,7 +49,7 @@ public class While extends Statement{
 			if (program.hasTimeForStatement()){
 				boolean condition;
 				try{
-					condition=((BoolType) getCondition().evaluate(program)).getValue();
+					condition=((BoolType) getCondition().evaluateLegalCase(program)).getValue();
 				}catch(NullPointerException exc){
 					return;
 				}
@@ -77,5 +77,14 @@ public class While extends Statement{
 				program.setTimeDepleted(true);
 			}
 		}	
+	}
+
+
+	@Override
+	public void setToBeExecuted(boolean toBeExecuted) {
+		super.setToBeExecuted(toBeExecuted);
+		if(getBody()!=null){
+			getBody().setToBeExecuted(toBeExecuted);
+		}
 	}
 }

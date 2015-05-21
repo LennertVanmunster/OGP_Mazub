@@ -21,12 +21,8 @@ public class GetY extends GetDoubleValueOf {
 	}
 
 	@Override
-	public DoubleType evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
-		return new DoubleType(((GameObjectType) this.getExpression().evaluate(program)).getValue().getVerticalLocation());
+	public DoubleType evaluateLegalCase(Program program) {
+		return new DoubleType(((GameObjectType) this.getExpression().evaluateLegalCase(program)).getValue().getVerticalLocation());
 	}
 
 }

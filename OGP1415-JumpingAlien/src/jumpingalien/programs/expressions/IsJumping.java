@@ -24,12 +24,8 @@ public class IsJumping extends CheckerExpression {
 
 
 	@Override
-	public BoolType evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
-		GameObject gameObject = ((GameObjectType) this.getExpression().evaluate(program)).getValue();
+	public BoolType evaluateLegalCase(Program program) {
+		GameObject gameObject = ((GameObjectType) this.getExpression().evaluateLegalCase(program)).getValue();
 		return new BoolType(gameObject.isJumping());
 	}
 

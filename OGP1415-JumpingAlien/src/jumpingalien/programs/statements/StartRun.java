@@ -8,8 +8,9 @@ import jumpingalien.programs.expressions.*;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.DirectionType;
 
-public class StartRun extends Statement {
+public class StartRun extends ActionStatement {
 	public StartRun(Expression<DirectionType> direction, SourceLocation sourceLocation){
+		super(sourceLocation);
 		setDirection(direction);
 	}
 	
@@ -33,7 +34,7 @@ public class StartRun extends Statement {
 				if(checkType()){
 					program.decreaseTimerOneUnit();
 					GameObject gameObject = program.getGameObject();
-					gameObject.startMove(Orientation.DUMMY.convertDirectionIProgramFactory(((DirectionType) getDirection().evaluate(program)).getValue()));
+					gameObject.startMove(Orientation.DUMMY.convertDirectionIProgramFactory(((DirectionType) getDirection().evaluateLegalCase(program)).getValue()));
 				}
 				else{
 					program.stop();

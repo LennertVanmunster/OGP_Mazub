@@ -23,13 +23,9 @@ public class IsMagma extends CheckerExpression {
 
 
 	@Override
-	public BoolType evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
-		int x=((TileType) this.getExpression().evaluate(program)).getValue().get(0);
-		int y=((TileType) this.getExpression().evaluate(program)).getValue().get(1);
+	public BoolType evaluateLegalCase(Program program) {
+		int x=((TileType) this.getExpression().evaluateLegalCase(program)).getValue().get(0);
+		int y=((TileType) this.getExpression().evaluateLegalCase(program)).getValue().get(1);
 		return new BoolType(program.getGameObject().getWorld().getTileValueAtTilePosition(x, y)==3);
 	}
 

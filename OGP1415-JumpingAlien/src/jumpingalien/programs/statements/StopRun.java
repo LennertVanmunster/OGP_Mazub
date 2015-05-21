@@ -6,7 +6,7 @@ import jumpingalien.programs.expressions.Expression;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.DirectionType;
 
-public class StopRun extends Statement {
+public class StopRun extends ActionStatement {
 
 	public StopRun(Expression<DirectionType> direction, SourceLocation sourceLocation){
 		super(sourceLocation);
@@ -33,7 +33,7 @@ public class StopRun extends Statement {
 				if(checkType()){
 					program.decreaseTimerOneUnit();
 					GameObject gameObject = program.getGameObject();
-					gameObject.endMove(Orientation.DUMMY.convertDirectionIProgramFactory(((DirectionType) getDirection().evaluate(program)).getValue()));
+					gameObject.endMove(Orientation.DUMMY.convertDirectionIProgramFactory(((DirectionType) getDirection().evaluateLegalCase(program)).getValue()));
 				}
 				else{
 					program.stop();

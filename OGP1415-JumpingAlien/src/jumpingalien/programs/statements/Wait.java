@@ -5,7 +5,7 @@ import jumpingalien.programs.expressions.Expression;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.DoubleType;
 
-public class Wait extends Statement{
+public class Wait extends ActionStatement{
 
 	public Wait(Expression<DoubleType> duration, SourceLocation sourceLocation){
 		super(sourceLocation);
@@ -42,7 +42,7 @@ public class Wait extends Statement{
 				if(this.getTimer()>0){
 					double duration;
 					try{
-						duration=((DoubleType) this.getDuration().evaluate(program)).getValue();
+						duration=((DoubleType) this.getDuration().evaluateLegalCase(program)).getValue();
 					}catch(NullPointerException exc){
 						return;
 					}

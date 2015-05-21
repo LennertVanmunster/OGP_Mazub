@@ -13,17 +13,9 @@ public class True extends BoolExpression {
 	public True(SourceLocation sourceLocation){
 		super(sourceLocation);
 	}
-	
-	public True(){
-		this(null);
-	}
-	
+
 	@Override
-	public BoolType evaluate(Program program){
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
+	public BoolType evaluateLegalCase(Program program){
 		return new BoolType(true);
 	}
 }

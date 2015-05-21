@@ -22,13 +22,9 @@ public class GreaterThan extends Comparison<DoubleType> {
 	}
 
 	@Override
-	public BoolType evaluate(Program program) {
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
-		DoubleType left = (DoubleType) this.getExpressionLeft().evaluate(program);
-		DoubleType right = (DoubleType) this.getExpressionRight().evaluate(program);
+	public BoolType evaluateLegalCase(Program program) {
+		DoubleType left = (DoubleType) this.getExpressionLeft().evaluateLegalCase(program);
+		DoubleType right = (DoubleType) this.getExpressionRight().evaluateLegalCase(program);
 		return new BoolType(left.getValue() > right.getValue());
 	}
 	

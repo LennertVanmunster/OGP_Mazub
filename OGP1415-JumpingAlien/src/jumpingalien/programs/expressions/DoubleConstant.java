@@ -20,12 +20,6 @@ public class DoubleConstant extends Expression<DoubleType> {
 		super(sourceLocation);
 		this.setValue(value);
 	}
-	
-	public DoubleConstant(double value) {
-		this(value, null);
-
-	}
-	
 
 	public double getValue() {
 		return value;
@@ -39,11 +33,7 @@ public class DoubleConstant extends Expression<DoubleType> {
 	private double value;
 	
 	@Override
-	public DoubleType evaluate(Program program){
-		if(this.getStopProgram() || program.hasStopped()){
-			program.stop();
-			return null;
-		}
+	public DoubleType evaluateLegalCase(Program program){
 		return new DoubleType(this.getValue());
 	}
 	

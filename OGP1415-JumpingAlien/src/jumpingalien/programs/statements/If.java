@@ -15,10 +15,6 @@ public class If extends Statement{
 		}
 	}
 	
-	public If(Expression<BoolType> condition, Statement ifBody, Statement elseBody){
-		this(condition, ifBody, elseBody, new SourceLocation(0,0));
-	}
-	
 	public Expression<BoolType> getCondition() {
 		return this.condition;
 	}
@@ -56,7 +52,7 @@ public class If extends Statement{
 				program.decreaseTimerOneUnit();
 				boolean condition;
 				try{
-					condition=((BoolType) getCondition().evaluate(program)).getValue();
+					condition=((BoolType) getCondition().evaluateLegalCase(program)).getValue();
 				}catch(NullPointerException exc){
 					return;
 				}
@@ -71,6 +67,17 @@ public class If extends Statement{
 			else{
 				program.setTimeDepleted(true);
 			}
+		}
+	}
+	
+	@Override
+	public void setToBeExecuted(boolean toBeExecuted) {
+		super.setToBeExecuted(toBeExecuted);
+		if(getIfBody()!=null){
+			getIfBody().setToBeExecuted(toBeExecuted);
+		}
+		if(getElseBody()!=null){
+			getElseBody().setToBeExecuted(toBeExecuted);
 		}
 	}
 	
