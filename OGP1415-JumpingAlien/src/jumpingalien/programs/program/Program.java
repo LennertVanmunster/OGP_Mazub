@@ -58,9 +58,16 @@ public class Program {
 			}
 		}
 		else{
-			System.out.println("The program has not been executed completely!");
+			getGameObject().endMove(getGameObject().getDirection());
+			if(printedOnce==false){
+				System.out.println("");
+				System.out.println("Type error in program!");
+				System.out.println(this.getGameObject());
+				printedOnce=true;
+			}
 		}
 	}
+	private boolean printedOnce=false;
 	
 	public void stop(){
 		this.hasStopped=true;

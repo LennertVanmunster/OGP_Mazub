@@ -23,8 +23,9 @@ public class GreaterThanOrEqualTo extends Comparison<DoubleType> {
 
 	@Override
 	public BoolType evaluate(Program program) {
-		if(this.getStopProgram()){
+		if(this.getStopProgram() || program.hasStopped()){
 			program.stop();
+			return null;
 		}
 		DoubleType left = (DoubleType) this.getExpressionLeft().evaluate(program);
 		DoubleType right = (DoubleType) this.getExpressionRight().evaluate(program);

@@ -44,6 +44,10 @@ public class DirectionConstant extends Expression<DirectionType> {
 
 	@Override
 	public DirectionType evaluate(Program program) {
+		if(this.getStopProgram() || program.hasStopped()){
+			program.stop();
+			return null;
+		}
 		return new DirectionType(this.getDirection());
 	}
 

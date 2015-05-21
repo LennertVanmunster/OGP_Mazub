@@ -54,7 +54,13 @@ public class If extends Statement{
 		if(this.isToBeExecuted() && !program.hasStopped()){
 			if (program.hasTimeForStatement()){
 				program.decreaseTimerOneUnit();
-				if(((BoolType) condition.evaluate(program)).getValue()){
+				boolean condition;
+				try{
+					condition=((BoolType) getCondition().evaluate(program)).getValue();
+				}catch(NullPointerException exc){
+					return;
+				}
+				if(condition){
 					getIfBody().execute(program);
 				}
 				else if(getElseBody() != null){

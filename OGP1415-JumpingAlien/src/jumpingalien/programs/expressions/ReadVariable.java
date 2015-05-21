@@ -43,6 +43,10 @@ public class ReadVariable extends Expression<Type<?>> {
 	
 	@Override
 	public Type<?> evaluate(Program program){
+		if(this.getStopProgram() || program.hasStopped()){
+			program.stop();
+			return null;
+		}
 		Type<?> variable=  program.getGlobalVariables().get(getVariableName());
 		if(!variable.getClass().equals(getVariableType().getClass())){
 			program.stop();

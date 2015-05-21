@@ -1,7 +1,5 @@
 package jumpingalien.programs.types;
 
-import jumpingalien.programs.expressions.*;
-import jumpingalien.programs.program.Program;
 
 public class DoubleType extends Type<Double> {
 	public DoubleType(Double value){

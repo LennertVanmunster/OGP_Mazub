@@ -23,8 +23,9 @@ public class IsPlant extends CheckerExpression {
 
 	@Override
 	public BoolType evaluate(Program program) {
-		if(this.getStopProgram()){
+		if(this.getStopProgram() || program.hasStopped()){
 			program.stop();
+			return null;
 		}
 		return new BoolType(((GameObjectType) this.getExpression().evaluate(program)).getValue() instanceof Plant);
 	}

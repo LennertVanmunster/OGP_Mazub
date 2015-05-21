@@ -18,8 +18,9 @@ public class Subtraction extends MathematicalExpression {
 
 	@Override
 	public DoubleType evaluate(Program program) {
-		if(this.getStopProgram()){
+		if(this.getStopProgram() || program.hasStopped()){
 			program.stop();
+			return null;
 		}
 		return new DoubleType(((DoubleType) this.getExpressionLeft().evaluate(program)).getValue() - 
 				((DoubleType) this.getExpressionRight().evaluate(program)).getValue());

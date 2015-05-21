@@ -131,8 +131,6 @@ public class ForEach extends Statement{
 						setGameObjectList(gameObjectList);
 					}
 					while(((this.getLoopIndex()<gameObjectList.size() && !program.isTimeDepleted()) || getCallSecondTime()) && !program.hasStopped()){
-						System.out.println(this.getCallSecondTime());
-						System.out.println(this.getLoopIndex());
 						GameObject gameObject= gameObjectList.get(this.getLoopIndex());
 						program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
 						if(!getCallSecondTime()){
@@ -193,7 +191,12 @@ public class ForEach extends Statement{
 		HashMap<GameObject, Double> sortMap= new HashMap<GameObject, Double>();
 		for(GameObject gameObject: gameObjectList){
 			program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
-			double sortDouble= ((DoubleType) sortExpression.evaluate(program)).getValue();
+			double sortDouble;
+			try{
+				sortDouble= ((DoubleType) sortExpression.evaluate(program)).getValue();
+			} catch (NullPointerException exc){
+				return null;
+			}
 			Double sortDoubleObject = new Double(sortDouble);
 			sortMap.put(gameObject, sortDoubleObject);
 		}
@@ -210,10 +213,14 @@ public class ForEach extends Statement{
 	}
 	
 	private List<GameObject> filterGameObjectList(List<GameObject> gameObjectList, Program program){
-		if(getWhere() != null){
-			gameObjectList = gameObjectList.stream().filter(gameObject -> {program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
-			return ((BoolType) getWhere().evaluate(program)).getValue();} ).collect(Collectors.toList());
+		boolean where;
+		try{
+			where=((BoolType) getWhere().evaluate(program)).getValue();
+		}catch(NullPointerException exc){
+			return null;
 		}
+		gameObjectList = gameObjectList.stream().filter(gameObject -> {program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
+		return where;} ).collect(Collectors.toList());
 		return gameObjectList;
 	}
 	

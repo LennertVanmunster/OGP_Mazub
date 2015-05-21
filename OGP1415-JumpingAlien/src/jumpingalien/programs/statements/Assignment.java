@@ -42,7 +42,14 @@ public class Assignment extends Statement {
 				if(!matchesValueType(this.getVariableType(),this.getValue())){
 					program.stop();
 				}
-				program.putGlobalVariable(this.getVariableName(), this.getValue().evaluate(program));
+				Type<?> valueToSet;
+				try{
+					valueToSet=this.getValue().evaluate(program);
+				} catch (NullPointerException exc){
+					program.stop();
+					return;
+				}
+				program.putGlobalVariable(this.getVariableName(), valueToSet);
 				this.setToBeExecuted(false);
 			}
 			else{

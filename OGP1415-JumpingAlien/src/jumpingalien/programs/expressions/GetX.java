@@ -21,8 +21,9 @@ public class GetX extends GetDoubleValueOf {
 
 	@Override
 	public DoubleType evaluate(Program program) {
-		if(this.getStopProgram()){
+		if(this.getStopProgram() || program.hasStopped()){
 			program.stop();
+			return null;
 		}
 		return new DoubleType(((GameObjectType) this.getExpression().evaluate(program)).getValue().getHorizontalLocation());
 	}

@@ -36,8 +36,9 @@ public class SearchObject extends UnaryOperation<ObjectType<?>, DirectionType> {
 
 	@Override
 	public Type<?> evaluate(Program program) {
-		if(this.getStopProgram()){
+		if(this.getStopProgram() || program.hasStopped()){
 			program.stop();
+			return null;
 		}
 		Type<?> object = null;
 		Orientation direction = Orientation.DUMMY.convertDirectionIProgramFactory(((DirectionType) this.getExpression().evaluate(program)).getValue());

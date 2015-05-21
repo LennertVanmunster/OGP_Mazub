@@ -47,7 +47,13 @@ public class While extends Statement{
 	public void execute(Program program){
 		if(this.isToBeExecuted() && !program.hasStopped()){
 			if (program.hasTimeForStatement()){
-				while(((((BoolType) getCondition().evaluate(program)).getValue() && program.hasTimeForStatement()) || this.getCallSecondTime()) && !program.hasStopped()){
+				boolean condition;
+				try{
+					condition=((BoolType) getCondition().evaluate(program)).getValue();
+				}catch(NullPointerException exc){
+					return;
+				}
+				while(((condition && program.hasTimeForStatement()) || this.getCallSecondTime()) && !program.hasStopped()){
 					if(this.getCallSecondTime()){
 						this.setCallSecondTime(false);
 					}

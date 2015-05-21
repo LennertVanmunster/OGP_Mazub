@@ -1,7 +1,5 @@
 package jumpingalien.programs.types;
 
-import jumpingalien.programs.expressions.*;
-import jumpingalien.programs.program.Program;
 
 public class BoolType extends Type<Boolean> {
 	public BoolType(Boolean value){

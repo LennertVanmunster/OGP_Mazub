@@ -23,8 +23,9 @@ public class IsAir extends CheckerExpression {
 
 	@Override
 	public BoolType evaluate(Program program) {
-		if(this.getStopProgram()){
+		if(this.getStopProgram() || program.hasStopped()){
 			program.stop();
+			return null;
 		}
 		int x=((TileType) this.getExpression().evaluate(program)).getValue().get(0);
 		int y=((TileType) this.getExpression().evaluate(program)).getValue().get(1);

@@ -20,6 +20,10 @@ public class False extends BoolExpression {
 	
 	@Override
 	public BoolType evaluate(Program program){
+		if(this.getStopProgram() || program.hasStopped()){
+			program.stop();
+			return null;
+		}
 		return new BoolType(false);
 	}
 	

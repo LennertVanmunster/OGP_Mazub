@@ -29,8 +29,9 @@ public class GetTile extends BinaryOperation<TileType, DoubleType> {
 
 	@Override
 	public TileType evaluate(Program program) {
-		if(this.getStopProgram()){
+		if(this.getStopProgram() || program.hasStopped()){
 			program.stop();
+			return null;
 		}
 		int[] tileArray= program.getWorld().getTilePositionAtPixelLocation(((DoubleType) getExpressionLeft().evaluate(program)).getValue().intValue(), ((DoubleType) getExpressionRight().evaluate(program)).getValue().intValue());
 		List<Integer> tile= new ArrayList<Integer>();

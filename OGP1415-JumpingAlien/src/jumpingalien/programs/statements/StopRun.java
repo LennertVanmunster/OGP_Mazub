@@ -20,15 +20,24 @@ public class StopRun extends Statement {
 	public void setDirection(Expression<DirectionType> direction) {
 		this.direction = direction;
 	}
+	
+	public boolean checkType(){
+		return this.getDirection().getType() instanceof DirectionType;
+	}
 
 	private Expression<DirectionType> direction;
 	
 	public void execute(Program program){
 		if(this.isToBeExecuted() && !program.hasStopped()){
 			if(program.hasTimeForStatement()){
-				program.decreaseTimerOneUnit();
-				GameObject gameObject = program.getGameObject();
-				gameObject.endMove(Orientation.DUMMY.convertDirectionIProgramFactory(((DirectionType) getDirection().evaluate(program)).getValue()));
+				if(checkType()){
+					program.decreaseTimerOneUnit();
+					GameObject gameObject = program.getGameObject();
+					gameObject.endMove(Orientation.DUMMY.convertDirectionIProgramFactory(((DirectionType) getDirection().evaluate(program)).getValue()));
+				}
+				else{
+					program.stop();
+				}
 				this.setToBeExecuted(false);
 			}
 			else{

@@ -22,8 +22,9 @@ public class Or extends BooleanOperation {
 
 	@Override
 	public BoolType evaluate(Program program) {
-		if(this.getStopProgram()){
+		if(this.getStopProgram() || program.hasStopped()){
 			program.stop();
+			return null;
 		}
 		return new BoolType(((BoolType) this.getExpressionLeft().evaluate(program)).getValue() ||
 				((BoolType)this.getExpressionRight().evaluate(program)).getValue());

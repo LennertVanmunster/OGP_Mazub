@@ -24,6 +24,10 @@ public class Null extends Expression<GameObjectType> {
 
 	@Override
 	public GameObjectType evaluate(Program program) {
+		if(this.getStopProgram() || program.hasStopped()){
+			program.stop();
+			return null;
+		}
 		return new GameObjectType();
 	}
 }

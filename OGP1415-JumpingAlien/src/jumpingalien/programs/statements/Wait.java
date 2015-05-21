@@ -40,7 +40,13 @@ public class Wait extends Statement{
 		if(this.isToBeExecuted() && !program.hasStopped()){
 			if(program.hasTimeForStatement()){
 				if(this.getTimer()>0){
-					this.setTimer(program.getTimer() - ((DoubleType) this.getDuration().evaluate(program)).getValue());
+					double duration;
+					try{
+						duration=((DoubleType) this.getDuration().evaluate(program)).getValue();
+					}catch(NullPointerException exc){
+						return;
+					}
+					this.setTimer(program.getTimer() - duration);
 				}
 				else{
 					this.setTimer(this.getTimer()+program.getTimer());

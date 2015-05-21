@@ -23,8 +23,9 @@ public class Equals extends Comparison<Type<?>> {
 
 	@Override
 	public BoolType evaluate(Program program) {
-		if(this.getStopProgram()){
+		if(this.getStopProgram() || program.hasStopped()){
 			program.stop();
+			return null;
 		}
 		Type<?> left = this.getExpressionLeft().evaluate(program);
 		Type<?> right = this.getExpressionRight().evaluate(program);

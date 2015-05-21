@@ -1,7 +1,5 @@
 package jumpingalien.programs.types;
 
-import jumpingalien.programs.expressions.*;
-import jumpingalien.programs.program.Program;
 
 public abstract class Type<T> {
 	public Type(T value){

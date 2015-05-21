@@ -40,6 +40,10 @@ public class DoubleConstant extends Expression<DoubleType> {
 	
 	@Override
 	public DoubleType evaluate(Program program){
+		if(this.getStopProgram() || program.hasStopped()){
+			program.stop();
+			return null;
+		}
 		return new DoubleType(this.getValue());
 	}
 	
