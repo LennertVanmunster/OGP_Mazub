@@ -120,15 +120,19 @@ public class ForEach extends Statement{
 					program.stop();
 				}
 				else{
-					List<GameObject> gameObjectList=this.createGameObjectList(program);
-					if(getWhere() != null){
-						gameObjectList = gameObjectList.stream().filter(gameObject -> {program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
-						return ((BoolType) getWhere().evaluate(program)).getValue();} ).collect(Collectors.toList());
-					}
-					if(getSort() != null){
-						gameObjectList = sortGameObjects(gameObjectList, program);
+					if(!getCallSecondTime()){
+						List<GameObject> gameObjectList=this.createGameObjectList(program);
+						if(getSort()!=null){
+							gameObjectList=sortGameObjectList(gameObjectList, program);
+						}
+						if(getWhere()!=null){
+							gameObjectList=filterGameObjectList(gameObjectList, program);
+						}
+						setGameObjectList(gameObjectList);
 					}
 					while(((this.getLoopIndex()<gameObjectList.size() && !program.isTimeDepleted()) || getCallSecondTime()) && !program.hasStopped()){
+						System.out.println(this.getCallSecondTime());
+						System.out.println(this.getLoopIndex());
 						GameObject gameObject= gameObjectList.get(this.getLoopIndex());
 						program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
 						if(!getCallSecondTime()){
@@ -184,7 +188,7 @@ public class ForEach extends Statement{
 		return gameObjectList;
 	}
 		
-	private List<GameObject> sortGameObjects(List<GameObject> gameObjectList, Program program){
+	private List<GameObject> sortGameObjectList(List<GameObject> gameObjectList, Program program){
 		Expression<DoubleType> sortExpression = getSort();
 		HashMap<GameObject, Double> sortMap= new HashMap<GameObject, Double>();
 		for(GameObject gameObject: gameObjectList){
@@ -204,4 +208,22 @@ public class ForEach extends Statement{
 		}
 		return gameObjectList;
 	}
+	
+	private List<GameObject> filterGameObjectList(List<GameObject> gameObjectList, Program program){
+		if(getWhere() != null){
+			gameObjectList = gameObjectList.stream().filter(gameObject -> {program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
+			return ((BoolType) getWhere().evaluate(program)).getValue();} ).collect(Collectors.toList());
+		}
+		return gameObjectList;
+	}
+	
+	public List<GameObject> getGameObjectList() {
+		return gameObjectList;
+	}
+
+	public void setGameObjectList(List<GameObject> gameObjectList) {
+		this.gameObjectList = gameObjectList;
+	}
+
+	List<GameObject> gameObjectList =new ArrayList<GameObject>();
 }
