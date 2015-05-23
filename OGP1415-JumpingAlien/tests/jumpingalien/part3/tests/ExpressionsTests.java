@@ -28,6 +28,8 @@ import jumpingalien.programs.expressions.GetTile;
 import jumpingalien.programs.expressions.GetWidth;
 import jumpingalien.programs.expressions.GetX;
 import jumpingalien.programs.expressions.GetY;
+import jumpingalien.programs.expressions.GreaterThan;
+import jumpingalien.programs.expressions.GreaterThanOrEqualTo;
 import jumpingalien.programs.expressions.True;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.statements.StartJump;
@@ -193,8 +195,35 @@ public class ExpressionsTests {
 		assertTrue(Util.fuzzyEquals(getY.evaluateLegalCase(program).getValue(),499));
 	}
 	
+	//GreaterThan
+	@Test
+	public void testGreaterThan_TrueCases() {
+		GreaterThan greaterThan = new GreaterThan(new DoubleConstant(8.0, null), new DoubleConstant(2.0, null), null);
+		assertTrue(greaterThan.evaluateLegalCase(program).getValue());
+		greaterThan = new GreaterThan(new DoubleConstant(1.56, null), new DoubleConstant(10.543, null), null);
+		assertFalse(greaterThan.evaluateLegalCase(program).getValue());
+		greaterThan = new GreaterThan(new DoubleConstant(34.433, null), new DoubleConstant(34.433, null), null);
+		assertFalse(greaterThan.evaluateLegalCase(program).getValue());
+		greaterThan = new GreaterThan(new DoubleConstant(0.001, null), new DoubleConstant(0.0, null), null);
+		assertTrue(greaterThan.evaluateLegalCase(program).getValue());
 		
+	}	
 		
+	//GreaterThanOrEqualTo
+	@Test
+	public void testGreaterThanOrEqualTo_TrueCases() {
+		GreaterThanOrEqualTo greaterThanOrEqualTo = new GreaterThanOrEqualTo(new DoubleConstant(8.0, null), new DoubleConstant(2.0, null), null);
+		assertTrue(greaterThanOrEqualTo.evaluateLegalCase(program).getValue());
+		greaterThanOrEqualTo = new GreaterThanOrEqualTo(new DoubleConstant(1.56, null), new DoubleConstant(10.543, null), null);
+		assertFalse(greaterThanOrEqualTo.evaluateLegalCase(program).getValue());
+		greaterThanOrEqualTo = new GreaterThanOrEqualTo(new DoubleConstant(34.433, null), new DoubleConstant(34.433, null), null);
+		assertTrue(greaterThanOrEqualTo.evaluateLegalCase(program).getValue());
+		greaterThanOrEqualTo = new GreaterThanOrEqualTo(new DoubleConstant(0.001, null), new DoubleConstant(0.0, null), null);
+		assertTrue(greaterThanOrEqualTo.evaluateLegalCase(program).getValue());
+		
+	}
+	
+	//IsAir
 		
 		
 		

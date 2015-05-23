@@ -4,6 +4,7 @@ import be.kuleuven.cs.som.annotate.*;
 
 import java.util.*;
 
+import jumpingalien.part3.facade.Facade;
 import jumpingalien.util.Util;
 
 
@@ -908,7 +909,8 @@ public class World {
 			}
 		}
 		this.checkGameOver();
-		this.updateVisibleWindow();
+		if(!getGameOver())
+			this.updateVisibleWindow();
 	}
 	
 	/**
@@ -976,6 +978,7 @@ public class World {
 	private void checkGameOver(){
 		if(getMazub().getHitPoints()<=0){
 			setGameOver(true);
+			getMazub().terminate();
 		}
 		else{
 			int coincidingTiles[][]= getTilePositionsIn(getMazub().getEffectiveHorizontalLocation(), getMazub().getEffectiveVerticalLocation(), 

@@ -50,7 +50,10 @@ public class Facade implements IFacadePart3 {
 	 *         coordinates of the given alien's bottom left pixel in the world.
 	 */
 	public int[] getLocation(Mazub alien){
-		return new int[]{alien.getEffectiveHorizontalLocation(), alien.getEffectiveVerticalLocation()};
+		if(!alien.isTerminated())
+			return new int[]{alien.getEffectiveHorizontalLocation(), alien.getEffectiveVerticalLocation()};
+		else
+			return null;
 	}
 
 	/**
@@ -91,7 +94,10 @@ public class Facade implements IFacadePart3 {
 	 *         current width and height of the given alien, in number of pixels.
 	 */
 	public int[] getSize(Mazub alien){
-		return new int[]{alien.getWidth(),alien.getHeight()};
+		if(!alien.isTerminated())
+			return new int[]{alien.getWidth(),alien.getHeight()};
+		else
+			return null;
 	}
 
 	/**
@@ -104,7 +110,10 @@ public class Facade implements IFacadePart3 {
 	 *         state as defined in the assignment.
 	 */
 	public Sprite getCurrentSprite(Mazub alien){
-		return alien.getCurrentSprite();
+		if(!alien.isTerminated())
+			return alien.getCurrentSprite();
+		else
+			return null;
 	}
 
 	/**
