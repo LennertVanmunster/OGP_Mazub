@@ -486,7 +486,7 @@ public class Buzam extends GameObject {
 			oldVerticalLocation = getVerticalLocation();
 			oldHorizontalLocation = getHorizontalLocation();
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
-			if(!(deltaTimeForPixel<deltaTime - sumDeltaTimeForPixel)){
+			if(!(deltaTimeForPixel+sumDeltaTimeForPixel<deltaTime)){
 				deltaTimeForPixel = deltaTime - sumDeltaTimeForPixel + 1E-10;
 			}
 			sumDeltaTimeForPixel+=deltaTimeForPixel;

@@ -121,18 +121,18 @@ public class ForEach extends Statement{
 				}
 				else{
 					if(!getCallSecondTime()){
-						List<GameObject> gameObjectList=this.createGameObjectList(program);
-						if(getSort()!=null){
-							gameObjectList=sortGameObjectList(gameObjectList, program);
-						}
+						List<ObjectType<?>> objectTypeList=this.createObjectTypeList(program);
 						if(getWhere()!=null){
-							gameObjectList=filterGameObjectList(gameObjectList, program);
+							objectTypeList=filterObjectTypeList(objectTypeList, program);
 						}
-						setGameObjectList(gameObjectList);
+						if(getSort()!=null){
+							objectTypeList=sortObjectTypeList(objectTypeList, program);
+						}
+						setObjectTypeList(objectTypeList);
 					}
-					while(((this.getLoopIndex()<gameObjectList.size() && !program.isTimeDepleted()) || getCallSecondTime()) && !program.hasStopped()){
-						GameObject gameObject= gameObjectList.get(this.getLoopIndex());
-						program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
+					while(((this.getLoopIndex()<getObjectTypeList().size() && !program.isTimeDepleted()) || getCallSecondTime()) && !program.hasStopped()){
+						ObjectType<?> objectType= getObjectTypeList().get(this.getLoopIndex());
+						program.putGlobalVariable(getVariableName(), objectType);
 						if(!getCallSecondTime()){
 							getBody().setToBeExecuted(true);
 						}
@@ -158,8 +158,10 @@ public class ForEach extends Statement{
 		}
 	}
 	
-	private List<GameObject> createGameObjectList(Program program){
+	private List<ObjectType<?>> createObjectTypeList(Program program){
+		List<ObjectType<?>> objectTypeList=new ArrayList<ObjectType<?>>();
 		List<GameObject> gameObjectList=new ArrayList<GameObject>();
+		boolean isTerrain=false;
 		switch(getVariableKind()){
 		case ANY:
 			gameObjectList.addAll(program.getGameObject().getWorld().getAllGameObjects());
@@ -180,17 +182,26 @@ public class ForEach extends Statement{
 			gameObjectList.add(program.getGameObject().getWorld().getBuzam());
 			break;
 		case TERRAIN:
-			//gameObjectList.addAll(program.getGameObject().getWorld().getTiles());
+			int[][] tileArray=program.getGameObject().getWorld().getTiles();
+			for(int[] tile: tileArray){
+				objectTypeList.add(new TileType(tile));
+			}
+			isTerrain=true;
 			break;
 		}
-		return gameObjectList;
+		if(!isTerrain){
+			for(GameObject gameObject: gameObjectList){
+				objectTypeList.add(new GameObjectType(gameObject));
+			}
+		}
+		return objectTypeList;
 	}
 		
-	private List<GameObject> sortGameObjectList(List<GameObject> gameObjectList, Program program){
+	private List<ObjectType<?>> sortObjectTypeList(List<ObjectType<?>> objectTypeList, Program program){
 		Expression<DoubleType> sortExpression = getSort();
-		HashMap<GameObject, Double> sortMap= new HashMap<GameObject, Double>();
-		for(GameObject gameObject: gameObjectList){
-			program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
+		HashMap<ObjectType<?>, Double> sortMap= new HashMap<ObjectType<?>, Double>();
+		for(ObjectType<?> objectType: objectTypeList){
+			program.putGlobalVariable(getVariableName(), objectType);
 			double sortDouble;
 			try{
 				sortDouble= ((DoubleType) sortExpression.evaluateLegalCase(program)).getValue();
@@ -198,41 +209,41 @@ public class ForEach extends Statement{
 				return null;
 			}
 			Double sortDoubleObject = new Double(sortDouble);
-			sortMap.put(gameObject, sortDoubleObject);
+			sortMap.put(objectType, sortDoubleObject);
 		}
 		if(getSortDirection() != null){
 			switch(getSortDirection()){
 			case ASCENDING:
-				Collections.sort(gameObjectList, (GameObject g1, GameObject g2) -> sortMap.get(g1).compareTo(sortMap.get(g2)));
+				Collections.sort(objectTypeList, (ObjectType<?> g1, ObjectType<?> g2) -> sortMap.get(g1).compareTo(sortMap.get(g2)));
 				break;
 			case DESCENDING:
-				Collections.sort(gameObjectList, (GameObject g1, GameObject g2) -> sortMap.get(g2).compareTo(sortMap.get(g1)));
+				Collections.sort(objectTypeList, (ObjectType<?> g1, ObjectType<?> g2) -> sortMap.get(g2).compareTo(sortMap.get(g1)));
 			}
 		}
-		return gameObjectList;
+		return objectTypeList;
 	}
 	
-	private List<GameObject> filterGameObjectList(List<GameObject> gameObjectList, Program program){
+	private List<ObjectType<?>> filterObjectTypeList(List<ObjectType<?>> objectTypeList, Program program){
 		boolean where;
 		try{
 			where=((BoolType) getWhere().evaluateLegalCase(program)).getValue();
 		}catch(NullPointerException exc){
 			return null;
 		}
-		gameObjectList = gameObjectList.stream().filter(gameObject -> {program.putGlobalVariable(getVariableName(), new GameObjectType(gameObject));
+		objectTypeList = objectTypeList.stream().filter(objectType -> {program.putGlobalVariable(getVariableName(), objectType);
 		return where;} ).collect(Collectors.toList());
-		return gameObjectList;
+		return objectTypeList;
 	}
 	
-	public List<GameObject> getGameObjectList() {
-		return gameObjectList;
+	public List<ObjectType<?>> getObjectTypeList() {
+		return this.objectTypeList;
 	}
 
-	public void setGameObjectList(List<GameObject> gameObjectList) {
-		this.gameObjectList = gameObjectList;
+	public void setObjectTypeList(List<ObjectType<?>> objectTypeList) {
+		this.objectTypeList = objectTypeList;
 	}
 
-	List<GameObject> gameObjectList =new ArrayList<GameObject>();
+	List<ObjectType<?>> objectTypeList =new ArrayList<ObjectType<?>>();
 	
 	@Override
 	public void setToBeExecuted(boolean toBeExecuted) {

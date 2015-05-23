@@ -459,7 +459,6 @@ public class Mazub extends GameObject {
 			setTimeSinceStartMove(getTimeSinceStartMove()+deltaTime);
 		}
 		while (sumDeltaTimeForPixel<deltaTime){
-			calculateNewJumpingState();
 			oldVerticalLocation = getVerticalLocation();
 			oldHorizontalLocation = getHorizontalLocation();
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
@@ -469,6 +468,7 @@ public class Mazub extends GameObject {
 			sumDeltaTimeForPixel+=deltaTimeForPixel;
 			this.updateVelocities(deltaTimeForPixel);
 			this.updateLocations(deltaTimeForPixel, oldHorizontalLocation, oldVerticalLocation);
+			calculateNewJumpingState();
 			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
 			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
 			if(wantsEndDuck()){
