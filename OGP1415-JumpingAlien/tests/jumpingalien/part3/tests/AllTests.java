@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { BuzamTest.class, ExpressionsTests.class, GameObjectTest.class, MazubTest.class,
-    PartialFacadeTest.class, PlantTest.class, SchoolTest.class,
+    PartialFacadeTest.class, PlantTest.class, ProgramTests.class, SchoolTest.class,
     SharkTest.class, SlimeTest.class, StatementTests.class, WorldTest.class})
 public class AllTests {
 }

@@ -168,14 +168,16 @@ public class GameObjectTest {
 		assertTrue(Util.fuzzyEquals(testGameObject.getHorizontalVelocity(),-1));
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void testSetHorizontalVelocity_FalseCase() throws IllegalArgumentException{
+	@Test
+	public void testSetHorizontalVelocity_FalseCase() {
 		testGameObject.setHorizontalVelocity(4);
+		assertTrue(Util.fuzzyEquals(testGameObject.getHorizontalVelocity(),testGameObject.getMaximumHorizontalVelocity()));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testSetHorizontalVelocity_FalseCase2() throws IllegalArgumentException{
+	@Test
+	public void testSetHorizontalVelocity_FalseCase2(){
 		testGameObject.setHorizontalVelocity(0.5);
+		assertTrue(Util.fuzzyEquals(testGameObject.getHorizontalVelocity(),testGameObject.getInitialHorizontalVelocity()));
 	}
 	
 	@Test
@@ -190,10 +192,11 @@ public class GameObjectTest {
 		assertTrue(Util.fuzzyEquals(testGameObject.getVerticalVelocity(),-5));
 	}
 
-	@Test (expected = IllegalArgumentException.class)
-	public void testSetVerticalVelocity_FalseCase() throws IllegalArgumentException {
+	@Test 
+	public void testSetVerticalVelocity_FalseCase() {
 		//8 is the initial vertical velocity
 		testGameObject.setVerticalVelocity(8+1);
+		assertTrue(Util.fuzzyEquals(testGameObject.getVerticalVelocity(),0));
 	}
 	
 	@Test
