@@ -2,7 +2,6 @@ package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.types.DoubleType;
-import jumpingalien.programs.types.Type;
 
 /**
 * @version 1.0
@@ -18,7 +17,7 @@ public abstract class MathematicalExpression extends BinaryOperation<DoubleType,
 	
 	
 	@Override
-	public Type<?> getType(){
+	public DoubleType getType(){
 		return new DoubleType();
 	}
 	

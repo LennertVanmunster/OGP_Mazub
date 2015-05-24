@@ -9,14 +9,14 @@ import jumpingalien.programs.types.*;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class Equals extends Comparison<Type<?>> {
+public class Equals<T extends Type<?>> extends Comparison<T> {
 
 	/**
 	 * @param left
 	 * @param right
 	 * @param sourceLocation
 	 */
-	public Equals(Expression<Type<?>> left, Expression<Type<?>> right,
+	public Equals(Expression<T> left, Expression<T> right,
 			SourceLocation sourceLocation) {
 		super(left, right, sourceLocation);
 	}
@@ -25,11 +25,19 @@ public class Equals extends Comparison<Type<?>> {
 	public BoolType evaluateLegalCase(Program program) {
 		Type<?> left = this.getExpressionLeft().evaluateLegalCase(program);
 		Type<?> right = this.getExpressionRight().evaluateLegalCase(program);
-		return new BoolType(left.getValue() == right.getValue());
+		if(!left.getClass().equals(right.getClass())){
+			return new BoolType(false);
+		}
+		else if(left instanceof DoubleType){
+			return new BoolType(jumpingalien.util.Util.fuzzyEquals(((DoubleType) left).getValue(),((DoubleType) right).getValue()));
+		}
+		else{
+			return new BoolType(left.getValue() == right.getValue());
+		}
 	}
 
 	@Override
-	public boolean checkType(Expression<Type<?>> expression) {
+	public boolean checkType(Expression<T> expression) {
 		return true;
 	}
 

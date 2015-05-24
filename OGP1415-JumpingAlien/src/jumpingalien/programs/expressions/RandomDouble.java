@@ -21,7 +21,7 @@ public class RandomDouble extends UnaryOperation<DoubleType, DoubleType> {
 	}
 
 	@Override
-	public Type<?> getType(){
+	public DoubleType getType(){
 		return new DoubleType();
 	}
 

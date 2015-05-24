@@ -53,7 +53,7 @@ public class While extends Statement{
 				}catch(NullPointerException exc){
 					return;
 				}
-				while(((condition && program.hasTimeForStatement()) || this.getCallSecondTime()) && !program.hasStopped()){
+				while(((condition && program.hasTimeForStatement()) && this.isToBeExecuted() || this.getCallSecondTime()) && !program.hasStopped()){
 					if(this.getCallSecondTime()){
 						this.setCallSecondTime(false);
 					}

@@ -1,12 +1,13 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
+import jumpingalien.programs.types.Type;
 
 /**
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public abstract class BinaryOperation<T0, T1> extends Expression<T0>{
+public abstract class BinaryOperation<T0 extends Type<?>, T1 extends Type<?>> extends Expression<T0>{
 
 
 	public BinaryOperation(Expression<T1> left, Expression<T1> right, SourceLocation sourceLocation) {

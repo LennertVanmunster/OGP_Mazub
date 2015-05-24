@@ -1837,6 +1837,7 @@ public abstract class GameObject {
 		}
 		else if (program.isWellFormed()){
 			this.program=program;
+			program.setGameObject(this);
 		}
 	}
 	

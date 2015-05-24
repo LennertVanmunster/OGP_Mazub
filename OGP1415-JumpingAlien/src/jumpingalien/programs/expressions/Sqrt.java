@@ -29,7 +29,7 @@ public class Sqrt extends UnaryOperation<DoubleType, DoubleType> {
 	}
 
 	@Override
-	public Type<?> getType() {
+	public DoubleType getType() {
 		return new DoubleType();
 	}
 

@@ -1,10 +1,9 @@
 package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
-import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.*;
 
-public abstract class UnaryOperation<T0,T1> extends Expression<T0> {
+public abstract class UnaryOperation<T0 extends Type<?>,T1 extends Type<?>> extends Expression<T0> {
 
 	public UnaryOperation(Expression<T1> expression, SourceLocation sourceLocation){
 		super(sourceLocation);
@@ -32,5 +31,4 @@ public abstract class UnaryOperation<T0,T1> extends Expression<T0> {
 	
 	public abstract boolean checkType(Expression<T1> expression);
 	
-	public abstract Type<?> evaluateLegalCase(Program program);
 }

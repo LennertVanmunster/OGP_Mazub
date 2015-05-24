@@ -21,7 +21,7 @@ public class Self extends Expression<GameObjectType> {
 	}
 	
 	@Override
-	public Type<?> getType(){
+	public GameObjectType getType(){
 		return new GameObjectType();
 	}
 	

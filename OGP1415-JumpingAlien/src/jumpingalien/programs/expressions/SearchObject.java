@@ -1,7 +1,5 @@
 package jumpingalien.programs.expressions;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import jumpingalien.model.Orientation;
 import jumpingalien.model.GameObject;
@@ -29,14 +27,14 @@ public class SearchObject extends UnaryOperation<ObjectType<?>, DirectionType> {
 	 * @see jumpingalien.programs.expressions.Expression#getType()
 	 */
 	@Override
-	public Type<?> getType() {
+	public GameObjectType getType() {
 		return new GameObjectType();
 	}
 
 
 	@Override
-	public Type<?> evaluateLegalCase(Program program) {
-		Type<?> object = null;
+	public ObjectType<?> evaluateLegalCase(Program program) {
+		ObjectType<?> object = null;
 		Orientation direction = Orientation.DUMMY.convertDirectionIProgramFactory(((DirectionType) this.getExpression().evaluateLegalCase(program)).getValue());
 		GameObject gameObject = program.getGameObject();
 		int[] position = {(int) gameObject.getHorizontalLocation(), (int) gameObject.getVerticalLocation()};

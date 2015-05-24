@@ -14,7 +14,7 @@ public class Null extends Expression<GameObjectType> {
 		super(sourceLocation);
 	}
 	
-	public Type<?> getType(){
+	public GameObjectType getType(){
 		return new GameObjectType();
 	}
 

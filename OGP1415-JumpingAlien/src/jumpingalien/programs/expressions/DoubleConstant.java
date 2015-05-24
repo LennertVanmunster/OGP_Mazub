@@ -38,7 +38,7 @@ public class DoubleConstant extends Expression<DoubleType> {
 	}
 	
 	@Override
-	public Type<?> getType(){
+	public DoubleType getType(){
 		return new DoubleType();
 	}
 }

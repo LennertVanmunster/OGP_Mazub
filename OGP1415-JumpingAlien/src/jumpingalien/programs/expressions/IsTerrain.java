@@ -11,13 +11,13 @@ import jumpingalien.programs.types.TileType;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class IsTerrain extends CheckerExpression {
+public class IsTerrain<T extends ObjectType<?>> extends CheckerExpression<T> {
 
 	/**
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public IsTerrain(Expression<ObjectType<?>> expression, SourceLocation sourceLocation) {
+	public IsTerrain(Expression<T> expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
 
@@ -30,7 +30,7 @@ public class IsTerrain extends CheckerExpression {
 
 
 	@Override
-	public boolean checkType(Expression<ObjectType<?>> expression) {
+	public boolean checkType(Expression<T> expression) {
 		return expression.getType() instanceof ObjectType;
 	}
 

@@ -8,7 +8,7 @@ import jumpingalien.programs.types.*;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public abstract class Expression<T> {
+public abstract class Expression<T extends Type<?>> {
 	
 	public Expression(SourceLocation sourceLocation){
 		this.setSourceLocation(sourceLocation);
@@ -35,7 +35,7 @@ public abstract class Expression<T> {
 
 	private SourceLocation sourceLocation;
 	
-	public abstract Type<?> getType();
+	public abstract T getType();
 	
 	
 	public void setStopProgram(boolean stop){
@@ -49,9 +49,9 @@ public abstract class Expression<T> {
 	private boolean stopProgram=false;	
 	
 	
-	public abstract Type<?> evaluateLegalCase(Program program);
+	public abstract T evaluateLegalCase(Program program);
 	
-	public Type<?> evaluate(Program program){
+	public T evaluate(Program program){
 		if(this.getStopProgram() || program.hasStopped()){
 			program.stop();
 			return null;

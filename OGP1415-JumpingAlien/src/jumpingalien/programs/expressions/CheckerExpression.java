@@ -7,9 +7,9 @@ import jumpingalien.programs.types.*;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public abstract class CheckerExpression extends UnaryOperation<BoolType, ObjectType<?>> {
+public abstract class CheckerExpression<T extends ObjectType<?>> extends UnaryOperation<BoolType, T> {
 
-	public CheckerExpression(Expression<ObjectType<?>> expression,SourceLocation sourceLocation) {
+	public CheckerExpression(Expression<T> expression,SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
 
@@ -18,7 +18,7 @@ public abstract class CheckerExpression extends UnaryOperation<BoolType, ObjectT
 	}
 
 	@Override
-	public Type<?> getType() {
+	public BoolType getType() {
 		return new BoolType();
 	}
 	

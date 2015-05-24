@@ -130,7 +130,11 @@ public class ForEach extends Statement{
 						}
 						setObjectTypeList(objectTypeList);
 					}
-					while(((this.getLoopIndex()<getObjectTypeList().size() && !program.isTimeDepleted()) || getCallSecondTime()) && !program.hasStopped()){
+					if(this.getObjectTypeList()==null){
+						return;
+					}
+					System.out.println(objectTypeList);
+					while(((this.getLoopIndex()<getObjectTypeList().size() && !program.isTimeDepleted() && this.isToBeExecuted()) || getCallSecondTime()) && !program.hasStopped()){
 						ObjectType<?> objectType= getObjectTypeList().get(this.getLoopIndex());
 						program.putGlobalVariable(getVariableName(), objectType);
 						if(!getCallSecondTime()){
@@ -165,6 +169,7 @@ public class ForEach extends Statement{
 		switch(getVariableKind()){
 		case ANY:
 			gameObjectList.addAll(program.getGameObject().getWorld().getAllGameObjects());
+			gameObjectList.remove(null);
 			break;
 		case MAZUB:
 			gameObjectList.add(program.getGameObject().getWorld().getMazub());
@@ -224,14 +229,12 @@ public class ForEach extends Statement{
 	}
 	
 	private List<ObjectType<?>> filterObjectTypeList(List<ObjectType<?>> objectTypeList, Program program){
-		boolean where;
-		try{
-			where=((BoolType) getWhere().evaluateLegalCase(program)).getValue();
-		}catch(NullPointerException exc){
-			return null;
-		}
 		objectTypeList = objectTypeList.stream().filter(objectType -> {program.putGlobalVariable(getVariableName(), objectType);
-		return where;} ).collect(Collectors.toList());
+		try{
+			return ((BoolType) getWhere().evaluateLegalCase(program)).getValue();
+		}catch(NullPointerException exc){
+			return false;
+		}}).collect(Collectors.toList());
 		return objectTypeList;
 	}
 	

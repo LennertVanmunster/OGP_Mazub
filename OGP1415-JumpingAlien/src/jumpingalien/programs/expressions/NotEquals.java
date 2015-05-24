@@ -10,7 +10,7 @@ import jumpingalien.programs.types.Type;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class NotEquals<T> extends Comparison<T> {
+public class NotEquals<T extends Type<?>> extends Comparison<T> {
 
 	/**
 	 * @param left
@@ -24,8 +24,8 @@ public class NotEquals<T> extends Comparison<T> {
 
 	@Override
 	public BoolType evaluateLegalCase(Program program) {
-		Type<?> left = this.getExpressionLeft().evaluateLegalCase(program);
-		Type<?> right = this.getExpressionRight().evaluateLegalCase(program);
+		T left = this.getExpressionLeft().evaluateLegalCase(program);
+		T right = this.getExpressionRight().evaluateLegalCase(program);
 		return new BoolType(left.getValue() != right.getValue());
 	}
 

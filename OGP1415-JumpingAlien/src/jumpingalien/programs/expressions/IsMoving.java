@@ -14,14 +14,14 @@ import jumpingalien.programs.types.Type;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class IsMoving extends CheckerExpression {
+public class IsMoving<T extends ObjectType<?>> extends CheckerExpression<T> {
 
 
 	/**
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public IsMoving(Expression<ObjectType<?>> expression, Expression<DirectionType> direction, SourceLocation sourceLocation) {
+	public IsMoving(Expression<T> expression, Expression<DirectionType> direction, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 		this.setDirection(direction);
 	}
@@ -47,7 +47,7 @@ public class IsMoving extends CheckerExpression {
 
 	
 	@Override
-	public Type<?> getType() {
+	public BoolType getType() {
 		return new BoolType();
 	}
 
@@ -60,7 +60,7 @@ public class IsMoving extends CheckerExpression {
 	}
 	
 	@Override
-	public boolean checkType(Expression<ObjectType<?>> expression) {
+	public boolean checkType(Expression<T> expression) {
 		return expression.getType() instanceof GameObjectType;
 	}
 	

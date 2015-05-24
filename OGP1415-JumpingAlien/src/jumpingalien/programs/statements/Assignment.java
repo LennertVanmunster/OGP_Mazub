@@ -6,7 +6,7 @@ import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.Type;
 
 public class Assignment extends Statement {
-	public Assignment(String variableName, Type<?> variableType, Expression<Type<?>> value, SourceLocation sourceLocation){
+	public Assignment(String variableName, Type<?> variableType, Expression<? extends Type<?>> value, SourceLocation sourceLocation){
 		super(sourceLocation);
 		this.variableName=variableName;
 		this.variableType=variableType;
@@ -25,13 +25,13 @@ public class Assignment extends Statement {
 	
 	private Type<?> variableType;
 	
-	public Expression<Type<?>> getValue(){
+	public Expression<? extends Type<?>> getValue(){
 		return this.value;
 	}
 	
-	private Expression<Type<?>> value;
+	private Expression<? extends Type<?>> value;
 	
-	public boolean matchesValueType(Type<?> variableType, Expression<Type<?>> value){
+	public boolean matchesValueType(Type<?> variableType, Expression<? extends Type<?>> value){
 		return value.getType().getClass().equals(variableType.getClass());
 	}
 	
@@ -41,6 +41,7 @@ public class Assignment extends Statement {
 				program.decreaseTimerOneUnit();
 				if(!matchesValueType(this.getVariableType(),this.getValue())){
 					program.stop();
+					return;
 				}
 				Type<?> valueToSet;
 				try{

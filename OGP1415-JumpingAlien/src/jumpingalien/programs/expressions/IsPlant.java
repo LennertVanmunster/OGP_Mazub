@@ -11,13 +11,13 @@ import jumpingalien.programs.types.ObjectType;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class IsPlant extends CheckerExpression {
+public class IsPlant<T extends ObjectType<?>> extends CheckerExpression<T> {
 
 	/**
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public IsPlant(Expression<ObjectType<?>> expression, SourceLocation sourceLocation) {
+	public IsPlant(Expression<T> expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
 
@@ -28,7 +28,7 @@ public class IsPlant extends CheckerExpression {
 
 
 	@Override
-	public boolean checkType(Expression<ObjectType<?>> expression) {
+	public boolean checkType(Expression<T> expression) {
 		return expression.getType() instanceof GameObjectType;
 	}
 

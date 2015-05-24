@@ -15,7 +15,7 @@ public abstract class BooleanOperation extends BinaryOperation<BoolType, BoolTyp
 	}
 
 	@Override
-	public Type<?> getType(){
+	public BoolType getType(){
 		return new BoolType();
 	}
 	

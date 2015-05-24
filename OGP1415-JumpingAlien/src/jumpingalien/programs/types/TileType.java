@@ -1,13 +1,15 @@
 package jumpingalien.programs.types;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class TileType extends ObjectType<int[]>{
 
 	public TileType(int[] tileArray) {
 		super(tileArray);
+	}
+	
+	public TileType(){
+		this(new int[] {0,0});
 	}
 	
 	public int [] getDefaultValue(){

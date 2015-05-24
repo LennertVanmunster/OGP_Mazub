@@ -16,6 +16,10 @@ public class Program {
 		setMainStatement(mainStatement);
 	}
 	
+	public Program(){
+		this(null, new HashMap<String, Type<?>>());
+	}
+	
 	public Statement getMainStatement(){
 		return this.mainStatement;
 	}

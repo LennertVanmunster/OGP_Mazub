@@ -34,7 +34,7 @@ public class DirectionConstant extends Expression<DirectionType> {
 	private Direction direction;
 
 	@Override
-	public Type<?> getType(){
+	public DirectionType getType(){
 		return new DirectionType();
 	}
 

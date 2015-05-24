@@ -18,7 +18,7 @@ public class Not extends UnaryOperation<BoolType, BoolType> {
 		super(expression, sourceLocation);
 	}
 	
-	public Type<?> getType(){
+	public BoolType getType(){
 		return new BoolType();
 	}
 

@@ -33,7 +33,7 @@ public class GameObjectExpression extends Expression<GameObjectType>{
 	GameObject gameObject=null;
 
 	@Override
-	public Type<?> getType() {
+	public GameObjectType getType() {
 		return new GameObjectType(gameObject);
 	}
 

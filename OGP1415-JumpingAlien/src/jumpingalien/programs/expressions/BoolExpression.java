@@ -15,7 +15,7 @@ public abstract class BoolExpression extends Expression<BoolType> {
 	}
 	
 	@Override
-	public Type<?> getType(){
+	public BoolType getType(){
 		return new BoolType();
 	}
 

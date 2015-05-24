@@ -16,7 +16,7 @@ public abstract class GetDoubleValueOf extends UnaryOperation<DoubleType, GameOb
 	}
 	
 	@Override
-	public Type<?> getType() {
+	public DoubleType getType() {
 		return new DoubleType();
 	}
 	

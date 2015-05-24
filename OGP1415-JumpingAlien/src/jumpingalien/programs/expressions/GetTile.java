@@ -23,8 +23,8 @@ public class GetTile extends BinaryOperation<TileType, DoubleType> {
 
 
 	@Override
-	public Type<?> getType() {
-		return new GameObjectType();
+	public TileType getType() {
+		return new TileType();
 	}
 
 	@Override

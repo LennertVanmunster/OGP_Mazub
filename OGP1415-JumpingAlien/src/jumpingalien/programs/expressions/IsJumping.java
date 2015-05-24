@@ -12,13 +12,13 @@ import jumpingalien.programs.types.ObjectType;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class IsJumping extends CheckerExpression {
+public class IsJumping<T extends ObjectType<?>> extends CheckerExpression<T> {
 
 	/**
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public IsJumping(Expression<ObjectType<?>> expression, SourceLocation sourceLocation) {
+	public IsJumping(Expression<T> expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
 
@@ -30,7 +30,7 @@ public class IsJumping extends CheckerExpression {
 	}
 
 	@Override
-	public boolean checkType(Expression<ObjectType<?>> expression) {
+	public boolean checkType(Expression<T> expression) {
 		return expression.getType() instanceof GameObjectType;
 	}
 }
