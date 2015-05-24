@@ -2,7 +2,6 @@ package jumpingalien.programs.expressions;
 
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.types.BoolType;
-import jumpingalien.programs.types.Type;
 
 /**
 * @version 1.0

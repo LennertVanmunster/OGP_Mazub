@@ -220,7 +220,6 @@ public class Plant extends GameObject {
 	 * 			The given time period is not valid a valid time period.
 	 * 			|!isValidTimePeriod(deltaTime)
 	 */
-	@Raw
 	@Override
 	public void advanceTime(double deltaTime)
 		throws IllegalArgumentException {
@@ -317,6 +316,7 @@ public class Plant extends GameObject {
 	 * @effect	The new horizontal velocity of this plant is set to the opposite of its current horizontal velocity.
 	 * 			|setHorizontalVelocity(this.getDirection().getNumberForCalculations() * getVelocityConstant());
 	 */
+	@Raw
 	private void startNewAction(){
 		this.setTimeSinceStartAction(0);
 		this.setNewDirection();
@@ -338,6 +338,7 @@ public class Plant extends GameObject {
 	 * 			|setMovingHorizontally(true);
 	 * @note	The precondition is asserted in setDirection()
 	 */
+	@Raw
 	@Override
 	public void startMove(Orientation direction){
 		setHorizontalVelocity(direction.getNumberForCalculations()*getVelocityConstant());
@@ -356,6 +357,7 @@ public class Plant extends GameObject {
 	 * 			|	then setHorizontalVelocity(0)
 	 * 			|		 setMovingHorizontally(false)
 	 */
+	@Raw
 	@Override
 	public void endMove(Orientation direction){
 		if(direction==this.getDirection()){
@@ -367,6 +369,7 @@ public class Plant extends GameObject {
 	/**
 	 * Dummy implementation. A plant cannot jump.
 	 */
+	@Raw
 	@Override
 	public void startJump(){
 		
@@ -375,6 +378,7 @@ public class Plant extends GameObject {
 	/**
 	 * Dummy implementation. A plant cannot jump.
 	 */
+	@Raw
 	@Override
 	public void endJump(){
 		
@@ -389,14 +393,13 @@ public class Plant extends GameObject {
 	 *			|else if(this.getDirection() == Direction.RIGHT)
 	 *			|	new.getDirection == Direction.LEFT;
 	 */
+	@Raw
 	private void setNewDirection(){
 		if(this.getDirection() == Orientation.LEFT)
 			this.setDirection(Orientation.RIGHT);
 		else if(this.getDirection() == Orientation.RIGHT)
 			this.setDirection(Orientation.LEFT);
 	}
-	
-	
 	
 	/**
 	 * Constant registering the number of hit points for all plants.

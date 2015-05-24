@@ -48,6 +48,8 @@ import java.util.List;
  * 			| canHaveAsHitPoints(getHitPoints())
  * @invar	Each game object has a proper world to which it is attached.
  * 			| hasProperWorld()
+ * @invar	Each game object has a proper program to which it is attached.
+ * 			| hasProperProgram()
  * @version	2.0
  * @authors Pieter Van Damme and Lennert Vanmunster
  *
@@ -123,10 +125,8 @@ public abstract class GameObject {
 	 * 			| this.setHitPoints(hitPoints)
 	 * @effect	The given program is set as the program of this new game object.
 	 * 			|this.setProgram(program)
-	 * @effect	If the given program is not null then the game object of this program is
-	 * 			set to this new game object
-	 * 			|if(program != null)
-	 * 			|then program.setGameObject(this)
+	 * @effect	A binary relationship is established between this game object and the given program.
+	 * 			|this.linkProgram(program)
 	 * @throws	IllegalLocationException
 	 * 			Not a valid horizontal location.
 	 * 			|!canHaveAsHorizontalLocation(horizontalLocation)	
@@ -150,6 +150,9 @@ public abstract class GameObject {
 	 * @throws	IllegalArgumentException
 	 * 			Not a valid number of maximum hit points.
 	 * 			|!isValidMaxHitPoints(maxHitPoints)
+	 * @throws	IllegalArgumentException
+	 * 			Not a valid program.
+	 * 			|!canHaveAsProgram(program)
 	 * @throws	IllegalArgumentException
 	 * 			This game object cannot have the given ducking state as its ducking state.
 	 * 			| !canHaveAsDuckingState(ducking)

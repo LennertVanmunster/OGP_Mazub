@@ -11,14 +11,10 @@ import jumpingalien.model.*;
 import jumpingalien.part3.programs.IProgramFactory.Direction;
 import jumpingalien.part3.programs.IProgramFactory.Kind;
 import jumpingalien.part3.programs.IProgramFactory.SortDirection;
-import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.expressions.*;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.*;
 import jumpingalien.programs.statements.*;
-
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

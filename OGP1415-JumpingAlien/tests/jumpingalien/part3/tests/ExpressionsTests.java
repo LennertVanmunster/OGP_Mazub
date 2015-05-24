@@ -7,66 +7,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import jumpingalien.model.Buzam;
-import jumpingalien.model.GameObject;
-import jumpingalien.model.Mazub;
-import jumpingalien.model.Orientation;
+import jumpingalien.model.*;
 import jumpingalien.model.World;
 import jumpingalien.part3.programs.IProgramFactory.Direction;
-import jumpingalien.programs.expressions.Addition;
-import jumpingalien.programs.expressions.And;
-import jumpingalien.programs.expressions.DirectionConstant;
-import jumpingalien.programs.expressions.Division;
-import jumpingalien.programs.expressions.DoubleConstant;
-import jumpingalien.programs.expressions.Equals;
-import jumpingalien.programs.expressions.Expression;
-import jumpingalien.programs.expressions.False;
-import jumpingalien.programs.expressions.GameObjectExpression;
-import jumpingalien.programs.expressions.GetHeigth;
-import jumpingalien.programs.expressions.GetHitPoints;
-import jumpingalien.programs.expressions.GetTile;
-import jumpingalien.programs.expressions.GetWidth;
-import jumpingalien.programs.expressions.GetX;
-import jumpingalien.programs.expressions.GetY;
-import jumpingalien.programs.expressions.GreaterThan;
-import jumpingalien.programs.expressions.GreaterThanOrEqualTo;
-import jumpingalien.programs.expressions.IsAir;
-import jumpingalien.programs.expressions.IsDead;
-import jumpingalien.programs.expressions.IsDucking;
-import jumpingalien.programs.expressions.IsJumping;
-import jumpingalien.programs.expressions.IsMagma;
-import jumpingalien.programs.expressions.IsMazub;
-import jumpingalien.programs.expressions.IsMoving;
-import jumpingalien.programs.expressions.IsPassable;
-import jumpingalien.programs.expressions.IsPlant;
-import jumpingalien.programs.expressions.IsShark;
-import jumpingalien.programs.expressions.IsSlime;
-import jumpingalien.programs.expressions.IsTerrain;
-import jumpingalien.programs.expressions.IsWater;
-import jumpingalien.programs.expressions.LessThan;
-import jumpingalien.programs.expressions.LessThanOrEqualTo;
-import jumpingalien.programs.expressions.Multiplication;
-import jumpingalien.programs.expressions.Not;
-import jumpingalien.programs.expressions.Null;
-import jumpingalien.programs.expressions.Or;
-import jumpingalien.programs.expressions.RandomDouble;
-import jumpingalien.programs.expressions.SearchObject;
-import jumpingalien.programs.expressions.Self;
-import jumpingalien.programs.expressions.Sqrt;
-import jumpingalien.programs.expressions.Subtraction;
-import jumpingalien.programs.expressions.TileObjectExpression;
-import jumpingalien.programs.expressions.True;
+import jumpingalien.programs.expressions.*;
 import jumpingalien.programs.program.Program;
-import jumpingalien.programs.statements.StartJump;
-import jumpingalien.programs.statements.Statement;
-import jumpingalien.programs.types.GameObjectType;
-import jumpingalien.programs.types.ObjectType;
-import jumpingalien.programs.types.TileType;
-import jumpingalien.programs.types.Type;
+import jumpingalien.programs.statements.*;
+import jumpingalien.programs.types.*;
 import jumpingalien.util.Util;
 
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -254,8 +203,8 @@ public class ExpressionsTests {
 	@Test
 	public void testIsAir_TrueCases() {
 		int [] tile = {0,1};
-		Expression<TileType> gameObject = new TileObjectExpression(tile);
-		IsAir isAir = new IsAir(gameObject, null);
+		Expression<TileType> tileExpression = new TileObjectExpression(tile);
+		IsAir<TileType> isAir = new IsAir<TileType>(tileExpression, null);
 		assertTrue(isAir.evaluateLegalCase(program).getValue());
 	}	
 	
@@ -263,7 +212,7 @@ public class ExpressionsTests {
 	@Test
 	public void testIsDead_TrueCases() {
 		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
-		IsDead isDead = new IsDead(gameObject, null);
+		IsDead<GameObjectType> isDead = new IsDead<GameObjectType>(gameObject, null);
 		assertFalse(isDead.evaluateLegalCase(program).getValue());
 	}	
 		
@@ -271,7 +220,7 @@ public class ExpressionsTests {
 	@Test
 	public void testIsDucking_TrueCases() {
 		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
-		IsDucking isDucking = new IsDucking(gameObject, null);
+		IsDucking<GameObjectType> isDucking = new IsDucking<GameObjectType>(gameObject, null);
 		assertFalse(isDucking.evaluateLegalCase(program).getValue());
 	}
 		
@@ -279,7 +228,7 @@ public class ExpressionsTests {
 	@Test
 	public void testIsJumping_TrueCases() {
 		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
-		IsJumping isJumping = new IsJumping(gameObject, null);
+		IsJumping<GameObjectType> isJumping = new IsJumping<GameObjectType>(gameObject, null);
 		assertFalse(isJumping.evaluateLegalCase(program).getValue());
 	}
 	
@@ -288,7 +237,7 @@ public class ExpressionsTests {
 	public void testIsMagma_TrueCases() {
 		int [] tile = {1,0};
 		Expression<TileType> gameObject = new TileObjectExpression(tile);
-		IsMagma isMagma = new IsMagma(gameObject, null);
+		IsMagma<TileType> isMagma = new IsMagma<TileType>(gameObject, null);
 		assertTrue(isMagma.evaluateLegalCase(program).getValue());
 	}
 	
@@ -296,7 +245,7 @@ public class ExpressionsTests {
 	@Test
 	public void testIsMazub_TrueCases() {
 		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
-		IsMazub isMazub = new IsMazub(gameObject, null);
+		IsMazub<GameObjectType> isMazub = new IsMazub<GameObjectType>(gameObject, null);
 		assertFalse(isMazub.evaluateLegalCase(program).getValue());
 	}
 	
@@ -305,7 +254,7 @@ public class ExpressionsTests {
 	public void testIsMoving_TrueCases() {
 		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
 		DirectionConstant directionConstant = new DirectionConstant(Direction.LEFT, null);
-		IsMoving isMoving = new IsMoving(gameObject, directionConstant, null);
+		IsMoving<GameObjectType> isMoving = new IsMoving<GameObjectType>(gameObject, directionConstant, null);
 		assertFalse(isMoving.evaluateLegalCase(program).getValue());
 	}
 	
@@ -314,7 +263,7 @@ public class ExpressionsTests {
 	public void testIsPassable_TrueCases() {
 		int [] tile = {0,1};
 		Expression<TileType> gameObject = new TileObjectExpression(tile);
-		IsPassable isPassable = new IsPassable(gameObject, null);
+		IsPassable<TileType> isPassable = new IsPassable<TileType>(gameObject, null);
 		assertTrue(isPassable.evaluateLegalCase(program).getValue());
 	}
 		
@@ -322,7 +271,7 @@ public class ExpressionsTests {
 	@Test
 	public void testIsPlant_TrueCases() {
 		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
-		IsPlant isPlant = new IsPlant(gameObject, null);
+		IsPlant<GameObjectType> isPlant = new IsPlant<GameObjectType>(gameObject, null);
 		assertFalse(isPlant.evaluateLegalCase(program).getValue());
 	}
 	
@@ -330,7 +279,7 @@ public class ExpressionsTests {
 	@Test
 	public void testIsShark_TrueCases() {
 		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
-		IsShark isShark = new IsShark(gameObject, null);
+		IsShark<GameObjectType> isShark = new IsShark<GameObjectType>(gameObject, null);
 		assertFalse(isShark.evaluateLegalCase(program).getValue());
 	}
 	
@@ -338,7 +287,7 @@ public class ExpressionsTests {
 	@Test
 	public void testIsSlime_TrueCases() {
 		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
-		IsSlime isSlime = new IsSlime(gameObject, null);
+		IsSlime<GameObjectType> isSlime = new IsSlime<GameObjectType>(gameObject, null);
 		assertFalse(isSlime.evaluateLegalCase(program).getValue());
 	}
 	
@@ -347,7 +296,7 @@ public class ExpressionsTests {
 	public void testIsTerrain_TrueCases() {
 		int [] tile = {0,1};
 		Expression<TileType> gameObject = new TileObjectExpression(tile);
-		IsTerrain isTerrain = new IsTerrain(gameObject, null);
+		IsTerrain<TileType> isTerrain = new IsTerrain<TileType>(gameObject, null);
 		assertTrue(isTerrain.evaluateLegalCase(program).getValue());
 	}
 	
@@ -356,7 +305,7 @@ public class ExpressionsTests {
 	public void testIsWater_TrueCases() {
 		int [] tile = {2,0};
 		Expression<TileType> gameObject = new TileObjectExpression(tile);
-		IsWater isWater = new IsWater(gameObject, null);
+		IsWater<TileType> isWater = new IsWater<TileType>(gameObject, null);
 		assertTrue(isWater.evaluateLegalCase(program).getValue());
 	}
 	

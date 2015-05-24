@@ -6,6 +6,7 @@ import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.BoolType;
 import jumpingalien.programs.types.GameObjectType;
 import jumpingalien.programs.types.ObjectType;
+import jumpingalien.programs.types.TileType;
 
 
 /**
@@ -25,7 +26,12 @@ public class IsSlime<T extends ObjectType<?>> extends CheckerExpression<T> {
 
 	@Override
 	public BoolType evaluateLegalCase(Program program) {
-		return new BoolType(((GameObjectType) this.getExpression().evaluateLegalCase(program)).getValue() instanceof Slime);
+		ObjectType<?> object = (ObjectType<?>) this.getExpression().evaluateLegalCase(program);
+		if (object instanceof TileType){
+			return new BoolType(false);
+		}
+		GameObjectType gameObject = (GameObjectType) object;
+		return new BoolType(gameObject.getValue() instanceof Slime);
 	}
 
 

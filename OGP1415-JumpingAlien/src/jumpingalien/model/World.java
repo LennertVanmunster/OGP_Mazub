@@ -3,8 +3,6 @@ package jumpingalien.model;
 import be.kuleuven.cs.som.annotate.*;
 
 import java.util.*;
-
-import jumpingalien.part3.facade.Facade;
 import jumpingalien.util.Util;
 
 

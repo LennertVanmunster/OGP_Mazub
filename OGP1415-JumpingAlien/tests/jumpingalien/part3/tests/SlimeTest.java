@@ -11,27 +11,19 @@ import org.junit.Test;
 public class SlimeTest {
 	
 	
-	private static School emptySchool;
 	private static School school1;
 	private static School school2;
 	private static Slime slime1School1;
-	private static Slime slime2School1;
-	private static Slime slime1School2;
-	private static Slime slime2School2;
 	private static School terminatedSchool;
 	private static Slime jumpingSlime;
 	
 	@BeforeClass
 	public static void setUpBeforeClass(){
-		emptySchool= new School();
 		school1=new School();
 		slime1School1= new Slime(0,0,spriteArrayForSize(2, 2),school1);
-		slime2School1= new Slime(10,0,spriteArrayForSize(2,2),school1);
 		jumpingSlime=new Slime(0,10,spriteArrayForSize(2, 2),school1);
 		jumpingSlime.setJumping(true);
 		school2= new School();
-		slime1School2= new Slime(20,0,spriteArrayForSize(2, 2),school2);
-		slime2School2= new Slime(30,0,spriteArrayForSize(2,2),school2);
 		terminatedSchool=new School();
 		terminatedSchool.terminate();
 	}

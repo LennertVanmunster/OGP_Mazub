@@ -3,6 +3,7 @@ package jumpingalien.programs.expressions;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.BoolType;
+import jumpingalien.programs.types.GameObjectType;
 import jumpingalien.programs.types.ObjectType;
 import jumpingalien.programs.types.TileType;
 
@@ -24,9 +25,12 @@ public class IsPassable<T extends ObjectType<?>> extends CheckerExpression<T> {
 
 	@Override
 	public BoolType evaluateLegalCase(Program program) {
-		int x=((TileType) this.getExpression().evaluateLegalCase(program)).getValue()[0];
-		int y=((TileType) this.getExpression().evaluateLegalCase(program)).getValue()[1];
-		return new BoolType(program.getGameObject().getWorld().getTileValueAtTilePosition(x, y)!=1);
+		ObjectType<?> object = (ObjectType<?>) this.getExpression().evaluateLegalCase(program);
+		if (object instanceof GameObjectType){
+			return new BoolType(false);
+		}
+		TileType tile = (TileType) object;
+		return new BoolType(program.getGameObject().getWorld().getTileValueAtTilePosition(tile.getValue()[0], tile.getValue()[1])!=1);
 	}
 
 	@Override

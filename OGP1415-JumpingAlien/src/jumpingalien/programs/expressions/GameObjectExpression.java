@@ -4,8 +4,6 @@ import jumpingalien.model.GameObject;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.GameObjectType;
-import jumpingalien.programs.types.ObjectType;
-import jumpingalien.programs.types.Type;
 
 /**
 * @version 1.0

@@ -1,6 +1,5 @@
 package jumpingalien.programs.expressions;
 
-import jumpingalien.model.GameObject;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.*;
@@ -22,8 +21,12 @@ public class IsDucking<T extends ObjectType<?>> extends CheckerExpression<T> {
 
 	@Override
 	public BoolType evaluateLegalCase(Program program) {
-		GameObject gameObject = ((GameObjectType) this.getExpression().evaluateLegalCase(program)).getValue();
-		return new BoolType(gameObject.isDucking());
+		ObjectType<?> object = (ObjectType<?>) this.getExpression().evaluateLegalCase(program);
+		if (object instanceof TileType){
+			return new BoolType(false);
+		}
+		GameObjectType gameObject = (GameObjectType) object;
+		return new BoolType(gameObject.getValue().isDucking());
 	}
 	
 	@Override

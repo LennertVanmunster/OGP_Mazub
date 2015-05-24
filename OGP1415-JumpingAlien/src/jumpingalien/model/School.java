@@ -36,6 +36,7 @@ public class School {
 	/**
 	 * Create a school with an empty set of slimes.
 	 */
+	@Raw
 	public School(){
 	}
 	

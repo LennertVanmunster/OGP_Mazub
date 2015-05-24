@@ -3,6 +3,7 @@ package jumpingalien.programs.expressions;
 import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.BoolType;
+import jumpingalien.programs.types.GameObjectType;
 import jumpingalien.programs.types.ObjectType;
 
 
@@ -23,8 +24,13 @@ public class IsTerrain<T extends ObjectType<?>> extends CheckerExpression<T> {
 
 	@Override
 	public BoolType evaluateLegalCase(Program program) {
-		int [] tile = (int[]) this.getExpression().evaluateLegalCase(program).getValue();
-		return new BoolType(program.getWorld().canHaveAsTilePosition(tile[0], tile[1]));
+		ObjectType<?> object = (ObjectType<?>) this.getExpression().evaluateLegalCase(program);
+		if (object instanceof GameObjectType){
+			return new BoolType(false);
+		}
+		else{
+			return new BoolType(true);
+		}
 	}
 
 

@@ -330,6 +330,7 @@ public class Shark extends GameObject{
 	 * 			|setMovingHorizontally(true);
 	 * @note	The precondition is asserted in setDirection()
 	 */
+	@Raw
 	@Override
 	public void startMove(Orientation direction){
 		setHorizontalVelocity(this.getInitialHorizontalVelocityForUpdate()*direction.getNumberForCalculations());
@@ -348,6 +349,7 @@ public class Shark extends GameObject{
 	 * 			|	then setHorizontalVelocity(0)
 	 * 			|		 setMovingHorizontally(false)
 	 */
+	@Raw
 	@Override
 	public void endMove(Orientation direction){
 		if(direction==this.getDirection()){
@@ -369,6 +371,7 @@ public class Shark extends GameObject{
 	 * 			its current implementation because this.getInitialVerticalVelocity() always returns a valid vertical velocity.
 	 * 			There is no need to add a try catch statement.
 	 */
+	@Raw
 	@Override
 	public void startJump(){
 		if (!isJumping()){
@@ -388,6 +391,7 @@ public class Shark extends GameObject{
 	 * 			its current implementation because 0 is a valid vertical velocity.
 	 * 			There is no need to add a try catch statement.
 	 */
+	@Raw
 	@Override
 	public void endJump(){
 		setJumping(false);
