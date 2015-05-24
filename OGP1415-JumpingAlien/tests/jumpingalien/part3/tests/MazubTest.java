@@ -227,7 +227,7 @@ public class MazubTest {
 		testMazub = new Mazub(0, 499, 1, 1, 1, 3, false, spriteArrayForSize(2, 2));
 		testMazub.setWorld(testWorld);
 		testWorld.setMazub(testMazub);
-		testMazub.advanceTime(0.15);
+		testMazub.advanceTime(0.1500);
 		assertEquals(testMazub.getEffectiveHorizontalLocation(),16);
 		assertEquals(testMazub.getEffectiveVerticalLocation(),502);
 		assertTrue(Util.fuzzyEquals(testMazub.getHorizontalVelocity(),1.135));

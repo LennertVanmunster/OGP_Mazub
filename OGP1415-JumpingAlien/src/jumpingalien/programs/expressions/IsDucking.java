@@ -9,13 +9,13 @@ import jumpingalien.programs.types.*;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class IsDucking extends CheckerExpression {
+public class IsDucking extends CheckerExpression<GameObjectType> {
 
 	/**
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public IsDucking(Expression<ObjectType<?>> expression, SourceLocation sourceLocation) {
+	public IsDucking(Expression<GameObjectType> expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
 
@@ -27,7 +27,7 @@ public class IsDucking extends CheckerExpression {
 	}
 	
 	@Override
-	public boolean checkType(Expression<ObjectType<?>> expression) {
+	public boolean checkType(Expression<GameObjectType> expression) {
 		return expression.getType() instanceof GameObjectType;
 	}
 

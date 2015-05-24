@@ -12,13 +12,13 @@ import jumpingalien.programs.types.ObjectType;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class IsSlime extends CheckerExpression {
+public class IsSlime extends CheckerExpression<GameObjectType> {
 
 	/**
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public IsSlime(Expression<ObjectType<?>> expression, SourceLocation sourceLocation) {
+	public IsSlime(Expression<GameObjectType> expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
 
@@ -30,7 +30,7 @@ public class IsSlime extends CheckerExpression {
 
 
 	@Override
-	public boolean checkType(Expression<ObjectType<?>> expression) {
+	public boolean checkType(Expression<GameObjectType> expression) {
 		return expression.getType() instanceof GameObjectType;
 	}
 

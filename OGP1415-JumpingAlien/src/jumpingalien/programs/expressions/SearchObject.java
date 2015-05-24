@@ -44,7 +44,7 @@ public class SearchObject extends UnaryOperation<ObjectType<?>, DirectionType> {
 		if(direction == Orientation.RIGHT || direction == Orientation.LEFT){
 			while(gameObject.canHaveAsLocation(position[0], position[1])){
 				object = new GameObjectType(gameObject.getGameObjectAtPixelPosition(position[0], position[1]));
-				if(object != null && object.getValue() != gameObject){
+				if(object.getValue() != null && object.getValue() != gameObject){
 					return object;
 				}
 				position[0] = position[0] + direction.getNumberForCalculations();
@@ -58,7 +58,7 @@ public class SearchObject extends UnaryOperation<ObjectType<?>, DirectionType> {
 		}else if(direction == Orientation.UP || direction == Orientation.DOWN){
 			while(gameObject.canHaveAsLocation(position[0], position[1])){
 				object = new GameObjectType(gameObject.getGameObjectAtPixelPosition(position[0], position[1]));
-				if(object != null && object.getValue() != gameObject){
+				if(object.getValue() != null && object.getValue() != gameObject){
 					return object;
 				}
 				position[1] = position[1] + direction.getNumberForCalculations();

@@ -11,14 +11,14 @@ import jumpingalien.programs.types.ObjectType;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class IsDead extends CheckerExpression {
+public class IsDead extends CheckerExpression<GameObjectType> {
 
 	/**
-	 * @param expression
+	 * @param gameObject
 	 * @param sourceLocation
 	 */
-	public IsDead(Expression<ObjectType<?>> expression, SourceLocation sourceLocation) {
-		super(expression, sourceLocation);
+	public IsDead(Expression<GameObjectType> gameObject, SourceLocation sourceLocation) {
+		super(gameObject, sourceLocation);
 	}
 
 
@@ -29,7 +29,7 @@ public class IsDead extends CheckerExpression {
 
 
 	@Override
-	public boolean checkType(Expression<ObjectType<?>> expression) {
+	public boolean checkType(Expression<GameObjectType> expression) {
 		return expression.getType() instanceof GameObjectType;
 	}
 }

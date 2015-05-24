@@ -11,13 +11,13 @@ import jumpingalien.programs.types.TileType;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class IsWater extends CheckerExpression {
+public class IsWater extends CheckerExpression<TileType> {
 
 	/**
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public IsWater(Expression<ObjectType<?>> expression, SourceLocation sourceLocation) {
+	public IsWater(Expression<TileType> expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
 
@@ -29,7 +29,7 @@ public class IsWater extends CheckerExpression {
 	}
 
 	@Override
-	public boolean checkType(Expression<ObjectType<?>> expression) {
+	public boolean checkType(Expression<TileType> expression) {
 		return expression.getType() instanceof TileType;
 	}
 

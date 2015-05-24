@@ -10,13 +10,13 @@ import jumpingalien.programs.types.*;
 * @version 1.0
 * @authors Pieter Van Damme and Lennert Vanmunster
 */
-public class IsAir extends CheckerExpression {
+public class IsAir extends CheckerExpression<TileType> {
 
 	/**
 	 * @param expression
 	 * @param sourceLocation
 	 */
-	public IsAir(Expression<ObjectType<?>> expression, SourceLocation sourceLocation) {
+	public IsAir(Expression<TileType> expression, SourceLocation sourceLocation) {
 		super(expression, sourceLocation);
 	}
 
@@ -28,7 +28,7 @@ public class IsAir extends CheckerExpression {
 	}
 
 	@Override
-	public boolean checkType(Expression<ObjectType<?>> expression) {
+	public boolean checkType(Expression<TileType> expression) {
 		return expression.getType() instanceof TileType;
 	}
 
