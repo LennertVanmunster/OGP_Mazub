@@ -244,12 +244,8 @@ public class Plant extends GameObject {
 			updateHorizontalLocation(deltaTimeForPixel);
 			sumDeltaTimeForPixel+=deltaTimeForPixel;
 		}
-<<<<<<< HEAD
 		if((mazub.getHitPoints() != mazub.getMaxHitPoints() && this.getHitPoints() != 0)
 		&& (buzam.getHitPoints() != buzam.getMaxHitPoints() && this.getHitPoints() != 0)){
-=======
-		if(mazub.getHitPoints() != mazub.getMaxHitPoints() && this.getHitPoints() != 0){
->>>>>>> 2a7555c403b2f5d2a67068787ef3f110d063d7df
 			int [] overlap = this.checkLeftRightTopBottomSideOverlap();
 			if(overlap[0]==1){
 				collisionReaction(overlap[1],overlap[2], overlap[3]);	
