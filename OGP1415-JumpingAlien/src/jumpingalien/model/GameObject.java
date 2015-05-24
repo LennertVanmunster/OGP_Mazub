@@ -449,19 +449,31 @@ public abstract class GameObject {
 	 * 
 	 * @param 	horizontalVelocity
 	 * 			The horizontal velocity.
-	 * @post	The given horizontal velocity is set as the new horizontal velocity
-	 * 			of game object.
-	 * 			|new.getHorizontalVelocity() = horizontalVelocity
-	 * @throws	IllegalArgumentException
-	 * 			The given horizontal velocity is not a valid horizontal velocity.
-	 * 			|!this.canHaveAsHorizontalVelocity(horizontalVelocity)
+	 * @post	If this game object can have the given horizontal velocity as its horizontal velocity
+	 * 			then the given horizontal velocity is set as the new horizontal velocity of this game object.
+	 * 			Else if the absolute value of horizontal velocity is less than the initial horizontal velocity
+	 * 			then the initial horizontal velocity is set as the new horizontal velocity.
+	 * 			Else the maximum horizontal velocity is set as the new horizontal velocity.
+	 * 			|if(canHaveAsHorizontalVelocity(horizontalVelocity))
+	 * 			|then new.getHorizontalVelocity() = horizontalVelocity
+	 * 			| else 
+	 *			|	if (Math.abs(horizontalVelocity)<Math.abs(getInitialHorizontalVelocityForUpdate()))
+	 *			|		then new.getHorizontalVelocity() = getDirection().getNumberForCalculations()*getInitialHorizontalVelocityForUpdate()
+	 *			|	else
+	 *			|		new.getHorizontalVelocity() = getDirection().getNumberForCalculations()*getMaximumHorizontalVelocityForUpdate()
 	 */
 	@Raw
-	public void setHorizontalVelocity(double horizontalVelocity) 
-		throws IllegalArgumentException{
-		if(!this.canHaveAsHorizontalVelocity(horizontalVelocity))
-			throw new IllegalArgumentException("Not a valid horizontal velocity!");
-		this.horizontalVelocity = horizontalVelocity;
+	public void setHorizontalVelocity(double horizontalVelocity) {
+		if(canHaveAsHorizontalVelocity(horizontalVelocity)){
+			this.horizontalVelocity = horizontalVelocity;
+		}else{
+			if (Math.abs(horizontalVelocity)<Math.abs(getInitialHorizontalVelocityForUpdate())){
+				this.horizontalVelocity = getDirection().getNumberForCalculations()*getInitialHorizontalVelocityForUpdate();
+			}
+			else{
+				this.horizontalVelocity = getDirection().getNumberForCalculations()*getMaximumHorizontalVelocityForUpdate();
+			}
+		}	
 	}
 	
 	/**
@@ -469,18 +481,21 @@ public abstract class GameObject {
 	 * 
 	 * @param 	verticalVelocity
 	 * 			The vertical velocity to be set.
-	 * @post	The given vertical velocity is set as the new vertical velocity of this game object.
-	 * 			|new.getVerticalVelocity() = verticalVelocity
-	 * @throws	IllegalArgumentException
-	 * 			The given vertical velocity is not a valid vertical velocity.
-	 * 			|!isValidVerticalVelocity(verticalVelocity)
+	 * @post	If this game object can have the given vertical velocity as its vertical velocity
+	 * 			then the given vertical velocity is set as the new vertical velocity of this game object.
+	 * 			Else the vertical velocity is set to zero.
+	 * 			|if(canHaveAsVerticalVelocity(verticalVelocity))
+	 * 			|then new.getVerticalVelocity() = verticalVelocity
+	 * 			| else new.getVerticalVelocity() = 0
 	 */ 
 	@Raw
-	public void setVerticalVelocity(double verticalVelocity) 
-		throws IllegalArgumentException{
-		if(!canHaveAsVerticalVelocity(verticalVelocity))
-			throw new IllegalArgumentException("Not a valid vertical velocity!");
-		this.verticalVelocity = verticalVelocity;
+	public void setVerticalVelocity(double verticalVelocity) {
+		if(canHaveAsVerticalVelocity(verticalVelocity)){
+			this.verticalVelocity = verticalVelocity;
+		}
+		else{
+			this.verticalVelocity = 0;
+		}
 	}
 	
 	/**

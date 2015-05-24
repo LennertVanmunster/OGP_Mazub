@@ -667,16 +667,8 @@ public class Shark extends GameObject{
 	protected void updateVelocities(double deltaTime){
 		double newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTime;
 		double newHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAcceleration()*deltaTime;
-		try{
-			this.setHorizontalVelocity(newHorizontalVelocity);
-		} catch(IllegalArgumentException exc){
-				this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getMaximumHorizontalVelocityForUpdate());
-		}
-		try{
-			this.setVerticalVelocity(newVerticalVelocity);
-		} catch (IllegalArgumentException exc){
-			this.setVerticalVelocity(0);
-		}
+		this.setHorizontalVelocity(newHorizontalVelocity);
+		this.setVerticalVelocity(newVerticalVelocity);
 	}
 	
 	/**

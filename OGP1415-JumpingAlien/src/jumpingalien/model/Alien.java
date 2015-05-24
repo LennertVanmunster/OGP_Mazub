@@ -508,19 +508,8 @@ public class Alien extends GameObject {
 	private void updateVelocities(double deltaTime){
 		double newVerticalVelocity = getVerticalVelocity() + getVerticalAcceleration()*deltaTime;
 		double newHorizontalVelocity = getHorizontalVelocity() + getDirection().getNumberForCalculations()*getHorizontalAccelerationForUpdate()*deltaTime;
-		try{
-			setHorizontalVelocity(newHorizontalVelocity);
-		} catch(IllegalArgumentException exc){
-			if (Math.abs(newHorizontalVelocity)<Math.abs(getInitialHorizontalVelocityForUpdate()))
-				setHorizontalVelocity(getDirection().getNumberForCalculations()*getInitialHorizontalVelocityForUpdate());
-			else
-				setHorizontalVelocity(getDirection().getNumberForCalculations()*getMaximumHorizontalVelocityForUpdate());
-		}
-		try{
-			setVerticalVelocity(newVerticalVelocity);
-		} catch (IllegalArgumentException exc){
-			setVerticalVelocity(0);
-		}
+		setHorizontalVelocity(newHorizontalVelocity);
+		setVerticalVelocity(newVerticalVelocity);
 	}
 
 	/**

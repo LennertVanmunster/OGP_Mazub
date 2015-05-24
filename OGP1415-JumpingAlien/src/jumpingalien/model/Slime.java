@@ -454,51 +454,62 @@ public class Slime extends GameObject {
 		}
 		double deltaTimeForPixel=0;
 		double sumDeltaTimeForPixel=0;
-		double newHorizontalLocation=this.getHorizontalLocation();
-		double newVerticalLocation=this.getVerticalLocation();
-		double newHorizontalVelocity=this.getHorizontalVelocity();
-		double newVerticalVelocity=this.getVerticalVelocity();
 		double oldHorizontalLocation=this.getHorizontalLocation();
 		double oldVerticalLocation=this.getVerticalLocation();
 		while (sumDeltaTimeForPixel<deltaTime){
 			oldHorizontalLocation = this.getHorizontalLocation();
 			oldVerticalLocation = this.getVerticalLocation();
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
-			newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTimeForPixel;
-			newHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAccelerationForUpdate()*deltaTimeForPixel;
-			newHorizontalLocation = this.getHorizontalLocation() + 
-					100*(this.getHorizontalVelocity()*deltaTimeForPixel + 
-					this.getDirection().getNumberForCalculations()*0.5*getHorizontalAccelerationForUpdate()*Math.pow(deltaTimeForPixel, 2));
-			newVerticalLocation = this.getVerticalLocation() + 100*(getVerticalVelocity()*deltaTimeForPixel + 0.5*getVerticalAcceleration()*Math.pow(deltaTimeForPixel,2));
 			sumDeltaTimeForPixel+=deltaTimeForPixel;
-			try{
-				this.setHorizontalVelocity(newHorizontalVelocity);
-			} catch(IllegalArgumentException exc){
-					this.setHorizontalVelocity(this.getDirection().getNumberForCalculations()*this.getMaximumHorizontalVelocityForUpdate());
-			}
-			try{
-				this.setVerticalVelocity(newVerticalVelocity);
-			} catch (IllegalArgumentException exc){
-				this.setVerticalVelocity(0);
-			}
-			try{
-				this.setHorizontalLocation(newHorizontalLocation);
-			} catch(IllegalLocationException exc){
-				this.setHorizontalLocation((int) oldHorizontalLocation);
-			}
-			try{
-				this.setVerticalLocation(newVerticalLocation);
-			} catch(IllegalLocationException exc){
-				this.setVerticalLocation(oldVerticalLocation);
-				this.setVerticalVelocity(0);
-			}
+			this.updateVelocities(deltaTimeForPixel);
+			this.updateLocations(deltaTimeForPixel, oldHorizontalLocation, oldVerticalLocation);
 			int []overlap = checkLeftRightTopBottomSideOverlap();
 			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
 		}
-		
 		this.checkWaterContact(deltaTime);
 		this.checkMagmaContact(deltaTime);
 		this.calculateNewJumpingState();
+	}
+	
+	/**
+	 * Update the velocities of this slime.
+	 * 
+	 * @param 	deltaTime
+	 * 			A given period of time used in the calculations.
+	 */
+	private void updateVelocities(double deltaTime){
+		double newVerticalVelocity = this.getVerticalVelocity() + getVerticalAcceleration()*deltaTime;
+		double newHorizontalVelocity = this.getHorizontalVelocity() + this.getDirection().getNumberForCalculations()*getHorizontalAccelerationForUpdate()*deltaTime;
+		setHorizontalVelocity(newHorizontalVelocity);
+		setVerticalVelocity(newVerticalVelocity);
+	}
+	
+	/**
+	 * Update the locations of this slime.
+	 * 
+	 * @param 	deltaTime
+	 * 			A given period of time used in the calculations.
+	 * @param 	oldHorizontalLocation
+	 * 			The old horizontal location.
+	 * @param 	oldVerticalLocation
+	 * 			The old vertical location.
+	 */
+	private void updateLocations(double deltaTime, double oldHorizontalLocation, double oldVerticalLocation){
+		double newHorizontalLocation = this.getHorizontalLocation() + 
+				100*(this.getHorizontalVelocity()*deltaTime + 
+				this.getDirection().getNumberForCalculations()*0.5*getHorizontalAccelerationForUpdate()*Math.pow(deltaTime, 2));
+		double newVerticalLocation = this.getVerticalLocation() + 100*(getVerticalVelocity()*deltaTime + 0.5*getVerticalAcceleration()*Math.pow(deltaTime,2));
+		try{
+			this.setHorizontalLocation(newHorizontalLocation);
+		} catch(IllegalLocationException exc){
+			this.setHorizontalLocation((int) oldHorizontalLocation);
+		}
+		try{
+			this.setVerticalLocation(newVerticalLocation);
+		} catch(IllegalLocationException exc){
+			this.setVerticalLocation(oldVerticalLocation);
+			this.setVerticalVelocity(0);
+		}
 	}
 	
 	/**

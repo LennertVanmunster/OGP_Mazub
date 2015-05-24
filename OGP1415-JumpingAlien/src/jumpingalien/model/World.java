@@ -1007,8 +1007,8 @@ public class World {
 	 * 			|else
 	 * 			|	if(mazub==null)
 	 * 			|		result==false
-	 * 			|	if(mazub.isTerminate())
-	 * 			|		result==(mazub==null)
+	 * 			|	if(this.isTerminated() && !mazub.isTerminated())
+	 * 			|		result==false
 	 * 			|	else
 	 * 			|		result==mazub.canHaveAsLocation(mazub.getHorizontalLocation(),mazub.getVerticalLocation())
 	 *			|		&& this.matchesMazubVisibleWindow(mazub, this.getVisibleWindowLocation()[0], this.getVisibleWindowLocation()[1],
@@ -1068,8 +1068,30 @@ public class World {
 		return this.mazub;
 	}
 	
+	/**
+	 * Variable registering the player controlled Mazub of this world.
+	 */
 	private Mazub mazub;
 	
+	
+	/**
+	 * Check whether this world can have the given Buzam as its Buzam.
+	 * 
+	 * @param 	buzam
+	 * 			The Buzam to be checked.
+	 * @return	|if(!this.getGameHasStarted())
+	 * 			|	if(buzam==null)
+	 * 			|		result==true
+	 * 			|	else
+	 * 			|		result==buzam.canHaveAsLocation(buzam.getHorizontalLocation(),buzam.getVerticalLocation())
+	 * 			|else
+	 * 			|	if(buzam==null)
+	 * 			|		result==false
+	 * 			|	if(this.isTerminated() && !buzam.isTerminated())
+	 * 			|		result==false
+	 * 			|	else
+	 * 			|		result==buzam.canHaveAsLocation(buzam.getHorizontalLocation(),buzam.getVerticalLocation())
+	 */
 	public boolean canHaveAsBuzam(Buzam buzam){
 		if (!this.getGameHasStarted()){
 			if(buzam==null){
@@ -1092,6 +1114,14 @@ public class World {
 		}
 	}
 	
+	/**
+	 * Set the Buzam of this world.
+	 * @param 	buzam
+	 * 			The given buzam of the class Buzam.
+	 * @post	new.getBuzam == buzam
+	 * @throws	IllegalArgumentException
+	 * 			!(this.canHaveAsBuzam(buzam) || this.getGameHasStarted()
+	 */
 	public void setBuzam(Buzam buzam) throws IllegalArgumentException{
 		if(!canHaveAsBuzam(buzam)){
 			throw new IllegalArgumentException("Not a valid Buzam!");
@@ -1103,10 +1133,16 @@ public class World {
 		this.buzam = buzam;
 	}
 	
+	/**
+	 * Return the Buzam of this world.
+	 */
 	public Buzam getBuzam(){
 		return this.buzam;
 	}
 	
+	/**
+	 * Variable registering the Buzam of this world.
+	 */
 	private Buzam buzam;
 	
 	/**
@@ -1130,6 +1166,11 @@ public class World {
 		return nbGameObjects<=100 && nbGameObjects>=0;
 	}
 	
+	/**
+	 * Return a list that contains all the game objects of this world.
+	 * If the game objects are added in the right order to this world
+	 * then you can find mazub at the first and buzam at the second position.
+	 */
 	public List<GameObject> getAllGameObjects(){
 		List<GameObject> allGameObjects=new ArrayList<GameObject>(gameObjects);
 		return allGameObjects;
