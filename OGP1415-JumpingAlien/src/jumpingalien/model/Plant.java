@@ -239,13 +239,15 @@ public class Plant extends GameObject {
 		double deltaTimeForPixel=0;
 		double sumDeltaTimeForPixel=0;
 		Mazub mazub = this.getWorld().getMazub();
+		Buzam buzam = this.getWorld().getBuzam();
 		while (sumDeltaTimeForPixel<deltaTime){
 			deltaTimeForPixel= getDeltaTimeForPixel(deltaTime);
 			updateHorizontalLocation(deltaTimeForPixel);
 			sumDeltaTimeForPixel+=deltaTimeForPixel;
 		}
 		
-		if(mazub.getHitPoints() != mazub.getMaxHitPoints() && this.getHitPoints() != 0){
+		if((mazub.getHitPoints() != mazub.getMaxHitPoints() && this.getHitPoints() != 0)
+				&& (buzam.getHitPoints() != buzam.getMaxHitPoints() && this.getHitPoints() != 0)){
 			int [] overlap = this.checkAllowedLeftRightTopBottomSideOverlap();
 			if(overlap[0]==1){
 				collisionReaction(overlap[1],overlap[2], overlap[3]);	
@@ -427,11 +429,11 @@ public class Plant extends GameObject {
 	 * 			and an index registering whether the top perimeter was
 	 * 			overlapping during the contact with the other game object.
 	 * 			During the iteration is checked whether the game object at one of the overlapping
-	 * 			tile is an instance of Mazub, because only in this case a plant can interact
+	 * 			tile is an instance of Mazub or Buzam, because only in this case a plant can interact
 	 * 			with the other game object.
 	 * 			|overlap = {0,0,0,0}
 	 * 			|for each game object in gameGameObjectAtTile of this game object
-	 * 			|	if(gameObject instanceof Mazub)
+	 * 			|	if(gameObject instanceof Mazub || gameObject instanceof Buzam)
 	 * 			|		if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject))
 	 * 			|			overlap = checkLeftOrRightSideOverlap(gameObject,...);
 	 *			|			if(overlap [0] == 1)
@@ -449,7 +451,7 @@ public class Plant extends GameObject {
 		List<GameObject> gameObjects = getGameObjectsAtTiles(world.getTilePositionsIn(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getEffectiveHorizontalLocation()+getWidth(), getEffectiveVerticalLocation()+getHeight()));
 		for(int index = 0; index < gameObjects.size(); index++){
 			GameObject gameObject = gameObjects.get(index);
-			if(gameObject instanceof Mazub){
+			if(gameObject instanceof Mazub || gameObject instanceof Mazub ){
 				if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject)){
 					int [][] leftPerimeter2 = gameObject.getLeftPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getHeight());
 					int [][] rightPerimeter2 = gameObject.getRightPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());

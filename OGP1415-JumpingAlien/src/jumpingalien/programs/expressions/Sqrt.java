@@ -20,7 +20,8 @@ public class Sqrt extends UnaryOperation<DoubleType, DoubleType> {
 
 	@Override
 	public DoubleType evaluateLegalCase(Program program) {
-		return new DoubleType(Math.sqrt(((DoubleType)this.getExpression().evaluateLegalCase(program)).getValue()));
+		double value =  Math.abs(((DoubleType)this.getExpression().evaluateLegalCase(program)).getValue());
+		return new DoubleType(Math.sqrt(value));
 	}
 
 	@Override

@@ -494,6 +494,7 @@ public class Buzam extends GameObject {
 			this.updateLocations(deltaTimeForPixel, oldHorizontalLocation, oldVerticalLocation);
 			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
 			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
+			calculateNewJumpingState();
 			if(wantsEndDuck()){
 				endDuck();
 			}
