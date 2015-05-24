@@ -38,7 +38,6 @@ public class Assignment extends Statement {
 	public void execute(Program program){
 		if(this.isToBeExecuted() && !program.hasStopped()){
 			if (program.hasTimeForStatement()){
-				program.decreaseTimerOneUnit();
 				if(!matchesValueType(this.getVariableType(),this.getValue())){
 					program.stop();
 					return;
@@ -50,6 +49,7 @@ public class Assignment extends Statement {
 					program.stop();
 					return;
 				}
+				program.decreaseTimerOneUnit();
 				program.putGlobalVariable(this.getVariableName(), valueToSet);
 				this.setToBeExecuted(false);
 			}

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import jumpingalien.model.*;
+import jumpingalien.part3.programs.IProgramFactory.Direction;
 import jumpingalien.part3.programs.IProgramFactory.Kind;
 import jumpingalien.part3.programs.IProgramFactory.SortDirection;
 import jumpingalien.part3.programs.SourceLocation;
@@ -41,6 +42,7 @@ public class StatementTests {
 	public static Shark testShark1;
 	public static Shark testShark2;
 	public static School testSchool;
+	public static Buzam testBuzam;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception { 
@@ -69,6 +71,7 @@ public class StatementTests {
 		testPlant2= new Plant(10, 10, spriteArrayForSize(2, 2));
 		testShark1= new Shark(0,20, spriteArrayForSize(2, 2));
 		testShark2= new Shark(10,20, spriteArrayForSize(2, 2));
+		testBuzam= new Buzam(20, 0, spriteArrayForSize(2, 2));
 		
 	}
 
@@ -80,6 +83,7 @@ public class StatementTests {
 		assertTrue(program.getGlobalVariables().containsKey(staticTestString));
 		assertTrue(program.getGlobalVariables().get(staticTestString) instanceof DoubleType);
 		assertTrue(program.getGlobalVariables().get(staticTestString).getValue().equals(new Double(42)));
+		assertEquals(program.getTimer(), 5-0.001, 0.00001);
 		Assignment testAssignment=new Assignment(staticTestString, new DoubleType(), new DoubleConstant(50,null),null);
 		Program program2=new Program(testAssignment,new HashMap<String, Type<?>>());
 		program2.execute(5);
@@ -90,8 +94,10 @@ public class StatementTests {
 	@Test
 	public void testAssignment_IllegalTypeCase() {
 		Assignment testAssignment= new Assignment(staticTestString, new BoolType(), staticDoubleConstant42, null);
-		testAssignment.execute(emptyProgram);
+		emptyProgram.setMainStatement(testAssignment);
+		emptyProgram.execute(5);
 		assertTrue(emptyProgram.hasStopped());
+		assertEquals(emptyProgram.getTimer(), 5, 0.00001);
 		assertFalse(emptyProgram.getGlobalVariables().containsKey(staticTestString));
 	}
 	
@@ -107,6 +113,7 @@ public class StatementTests {
 		While whileLoop = new While(new True(null), sequenceContainingBreak, null);
 		Program program= new Program(whileLoop, new HashMap<String, Type<?>>());
 		program.execute(5);
+		assertEquals(program.getTimer(), 5-0.003, 0.00001);
 		assertTrue(program.getGlobalVariables().containsKey(staticTestString));
 		assertTrue(program.getGlobalVariables().get(staticTestString) instanceof DoubleType);
 		assertTrue(program.getGlobalVariables().get(staticTestString).getValue().equals(new Double(42)));
@@ -130,6 +137,7 @@ public class StatementTests {
 		ForEach forEachLoop = new ForEach("forLoopVar", Kind.ANY, null, null , SortDirection.ASCENDING, forLoopBody, null);
 		emptyProgram.setMainStatement(forEachLoop);
 		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.007, 0.00001);
 		assertEquals(((Double)emptyProgram.getGlobalVariables().get("counter").getValue()).intValue(), 6);
 	}
 	
@@ -152,6 +160,7 @@ public class StatementTests {
 		ForEach forEachLoop = new ForEach("forLoopVar", Kind.ANY, whereExpression, null , SortDirection.ASCENDING, forLoopBody, null);
 		emptyProgram.setMainStatement(forEachLoop);
 		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.003, 0.00001);
 		assertEquals(((Double) emptyProgram.getGlobalVariables().get("counter").getValue()).intValue(),2);
 	}
 	
@@ -179,8 +188,225 @@ public class StatementTests {
 		ForEach forEachLoop = new ForEach("forLoopVar", Kind.ANY, null, sortExpression , SortDirection.ASCENDING, ifCounter4, null);
 		emptyProgram.setMainStatement(forEachLoop);
 		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.009, 0.00001);
 		assertEquals(((Double) emptyProgram.getGlobalVariables().get("counter").getValue()).intValue(),3);
 	}
+	
+	@Test
+	public void testForEach_AnyObjectWithSortDescendingNoFilter(){
+		emptyProgram.putGlobalVariable("forLoopVar", new GameObjectType());
+		emptyProgram.putGlobalVariable("counter", new DoubleType(0));
+		testPlant1.setProgram(emptyProgram);
+		testWorld.addAsGameObject(testPlant1);
+		testWorld.addAsGameObject(testPlant2);
+		testWorld.addAsGameObject(testShark1);
+		testWorld.addAsGameObject(testShark2);
+		testWorld.addAsGameObject(testSlime1);
+		testWorld.addAsGameObject(testSlime2);
+		Expression<DoubleType> readCounter= new ReadVariable<DoubleType>("counter", new DoubleType(), null);
+		Expression<DoubleType> counterIncrementExpression= new Addition(readCounter, new DoubleConstant(1,null), null);
+		Statement counterIncrementStatement = new Assignment("counter", new DoubleType(), counterIncrementExpression, null);
+		Expression<GameObjectType> readForLoopVar = new ReadVariable<GameObjectType>("forLoopVar", new GameObjectType(), null);
+		Expression<DoubleType> sortExpression= new GetX(readForLoopVar, null);
+		Expression<BoolType> counterLessThan4 = new LessThan(readCounter, new DoubleConstant(4,null), null);
+		Expression<BoolType> getX10= new Equals<DoubleType>(sortExpression, new DoubleConstant(10,null), null);
+		Expression<BoolType> ifCondition = new And(getX10, counterLessThan4, null);
+		Statement breakStatement= new Break(null);
+		Statement ifCounter4 = new If(ifCondition, counterIncrementStatement, breakStatement, null);
+		ForEach forEachLoop = new ForEach("forLoopVar", Kind.ANY, null, sortExpression , SortDirection.DESCENDING, ifCounter4, null);
+		emptyProgram.setMainStatement(forEachLoop);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.009, 0.00001);
+		assertEquals(((Double) emptyProgram.getGlobalVariables().get("counter").getValue()).intValue(),3);
+	}
+	
+	@Test
+	public void testForEach_Slimes(){
+		emptyProgram.putGlobalVariable("forLoopVar", new GameObjectType());
+		emptyProgram.putGlobalVariable("counter", new DoubleType(0));
+		testPlant1.setProgram(emptyProgram);
+		testWorld.addAsGameObject(testPlant1);
+		testWorld.addAsGameObject(testPlant2);
+		testWorld.addAsGameObject(testShark1);
+		testWorld.addAsGameObject(testShark2);
+		testWorld.addAsGameObject(testSlime1);
+		testWorld.addAsGameObject(testSlime2);
+		Expression<DoubleType> readCounter= new ReadVariable<DoubleType>("counter", new DoubleType(), null);
+		Expression<DoubleType> forLoopExpression= new Addition(readCounter, new DoubleConstant(1,null), null);
+		Statement forLoopBody = new Assignment("counter", new DoubleType(), forLoopExpression, null);
+		ForEach forEachLoop = new ForEach("forLoopVar", Kind.SLIME, null, null , SortDirection.ASCENDING, forLoopBody, null);
+		emptyProgram.setMainStatement(forEachLoop);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.003, 0.00001);
+		assertEquals(((Double)emptyProgram.getGlobalVariables().get("counter").getValue()).intValue(), 2);
+	}
+	
+	@Test
+	public void testForEach_Tiles(){
+		emptyProgram.putGlobalVariable("forLoopVar", new GameObjectType());
+		emptyProgram.putGlobalVariable("counter", new DoubleType(0));
+		testPlant1.setProgram(emptyProgram);
+		testWorld.addAsGameObject(testPlant1);
+		testWorld.addAsGameObject(testPlant2);
+		testWorld.addAsGameObject(testShark1);
+		testWorld.addAsGameObject(testShark2);
+		testWorld.addAsGameObject(testSlime1);
+		testWorld.addAsGameObject(testSlime2);
+		Expression<DoubleType> readCounter= new ReadVariable<DoubleType>("counter", new DoubleType(), null);
+		Expression<DoubleType> forLoopExpression= new Addition(readCounter, new DoubleConstant(1,null), null);
+		Statement forLoopBody = new Assignment("counter", new DoubleType(), forLoopExpression, null);
+		ForEach forEachLoop = new ForEach("forLoopVar", Kind.TERRAIN, null, null , SortDirection.ASCENDING, forLoopBody, null);
+		emptyProgram.setMainStatement(forEachLoop);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.101, 0.00001);
+		assertEquals(((Double)emptyProgram.getGlobalVariables().get("counter").getValue()).intValue(), 100);
+	}
+	
+	@Test
+	public void ifTest_ifBodyCase(){
+		Statement ifStatement = new If(new True(null), staticTestAssignment42, staticTestAssignment55, null);
+		Program program=new Program(ifStatement,new HashMap<String, Type<?>>());
+		program.execute(5);
+		assertEquals(program.getTimer(), 5-0.002, 0.00001);
+		assertTrue(program.getGlobalVariables().get(staticTestString).getValue().equals(new Double(42)));
+	}
+	
+	@Test
+	public void ifTest_elseBodyCase(){
+		Statement ifStatement = new If(new False(null), staticTestAssignment42, staticTestAssignment55, null);
+		Program program=new Program(ifStatement,new HashMap<String, Type<?>>());
+		program.execute(5);
+		assertEquals(program.getTimer(), 5-0.002, 0.00001);
+		assertTrue(program.getGlobalVariables().get(staticTestString2).getValue().equals(new Double(5.5)));
+	}
+	
+	@Test
+	public void sequenceTest_emptySequenceCase(){
+		Sequence emptySequence= new Sequence(null, null);
+		emptyProgram.setMainStatement(emptySequence);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5, 0.00001);
+	}
+	
+	@Test
+	public void sequenceTest_oneStatementCase(){
+		List<Statement> listOfStatements= new ArrayList<Statement>();
+		listOfStatements.add(staticTestAssignment42);
+		Sequence testSequence=new Sequence(listOfStatements, null);
+		emptyProgram.setMainStatement(testSequence);
+		emptyProgram.execute(5);
+		assertTrue(emptyProgram.getGlobalVariables().get(staticTestString).getValue().equals(new Double(42)));
+		assertEquals(emptyProgram.getTimer(), 5-0.001, 0.00001);
+	}
+	
+	@Test
+	public void sequenceTest_multipleStatementCase(){
+		List<Statement> listOfStatements= new ArrayList<Statement>();
+		listOfStatements.add(staticTestAssignment42);
+		listOfStatements.add(staticTestAssignment55);
+		Sequence testSequence=new Sequence(listOfStatements, null);
+		emptyProgram.setMainStatement(testSequence);
+		emptyProgram.execute(5);
+		assertTrue(emptyProgram.getGlobalVariables().get(staticTestString).getValue().equals(new Double(42)));
+		assertTrue(emptyProgram.getGlobalVariables().get(staticTestString2).getValue().equals(new Double(5.5)));
+		assertEquals(emptyProgram.getTimer(), 5-0.002, 0.00001);
+	}
+	
+	@Test
+	public void skipTest(){
+		emptyProgram.setMainStatement(new Skip(null));
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.001, 0.00001);
+	}
+	
+	@Test
+	public void StartDuck(){
+		testBuzam.setProgram(emptyProgram);
+		emptyProgram.setMainStatement(new StartDuck(null));
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.001, 0.00001);
+		assertTrue(testBuzam.isDucking());
+	}
+	
+	@Test
+	public void StopDuck(){
+		testBuzam.setProgram(emptyProgram);
+		testWorld.addAsGameObject(testBuzam);
+		List<Statement> listOfStatements= new ArrayList<Statement>();
+		listOfStatements.add(new StartDuck(null));
+		listOfStatements.add(new StopDuck(null));
+		Sequence sequence= new Sequence(listOfStatements,null);
+		emptyProgram.setMainStatement(sequence);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.002, 0.00001);
+		assertFalse(testBuzam.isDucking());
+	}
+	
+	@Test
+	public void StartJump(){
+		testBuzam.setProgram(emptyProgram);
+		emptyProgram.setMainStatement(new StartJump(null));
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.001, 0.00001);
+		assertTrue(testBuzam.isJumping());
+	}
+	
+	@Test
+	public void StopJump(){
+		testBuzam.setProgram(emptyProgram);
+		testWorld.addAsGameObject(testBuzam);
+		List<Statement> listOfStatements= new ArrayList<Statement>();
+		listOfStatements.add(new StartJump(null));
+		listOfStatements.add(new StopJump(null));
+		Sequence sequence= new Sequence(listOfStatements,null);
+		emptyProgram.setMainStatement(sequence);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.002, 0.00001);
+		assertEquals(testBuzam.getVerticalVelocity(),0,0.0001);
+	}
+	
+	@Test
+	public void StartRun(){
+		testBuzam.setProgram(emptyProgram);
+		emptyProgram.setMainStatement(new StartRun(new DirectionConstant(Direction.LEFT, null), null));
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.001, 0.00001);
+		assertEquals(testBuzam.getDirection(), Orientation.LEFT);
+		assertTrue(testBuzam.isMovingHorizontally());
+	}
+	
+	@Test
+	public void StopRun(){
+		testBuzam.setProgram(emptyProgram);
+		testWorld.addAsGameObject(testBuzam);
+		List<Statement> listOfStatements= new ArrayList<Statement>();
+		listOfStatements.add(new StartRun(new DirectionConstant(Direction.LEFT, null), null));
+		listOfStatements.add(new StopRun(new DirectionConstant(Direction.LEFT, null), null));
+		Sequence sequence= new Sequence(listOfStatements,null);
+		emptyProgram.setMainStatement(sequence);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.002, 0.00001);
+		assertEquals(testBuzam.getDirection(), Orientation.LEFT);
+		assertFalse(testBuzam.isMovingHorizontally());
+	} 
+	
+	@Test
+	public void StartRun_alreadyRunning(){
+		testBuzam.setProgram(emptyProgram);
+		testWorld.addAsGameObject(testBuzam);
+		List<Statement> listOfStatements= new ArrayList<Statement>();
+		listOfStatements.add(new StartRun(new DirectionConstant(Direction.LEFT, null), null));
+		listOfStatements.add(new StartRun(new DirectionConstant(Direction.RIGHT, null), null));
+		Sequence sequence= new Sequence(listOfStatements,null);
+		emptyProgram.setMainStatement(sequence);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.002, 0.00001);
+		assertEquals(testBuzam.getDirection(), Orientation.LEFT);
+		assertTrue(testBuzam.isMovingHorizontally());
+	} 
+	
+	
+	
 	
 	
 	

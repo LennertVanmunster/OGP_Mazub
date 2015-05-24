@@ -63,7 +63,7 @@ public class While extends Statement{
 					}
 					getBody().execute(program);
 				}
-				if (program.hasTimeForStatement()){
+				if (program.hasTimeForStatement() && this.isToBeExecuted()){
 					program.decreaseTimerOneUnit();
 					this.setToBeExecuted(false);
 				}

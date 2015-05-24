@@ -14,14 +14,21 @@ public class Sequence extends Statement {
 	
 	public void setStatements(List<Statement> statements){
 		this.statements=statements;
-		for(Statement statement: statements){
-			statement.setNestingStatement(this);
+		if(statements!=null){
+			for(Statement statement: statements){
+				statement.setNestingStatement(this);
+			}
 		}
 	}
 	
 	public List<Statement> getStatements(){
-		List<Statement> statementsClone = new ArrayList<Statement>(this.statements);
-		return statementsClone;
+		if(statements==null){
+			return null;
+		}
+		else{
+			List<Statement> statementsClone = new ArrayList<Statement>(this.statements);
+			return statementsClone;
+		}
 	}
 	
 	List<Statement> statements = new ArrayList<Statement>();
@@ -29,8 +36,10 @@ public class Sequence extends Statement {
 	public void execute(Program program){
 		if(this.isToBeExecuted() && !program.hasStopped()){
 			if (program.hasTimeForStatement()){
-				for(Statement statement: getStatements()){
-					statement.execute(program);
+				if(getStatements()!=null){
+					for(Statement statement: getStatements()){
+						statement.execute(program);
+					}
 				}
 			}
 			else{
@@ -42,9 +51,11 @@ public class Sequence extends Statement {
 	@Override
 	public void setToBeExecuted(boolean toBeExecuted) {
 		super.setToBeExecuted(toBeExecuted);
-		for(Statement statement: ((Sequence) this).getStatements()){
-			if(statement!=null){
-				statement.setToBeExecuted(toBeExecuted);
+		if(getStatements()!=null){
+			for(Statement statement: ((Sequence) this).getStatements()){
+				if(statement!=null){
+					statement.setToBeExecuted(toBeExecuted);
+				}
 			}
 		}
 	}

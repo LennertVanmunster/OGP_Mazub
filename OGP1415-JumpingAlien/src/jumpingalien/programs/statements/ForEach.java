@@ -133,7 +133,6 @@ public class ForEach extends Statement{
 					if(this.getObjectTypeList()==null){
 						return;
 					}
-					System.out.println(objectTypeList);
 					while(((this.getLoopIndex()<getObjectTypeList().size() && !program.isTimeDepleted() && this.isToBeExecuted()) || getCallSecondTime()) && !program.hasStopped()){
 						ObjectType<?> objectType= getObjectTypeList().get(this.getLoopIndex());
 						program.putGlobalVariable(getVariableName(), objectType);
@@ -188,8 +187,10 @@ public class ForEach extends Statement{
 			break;
 		case TERRAIN:
 			int[][] tileArray=program.getGameObject().getWorld().getTiles();
-			for(int[] tile: tileArray){
-				objectTypeList.add(new TileType(tile));
+			for(int i=0; i<tileArray.length; i++){
+				for(int j=0; j<tileArray[i].length; j++){
+					objectTypeList.add(new TileType(new int[]{i,j}));
+				}
 			}
 			isTerrain=true;
 			break;
