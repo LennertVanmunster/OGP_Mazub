@@ -47,10 +47,11 @@ public class PlantTest {
 		Statement statement =  new StartJump(null);
 		program = new Program(statement, globalVariables);
 		staticTestBuzam = new Buzam(0, 499, program, spriteArrayForSize(3, 3));
-//		staticTestBuzam.setWorld(staticTestWorld);
+		staticTestBuzam.setWorld(staticTestWorld);
 		staticTestWorld.addAsGameObject(staticTestBuzam);
-		staticTestMazub = new Mazub(0, 499, spriteArrayForSize(3, 3));
+		staticTestMazub = new Mazub(100, 499, spriteArrayForSize(3, 3));
 		staticTestWorld.setMazub(staticTestMazub);
+		staticTestMazub.setWorld(staticTestWorld);
 	}
 
 	private Plant testPlant;
