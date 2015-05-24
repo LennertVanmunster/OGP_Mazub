@@ -169,7 +169,7 @@ public class JumpingAlienGamePart3 extends JumpingAlienGame {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Optional<Program> parseProgram(String filename) {
+	public Optional<Program> parseProgram(String filename) {
 		try {
 			InputStream is = GUIUtils.openResource(filename);
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));

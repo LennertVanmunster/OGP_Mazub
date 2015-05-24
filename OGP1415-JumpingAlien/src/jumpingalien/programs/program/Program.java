@@ -61,7 +61,9 @@ public class Program {
 			}
 		}
 		else{
-			getGameObject().endMove(getGameObject().getDirection());
+			if(getGameObject()!=null){
+				getGameObject().endMove(getGameObject().getDirection());
+			}
 			if(printedOnce==false){
 				System.out.println("");
 				System.out.println("Type error in program!");
@@ -102,9 +104,7 @@ public class Program {
 		else if (statement instanceof While){
 			return isWellFormedActionStatements(((While) statement).getBody());
 		}
-		else if ((statement instanceof StartDuck) || (statement instanceof StopDuck) || (statement instanceof StartRun)
-				|| (statement instanceof StopRun) || (statement instanceof StartJump) || (statement instanceof StopJump)
-				 || (statement instanceof Wait)  || (statement instanceof Skip)){
+		else if (statement instanceof ActionStatement){
 			if(statement.getLoopStatement()==null){
 				return true;
 			}
@@ -226,15 +226,15 @@ public class Program {
 	
 	public void terminate(){
 		if(!this.isTerminated() && getGameObject()!=null){
-			this.setGameObject(null);
 			gameObject.setProgram(null);
-			this.isTerminated=true;
+			this.setGameObject(null);
 		}
+		this.isTerminated=true;
 	}
 	
 	public boolean isTerminated(){
 		return this.isTerminated;
 	}
 	
-	public boolean isTerminated=false;
+	private boolean isTerminated=false;
 }
