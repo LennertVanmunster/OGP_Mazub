@@ -17,11 +17,6 @@ public class DirectionType extends Type<Direction>{
 		return Direction.LEFT;
 	}
 
-//	@Override
-//	public Expression createExpression(Expression value, Program program) {
-//		return new DirectionConstant((Direction) Orientation.DUMMY.convertOrientation((Orientation) value.evaluate(program)));
-//	}
-
 	@Override
 	public void setValue(Direction value) {
 		this.value=value;

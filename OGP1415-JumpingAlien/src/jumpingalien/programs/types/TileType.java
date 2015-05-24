@@ -13,9 +13,6 @@ public class TileType extends ObjectType<int[]>{
 	}
 	
 	public int [] getDefaultValue(){
-//		List<Integer> defaultValue= new ArrayList<Integer>();
-//		defaultValue.add(0);
-//		defaultValue.add(0);
 		int []defaultValue = {0,0};
 		return defaultValue;
 	}

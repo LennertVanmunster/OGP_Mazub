@@ -15,10 +15,4 @@ public class GameObjectType extends ObjectType<GameObject> {
 		return null;
 	}
 
-//	@Override
-//	public Expression createExpression(Expression value, Program program) {
-//		return new GameObjectExpression((GameObject) value.evaluate(program));
-//	
-//	}
-
 }

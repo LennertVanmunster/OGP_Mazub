@@ -19,6 +19,4 @@ public abstract class Type<T> {
 	public abstract T getDefaultValue();
 	
 	protected T value;
-	
-//	public abstract Expression createExpression(Expression value, Program program);
 }

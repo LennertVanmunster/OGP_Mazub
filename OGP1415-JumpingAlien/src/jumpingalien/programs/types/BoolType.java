@@ -16,15 +16,6 @@ public class BoolType extends Type<Boolean> {
 		return false;
 	}
 
-//	@Override
-//	public Expression createExpression(Expression value, Program program) {
-//		boolean newvalue = (boolean) value.evaluate(program);
-//		if(newvalue){
-//			return new True();
-//		}
-//		else
-//			return new False();
-//	}
 
 	public void setValue(Boolean value) {
 		this.value = value;
