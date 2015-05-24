@@ -4,7 +4,6 @@ import jumpingalien.part3.programs.SourceLocation;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.types.BoolType;
 import jumpingalien.programs.types.ObjectType;
-import jumpingalien.programs.types.TileType;
 
 
 /**

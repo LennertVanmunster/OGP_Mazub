@@ -14,7 +14,7 @@ import jumpingalien.programs.types.ObjectType;
 public class IsDead<T extends ObjectType<?>> extends CheckerExpression<T> {
 
 	/**
-	 * @param expression
+	 * @param gameObject
 	 * @param sourceLocation
 	 */
 	public IsDead(Expression<T> expression, SourceLocation sourceLocation) {

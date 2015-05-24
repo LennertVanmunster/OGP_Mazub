@@ -28,12 +28,40 @@ import jumpingalien.programs.expressions.GetTile;
 import jumpingalien.programs.expressions.GetWidth;
 import jumpingalien.programs.expressions.GetX;
 import jumpingalien.programs.expressions.GetY;
+import jumpingalien.programs.expressions.GreaterThan;
+import jumpingalien.programs.expressions.GreaterThanOrEqualTo;
+import jumpingalien.programs.expressions.IsAir;
+import jumpingalien.programs.expressions.IsDead;
+import jumpingalien.programs.expressions.IsDucking;
+import jumpingalien.programs.expressions.IsJumping;
+import jumpingalien.programs.expressions.IsMagma;
+import jumpingalien.programs.expressions.IsMazub;
+import jumpingalien.programs.expressions.IsMoving;
+import jumpingalien.programs.expressions.IsPassable;
+import jumpingalien.programs.expressions.IsPlant;
+import jumpingalien.programs.expressions.IsShark;
+import jumpingalien.programs.expressions.IsSlime;
+import jumpingalien.programs.expressions.IsTerrain;
+import jumpingalien.programs.expressions.IsWater;
+import jumpingalien.programs.expressions.LessThan;
+import jumpingalien.programs.expressions.LessThanOrEqualTo;
+import jumpingalien.programs.expressions.Multiplication;
+import jumpingalien.programs.expressions.Not;
+import jumpingalien.programs.expressions.Null;
+import jumpingalien.programs.expressions.Or;
+import jumpingalien.programs.expressions.RandomDouble;
+import jumpingalien.programs.expressions.SearchObject;
+import jumpingalien.programs.expressions.Self;
+import jumpingalien.programs.expressions.Sqrt;
+import jumpingalien.programs.expressions.Subtraction;
+import jumpingalien.programs.expressions.TileObjectExpression;
 import jumpingalien.programs.expressions.True;
 import jumpingalien.programs.program.Program;
 import jumpingalien.programs.statements.StartJump;
 import jumpingalien.programs.statements.Statement;
 import jumpingalien.programs.types.GameObjectType;
 import jumpingalien.programs.types.ObjectType;
+import jumpingalien.programs.types.TileType;
 import jumpingalien.programs.types.Type;
 import jumpingalien.util.Util;
 
@@ -60,7 +88,8 @@ public class ExpressionsTests {
 		program = new Program(statement, globalVariables);
 		staticTestWorld = new World(500, 3, 3, 1000, 1000, 2, 2);
 		staticTestWorld.setTileValueAtTilePosition( 0, 0, FEATURE_SOLID);
-		staticTestWorld.setTileValueAtTilePosition( 1, 1, FEATURE_SOLID);
+		staticTestWorld.setTileValueAtTilePosition( 1, 0, FEATURE_MAGMA);
+		staticTestWorld.setTileValueAtTilePosition( 2, 0, FEATURE_WATER);
 		staticTestGameObject = new Buzam(0, 499, program, spriteArrayForSize(3, 3));
 		staticTestGameObject.setWorld(staticTestWorld);
 		staticTestWorld.setBuzam((Buzam) staticTestGameObject);
@@ -193,11 +222,240 @@ public class ExpressionsTests {
 		assertTrue(Util.fuzzyEquals(getY.evaluateLegalCase(program).getValue(),499));
 	}
 	
+	//GreaterThan
+	@Test
+	public void testGreaterThan_TrueCases() {
+		GreaterThan greaterThan = new GreaterThan(new DoubleConstant(8.0, null), new DoubleConstant(2.0, null), null);
+		assertTrue(greaterThan.evaluateLegalCase(program).getValue());
+		greaterThan = new GreaterThan(new DoubleConstant(1.56, null), new DoubleConstant(10.543, null), null);
+		assertFalse(greaterThan.evaluateLegalCase(program).getValue());
+		greaterThan = new GreaterThan(new DoubleConstant(34.433, null), new DoubleConstant(34.433, null), null);
+		assertFalse(greaterThan.evaluateLegalCase(program).getValue());
+		greaterThan = new GreaterThan(new DoubleConstant(0.001, null), new DoubleConstant(0.0, null), null);
+		assertTrue(greaterThan.evaluateLegalCase(program).getValue());
 		
+	}	
 		
+	//GreaterThanOrEqualTo
+	@Test
+	public void testGreaterThanOrEqualTo_TrueCases() {
+		GreaterThanOrEqualTo greaterThanOrEqualTo = new GreaterThanOrEqualTo(new DoubleConstant(8.0, null), new DoubleConstant(2.0, null), null);
+		assertTrue(greaterThanOrEqualTo.evaluateLegalCase(program).getValue());
+		greaterThanOrEqualTo = new GreaterThanOrEqualTo(new DoubleConstant(1.56, null), new DoubleConstant(10.543, null), null);
+		assertFalse(greaterThanOrEqualTo.evaluateLegalCase(program).getValue());
+		greaterThanOrEqualTo = new GreaterThanOrEqualTo(new DoubleConstant(34.433, null), new DoubleConstant(34.433, null), null);
+		assertTrue(greaterThanOrEqualTo.evaluateLegalCase(program).getValue());
+		greaterThanOrEqualTo = new GreaterThanOrEqualTo(new DoubleConstant(0.001, null), new DoubleConstant(0.0, null), null);
+		assertTrue(greaterThanOrEqualTo.evaluateLegalCase(program).getValue());
 		
+	}
+	
+	//IsAir
+	@Test
+	public void testIsAir_TrueCases() {
+		int [] tile = {0,1};
+		Expression<TileType> gameObject = new TileObjectExpression(tile);
+		IsAir isAir = new IsAir(gameObject, null);
+		assertTrue(isAir.evaluateLegalCase(program).getValue());
+	}	
+	
+	//IsDead
+	@Test
+	public void testIsDead_TrueCases() {
+		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
+		IsDead isDead = new IsDead(gameObject, null);
+		assertFalse(isDead.evaluateLegalCase(program).getValue());
+	}	
 		
+	//IsDucking
+	@Test
+	public void testIsDucking_TrueCases() {
+		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
+		IsDucking isDucking = new IsDucking(gameObject, null);
+		assertFalse(isDucking.evaluateLegalCase(program).getValue());
+	}
 		
+	//IsJumping
+	@Test
+	public void testIsJumping_TrueCases() {
+		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
+		IsJumping isJumping = new IsJumping(gameObject, null);
+		assertFalse(isJumping.evaluateLegalCase(program).getValue());
+	}
+	
+	//IsMagma
+	@Test
+	public void testIsMagma_TrueCases() {
+		int [] tile = {1,0};
+		Expression<TileType> gameObject = new TileObjectExpression(tile);
+		IsMagma isMagma = new IsMagma(gameObject, null);
+		assertTrue(isMagma.evaluateLegalCase(program).getValue());
+	}
+	
+	//IsMazub
+	@Test
+	public void testIsMazub_TrueCases() {
+		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
+		IsMazub isMazub = new IsMazub(gameObject, null);
+		assertFalse(isMazub.evaluateLegalCase(program).getValue());
+	}
+	
+	//IsMoving
+	@Test
+	public void testIsMoving_TrueCases() {
+		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
+		DirectionConstant directionConstant = new DirectionConstant(Direction.LEFT, null);
+		IsMoving isMoving = new IsMoving(gameObject, directionConstant, null);
+		assertFalse(isMoving.evaluateLegalCase(program).getValue());
+	}
+	
+	//IsPassable
+	@Test
+	public void testIsPassable_TrueCases() {
+		int [] tile = {0,1};
+		Expression<TileType> gameObject = new TileObjectExpression(tile);
+		IsPassable isPassable = new IsPassable(gameObject, null);
+		assertTrue(isPassable.evaluateLegalCase(program).getValue());
+	}
 		
-		
+	//IsPlant
+	@Test
+	public void testIsPlant_TrueCases() {
+		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
+		IsPlant isPlant = new IsPlant(gameObject, null);
+		assertFalse(isPlant.evaluateLegalCase(program).getValue());
+	}
+	
+	//IsShark
+	@Test
+	public void testIsShark_TrueCases() {
+		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
+		IsShark isShark = new IsShark(gameObject, null);
+		assertFalse(isShark.evaluateLegalCase(program).getValue());
+	}
+	
+	//IsSlime
+	@Test
+	public void testIsSlime_TrueCases() {
+		Expression<GameObjectType> gameObject = new GameObjectExpression(staticTestGameObject);	
+		IsSlime isSlime = new IsSlime(gameObject, null);
+		assertFalse(isSlime.evaluateLegalCase(program).getValue());
+	}
+	
+	//IsTerrain
+	@Test
+	public void testIsTerrain_TrueCases() {
+		int [] tile = {0,1};
+		Expression<TileType> gameObject = new TileObjectExpression(tile);
+		IsTerrain isTerrain = new IsTerrain(gameObject, null);
+		assertTrue(isTerrain.evaluateLegalCase(program).getValue());
+	}
+	
+	//IsWater
+	@Test
+	public void testIsWater_TrueCases() {
+		int [] tile = {2,0};
+		Expression<TileType> gameObject = new TileObjectExpression(tile);
+		IsWater isWater = new IsWater(gameObject, null);
+		assertTrue(isWater.evaluateLegalCase(program).getValue());
+	}
+	
+	//LessThan
+	@Test
+	public void testLessThan_TrueCases() {
+		LessThan lessThan = new LessThan(new DoubleConstant(4.0, null), new DoubleConstant(5.0, null), null);
+		assertTrue(lessThan.evaluateLegalCase(program).getValue());
+		lessThan = new LessThan(new DoubleConstant(10.45, null), new DoubleConstant(10.451, null), null);
+		assertTrue(lessThan.evaluateLegalCase(program).getValue());
+	}
+	
+	//LessThanOrEqual
+	@Test
+	public void testLessThanOrEqual_TrueCases() {
+		LessThanOrEqualTo lessThanOrEqualTo = new LessThanOrEqualTo(new DoubleConstant(4.0, null), new DoubleConstant(5.0, null), null);
+		assertTrue(lessThanOrEqualTo.evaluateLegalCase(program).getValue());
+		lessThanOrEqualTo = new LessThanOrEqualTo(new DoubleConstant(10.451, null), new DoubleConstant(10.451, null), null);
+		assertTrue(lessThanOrEqualTo.evaluateLegalCase(program).getValue());
+	}
+	
+	//Multiplication:
+	@Test
+	public void testMultiplication_TrueCases() {
+		Multiplication multiplication = new Multiplication(new DoubleConstant(3.1, null), new DoubleConstant(2.5, null), null);
+		assertTrue(Util.fuzzyEquals(multiplication.evaluateLegalCase(program).getValue(), 7.75));
+		multiplication = new Multiplication(new DoubleConstant(0, null), new DoubleConstant(7.34, null), null);
+		assertTrue(Util.fuzzyEquals(multiplication.evaluateLegalCase(program).getValue(), 0));
+	}
+	
+	//Not
+	@Test
+	public void testNot_TrueCases() {
+		Not not = new Not(new False(null), null);
+		assertTrue(not.evaluateLegalCase(program).getValue());
+	}
+	
+	//Null
+	@Test
+	public void testNull_TrueCases() {
+		Null null1 = new Null(null);
+		assertTrue(null1.evaluateLegalCase(program).getValue() == null);
+	}
+	
+	//Or
+	@Test
+	public void testOr_TrueCases() {
+		Or or = new Or(new False(null), new True(null), null);
+		assertTrue(or.evaluateLegalCase(program).getValue());
+		or = new Or(new False(null), new False(null), null);
+		assertTrue(or.evaluateLegalCase(program).getValue() == false);
+	}
+	
+	//RandomDouble
+	@Test
+	public void testRandomDouble_TrueCases() {
+		RandomDouble randomDouble = new RandomDouble(new DoubleConstant(3.1, null),  null);
+		assertTrue(Util.fuzzyLessThanOrEqualTo(randomDouble.evaluateLegalCase(program).getValue(), 3.1) 
+				&& Util.fuzzyGreaterThanOrEqualTo(randomDouble.evaluateLegalCase(program).getValue(), 0));
+	}
+	
+	//SearchObject
+	@Test
+	public void testSearchObject_TrueCases() {
+		DirectionConstant directionConstant = new DirectionConstant(Direction.DOWN, null);
+		SearchObject searchObject = new SearchObject(directionConstant,  null);
+		int [] tile = {0,0};
+		assertTrue(Arrays.equals((int[]) searchObject.evaluateLegalCase(program).getValue(), tile));
+	}
+	
+	//Self
+	@Test
+	public void testSelf_TrueCases() {
+		Self self = new Self( null);
+		assertTrue(self.evaluateLegalCase(program).getValue() instanceof Buzam);
+	}
+	
+	//Sqrt
+	@Test
+	public void testSqrt_TrueCases() {
+		Sqrt sqrt = new Sqrt(new DoubleConstant(100.0, null), null);
+		assertTrue(Util.fuzzyEquals(sqrt.evaluateLegalCase(program).getValue(), 10.0));
+		sqrt = new Sqrt(new DoubleConstant(4.0, null), null);
+		assertTrue(Util.fuzzyEquals(sqrt.evaluateLegalCase(program).getValue(), 2.0));
+	}
+	
+	//Subtraction
+	@Test
+	public void testSubtraction_TrueCases() {
+		Subtraction subtraction = new Subtraction(new DoubleConstant(3.1, null), new DoubleConstant(2.5, null), null);
+		assertTrue(Util.fuzzyEquals(subtraction.evaluateLegalCase(program).getValue(), 0.6));
+		subtraction = new Subtraction(new DoubleConstant(-3.1, null), new DoubleConstant(2.5, null), null);
+		assertTrue(Util.fuzzyEquals(subtraction.evaluateLegalCase(program).getValue(), -5.6));
+	}
+	
+	//True
+	@Test
+	public void testTrue_TrueCases() {
+		True true1 = new True(null);
+		assertTrue(true1.evaluateLegalCase(program).getValue());
+	}
 }

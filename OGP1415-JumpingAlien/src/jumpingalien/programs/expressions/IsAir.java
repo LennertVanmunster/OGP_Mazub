@@ -17,6 +17,7 @@ public class IsAir<T extends ObjectType<?>> extends CheckerExpression<T> {
 	 * @param sourceLocation
 	 */
 	public IsAir(Expression<T> expression, SourceLocation sourceLocation) {
+
 		super(expression, sourceLocation);
 	}
 

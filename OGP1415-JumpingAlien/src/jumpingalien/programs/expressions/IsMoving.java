@@ -8,7 +8,6 @@ import jumpingalien.programs.types.BoolType;
 import jumpingalien.programs.types.DirectionType;
 import jumpingalien.programs.types.GameObjectType;
 import jumpingalien.programs.types.ObjectType;
-import jumpingalien.programs.types.Type;
 
 /**
 * @version 1.0
@@ -17,11 +16,14 @@ import jumpingalien.programs.types.Type;
 public class IsMoving<T extends ObjectType<?>> extends CheckerExpression<T> {
 
 
+
 	/**
 	 * @param expression
 	 * @param sourceLocation
 	 */
+
 	public IsMoving(Expression<T> expression, Expression<DirectionType> direction, SourceLocation sourceLocation) {
+
 		super(expression, sourceLocation);
 		this.setDirection(direction);
 	}
