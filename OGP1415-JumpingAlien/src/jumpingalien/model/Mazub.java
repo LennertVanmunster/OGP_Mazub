@@ -469,7 +469,7 @@ public class Mazub extends GameObject {
 			sumDeltaTimeForPixel+=deltaTimeForPixel;
 			this.updateVelocities(deltaTimeForPixel);
 			this.updateLocations(deltaTimeForPixel, oldHorizontalLocation, oldVerticalLocation);
-			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
+			int []overlap = checkLeftRightTopBottomSideOverlap();
 			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
 			calculateNewJumpingState();
 			if(wantsEndDuck()){
@@ -645,7 +645,7 @@ public class Mazub extends GameObject {
 	 *			|return overlap
 	 */
 	@Override
-	protected int [] checkLeftRightTopBottomSideOverlap(int [][] leftPerimeter1, int [][] rightPerimeter1, int [][] topPerimeter1, int [][] bottomPerimeter1){
+	protected int [] checkLeftRightTopBottomSideOverlap(){
 		int [] overlap = {0,0,0,0};
 		World world = this.getWorld();
 		List<GameObject> gameObjects = getGameObjectsAtTiles(world.getTilePositionsIn(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getEffectiveHorizontalLocation()+getWidth(), getEffectiveVerticalLocation()+getHeight()));
@@ -653,15 +653,17 @@ public class Mazub extends GameObject {
 			GameObject gameObject = gameObjects.get(index);
 			if( this.getHitPoints() != this.getMaxHitPoints() || !(gameObject instanceof Plant)){
 				if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject)){
-					int [][] leftPerimeter2 = gameObject.getLeftPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getHeight());
-					int [][] rightPerimeter2 = gameObject.getRightPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
-					overlap = checkLeftOrRightSideOverlap(gameObject, leftPerimeter1, rightPerimeter1, leftPerimeter2, rightPerimeter2);
+					int [][] leftPerimeterOther = gameObject.getLeftPerimeter(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getHeight());
+					int [][] rightPerimeterOther = gameObject.getRightPerimeter(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
+					overlap = checkLeftOrRightSideOverlap(gameObject, this.getLeftPerimeter(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getHeight()), 
+							 this.getRightPerimeter(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()), leftPerimeterOther, rightPerimeterOther);
 					if(overlap [0] == 1){
 						return overlap;
 					}
-					int [][] topPerimeter2 = gameObject.getTopPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
-					int [][] bottomPerimeter2 = gameObject.getBottomPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth());
-					overlap = checkTopOrBottomSideOverlap(gameObject, topPerimeter1, bottomPerimeter1, topPerimeter2, bottomPerimeter2);
+					int [][] topPerimeterOther = gameObject.getTopPerimeter(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
+					int [][] bottomPerimeterOther = gameObject.getBottomPerimeter(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth());
+					overlap = checkTopOrBottomSideOverlap(gameObject, this.getTopPerimeter(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()), 
+							this.getBottomPerimeter(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth()), topPerimeterOther, bottomPerimeterOther);
 					if(overlap [0] == 1){
 						return overlap;
 					}

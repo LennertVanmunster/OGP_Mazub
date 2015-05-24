@@ -6,6 +6,7 @@ import jumpingalien.util.Util;
 import be.kuleuven.cs.som.annotate.*;
 
 import java.lang.Math;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -487,7 +488,7 @@ public class Slime extends GameObject {
 				this.setVerticalLocation(oldVerticalLocation);
 				this.setVerticalVelocity(0);
 			}
-			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
+			int []overlap = checkLeftRightTopBottomSideOverlap();
 			collisionHandler(overlap,oldHorizontalLocation,oldVerticalLocation);
 		}
 		
@@ -558,6 +559,52 @@ public class Slime extends GameObject {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Check whether the given left, right, top or bottom perimeter overlaps with another game object.
+	 * 
+	 * @return	The method iterates over all the game objects that can overlap with the given
+	 * 			game object. That are the game objects that overlap with one of the tile with
+	 * 			which this game object overlaps. If another game object is found that overlaps 
+	 * 			with one of the given sides then an array with four elements is returned.
+	 * 			This array can be interpreted by the method collisionHandler.
+	 * 			|overlap = {0,0,0,0}
+	 * 			|for each game object in gameGameObjectAtTile of this game object
+	 * 			|	if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject))
+	 * 			|		overlap = checkLeftOrRightSideOverlap(gameObject,perimeters...);
+	 *			|		if(overlap [0] == 1)
+	 *			|		then the array "overlap" is returned
+	 *			|		or 
+	 *			|		overlap = checkTopOrBottomSideOverlap(gameObject,perimeters...);
+	 *			|		if(overlap [0] == 1)
+	 *			|		then the array "overlap" is returned
+	 *			|result == overlap
+	 */
+	protected int [] checkLeftRightTopBottomSideOverlap(){
+		int [] overlap = {0,0,0,0};
+		World world = this.getWorld();
+		List<GameObject> gameObjects = getGameObjectsAtTiles(world.getTilePositionsIn(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getEffectiveHorizontalLocation()+getWidth(), getEffectiveVerticalLocation()+getHeight()));
+		for(int index = 0; index < gameObjects.size(); index++){
+			GameObject gameObject = gameObjects.get(index);
+			if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject)){
+				int [][] leftPerimeterOther = gameObject.getLeftPerimeter(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getHeight());
+				int [][] rightPerimeterOther = gameObject.getRightPerimeter(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
+				overlap = checkLeftOrRightSideOverlap(gameObject, this.getLeftPerimeter(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getHeight()), 
+						 this.getRightPerimeter(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()), leftPerimeterOther, rightPerimeterOther);
+				if(overlap [0] == 1){
+					return overlap;
+				}
+				int [][] topPerimeterOther = gameObject.getTopPerimeter(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
+				int [][] bottomPerimeterOther = gameObject.getBottomPerimeter(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth());
+				overlap = checkTopOrBottomSideOverlap(gameObject, this.getTopPerimeter(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()), 
+						this.getBottomPerimeter(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth()), topPerimeterOther, bottomPerimeterOther);
+				if(overlap [0] == 1){
+					return overlap;
+				}
+			}
+		}
+		return overlap;
 	}
 	
 	

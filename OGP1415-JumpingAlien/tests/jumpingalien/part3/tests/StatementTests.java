@@ -124,7 +124,7 @@ public class StatementTests {
 	public void testForEach_AnyObjectNoSortNoFilter(){
 		emptyProgram.putGlobalVariable("forLoopVar", new GameObjectType());
 		emptyProgram.putGlobalVariable("counter", new DoubleType(0));
-		testPlant1.setProgram(emptyProgram);
+		testPlant1.linkProgram(emptyProgram);
 		testWorld.addAsGameObject(testPlant1);
 		testWorld.addAsGameObject(testPlant2);
 		testWorld.addAsGameObject(testShark1);
@@ -145,7 +145,7 @@ public class StatementTests {
 	public void testForEach_AnyObjectNoSortWithFilter(){
 		emptyProgram.putGlobalVariable("forLoopVar", new GameObjectType());
 		emptyProgram.putGlobalVariable("counter", new DoubleType(0));
-		testPlant1.setProgram(emptyProgram);
+		testPlant1.linkProgram(emptyProgram);
 		testWorld.addAsGameObject(testPlant1);
 		testWorld.addAsGameObject(testPlant2);
 		testWorld.addAsGameObject(testShark1);
@@ -168,7 +168,7 @@ public class StatementTests {
 	public void testForEach_AnyObjectWithSortNoFilter(){
 		emptyProgram.putGlobalVariable("forLoopVar", new GameObjectType());
 		emptyProgram.putGlobalVariable("counter", new DoubleType(0));
-		testPlant1.setProgram(emptyProgram);
+		testPlant1.linkProgram(emptyProgram);
 		testWorld.addAsGameObject(testPlant1);
 		testWorld.addAsGameObject(testPlant2);
 		testWorld.addAsGameObject(testShark1);
@@ -196,7 +196,7 @@ public class StatementTests {
 	public void testForEach_AnyObjectWithSortDescendingNoFilter(){
 		emptyProgram.putGlobalVariable("forLoopVar", new GameObjectType());
 		emptyProgram.putGlobalVariable("counter", new DoubleType(0));
-		testPlant1.setProgram(emptyProgram);
+		testPlant1.linkProgram(emptyProgram);
 		testWorld.addAsGameObject(testPlant1);
 		testWorld.addAsGameObject(testPlant2);
 		testWorld.addAsGameObject(testShark1);
@@ -224,7 +224,7 @@ public class StatementTests {
 	public void testForEach_Slimes(){
 		emptyProgram.putGlobalVariable("forLoopVar", new GameObjectType());
 		emptyProgram.putGlobalVariable("counter", new DoubleType(0));
-		testPlant1.setProgram(emptyProgram);
+		testPlant1.linkProgram(emptyProgram);
 		testWorld.addAsGameObject(testPlant1);
 		testWorld.addAsGameObject(testPlant2);
 		testWorld.addAsGameObject(testShark1);
@@ -245,7 +245,7 @@ public class StatementTests {
 	public void testForEach_Tiles(){
 		emptyProgram.putGlobalVariable("forLoopVar", new GameObjectType());
 		emptyProgram.putGlobalVariable("counter", new DoubleType(0));
-		testPlant1.setProgram(emptyProgram);
+		testPlant1.linkProgram(emptyProgram);
 		testWorld.addAsGameObject(testPlant1);
 		testWorld.addAsGameObject(testPlant2);
 		testWorld.addAsGameObject(testShark1);
@@ -321,7 +321,7 @@ public class StatementTests {
 	
 	@Test
 	public void StartDuck(){
-		testBuzam.setProgram(emptyProgram);
+		testBuzam.linkProgram(emptyProgram);
 		emptyProgram.setMainStatement(new StartDuck(null));
 		emptyProgram.execute(5);
 		assertEquals(emptyProgram.getTimer(), 5-0.001, 0.00001);
@@ -330,7 +330,7 @@ public class StatementTests {
 	
 	@Test
 	public void StopDuck(){
-		testBuzam.setProgram(emptyProgram);
+		testBuzam.linkProgram(emptyProgram);
 		testWorld.addAsGameObject(testBuzam);
 		List<Statement> listOfStatements= new ArrayList<Statement>();
 		listOfStatements.add(new StartDuck(null));
@@ -344,7 +344,7 @@ public class StatementTests {
 	
 	@Test
 	public void StartJump(){
-		testBuzam.setProgram(emptyProgram);
+		testBuzam.linkProgram(emptyProgram);
 		emptyProgram.setMainStatement(new StartJump(null));
 		emptyProgram.execute(5);
 		assertEquals(emptyProgram.getTimer(), 5-0.001, 0.00001);
@@ -353,7 +353,7 @@ public class StatementTests {
 	
 	@Test
 	public void StopJump(){
-		testBuzam.setProgram(emptyProgram);
+		testBuzam.linkProgram(emptyProgram);
 		testWorld.addAsGameObject(testBuzam);
 		List<Statement> listOfStatements= new ArrayList<Statement>();
 		listOfStatements.add(new StartJump(null));
@@ -367,7 +367,7 @@ public class StatementTests {
 	
 	@Test
 	public void StartRun(){
-		testBuzam.setProgram(emptyProgram);
+		testBuzam.linkProgram(emptyProgram);
 		emptyProgram.setMainStatement(new StartRun(new DirectionConstant(Direction.LEFT, null), null));
 		emptyProgram.execute(5);
 		assertEquals(emptyProgram.getTimer(), 5-0.001, 0.00001);
@@ -377,7 +377,7 @@ public class StatementTests {
 	
 	@Test
 	public void StopRun(){
-		testBuzam.setProgram(emptyProgram);
+		testBuzam.linkProgram(emptyProgram);
 		testWorld.addAsGameObject(testBuzam);
 		List<Statement> listOfStatements= new ArrayList<Statement>();
 		listOfStatements.add(new StartRun(new DirectionConstant(Direction.LEFT, null), null));
@@ -392,7 +392,7 @@ public class StatementTests {
 	
 	@Test
 	public void StartRun_alreadyRunning(){
-		testBuzam.setProgram(emptyProgram);
+		testBuzam.linkProgram(emptyProgram);
 		testWorld.addAsGameObject(testBuzam);
 		List<Statement> listOfStatements= new ArrayList<Statement>();
 		listOfStatements.add(new StartRun(new DirectionConstant(Direction.LEFT, null), null));
