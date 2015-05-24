@@ -190,8 +190,24 @@ public class Program {
 	public double TIME_UNIT=0.001;
 
 	
-	public void setGameObject(GameObject gameObject){
+	public void setGameObject(GameObject gameObject) throws IllegalArgumentException{
+		if(!this.canHaveAsGameObject(gameObject)){
+			throw new IllegalArgumentException();
+		}
 		this.gameObject = gameObject;
+	}
+	
+	public boolean canHaveAsGameObject(GameObject gameObject){
+		if(this.isTerminated()){
+			return gameObject==null;
+		}
+		else{
+			return gameObject==null || !gameObject.isTerminated();
+		}
+	}
+	
+	public boolean hasProperGameObject(){
+		return gameObject==null || gameObject.getProgram()==this;
 	}
 	
 	public GameObject getGameObject(){
@@ -207,6 +223,18 @@ public class Program {
 		else
 			return null;
 	}
-
-
+	
+	public void terminate(){
+		if(!this.isTerminated() && getGameObject()!=null){
+			this.setGameObject(null);
+			gameObject.setProgram(null);
+			this.isTerminated=true;
+		}
+	}
+	
+	public boolean isTerminated(){
+		return this.isTerminated;
+	}
+	
+	public boolean isTerminated=false;
 }

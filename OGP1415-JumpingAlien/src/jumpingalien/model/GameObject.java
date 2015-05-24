@@ -187,10 +187,7 @@ public abstract class GameObject {
 			}
 			this.maxHitPoints=maxHitPoints;
 			this.setHitPoints(hitPoints);
-			this.setProgram(program);
-			if(program != null){
-				program.setGameObject(this);
-			}
+			this.linkProgram(program);
 			this.setImages(images);
 	}
 	
@@ -375,6 +372,12 @@ public abstract class GameObject {
 	protected abstract double getMaximumHorizontalVelocityForUpdate();
 	
 	/**
+	 * Return the current initial horizontal velocity of this game object for use in update calculations.
+	 */
+	@Raw
+	protected abstract double getInitialHorizontalVelocityForUpdate();
+	
+	/**
 	 * Return the maximum horizontal velocity of this game object.
 	 */
 	@Basic
@@ -427,12 +430,6 @@ public abstract class GameObject {
 		}
 		this.maximumHorizontalVelocity=maximumHorizontalVelocity;
 	}
-	
-	/**
-	 * Return the current initial horizontal velocity of this game object for use in update calculations.
-	 */
-	@Raw
-	protected abstract double getInitialHorizontalVelocityForUpdate();
 	
 	/**
 	 * Return the initial vertical velocity of this game object.
@@ -568,7 +565,12 @@ public abstract class GameObject {
 	 * 			The initial horizontal velocity to check.
 	 */
 	protected abstract boolean isPossibleInitialHorizontalVelocity(double initialHorizontalVelocity);
-
+	
+	/**
+	 * Check whether the given maximum horizontal velocity is a possible maximum horizontal velocity for this game object.
+	 * @param 	maximumHorizontalVelocity
+	 * 			The maximum horizontal velocity to check.
+	 */
 	protected abstract boolean isPossibleMaximumHorizontalVelocity(double maximumHorizontalVelocity);
 	
 	/**
@@ -691,7 +693,7 @@ public abstract class GameObject {
 	 * @param 	direction
 	 * 			The new direction for this game object.
 	 * @pre		The given direction must be either LEFT or RIGHT.
-	 * 			| (direction == Direction.LEFT) || (direction == Direction.RIGHT)
+	 * 			| (direction == Orientation.LEFT) || (direction == Orientation.RIGHT)
 	 */
 	@Raw
 	public void setDirection(Orientation direction){
@@ -705,7 +707,7 @@ public abstract class GameObject {
 	 * @param 	direction
 	 * 			The direction to be checked.
 	 * @return	True if and only if the given direction is either LEFT or RIGHT.
-	 * 			|result == ((direction == Direction.LEFT) || (direction == Direction.RIGHT))
+	 * 			|result == ((direction == Orientation.LEFT) || (direction == Orientation.RIGHT))
 	 */
 	public static boolean isValidDirection(Orientation direction){
 		return ((direction == Orientation.LEFT) || (direction == Orientation.RIGHT));
@@ -715,10 +717,10 @@ public abstract class GameObject {
 	 * Variable registering the direction game object is facing.
 	 */
 	private Orientation direction = Orientation.LEFT;
+	
 	/**
 	 * Return the ducking state of this game object.
 	 */
-	
 	@Basic 
 	@Raw
 	public boolean isDucking() {
@@ -835,6 +837,16 @@ public abstract class GameObject {
 	}
 	
 	/**
+	 * Make this game object jump.
+	 */
+	public abstract void startJump();
+	
+	/**
+	 * End the jump of this game object.
+	 */
+	public abstract void endJump();
+	
+	/**
 	 * Variable registering the jumping state of this game object.
 	 */
 	private boolean isJumping=false;
@@ -865,42 +877,46 @@ public abstract class GameObject {
 	 */
 	private boolean isMovingHorizontally=false;
 	
+	/**
+	 * Make this game object move in the given direction if it is not already moving.
+	 * @param 	direction
+	 * 			The desired movement direction.
+	 */
 	public abstract void startMove(Orientation direction);
 	
-	public abstract void endMove(Orientation direction);
-	
-	public abstract void startJump();
-	
-	public abstract void endJump();
 	
 	/**
-	 * Check whether the given game object overlaps with the given tiles.
+	 * Make this game object end its movement in the given direction.
+	 * @param 	direction
+	 * 			The given direction.
+	 */
+	public abstract void endMove(Orientation direction);
+	
+	/**
+	 * Check whether this game object overlaps with the given tiles.
 	 * 
-	 * @param 	gameObject
-	 * 			The given game object.
 	 * @param 	tiles
 	 * 			The given tiles.
 	 * @return	Return true if and only if the game object overlaps with at least one of
 	 * 			the given tiles.
 	 * 			|overlap = false
-	 * 			|coveredTiles = the tile overlap by the game object
+	 * 			|coveredTiles = the tile overlapped by this game object
 	 * 			|for each tile in tiles
 	 * 			|	for each coveredTile in coveredTiles
 	 * 			|		if(Arrays.equals(tile, coveredTile))
 	 * 			|		then overlap = true
 	 * 			|result==overlap
-	 * 
 	 * @throws	IllegalArgumentException
 	 * 			If the world of this game object can not have the given game object as its game object.
 	 * 			|!world.canHaveAsGameObject(gameObject)
 	 */
-	protected boolean gameObjectOverlapsWithTiles(GameObject gameObject, int [][] tiles)
+	protected boolean overlapsWithTiles(int [][] tiles)
 	throws IllegalArgumentException{
 		World world = this.getWorld();
-		if(!world.canHaveAsGameObject(gameObject))
+		if(!world.canHaveAsGameObject(this))
 			throw new IllegalArgumentException();
 		boolean overlap = false;
-		int [][] coveredTiles = world.getTilePositionsIn(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getEffectiveHorizontalLocation()+gameObject.getWidth(), gameObject.getEffectiveVerticalLocation()+gameObject.getHeight());				
+		int [][] coveredTiles = world.getTilePositionsIn(this.getEffectiveHorizontalLocation(), this.getEffectiveVerticalLocation(), this.getEffectiveHorizontalLocation()+this.getWidth(), this.getEffectiveVerticalLocation()+this.getHeight());				
 		outerloop:
 		for(int [] tile : tiles)
 			for(int [] coveredTile: coveredTiles)
@@ -924,7 +940,6 @@ public abstract class GameObject {
 	 * 			|    and if(gameObjectOverlapsWithTiles(gameObject, tiles))
 	 * 			|	then the game object is added to the list of overlapping game objects
 	 * 			|result == gameObjects
-	 * 
 	 */
 	protected List<GameObject> getGameObjectsAtTiles(int [][] tiles){
 		List<GameObject> gameObjects = new ArrayList<GameObject>();
@@ -932,13 +947,32 @@ public abstract class GameObject {
 		for(int index = 0; index < world.getNbGameObjects(); index++){
 			GameObject gameObject = world.getGameObjectAtIndex(index);
 			if(world.canHaveAsGameObject(gameObject) && gameObject != this){
-				if(gameObjectOverlapsWithTiles(gameObject, tiles))	
+				if(gameObject.overlapsWithTiles(tiles))	
 					gameObjects.add(gameObject);
 			}
 		}
 		return gameObjects;		
 	}
 	
+	/**
+	 * Return the game object at the given pixel position of the world of this game object.
+	 * @param 	pixelX
+	 * 			The horizontal pixel position.
+	 * @param 	pixelY
+	 * 			The vertical pixel position.
+	 * @return	The game object that overlaps with the given pixel position. If there is no overlap at the given pixel position,
+	 * 			this method returns null.
+	 * 			|result==null
+	 * 			|int [][] tile = {this.getWorld().getTilePositionAtPixelLocation(pixelX, pixelY)}
+	 *			|List<GameObject> gameObjects = this.getGameObjectsAtTiles(tile)
+	 *			|for each gameObject in gameObjects:
+	 *			|	int pixelX2 = gameObject.getEffectiveHorizontalLocation()
+	 *			|	int pixelY2 = gameObject.getEffectiveVerticalLocation()
+	 *			|	int width2 = gameObject.getWidth()
+	 *			|	int height2 = gameObject.getHeight()
+	 *			|	if(!(pixelX < pixelX2 || pixelX2 + (width2 -1) < pixelX || pixelY < pixelY2 || pixelY2 + (height2 - 1) < pixelY)):
+	 *			|		result == foundGameObject
+	 */
 	public GameObject getGameObjectAtPixelPosition(int pixelX, int pixelY){
 		int [][] tile = {this.getWorld().getTilePositionAtPixelLocation(pixelX, pixelY)};
 		List<GameObject> gameObjects = this.getGameObjectsAtTiles(tile);
@@ -956,7 +990,7 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Return a matrix with at each row a coordinate of the top perimeter of this game object.
+	 * Return a matrix with at each row a pixel coordinate of the top perimeter of this game object.
 	 * 
 	 * @param 	pixelX
 	 * 			The given horizontal location.
@@ -966,8 +1000,8 @@ public abstract class GameObject {
 	 * 			The given width of the game object.
 	 * @param 	height
 	 * 			The given height of the game object.
-	 * @return	The method iterates of all (x...x + Width -1) and for each horizontal location 
-	 * 			a list [X, Y] is added at the matrix with X equal to the current x of 
+	 * @return	The method iterates over all (x...x + Width -1) and for each horizontal location 
+	 * 			a list [X, Y] is added at the matrix position with X equal to the current x of 
 	 * 			the iteration plus pixelX and Y always equal to pixelY + height -1.
 	 * 			The resulting matrix is returned.
 	 * 			|for each X in 0...width -1
@@ -978,7 +1012,7 @@ public abstract class GameObject {
 	 * 			If the world can not have the given location as its location.
 	 * 			|!world.canHaveAsPixelLocation(pixelX, pixelY)
 	 */
-	protected int [][] getTopPerimeterOfGameObject(int pixelX, int pixelY,int width, int height)
+	protected int [][] getTopPerimeter(int pixelX, int pixelY,int width, int height)
 			throws IllegalArgumentException{
 				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
 					throw new IllegalArgumentException();
@@ -1012,7 +1046,7 @@ public abstract class GameObject {
 	 * 			If the world can not have the given location as its location.
 	 * 			|!world.canHaveAsPixelLocation(pixelX, pixelY)
 	 */
-	protected int [][] getBottomPerimeterOfGameObject(int pixelX, int pixelY,int width)
+	protected int [][] getBottomPerimeter(int pixelX, int pixelY,int width)
 			throws IllegalArgumentException{
 				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
 					throw new IllegalArgumentException();
@@ -1045,7 +1079,7 @@ public abstract class GameObject {
 	 * 			If the world can not have the given location as its location.
 	 * 			|!world.canHaveAsPixelLocation(pixelX, pixelY)
 	 */
-	protected int [][] getLeftPerimeterOfGameObject(int pixelX, int pixelY, int height)
+	protected int [][] getLeftPerimeter(int pixelX, int pixelY, int height)
 	throws IllegalArgumentException{
 		if(!world.canHaveAsPixelLocation(pixelX, pixelY))
 			throw new IllegalArgumentException();
@@ -1080,7 +1114,7 @@ public abstract class GameObject {
 	 * 			If the world can not have the given location as its location.
 	 * 			|!world.canHaveAsPixelLocation(pixelX, pixelY)
 	 */
-	protected int [][] getRightPerimeterOfGameObject(int pixelX, int pixelY, int width, int height)
+	protected int [][] getRightPerimeter(int pixelX, int pixelY, int width, int height)
 			throws IllegalArgumentException{
 				if(!world.canHaveAsPixelLocation(pixelX, pixelY))
 					throw new IllegalArgumentException();
@@ -1093,38 +1127,17 @@ public abstract class GameObject {
 				return rightPerimeter.clone();
 			}
 	
-
 	/**
-	 * Check whether this game object overlaps with another game object.
-	 * This overlap is an allowed overlap from the outer perimeters of the game objects.
-	 * 
-	 * @return	It returns an array with four elements and each element equal to zero or one.
-	 * 			The array is returned from another method checkLeftRightTopBottomSideOverlap.
-	 * 			This array can be interpreted by the method collisionHandler.
-	 * 			|int [] overlappingGameObject = this.checkLeftRightTopBottomSideOverlap( input 4 perimeter of this game object)
-	 * 			|result == overlappingGameObject
-	 * 
-	 */
-	protected int [] checkAllowedLeftRightTopBottomSideOverlap(){
-		int [] overlappingGameObject = this.checkLeftRightTopBottomSideOverlap(this.getLeftPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getHeight()),
-				 this.getRightPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()),
-				 this.getTopPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth(), getHeight()),
-				 this.getBottomPerimeterOfGameObject(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getWidth()));
-		return overlappingGameObject.clone();
-	}
-	
-	/**
-	 * Check whether this game object overlaps with another game object.
-	 * This overlap is a not allowed overlap for the game objects.
+	 * Check whether the overlap between the given area and this game object is not a correct overlap. 
 	 * 
 	 * @param 	pixelX1
-	 * 			The horizontal location of this game object.
+	 * 			The horizontal location of the area.
 	 * @param 	pixelY1
-	 * 			The vertical location of this game object.
+	 * 			The vertical location of the area.
 	 * @param	width1
-	 * 			The width of this game object.
+	 * 			The width of the area.
 	 * @param 	height1
-	 * 			The height of this game object.
+	 * 			The height of the area.
 	 * @return	True if and only if for at least one  game object in the game world the following if statement
 	 * 			yields true: 
 	 * 			|if(!(pixelX1 + 1 + (width1 - 3) < pixelX2 || pixelX2 + 1 + (width2 -3) < pixelX1 
@@ -1132,7 +1145,7 @@ public abstract class GameObject {
      *			| then result == true
      *			|else result == false
 	 */	
-	protected boolean checkNotAllowedLeftRightTopBottomSideOverlap(int pixelX1, int pixelY1, int width1, int height1){
+	protected boolean isNotAllowedLeftRightTopBottomSideOverlap(int pixelX1, int pixelY1, int width1, int height1){
 		World world = this.getWorld();
 		boolean overlap = false;
 		if(world.getGameHasStarted()){
@@ -1154,48 +1167,9 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Check whether the left, right, top or bottom of this game object overlaps with another game object.
-	 * 
-	 * @return	The method iterates over all the game objects that can overlap with the given
-	 * 			game object. That are the game objects that overlap with one of the tile with
-	 * 			which this game object overlaps. If another game object is found that overlaps 
-	 * 			with one of the given sides then an array with four elements is returned.
-	 * 			This array can be interpreted by the method collisionHandler.
-	 * 			|overlap = {0,0,0,0}
-	 * 			|for each game object in gameGameObjectAtTile of this game object
-	 * 			|	if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject))
-	 * 			|		overlap = checkLeftOrRightSideOverlap(gameObject,perimeters...);
-	 *			|		if(overlap [0] == 1)
-	 *			|		then the array "overlap" is returned
-	 *			|		or 
-	 *			|		overlap = checkTopOrBottomSideOverlap(gameObject,perimeters...);
-	 *			|		if(overlap [0] == 1)
-	 *			|		then the array "overlap" is returned
-	 *			|result == overlap
+	 * Check whether the given left, right, top or bottom perimeter overlaps with another game object.
 	 */
-	protected int [] checkLeftRightTopBottomSideOverlap(int [][] leftPerimeter1, int [][] rightPerimeter1, int [][] topPerimeter1, int [][] bottomPerimeter1){
-		int [] overlap = {0,0,0,0};
-		World world = this.getWorld();
-		List<GameObject> gameObjects = getGameObjectsAtTiles(world.getTilePositionsIn(getEffectiveHorizontalLocation(), getEffectiveVerticalLocation(), getEffectiveHorizontalLocation()+getWidth(), getEffectiveVerticalLocation()+getHeight()));
-		for(int index = 0; index < gameObjects.size(); index++){
-			GameObject gameObject = gameObjects.get(index);
-			if(gameObject != this && gameObject != null && world.canHaveAsGameObject(gameObject)){
-				int [][] topPerimeter2 = gameObject.getTopPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
-				int [][] bottomPerimeter2 = gameObject.getBottomPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth());
-				overlap = checkTopOrBottomSideOverlap(gameObject, topPerimeter1, bottomPerimeter1, topPerimeter2, bottomPerimeter2);
-				if(overlap [0] == 1){
-					return overlap;
-				}
-				int [][] leftPerimeter2 = gameObject.getLeftPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getHeight());
-				int [][] rightPerimeter2 = gameObject.getRightPerimeterOfGameObject(gameObject.getEffectiveHorizontalLocation(), gameObject.getEffectiveVerticalLocation(), gameObject.getWidth(), gameObject.getHeight());
-				overlap = checkLeftOrRightSideOverlap(gameObject, leftPerimeter1, rightPerimeter1, leftPerimeter2, rightPerimeter2);
-				if(overlap [0] == 1){
-					return overlap;
-				}
-			}
-		}
-		return overlap;
-		}
+	protected abstract int [] checkLeftRightTopBottomSideOverlap();
 	
 	/**
 	 * Check whether the top or bottom side of this game object overlaps with the
@@ -1381,7 +1355,7 @@ public abstract class GameObject {
 	private boolean contact;
 	
 	/**
-	 * Check whether the location and velocities need to be adapted due to contact with another game object.
+	 * Adapt the location and velocities of this game object due to contact with another game object.
 	 * 
 	 * @param 	overlap
 	 * 			An array of four elements registering contact details (see checkTopOrBottomSideOverlap).
@@ -1417,15 +1391,15 @@ public abstract class GameObject {
 				gameObject.setContact(true);
 			}
 		}
-		else if(this.getContact() == true && !( gameObject instanceof Plant)){
-			if(checkNotAllowedLeftRightTopBottomSideOverlap(this.getEffectiveHorizontalLocation(), this.getEffectiveVerticalLocation(), this.getWidth(), this.getHeight())){
-				if(checkNotAllowedLeftRightTopBottomSideOverlap((int) oldHorizontalLocation, this.getEffectiveVerticalLocation(), this.getWidth(), this.getHeight())){
+		else if(this.getContact() == true && !(gameObject instanceof Plant)){
+			if(isNotAllowedLeftRightTopBottomSideOverlap(this.getEffectiveHorizontalLocation(), this.getEffectiveVerticalLocation(), this.getWidth(), this.getHeight())){
+				if(isNotAllowedLeftRightTopBottomSideOverlap((int) oldHorizontalLocation, this.getEffectiveVerticalLocation(), this.getWidth(), this.getHeight())){
 					this.setVerticalLocation(oldVerticalLocation);
 					if(this instanceof Mazub){
 						this.setVerticalVelocity(0);
 					}
 				}
-				if(checkNotAllowedLeftRightTopBottomSideOverlap(this.getEffectiveHorizontalLocation(), (int) oldVerticalLocation, this.getWidth(), this.getHeight())){
+				if(isNotAllowedLeftRightTopBottomSideOverlap(this.getEffectiveHorizontalLocation(), (int) oldVerticalLocation, this.getWidth(), this.getHeight())){
 					this.setHorizontalLocation(oldHorizontalLocation);
 				}
 			}
@@ -1433,6 +1407,29 @@ public abstract class GameObject {
 				this.setContact(false);
 				gameObject.setContact(false);
 			}
+		}
+	}
+	
+	/**
+	 * Set the current velocities of this game object to zero 
+	 * and keep blocking the movements of other game objects.
+	 * 
+	 * @post	|new.getHorizontalVelocity == 0
+	 * 			|new.getVerticalVelocity == 0
+	 * @effect	|if this game object is not a plant
+	 * 			|then collisionHandler(overlap,this.getHorizontalLocation(),this.getVerticalLocation())
+	 * @throws	IllegalStateException
+	 * 			|!(this.getHitPoints() <= 0)
+	 */
+	public void block()
+	throws IllegalStateException{
+		if(!(this.getHitPoints() <= 0))
+			throw new IllegalStateException();
+		this.setHorizontalVelocity(0);
+		this.setVerticalVelocity(0);
+		if(!(this instanceof Plant)){
+			int []overlap = checkLeftRightTopBottomSideOverlap();
+			collisionHandler(overlap,this.getHorizontalLocation(),this.getVerticalLocation());
 		}
 	}
 	
@@ -1771,22 +1768,6 @@ public abstract class GameObject {
 		}
 	}
 	
-	/**
-	 * Variable registering the number of hit-points of this game object. 
-	 */
-	private int hitPoints;
-	
-	/**
-	 * Variable registering the maximum number of hit-points of this game object. 
-	 */
-	private final int maxHitPoints;
-	
-	/**
-	 * Return the world that is currently attached to this game object.
-	 */
-	public World getWorld(){
-		return this.world;
-	}
 	
 	/**
 	 * Check whether this game object can lose hitpoints when making contact 
@@ -1829,20 +1810,108 @@ public abstract class GameObject {
 	 */
 	private double timeSinceLastHitpointsLoss = 0.6;
 	
-	protected Program program;
+	/**
+	 * Variable registering the number of hit-points of this game object. 
+	 */
+	private int hitPoints;
 	
-	public void setProgram(Program program){
-		if (program==null){
-			this.program=program;
+	/**
+	 * Variable registering the maximum number of hit-points of this game object. 
+	 */
+	private final int maxHitPoints;
+	
+	
+	/**
+	 * Set the program of this game object to the given program.
+	 * @param 	program
+	 * 			The program to be set.
+	 * @throws 	IllegalArgumentException
+	 * 			This game object can not have the given program as its program.
+	 */
+	public void setProgram(Program program) throws IllegalArgumentException{
+		if(!canHaveAsProgram(program)){
+			throw new IllegalArgumentException();
 		}
-		else if (program.isWellFormed()){
-			this.program=program;
-			program.setGameObject(this);
+		this.program=program;
+	}
+	
+	/**
+	 * Return the program of this game object.
+	 */
+	public Program getProgram(){
+		return this.program;
+	}
+	
+	/**
+	 * Check whether this game object can have the given program as its program.
+	 * @param 	program
+	 * 			The program to be checked.
+	 * @return	If the given program is null, the result is true.
+	 * 			Otherwise return true if the program is not terminated and well formed.
+	 * 			| if(program==null):
+	 * 			|	result==true
+	 * 			| else:
+	 * 			|	result==(!program.isTerminated() && program.isWellFormed())
+	 * 			
+	 */
+	public boolean canHaveAsProgram(Program program){
+		if(program==null){
+			return true;
+		}
+		else{
+			return (!program.isTerminated() && program.isWellFormed());
 		}
 	}
 	
-	public Program getProgram(){
-		return this.program;
+	/**
+	 * Check whether this game object has a proper program.
+	 * @return	True if this game object can have its current program as its program and the current program of this game object
+	 * 			is null or it references this game object.
+	 * 			| result== canHaveAsProgram(getProgram()) && (getProgram()==null || getProgram().getGameObject()==this)
+	 */
+	public boolean hasProperProgram(){
+		return canHaveAsProgram(getProgram()) && (getProgram()==null || getProgram().getGameObject()==this);
+	}
+	
+	/**
+	 * Variable registering the program of this game object.
+	 */
+	private Program program;
+	
+	/**
+	 * Establish the binary relationship between this game object and the given program.
+	 * @param 	program
+	 * 			The program to be set.
+	 * @effect	The given program is set as the program of this game object.
+	 * 			| this.setProgram(program)
+	 * @effect	If the given program is not null, the game object referenced by the given program is set to this game object.
+	 * 			|if(program != null):
+	 * 			|	program.setGameObject(this)
+	 * @effect	If the old program of this game object is not null, the game object referenced by the old program is set to null.
+	 * 			|if(this.getProgram()!=null):
+	 *			|	this.getProgram().setGameObject(null)
+	 * @throws 	IllegalArgumentException
+	 * 			If this game object is terminated.
+	 * 			| this.isTerminated()
+	 * @throws	IllegalArgumentException
+	 * 			If the given program is not null and the game object of the given program is not null and the program references another
+	 * 			game object.
+	 * 			| program != null && program.getGameObject()!=null && program.getGameObject() != this
+	 */
+	public void linkProgram(Program program) throws IllegalArgumentException{
+		if(this.isTerminated()){
+			throw new IllegalArgumentException();
+		}
+		if(program != null && program.getGameObject()!=null && program.getGameObject() != this){
+			throw new IllegalArgumentException();
+		}
+		if(this.getProgram()!=null){
+			this.getProgram().setGameObject(null);
+		}
+		this.setProgram(program);
+		if(program!=null){
+			program.setGameObject(this);
+		}
 	}
 	
 	/**
@@ -1863,9 +1932,11 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Variable registering the world that is currently attached to this game object.
+	 * Return the world that is currently attached to this game object.
 	 */
-	protected World world;
+	public World getWorld(){
+		return this.world;
+	}
 	
 	/**
 	 * Break the link between this game object and the world that is attached to it.
@@ -1899,27 +1970,11 @@ public abstract class GameObject {
 	}
 	
 	/**
-	 * Set the current velocities of this game object to zero 
-	 * and keep blocking the movements of other game objects.
-	 * 
-	 * @post	|new.getHorizontalVelocity == 0
-	 * 			|new.getVerticalVelocity == 0
-	 * @effect	|if this game object is not a plant
-	 * 			|then collisionHandler(overlap,this.getHorizontalLocation(),this.getVerticalLocation())
-	 * @throws	IllegalStateException
-	 * 			|!(this.getHitPoints() <= 0)
+	 * Variable registering the world that is currently attached to this game object.
 	 */
-	public void block()
-	throws IllegalStateException{
-		if(!(this.getHitPoints() <= 0))
-			throw new IllegalStateException();
-		this.setHorizontalVelocity(0);
-		this.setVerticalVelocity(0);
-		if(!(this instanceof Plant)){
-			int []overlap = checkAllowedLeftRightTopBottomSideOverlap();
-			collisionHandler(overlap,this.getHorizontalLocation(),this.getVerticalLocation());
-		}
-	}
+	protected World world;
+	
+	
 	
 	/**
 	 * Return the time since this game object died.
