@@ -43,6 +43,13 @@ public class Wait extends ActionStatement{
 					double duration;
 					try{
 						duration=((DoubleType) this.getDuration().evaluateLegalCase(program)).getValue();
+						if(duration<program.TIME_UNIT && duration > 0){
+							duration=program.TIME_UNIT;
+						}
+						else if(duration<0){
+							program.stop();
+							return;
+						}
 					}catch(NullPointerException exc){
 						return;
 					}

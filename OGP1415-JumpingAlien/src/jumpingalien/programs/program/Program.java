@@ -187,7 +187,7 @@ public class Program {
 	
 	private boolean timeDepleted=false;
 	
-	private double TIME_UNIT=0.001;
+	public double TIME_UNIT=0.001;
 
 	
 	public void setGameObject(GameObject gameObject){

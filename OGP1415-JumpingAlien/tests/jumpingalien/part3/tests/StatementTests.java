@@ -405,6 +405,78 @@ public class StatementTests {
 		assertTrue(testBuzam.isMovingHorizontally());
 	} 
 	
+	@Test
+	public void Wait_durationShorterThanDeltaTime(){
+		emptyProgram.setMainStatement(new Wait(new DoubleConstant(1, null), null));
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-1, 0.00001);
+	}
+	
+	@Test
+	public void Wait_durationShorterThanTimeUnit(){
+		emptyProgram.setMainStatement(new Wait(new DoubleConstant(0.00001, null), null));
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.001, 0.00001);
+	}
+	
+	@Test
+	public void Wait_durationLongerThanDeltaTime(){
+		List<Statement> listOfStatements= new ArrayList<Statement>();
+		listOfStatements.add(new Assignment("testVar", new DoubleType(), new DoubleConstant(5, null), null));
+		listOfStatements.add(new Wait(new DoubleConstant(17, null), null));
+		listOfStatements.add(new Assignment("testVar", new DoubleType(), new DoubleConstant(10, null), null));
+		Sequence sequence= new Sequence(listOfStatements,null);
+		emptyProgram.setMainStatement(sequence);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-17-0.001, 0.00001);
+		assertTrue(emptyProgram.getGlobalVariables().get("testVar").getValue().equals(new Double(5)));
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-12-0.001, 0.00001);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-7-0.001, 0.00001);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-2-0.002, 0.00001);
+		assertTrue(emptyProgram.getGlobalVariables().get("testVar").getValue().equals(new Double(10)));
+	}
+	
+	@Test
+	public void Wait_durationNegative(){
+		emptyProgram.setMainStatement(new Wait(new DoubleConstant(-10, null), null));
+		emptyProgram.execute(5);
+		assertTrue(emptyProgram.hasStopped());
+	}
+	
+	@Test
+	public void whileTest_sufficientTimeToComplete(){
+		emptyProgram.putGlobalVariable("counter", new DoubleType(100));
+		Expression<DoubleType> readCounter= new ReadVariable<DoubleType>("counter", new DoubleType(), null);
+		Expression<BoolType> counterNotZero = new GreaterThan(readCounter, new DoubleConstant(0, null), null);
+		Expression<DoubleType> whileBodyExpression= new Subtraction(readCounter, new DoubleConstant(1,null), null);
+		Statement whileBody = new Assignment("counter", new DoubleType(), whileBodyExpression, null);
+		While whileLoop = new While(counterNotZero, whileBody, null);
+		emptyProgram.setMainStatement(whileLoop);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 5-0.201, 0.00001);
+	}
+	
+	@Test
+	public void whileTest_insufficientTimeToComplete(){
+		emptyProgram.putGlobalVariable("counter", new DoubleType(4000));
+		Expression<DoubleType> readCounter= new ReadVariable<DoubleType>("counter", new DoubleType(), null);
+		Expression<BoolType> counterNotZero = new GreaterThan(readCounter, new DoubleConstant(0, null), null);
+		Expression<DoubleType> whileBodyExpression= new Subtraction(readCounter, new DoubleConstant(1,null), null);
+		Statement whileBody = new Assignment("counter", new DoubleType(), whileBodyExpression, null);
+		While whileLoop = new While(counterNotZero, whileBody, null);
+		emptyProgram.setMainStatement(whileLoop);
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 0, 0.00001);
+		assertEquals(((DoubleType)emptyProgram.getGlobalVariables().get("counter")).getValue().intValue(), 1500);
+		assertTrue(whileLoop.getCallSecondTime());
+		emptyProgram.execute(5);
+		assertEquals(emptyProgram.getTimer(), 2, 0.00001);
+		assertEquals(((DoubleType)emptyProgram.getGlobalVariables().get("counter")).getValue().intValue(), 0);
+	}
+	
 	
 	
 	

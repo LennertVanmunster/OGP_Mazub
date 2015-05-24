@@ -51,9 +51,11 @@ public class While extends Statement{
 				try{
 					condition=((BoolType) getCondition().evaluateLegalCase(program)).getValue();
 				}catch(NullPointerException exc){
+					program.stop();
 					return;
 				}
 				while(((condition && program.hasTimeForStatement()) && this.isToBeExecuted() || this.getCallSecondTime()) && !program.hasStopped()){
+					//System.out.println(program.getTimer());
 					if(this.getCallSecondTime()){
 						this.setCallSecondTime(false);
 					}
@@ -62,15 +64,24 @@ public class While extends Statement{
 						getBody().setToBeExecuted(true);
 					}
 					getBody().execute(program);
+					try{
+						condition=((BoolType) getCondition().evaluateLegalCase(program)).getValue();
+					}catch(NullPointerException exc){
+						program.stop();
+						return;
+					}
 				}
 				if (program.hasTimeForStatement() && this.isToBeExecuted()){
 					program.decreaseTimerOneUnit();
 					this.setToBeExecuted(false);
 				}
+				else if(program.isTimeDepleted()){
+					this.setCallSecondTime(true);
+				}
 				else{
-					if(program.isTimeDepleted()){
-						this.setCallSecondTime(true);
-					}
+					this.setCallSecondTime(true);
+					program.setTimeDepleted(true);
+					this.setToBeExecuted(true);
 				}
 			}
 			else{
