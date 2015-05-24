@@ -59,13 +59,13 @@ public class BuzamTest {
 		testBuzam = new Buzam(0, 499, spriteArrayForSize(3, 3));
 		testBuzam.setWorld(testWorld);
 		testWorld.setBuzam(testBuzam);		
-		jumpingTestBuzam = new Buzam(25, 500, 0, 3, 1, 3, false, program, spriteArrayForSize(2, 2));
+		jumpingTestBuzam = new Buzam(25, 500, 0, 3, 1, 3, false, null, spriteArrayForSize(2, 2));
 		jumpingTestBuzam.setWorld(testWorld);
 		testWorld.setBuzam(jumpingTestBuzam);
-		notJumpingTestBuzam = new Buzam(50, 499, 0, 0, 1, 3, false, program, spriteArrayForSize(2, 2));
+		notJumpingTestBuzam = new Buzam(50, 499, 0, 0, 1, 3, false, null, spriteArrayForSize(2, 2));
 		notJumpingTestBuzam.setWorld(testWorld);
 		testWorld.setBuzam(notJumpingTestBuzam);
-		notDuckingTestBuzam = new Buzam(100, 499, 0, 0, 1, 3, false, program, spriteArrayForSize(2, 2));
+		notDuckingTestBuzam = new Buzam(100, 499, 0, 0, 1, 3, false, null, spriteArrayForSize(2, 2));
 		notDuckingTestBuzam.setWorld(testWorld);
 		testWorld.setBuzam(notDuckingTestBuzam);
 	}

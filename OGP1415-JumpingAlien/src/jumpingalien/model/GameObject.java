@@ -916,8 +916,9 @@ public abstract class GameObject {
 	protected boolean overlapsWithTiles(int [][] tiles)
 	throws IllegalArgumentException{
 		World world = this.getWorld();
-		if(!world.canHaveAsGameObject(this))
+		if(!world.canHaveAsGameObject(this)){
 			throw new IllegalArgumentException();
+		}
 		boolean overlap = false;
 		int [][] coveredTiles = world.getTilePositionsIn(this.getEffectiveHorizontalLocation(), this.getEffectiveVerticalLocation(), this.getEffectiveHorizontalLocation()+this.getWidth(), this.getEffectiveVerticalLocation()+this.getHeight());				
 		outerloop:
@@ -949,9 +950,10 @@ public abstract class GameObject {
 		World world = this.getWorld();
 		for(int index = 0; index < world.getNbGameObjects(); index++){
 			GameObject gameObject = world.getGameObjectAtIndex(index);
-			if(world.canHaveAsGameObject(gameObject) && gameObject != this){
-				if(gameObject.overlapsWithTiles(tiles))	
+			if(world.canHaveAsGameObject(gameObject) && gameObject != this && gameObject != null){
+				if(gameObject.overlapsWithTiles(tiles)){	
 					gameObjects.add(gameObject);
+				}
 			}
 		}
 		return gameObjects;		
