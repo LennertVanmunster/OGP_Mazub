@@ -10,13 +10,7 @@ import org.junit.Test;
 
 public class WorldTest {
 	
-	private static School emptySchool;
 	private static School school1;
-	private static School school2;
-	private static Slime slime1School1;
-	private static Slime slime2School1;
-	private static Slime slime1School2;
-	private static Slime slime2School2;
 	private static School terminatedSchool;
 	private static Slime jumpingSlime;
 	private static World world1;
@@ -29,15 +23,9 @@ public class WorldTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass(){
-		emptySchool= new School();
 		school1=new School();
-		slime1School1= new Slime(0,0,spriteArrayForSize(2, 2),school1);
-		slime2School1= new Slime(10,0,spriteArrayForSize(2,2),school1);
 		jumpingSlime=new Slime(0,10,spriteArrayForSize(2, 2),school1);
 		jumpingSlime.setJumping(true);
-		school2= new School();
-		slime1School2= new Slime(20,0,spriteArrayForSize(2, 2),school2);
-		slime2School2= new Slime(30,0,spriteArrayForSize(2,2),school2);
 		terminatedSchool=new School();
 		terminatedSchool.terminate();
 		world1= new World(50,10,10,500,500,9,9);
@@ -54,11 +42,8 @@ public class WorldTest {
 	private static World testWorld;
 	private static School testSchool1;
 	private static Slime slime1TestSchool1;
-	private static Slime slime2TestSchool1;
-	private static Slime slime3TestSchool1;
 	private static School testSchool2;
 	private static Slime slime1TestSchool2;
-	private static Slime slime2TestSchool2;
 	private static World largeTestWorld;
 	private static Mazub testMazub;
 	private static World world9Schools;
@@ -67,11 +52,8 @@ public class WorldTest {
 		testWorld=new World(50,10,10,500,500,9,9);
 		testSchool1=new School();
 		slime1TestSchool1= new Slime(40,0,spriteArrayForSize(2,2),testSchool1);
-		slime2TestSchool1= new Slime(50,0,spriteArrayForSize(2,2),testSchool1);
-		slime3TestSchool1= new Slime(60,0,spriteArrayForSize(2,2),testSchool1);
 		testSchool2=new School();
 		slime1TestSchool2= new Slime(70,0,spriteArrayForSize(2,2),testSchool2);
-		slime2TestSchool2= new Slime(70,0,spriteArrayForSize(2,2),testSchool2);
 		testMazub= new Mazub(0,0,spriteArrayForSize(10, 10));
 		largeTestWorld=new World(100,20,20,500,500,9,9);
 		world9Schools= new World(50,10,10,500,500,9,9);

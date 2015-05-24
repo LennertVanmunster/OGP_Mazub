@@ -4,16 +4,10 @@ package jumpingalien.part3.tests;
 import static jumpingalien.tests.util.TestUtils.spriteArrayForSize;
 import static org.junit.Assert.*;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import jumpingalien.model.Orientation;
 import jumpingalien.model.Buzam;
 import jumpingalien.model.World;
-import jumpingalien.programs.program.Program;
-import jumpingalien.programs.statements.StartJump;
-import jumpingalien.programs.statements.Statement;
-import jumpingalien.programs.types.Type;
 import jumpingalien.util.Util;
 
 import org.junit.Before;
@@ -24,7 +18,6 @@ import org.junit.Test;
 
 public class BuzamTest {
 
-	private static Program program;
 	private static Buzam staticTestBuzam;
 	private static World staticTestWorld;
 	public static final int FEATURE_AIR = 0;
@@ -34,9 +27,6 @@ public class BuzamTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Map<String,Type<?>> globalVariables = new HashMap<String, Type<?>>();
-		Statement statement =  new StartJump(null);
-		program = new Program(statement, globalVariables);
 		staticTestWorld = new World(500, 3, 3, 1000, 1000, 2, 2);
 		staticTestWorld.setTileValueAtTilePosition( 0, 0, FEATURE_SOLID);
 		staticTestWorld.setTileValueAtTilePosition( 1, 1, FEATURE_SOLID);

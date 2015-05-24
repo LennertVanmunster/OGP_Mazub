@@ -12,6 +12,7 @@ public class TileType extends ObjectType<int[]>{
 		this(new int[] {0,0});
 	}
 	
+	@Override
 	public int [] getDefaultValue(){
 		int []defaultValue = {0,0};
 		return defaultValue;
