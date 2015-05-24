@@ -97,7 +97,6 @@ public class Buzam extends Alien {
 		this(horizontalLocation, verticalLocation, 0, 0, 1, 3, false, null, images);
 	}
 	
-	
 	/**
 	 * Constant registering the maximum number of hit points for any Buzam.
 	 */

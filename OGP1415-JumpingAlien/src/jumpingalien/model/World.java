@@ -1057,6 +1057,7 @@ public class World {
 			throw new IllegalArgumentException("Cannot set a Mazub in a started game!");
 		}
 		gameObjects.add(0,alien);
+		this.mazub = alien;
 	}
 	
 	/**
@@ -1064,8 +1065,10 @@ public class World {
 	 */
 	@Basic
 	public Mazub getMazub(){
-		return (Mazub) gameObjects.get(0);
+		return this.mazub;
 	}
+	
+	private Mazub mazub;
 	
 	public boolean canHaveAsBuzam(Buzam buzam){
 		if (!this.getGameHasStarted()){
@@ -1096,13 +1099,15 @@ public class World {
 		if(this.getGameHasStarted()){
 			throw new IllegalArgumentException("Cannot set a Bazum in a started game!");
 		}
-		gameObjects.add(1,buzam);
-		buzam.setWorld(this);
+		gameObjects.add(0,buzam);
+		this.buzam = buzam;
 	}
 	
 	public Buzam getBuzam(){
-		return (Buzam) gameObjects.get(1);
+		return this.buzam;
 	}
+	
+	private Buzam buzam;
 	
 	/**
 	 * Return the number of game objects in this world.
@@ -1150,6 +1155,11 @@ public class World {
 		if(gameObject instanceof Mazub){
 			this.setMazub((Mazub) gameObject);
 			((Mazub) gameObject).setWorld(this);
+			return;
+		}
+		else if(gameObject instanceof Buzam){
+			this.setBuzam((Buzam) gameObject);
+			((Buzam) gameObject).setWorld(this);
 			return;
 		}
 		else if (gameObject instanceof Slime){

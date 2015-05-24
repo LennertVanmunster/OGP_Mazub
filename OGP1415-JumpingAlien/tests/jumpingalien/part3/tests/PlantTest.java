@@ -3,9 +3,18 @@ package jumpingalien.part3.tests;
 
 import static jumpingalien.tests.util.TestUtils.spriteArrayForSize;
 import static org.junit.Assert.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import jumpingalien.model.Buzam;
 import jumpingalien.model.Mazub;
 import jumpingalien.model.Plant;
 import jumpingalien.model.World;
+import jumpingalien.programs.program.Program;
+import jumpingalien.programs.statements.StartJump;
+import jumpingalien.programs.statements.Statement;
+import jumpingalien.programs.types.Type;
 import jumpingalien.util.Util;
 
 import org.junit.Before;
@@ -18,6 +27,9 @@ public class PlantTest {
 
 	private static Plant staticTestPlant;
 	private static World staticTestWorld;
+	private static Mazub staticTestMazub;
+	private static Buzam staticTestBuzam;
+	private static Program program;
 	public static final int FEATURE_AIR = 0;
 	public static final int FEATURE_SOLID = 1;
 	public static final int FEATURE_WATER = 2;
@@ -30,6 +42,15 @@ public class PlantTest {
 		staticTestWorld.setTileValueAtTilePosition( 1, 1, FEATURE_SOLID);
 		staticTestPlant = new Plant(100, 550, spriteArrayForSize(3, 3));
 		staticTestWorld.addAsGameObject(staticTestPlant);
+		
+		Map<String,Type<?>> globalVariables = new HashMap<String, Type<?>>();
+		Statement statement =  new StartJump(null);
+		program = new Program(statement, globalVariables);
+		staticTestBuzam = new Buzam(0, 499, program, spriteArrayForSize(3, 3));
+//		staticTestBuzam.setWorld(staticTestWorld);
+		staticTestWorld.addAsGameObject(staticTestBuzam);
+		staticTestMazub = new Mazub(0, 499, spriteArrayForSize(3, 3));
+		staticTestWorld.setMazub(staticTestMazub);
 	}
 
 	private Plant testPlant;
@@ -147,11 +168,11 @@ public class PlantTest {
 
 	@Test
 	public void testAdvanceTime_Moving() {
-		testPlant.advanceTime(0.15);
-		assertEquals(testPlant.getEffectiveHorizontalLocation(),108);
-		assertEquals(testPlant.getEffectiveVerticalLocation(),550);
-		assertTrue(Util.fuzzyEquals(testPlant.getHorizontalVelocity(),0.5));
-		assertTrue(Util.fuzzyEquals(testPlant.getVerticalVelocity(),0));		
+		staticTestPlant.advanceTime(0.15);
+		assertEquals(staticTestPlant.getEffectiveHorizontalLocation(),108);
+		assertEquals(staticTestPlant.getEffectiveVerticalLocation(),550);
+		assertTrue(Util.fuzzyEquals(staticTestPlant.getHorizontalVelocity(),0.5));
+		assertTrue(Util.fuzzyEquals(staticTestPlant.getVerticalVelocity(),0));		
 	}
 	
 }

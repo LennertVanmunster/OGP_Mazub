@@ -50,7 +50,7 @@ public class SearchObject extends UnaryOperation<ObjectType<?>, DirectionType> {
 					int[] tileArray= world.getTilePositionAtPixelLocation(position[0], position[1]);
 					object = new TileType(tileArray);
 				}catch(IllegalArgumentException exc){
-					object = null;
+					object = new GameObjectType(null);
 				}
 			}
 		}else if(direction == Orientation.UP || direction == Orientation.DOWN){
@@ -64,7 +64,7 @@ public class SearchObject extends UnaryOperation<ObjectType<?>, DirectionType> {
 					int[] tileArray= world.getTilePositionAtPixelLocation(position[0], position[1]);
 					object = new TileType(tileArray);
 				}catch(IllegalArgumentException exc){
-					object = null;
+					object = new GameObjectType(null);
 				}
 			}
 		}

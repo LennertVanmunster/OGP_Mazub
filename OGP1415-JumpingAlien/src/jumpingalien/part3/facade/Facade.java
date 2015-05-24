@@ -893,11 +893,11 @@ public class Facade implements IFacadePart3 {
 		 ProgramParser<Expression<?>, Statement, Type<?>, Program> parser = new ProgramParser<>(factory);
 		 Optional<Program> parseResult = parser.parseString(text);
 		 if(parseResult.isPresent()){
-			 System.out.print("PARSING OK! ");
+//			 System.out.print("PARSING OK! ");
 			 return ParseOutcome.success(parseResult.get());
 		 }
 		 else{
-			 System.out.print("PARSING NOT OK! ");
+//			 System.out.print("PARSING NOT OK! ");
 			 return ParseOutcome.failure(parser.getErrors()); 
 		 }
 	}
@@ -925,7 +925,7 @@ public class Facade implements IFacadePart3 {
 	 */
 	public void addBuzam(World world, Buzam buzam)throws ModelException{
 		try{
-			world.setBuzam(buzam);
+			world.addAsGameObject(buzam);
 		}catch (IllegalArgumentException exc){
 			throw new ModelException("This buzam cannot be added to this world!");
 		}
